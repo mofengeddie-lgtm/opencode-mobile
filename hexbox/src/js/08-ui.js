@@ -296,8 +296,10 @@ class UI {
     if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}`;
       if (first.def.produces) sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost).join('');
+      if (first.def.upgrade) sig += '|u' + (p.coins >= BUILDINGS[first.def.upgrade].cost);
     } else {
-      sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800);
+      sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
+        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
     }
     if (force || sig !== this.selSig) {
       this.selSig = sig;
@@ -346,6 +348,10 @@ class UI {
         : 'Toca una tropa para entrenarla. Toca la cola para cancelar.') + '</div>';
     }
     const acts = [];
+    if (d.upgrade && b.built) {
+      const to = BUILDINGS[d.upgrade];
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a ${esc(to.name)} · ${fmt(to.cost)}</button>`);
+    }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
       acts.push(`<button class="btn danger" type="button" data-act="demolish">${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
@@ -366,6 +372,14 @@ class UI {
         `<span class="chip"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</span>`).join('') + '</div>';
     }
     const acts = [];
+    const ship = sel.length === 1 && first.def.capacity ? first : null;
+    if (ship) {
+      const g = this.app.game;
+      html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
+        (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
+          : ' · Selecciona tropas de tierra y toca el transporte para subirlas.') + '</div>';
+      if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
+    }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
       acts.push(`<button class="btn gold" type="button" data-act="found">Fundar puesto · 800</button>`);
@@ -445,6 +459,23 @@ class UI {
       if (u) {
         app.setSelection([u]);
         app.input.startPlacement({ kind: 'found', unit: u });
+      }
+    } else if (act === 'upgrade') {
+      const res = g.upgrade(b);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else {
+        app.setSelection([res]);
+        this.toast(`Mejorando a ${res.def.name}`, 'good');
+      }
+    } else if (act === 'unload') {
+      const res = g.unload(b);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else {
+        app.setSelection(res);
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));

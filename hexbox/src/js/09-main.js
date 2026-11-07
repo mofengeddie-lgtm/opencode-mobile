@@ -134,7 +134,7 @@ const App = {
   },
 
   setSelection(list) {
-    this.selection = list.filter((e) => e && e.alive);
+    this.selection = list.filter((e) => e && e.alive && !e.inside);
     this.ui.demolishArm = -1;
     if (this.input.placement && this.input.placement.kind === 'found' && !this.selection.includes(this.input.placement.unit)) {
       this.input.cancelPlacement();
@@ -145,7 +145,7 @@ const App = {
   quickSelect(kind) {
     const g = this.game;
     if (!g) return;
-    const list = g.units.filter((u) => u.owner === 0 && u.alive && u.def.weapon && (
+    const list = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.weapon && (
       kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
     if (!list.length) {
       this.ui.toast(kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
@@ -196,7 +196,7 @@ const App = {
         if (!this.paused) this.game.update(dt);
         this.drainEvents();
         this.input.update(dt);
-        if (this.selection.some((e) => !e.alive)) this.setSelection(this.selection);
+        if (this.selection.some((e) => !e.alive || e.inside)) this.setSelection(this.selection);
         if (this.input.placement && this.input.placement.kind === 'build') {
           this.input.placeT = (this.input.placeT || 0) - dt;
           if (this.input.placeT <= 0) {

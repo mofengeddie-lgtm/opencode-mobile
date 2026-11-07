@@ -32,8 +32,12 @@ const BUILDINGS = {
     desc: 'Tu base. Genera monedas y dispara a los enemigos. Si lo destruyen, pierdes.',
   },
   farm: {
-    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'],
-    desc: '+240 monedas/min. Solo sobre pasto.',
+    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
+    desc: '+240 monedas/min. Solo sobre pasto. Se puede mejorar a Pozo petrolero.',
+  },
+  pump: {
+    name: 'Pozo petrolero', cat: null, cost: 1400, hp: 700, build: 10, income: 650, on: ['grass'],
+    desc: 'Mejora de la Granja que bombea petróleo del subsuelo.',
   },
   mine: {
     name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
@@ -54,12 +58,12 @@ const BUILDINGS = {
   },
   factory: {
     name: 'Fábrica', cat: 'prod', cost: 3000, hp: 1500, build: 16, on: 'land', limit: 3,
-    produces: ['jeep', 'tank', 'aa'],
-    desc: 'Fabrica jeeps, tanques y antiaéreos.',
+    produces: ['jeep', 'tank', 'aa', 'arty'],
+    desc: 'Fabrica jeeps, tanques, antiaéreos y lanzamisiles.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 3,
-    produces: ['speedboat', 'boatEng', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    produces: ['speedboat', 'boatEng', 'transport', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
     desc: 'En agua junto a la orilla. Construye barcos y repara los cercanos.',
   },
   helipad: {
@@ -71,6 +75,11 @@ const BUILDINGS = {
     name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
     weapon: { dmg: 40, cd: 0.9, range: 4, proj: 'bullet', mult: { inf: 1.5, veh: 1, ship: 1, air: 0.8, bld: 0.6, sub: 0 } },
     desc: 'Dispara a tropas, barcos y helicópteros cercanos.',
+  },
+  aadef: {
+    name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
+    weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
+    desc: 'Misiles de largo alcance. Solo dispara a unidades aéreas.',
   },
   wall: {
     name: 'Muro', cat: 'def', cost: 150, hp: 1500, build: 3, on: 'land',
@@ -90,7 +99,7 @@ const BUILDINGS = {
 const BUILD_TABS = [
   { id: 'eco', name: 'Economía', items: ['farm', 'mine', 'rig', 'house'] },
   { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad'] },
-  { id: 'def', name: 'Defensa', items: ['turret', 'wall', 'hospital'] },
+  { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'wall', 'hospital'] },
 ];
 
 const UNITS = {
@@ -128,6 +137,11 @@ const UNITS = {
     weapon: { dmg: 70, cd: 0.9, range: 5, proj: 'flak', mult: { inf: 0, veh: 0, ship: 0, air: 2.4, bld: 0, sub: 0 } },
     desc: 'Solo dispara a unidades aéreas, pero las destroza.',
   },
+  arty: {
+    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, hp: 700, speed: 1.0, pop: 2, build: 14,
+    weapon: { dmg: 380, cd: 6, range: 7, proj: 'missile', mult: { bld: 1 } },
+    desc: 'Artillería de muy largo alcance. Solo ataca edificios.',
+  },
   speedboat: {
     name: 'Lancha', cls: 'ship', mover: 'sea', cost: 1400, hp: 650, speed: 2.8, pop: 1, build: 8,
     weapon: { dmg: 22, cd: 0.45, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.6, ship: 0.8, air: 0.4, bld: 0.5, sub: 0 } },
@@ -136,6 +150,10 @@ const UNITS = {
   boatEng: {
     name: 'Barco ingeniero', cls: 'ship', mover: 'sea', cost: 1600, hp: 500, speed: 2.2, pop: 1, build: 8,
     founds: 'sea', desc: 'Funda puestos avanzados en otras islas.',
+  },
+  transport: {
+    name: 'Transporte', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
+    desc: 'Lleva 6 tropas de tierra a otras islas (un vehículo ocupa 2).',
   },
   destroyer: {
     name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, hp: 2800, speed: 1.3, pop: 3, build: 16,

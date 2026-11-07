@@ -118,6 +118,38 @@ const MODEL_BUILDERS = {
     b.add(GEO.cone8, PAL.white, -0.12, 0.62, -0.5, 0.12, 0.14, 0.12);
     return { main: b.build() };
   },
+  pump(tc) {
+    const b = new PartBuilder();
+    b.box(1.2, 0.06, 0.95, PAL.field, 0, 0, 0.05);
+    b.box(0.5, 0.08, 0.3, PAL.dark, 0.05, 0.06, -0.05);
+    b.add(GEO.box, PAL.metal, 0.05, 0.42, -0.17, 0.06, 0.75, 0.06, 0.3, 0, 0);
+    b.add(GEO.box, PAL.metal, 0.05, 0.42, 0.07, 0.06, 0.75, 0.06, -0.3, 0, 0);
+    b.box(0.3, 0.08, 0.06, PAL.metal, 0.05, 0.74, -0.05);
+    b.cyl(0.2, 0.42, tc, -0.42, 0, -0.32);
+    b.cyl(0.21, 0.04, PAL.white, -0.42, 0.42, -0.32);
+    b.cyl(0.05, 0.3, PAL.dark, 0.05, 0.06, 0.42);
+    b.box(0.04, 0.85, 0.04, PAL.dark, 0.5, 0, -0.38);
+    b.box(0.26, 0.15, 0.02, tc, 0.64, 0.66, -0.38);
+    const r = new PartBuilder();
+    r.box(0.08, 0.08, 0.95, PAL.yellow, 0, -0.04, 0.1);
+    r.add(GEO.box, PAL.yellow, 0, -0.12, 0.6, 0.1, 0.26, 0.16, 0.35, 0, 0);
+    r.box(0.14, 0.14, 0.18, PAL.dark, 0, -0.07, -0.42);
+    return { main: b.build(), rocker: r.build(), rockerY: 0.82, rockerZ: -0.05 };
+  },
+  aadef(tc) {
+    const b = new PartBuilder();
+    b.cyl(0.5, 0.25, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.24, 0.2, PAL.dark, 0, 0.25, 0, GEO.cyl8);
+    const t = new PartBuilder();
+    t.box(0.5, 0.1, 0.36, PAL.olive, 0, 0, 0);
+    t.add(GEO.box, tc, 0, 0.3, 0.02, 0.48, 0.3, 0.5, -0.5, 0, 0);
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 2; j++) {
+        t.add(GEO.cyl8, PAL.white, -0.15 + i * 0.15, 0.3 + j * 0.13 - 0.04, 0.28 + j * 0.06, 0.045, 0.06, 0.045, 1.07, 0, 0);
+      }
+    }
+    return { main: b.build(), turret: t.build(), turretY: 0.45 };
+  },
   mine(tc) {
     const b = new PartBuilder();
     b.add(GEO.dodeca, PAL.stone, 0, 0.2, 0.05, 0.75, 0.5, 0.65);
@@ -284,6 +316,30 @@ const MODEL_BUILDERS = {
     t.add(GEO.cyl8, PAL.dark, 0.07, 0.18, 0.14, 0.03, 0.4, 0.03, 0.9, 0, 0);
     return { main: b.build(), turret: t.build(), turretY: 0.24, scale: 1.15 };
   },
+  arty(tc) {
+    const b = new PartBuilder();
+    for (const z of [-0.28, 0, 0.28]) {
+      for (const x of [-0.22, 0.22]) b.add(GEO.cyl8, PAL.black, x, 0.08, z, 0.08, 0.07, 0.08, 0, 0, Math.PI / 2);
+    }
+    b.box(0.44, 0.14, 0.86, PAL.olive, 0, 0.08, 0);
+    b.box(0.42, 0.2, 0.22, tc, 0, 0.22, 0.32);
+    b.box(0.36, 0.08, 0.14, PAL.glass, 0, 0.3, 0.38);
+    const t = new PartBuilder();
+    t.add(GEO.box, PAL.olive, 0, 0.12, -0.05, 0.38, 0.22, 0.5, -0.35, 0, 0);
+    t.add(GEO.box, tc, 0, 0.12, 0.2, 0.39, 0.05, 0.08, -0.35, 0, 0);
+    return { main: b.build(), turret: t.build(), turretY: 0.22, turretZ: -0.12, scale: 1.15 };
+  },
+  transport(tc) {
+    const b = new PartBuilder();
+    b.box(0.72, 0.16, 1.25, PAL.gray, 0, -0.02, 0);
+    b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), -0.34, 0.12, 0);
+    b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), 0.34, 0.12, 0);
+    b.box(0.64, 0.06, 0.12, PAL.dark, 0, 0.12, 0.6);
+    b.box(0.3, 0.26, 0.24, tc, 0.18, 0.12, -0.48);
+    b.box(0.2, 0.08, 0.14, PAL.glass, 0.18, 0.3, -0.42);
+    b.cyl(0.035, 0.32, PAL.dark, -0.2, 0.12, -0.52);
+    return { main: b.build(), scale: 1.2 };
+  },
   speedboat(tc) {
     const b = new PartBuilder();
     b.box(0.38, 0.14, 0.75, PAL.white, 0, 0, -0.05);
@@ -356,6 +412,8 @@ const UNIT_MODEL = {
   destroyer: (tc) => MODEL_BUILDERS.destroyer(tc),
   sub: (tc) => MODEL_BUILDERS.sub(tc),
   heli: (tc) => MODEL_BUILDERS.heli(tc),
+  arty: (tc) => MODEL_BUILDERS.arty(tc),
+  transport: (tc) => MODEL_BUILDERS.transport(tc),
 };
 
 const _modelCache = new Map();
@@ -378,10 +436,17 @@ function createVisual(type, color) {
   main.castShadow = true;
   main.receiveShadow = true;
   group.add(main);
-  const out = { group, main, turret: null, rotor: null, crystal: null };
+  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null };
+  if (m.rocker) {
+    out.rocker = new THREE.Mesh(m.rocker, MODEL_MAT);
+    out.rocker.position.set(0, m.rockerY, m.rockerZ || 0);
+    out.rocker.castShadow = true;
+    group.add(out.rocker);
+  }
   if (m.turret) {
     out.turret = new THREE.Mesh(m.turret, MODEL_MAT);
     out.turret.position.set(0, m.turretY || 0, m.turretZ || 0);
+    out.turretBaseY = m.turretY || 0;
     out.turret.castShadow = true;
     group.add(out.turret);
   }

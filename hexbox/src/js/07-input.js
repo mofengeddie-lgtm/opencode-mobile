@@ -243,6 +243,17 @@ class Input {
       if (mine.length && cell) this.moveTo(mine, cell.i);
       return;
     }
+    // Tropas de tierra seleccionadas + toque en tu transporte = subir a bordo.
+    if (target && target.owner === 0 && target.def.capacity) {
+      const landers = mine.filter((u) => u.mover === 'land');
+      if (landers.length) {
+        g.orderBoard(landers, target);
+        this.r.addMoveMarker(target.cell, 0x7dd3ff);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} al transporte`);
+        app.sound.play('order');
+        return;
+      }
+    }
     if (target && target.owner === 0) {
       if (target.kind === 'unit' && dbl) {
         const same = this.r.unitsInRect(0, 0, this.r.width, this.r.height, (u) => u.owner === 0 && u.type === target.type);

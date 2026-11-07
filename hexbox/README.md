@@ -28,10 +28,13 @@ Abre `hexbox.html` en Safari o Chrome. En el iPad lo más cómodo es usar el enl
 - **Modos:** Duelo, Todos contra todos (4), Equipos 2 vs 2 y Gran batalla (6).
 - **Mapas:** Archipiélago (islas con puentes), Mar abierto (sin puentes) y Continente.
 - **Opciones:** dificultad de los bots, niebla de guerra y ritmo ×2.
-- **13 edificios:** Núcleo, Granja, Mina, Plataforma, Casa, Cuartel, Fábrica, Puerto,
-  Helipuerto, Torreta, Muro, Enfermería y Puesto avanzado.
-- **12 unidades:** Ingeniero, Fusilero, Tirador, Lanzacohetes, Jeep, Tanque, Antiaéreo,
-  Lancha, Barco ingeniero, Destructor, Submarino y Helicóptero.
+- **15 edificios:** Núcleo, Granja (mejorable a Pozo petrolero), Mina, Plataforma, Casa,
+  Cuartel, Fábrica, Puerto, Helipuerto, Torreta, Batería antiaérea, Muro, Enfermería y
+  Puesto avanzado.
+- **14 unidades:** Ingeniero, Fusilero, Tirador, Lanzacohetes, Jeep, Tanque, Antiaéreo,
+  Lanzamisiles, Lancha, Barco ingeniero, Transporte, Destructor, Submarino y Helicóptero.
+- **Transporte:** selecciona tropas de tierra y toca tu Transporte para subirlas; acércalo a
+  otra isla y toca «Desembarcar».
 
 ## Editar el juego
 

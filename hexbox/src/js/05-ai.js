@@ -63,6 +63,7 @@ class Bot {
     this.expand(mine, units);
     this.produce(mine, units);
     this.attack(units);
+    this.ferry(mine, units);
   }
 
   coreCell() {
@@ -94,6 +95,10 @@ class Bot {
     if (n('factory') < 1 && T > 150 && !open) want.push('factory');
     if (ownFree('gold')) want.push('mine');
     if (n('harbor') < 1 && coast && T > 240) want.push('harbor');
+    const enemyAir = g.units.some((u) => u.cls === 'air' && g.isEnemy(u.owner, this.pid));
+    if (enemyAir && n('aadef') < 2 && T > 180) want.push('aadef');
+    const farmsBuilt = mine.filter((b) => b.type === 'farm' && b.built).length;
+    if (T > 270 && farmsBuilt && n('pump') < Math.min(6, Math.floor((T - 220) / 70))) want.push('pump');
     if (n('turret') < Math.min(4, Math.floor((T - 60) / 120))) want.push('turret');
     if (ownFree('oil')) want.push('rig');
     if (hard && n('helipad') < 1 && T > 330) want.push('helipad');
@@ -114,6 +119,14 @@ class Bot {
       if (actions >= 2) break;
       const cost = BUILDINGS[type].cost;
       if (this.ecoBank < cost || p.coins < cost) break;
+      if (type === 'pump') {
+        const farm = mine.find((b) => b.alive && b.type === 'farm' && b.built);
+        if (farm && typeof g.upgrade(farm) !== 'string') {
+          this.ecoBank -= cost;
+          actions++;
+        }
+        continue;
+      }
       const ci = this.pickCell(type);
       if (ci < 0) continue;
       if (!g.place(this.pid, type, ci)) {
@@ -242,7 +255,9 @@ class Bot {
       if (!b.botNext) {
         const r = Math.random();
         if (b.type === 'barracks') b.botNext = r < 0.45 || T < 80 ? 'rifle' : r < 0.78 ? 'rocket' : 'sniper';
-        else if (b.type === 'factory') b.botNext = enemyAir && r < 0.35 ? 'aa' : r < 0.6 ? 'tank' : 'jeep';
+        else if (b.type === 'factory') {
+          b.botNext = enemyAir && r < 0.3 ? 'aa' : r < 0.55 ? 'tank' : r < 0.8 || T < 300 ? 'jeep' : 'arty';
+        }
         else if (b.type === 'harbor') b.botNext = r < 0.4 ? 'speedboat' : r < 0.75 || T < 300 ? 'destroyer' : 'sub';
         else if (b.type === 'helipad') b.botNext = 'heli';
       }
@@ -278,7 +293,7 @@ class Bot {
       }
     }
     if (!threat) return;
-    const guards = units.filter((u) => u.def.weapon && u.role === 'home' &&
+    const guards = units.filter((u) => u.def.weapon && u.role === 'home' && !u.inside &&
       (u.state === 'idle' || u.state === 'move') && g.canAttack(u, u.def.weapon, threat));
     const byMover = { land: [], sea: [], air: [] };
     for (const u of guards) byMover[u.mover].push(u);
@@ -300,6 +315,79 @@ class Bot {
       if (c && TERRAIN[c.t].water && !c.bld && c.comp === comp) return c.i;
     }
     return -1;
+  }
+
+  coastNear(target, ship) {
+    const g = this.g;
+    const comp = g.cells[ship.cell].comp;
+    for (const off of SPIRAL) {
+      if (off.d > 6) break;
+      const c = g.map.get(target.q + off.q, target.r + off.r);
+      if (c && TERRAIN[c.t].water && !c.bld && c.comp === comp && g.map.isCoast(c)) return c.i;
+    }
+    return -1;
+  }
+
+  // Sin camino por tierra hacia ningún enemigo: lleva tropas en Transporte.
+  ferry(mine, units) {
+    const g = this.g;
+    if (g.time < 240 || !mine.some((b) => b.type === 'harbor' && b.built)) return;
+    const core = this.coreCell();
+    const landReach = g.players.some((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive &&
+      g.cells[p.core.cell].comp === core.comp);
+    if (landReach) return;
+    const t = units.find((u) => u.type === 'transport');
+    if (!t) {
+      this.queueOnce(mine, 'harbor', 'transport');
+      return;
+    }
+    t.botMode = t.botMode || 'load';
+    if (t.botMode === 'load') {
+      if (t.state !== 'idle') return;
+      if (g.map.dist(g.cells[t.cell], core) > 7) {
+        const wc = this.coastNear(core, t);
+        if (wc >= 0) g.orderMove([t], wc);
+        return;
+      }
+      const boarding = units.filter((u) => u.state === 'board' && u.boardTarget === t);
+      let slots = t.def.capacity - g.cargoSlots(t) - boarding.reduce((s, u) => s + (u.cls === 'veh' ? 2 : 1), 0);
+      const pick = [];
+      for (const u of units) {
+        if (u.mover !== 'land' || !u.def.weapon || u.inside || u.role !== 'home' || u.state !== 'idle') continue;
+        const need = u.cls === 'veh' ? 2 : 1;
+        if (need <= slots) {
+          pick.push(u);
+          slots -= need;
+        }
+      }
+      if (pick.length) g.orderBoard(pick, t);
+      t.loadT = (t.loadT || 0) + g.diff.think;
+      const full = g.cargoSlots(t) >= t.def.capacity - 1;
+      if (full || (t.cargo.length >= 3 && t.loadT > 60)) {
+        const target = this.chooseEnemyCore();
+        if (!target) return;
+        const wc = this.coastNear(g.cells[target.cell], t);
+        if (wc < 0) return;
+        for (const u of boarding) u.state = 'idle';
+        t.botMode = 'sail';
+        t.botTarget = target;
+        t.loadT = 0;
+        g.orderMove([t], wc);
+      }
+    } else if (t.botMode === 'sail') {
+      if (t.state !== 'idle') return;
+      const res = g.unload(t);
+      if (typeof res !== 'string') {
+        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.chooseEnemyCore();
+        for (const u of res) u.role = 'wave';
+        if (target) g.orderMove(res, target.cell, true);
+      }
+      t.botMode = 'return';
+      const wc = this.coastNear(core, t);
+      if (wc >= 0) g.orderMove([t], wc);
+    } else if (t.botMode === 'return' && t.state === 'idle') {
+      t.botMode = 'load';
+    }
   }
 
   chooseEnemyCore() {

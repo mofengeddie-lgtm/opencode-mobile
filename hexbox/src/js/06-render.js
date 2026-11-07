@@ -299,14 +299,16 @@ class Renderer {
       this.booms.push({ mesh, t: 1, dur: 1, s: 1, kind: 'fire', vy: 0 });
     }
 
-    this.projMeshes = { rocket: [], shell: [], torpedo: [] };
+    this.projMeshes = { rocket: [], shell: [], torpedo: [], missile: [] };
     this.projGeo = {
       rocket: new THREE.CylinderGeometry(0.035, 0.035, 0.28, 6).rotateX(Math.PI / 2),
+      missile: new THREE.CylinderGeometry(0.05, 0.05, 0.42, 6).rotateX(Math.PI / 2),
       shell: new THREE.SphereGeometry(0.07, 6, 5),
       torpedo: new THREE.CylinderGeometry(0.05, 0.05, 0.35, 6).rotateX(Math.PI / 2),
     };
     this.projMat = {
       rocket: new THREE.MeshBasicMaterial({ color: 0xffe08a }),
+      missile: new THREE.MeshBasicMaterial({ color: 0xfff6e6 }),
       shell: new THREE.MeshBasicMaterial({ color: 0x2b2b2b }),
       torpedo: new THREE.MeshBasicMaterial({ color: 0xd8f3ff }),
     };
@@ -430,7 +432,7 @@ class Renderer {
     }
 
     // Proyectiles
-    const used = { rocket: 0, shell: 0, torpedo: 0 };
+    const used = { rocket: 0, shell: 0, torpedo: 0, missile: 0 };
     for (const p of this.game.projectiles) {
       const list = this.projMeshes[p.kind];
       if (!list) continue;
@@ -442,7 +444,8 @@ class Renderer {
       }
       used[p.kind]++;
       const k = Math.min(1, p.time / p.dur);
-      const arc = p.kind === 'shell' ? Math.sin(Math.PI * k) * 1.1 : p.kind === 'rocket' ? Math.sin(Math.PI * k) * 0.35 : 0;
+      const arc = p.kind === 'shell' ? Math.sin(Math.PI * k) * 1.1 : p.kind === 'rocket' ? Math.sin(Math.PI * k) * 0.35
+        : p.kind === 'missile' ? Math.sin(Math.PI * k) * 2.6 : 0;
       const y = p.kind === 'torpedo' ? -0.02 : p.sy + (p.ty - p.sy) * k + arc;
       mesh.position.set(p.sx + (p.tx - p.sx) * k, y, p.sz + (p.tz - p.sz) * k);
       mesh.lookAt(p.tx, p.kind === 'torpedo' ? -0.02 : p.ty, p.tz);
@@ -501,8 +504,12 @@ class Renderer {
       const k = b.built ? 1 : 0.2 + 0.8 * b.progress;
       v.main.scale.y = k;
       if (v.turret) {
-        v.turret.position.y = (b.type === 'turret' ? 0.5 : 0) * k;
+        v.turret.position.y = v.turretBaseY * k;
         v.turret.rotation.y = b.aimYaw - b.rot;
+      }
+      if (v.rocker) {
+        v.rocker.visible = b.built;
+        v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * 0.28 : 0;
       }
       if (v.crystal) {
         v.crystal.rotation.y = time * 0.8;
@@ -516,7 +523,7 @@ class Renderer {
         this.scene.add(v.group);
         this.vis.set(u.id, v);
       }
-      const seen = u.visible || g.players[u.owner].team === myTeam;
+      const seen = !u.inside && (u.visible || g.players[u.owner].team === myTeam);
       v.group.visible = seen;
       if (!seen) continue;
       let y = u.y;
@@ -645,7 +652,7 @@ class Renderer {
     let best = null;
     let bd = Math.max(16, 520 / this.cam.dist);
     for (const u of this.game.units) {
-      if (!u.alive || (filter && !filter(u))) continue;
+      if (!u.alive || u.inside || (filter && !filter(u))) continue;
       if (!u.visible && this.game.players[u.owner].team !== this.game.players[0].team) continue;
       const s = this.project(u.x, u.y + 0.25, u.z);
       if (!s.ok) continue;
@@ -661,7 +668,7 @@ class Renderer {
     const ly = Math.min(y1, y2);
     const hy = Math.max(y1, y2);
     return this.game.units.filter((u) => {
-      if (!u.alive || (filter && !filter(u))) return false;
+      if (!u.alive || u.inside || (filter && !filter(u))) return false;
       const s = this.project(u.x, u.y + 0.2, u.z);
       return s.ok && s.x >= lx && s.x <= hx && s.y >= ly && s.y <= hy;
     });
@@ -698,7 +705,7 @@ class Renderer {
       if (b.hp < b.maxHp || !b.built || sel.has(b) || b.lastHit > recent) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 2.0 : 1.15);
     }
     for (const u of g.units) {
-      if (!u.alive) continue;
+      if (!u.alive || u.inside) continue;
       if (!u.visible && g.players[u.owner].team !== myTeam) continue;
       if (u.hp < u.maxHp || sel.has(u)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
     }
@@ -761,7 +768,7 @@ class Renderer {
       }
     }
     for (const u of g.units) {
-      if (!u.visible && g.players[u.owner].team !== myTeam) continue;
+      if (u.inside || (!u.visible && g.players[u.owner].team !== myTeam)) continue;
       ctx.fillStyle = hexColor(PLAYER_COLORS[u.owner]);
       ctx.beginPath();
       ctx.arc(T.ox + u.x * T.s, T.oz + u.z * T.s, 1.8, 0, Math.PI * 2);

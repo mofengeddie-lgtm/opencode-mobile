@@ -190,7 +190,7 @@ class Game {
       alive: true, state: 'idle', path: [], pathI: 0, dest: -1, target: null, autoTarget: null,
       aggroTarget: null, cd: Math.random() * 0.5, scanT: Math.random() * 0.3, yaw: Math.random() * 6,
       aimYaw: 0, moveYaw: 0, moving: false, repathT: 0, resume: -1, foundCell: -1, role: 'home',
-      lastHit: -99, visible: true,
+      lastHit: -99, visible: true, inside: null, cargo: def.capacity ? [] : null, boardTarget: null,
     };
     u.x = cell.x + u.offX;
     u.z = cell.z + u.offZ;
@@ -330,6 +330,91 @@ class Game {
     this.players[b.owner].coins += UNITS[q.type].cost;
   }
 
+  upgradeInvalid(b) {
+    const to = b.def.upgrade;
+    if (!to) return 'Este edificio no se puede mejorar';
+    if (!b.built) return 'Aún en construcción';
+    if (this.players[b.owner].coins < BUILDINGS[to].cost) return 'Monedas insuficientes';
+    return null;
+  }
+
+  upgrade(b) {
+    const err = this.upgradeInvalid(b);
+    if (err) return err;
+    const p = this.players[b.owner];
+    const to = b.def.upgrade;
+    p.coins -= BUILDINGS[to].cost;
+    b.alive = false;
+    const c = this.cells[b.cell];
+    if (c.bld === b) c.bld = null;
+    const nb = this.addBuilding(b.owner, to, b.cell);
+    nb.rot = b.rot;
+    p.stats.built++;
+    this.emit('sound', { name: 'place', pid: b.owner });
+    return nb;
+  }
+
+  cargoSlots(t) {
+    let n = 0;
+    for (const u of t.cargo) n += u.cls === 'veh' ? 2 : 1;
+    return n;
+  }
+
+  orderBoard(units, t) {
+    for (const u of units) {
+      if (!u.alive || u.mover !== 'land' || u.inside) continue;
+      u.state = 'board';
+      u.boardTarget = t;
+      u.target = null;
+      u.repathT = 0;
+    }
+  }
+
+  board(u, t) {
+    const need = u.cls === 'veh' ? 2 : 1;
+    if (this.cargoSlots(t) + need > t.def.capacity) {
+      this.toast(u.owner, 'El transporte está lleno', 'bad');
+      u.state = 'idle';
+      return false;
+    }
+    t.cargo.push(u);
+    u.inside = t;
+    u.state = 'idle';
+    u.path = [];
+    u.boardTarget = null;
+    u.target = null;
+    u.autoTarget = null;
+    if (u.owner === 0) this.emit('sound', { name: 'ready' });
+    return true;
+  }
+
+  unload(t) {
+    if (!t.cargo || !t.cargo.length) return 'El transporte va vacío';
+    const c0 = this.cells[t.cell];
+    const spots = [];
+    for (const off of SPIRAL) {
+      if (off.d > 2) break;
+      const c = this.map.get(c0.q + off.q, c0.r + off.r);
+      if (c && this.passable(c, 'land', t.owner)) spots.push(c.i);
+    }
+    if (!spots.length) return 'Acerca el transporte a la orilla para desembarcar';
+    t.cargo.forEach((u, i) => {
+      const ci = spots[i % spots.length];
+      const c = this.cells[ci];
+      u.inside = null;
+      u.cell = ci;
+      u.x = c.x + u.offX;
+      u.z = c.z + u.offZ;
+      u.y = c.h;
+      u.state = 'idle';
+      u.path = [];
+    });
+    const out = t.cargo;
+    t.cargo = [];
+    if (t.owner === 0) this.emit('sound', { name: 'order' });
+    return out;
+  }
+
   // ---------- órdenes ----------
   setPath(u, dest) {
     u.dest = dest;
@@ -398,7 +483,7 @@ class Game {
 
   // ---------- combate ----------
   canAttack(a, w, t) {
-    if (!t.alive || !this.isEnemy(a.owner, t.owner)) return false;
+    if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
     if (t.kind === 'bld') return w.waterOnly ? t.onWater : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
@@ -464,7 +549,7 @@ class Game {
       this.damage(t, dmg, a.owner);
       if (w.proj === 'flak' || w.proj === 'bolt') this.fx.push({ k: 'spark', x: t.x, y: ty, z: t.z, s: 0.35 });
     } else {
-      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : 5;
+      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : 5;
       const d = Math.hypot(t.x - sx, t.z - sz);
       this.projectiles.push({
         kind: w.proj, t, dmg, owner: a.owner, sx, sy, sz, tx: t.x, ty, tz: t.z,
@@ -495,6 +580,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' || e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
       const c = this.cells[e.cell];
       if (c.bld === e) c.bld = null;
@@ -596,7 +682,7 @@ class Game {
     const fog = this.opts.fog;
     const myTeam = this.players[0].team;
     if (!fog) {
-      for (const u of this.units) u.visible = true;
+      for (const u of this.units) u.visible = !u.inside;
       return;
     }
     const eyes = [];
@@ -607,6 +693,7 @@ class Game {
       if (this.players[b.owner].team === myTeam) eyes.push([b.x, b.z, ((b.def.vision || 3) * SQ3) ** 2]);
     }
     for (const u of this.units) {
+      if (u.inside) { u.visible = false; continue; }
       if (this.players[u.owner].team === myTeam) { u.visible = true; continue; }
       let vis = false;
       for (const e of eyes) {
@@ -665,7 +752,7 @@ class Game {
         b.healT = 0.5;
         const rr = (def.heal.range * SQ3 + 0.4) ** 2;
         for (const u of this.units) {
-          if (!u.alive || this.isEnemy(u.owner, b.owner) || !def.heal.cls.includes(u.cls) || u.hp >= u.maxHp) continue;
+          if (!u.alive || u.inside || this.isEnemy(u.owner, b.owner) || !def.heal.cls.includes(u.cls) || u.hp >= u.maxHp) continue;
           const dx = u.x - b.x;
           const dz = u.z - b.z;
           if (dx * dx + dz * dz > rr) continue;
@@ -722,6 +809,12 @@ class Game {
   }
 
   updateUnit(u, dt) {
+    if (u.inside) {
+      u.x = u.inside.x;
+      u.z = u.inside.z;
+      u.cell = u.inside.cell;
+      return;
+    }
     u.moving = false;
     const w = u.def.weapon;
     let ft = null;
@@ -802,6 +895,24 @@ class Game {
             if (u.resume >= 0) this.setPath(u, u.resume);
             break;
           }
+        }
+        this.followPath(u, dt);
+        break;
+      }
+      case 'board': {
+        const t = u.boardTarget;
+        if (!t || !t.alive) {
+          u.state = 'idle';
+          break;
+        }
+        if (this.map.dist(this.cells[u.cell], this.cells[t.cell]) <= 1) {
+          this.board(u, t);
+          break;
+        }
+        u.repathT -= dt;
+        if (u.repathT <= 0) {
+          u.repathT = 1;
+          this.setPath(u, t.cell);
         }
         this.followPath(u, dt);
         break;

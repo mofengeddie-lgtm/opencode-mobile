@@ -385,8 +385,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     </div>
     <p class="tagline">Construye tu base sobre un archipiélago de hexágonos, expande tu territorio con ingenieros y derriba los Núcleos rivales por tierra, mar y aire.</p>
     <ul class="facts">
-      <li><b>13</b>edificios</li>
-      <li><b>12</b>unidades</li>
+      <li><b>15</b>edificios</li>
+      <li><b>14</b>unidades</li>
       <li><b>Bots</b>que construyen y atacan</li>
     </ul>
     <p class="hint">Un dedo mueve el mapa · Dos dedos: zoom y giro · Toca una tropa y luego un destino</p>
@@ -431,6 +431,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
       <li><b>Expandirte:</b> selecciona un Ingeniero y toca «Fundar puesto».</li>
+      <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Transporte y luego «Desembarcar» junto a otra isla.</li>
+      <li><b>Mejorar:</b> toca una Granja terminada y elige «Mejorar a Pozo petrolero».</li>
       <li><b>Ganar:</b> destruye todos los Núcleos enemigos.</li>
     </ul>
     <div class="row">
@@ -481,8 +483,12 @@ const BUILDINGS = {
     desc: 'Tu base. Genera monedas y dispara a los enemigos. Si lo destruyen, pierdes.',
   },
   farm: {
-    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'],
-    desc: '+240 monedas/min. Solo sobre pasto.',
+    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
+    desc: '+240 monedas/min. Solo sobre pasto. Se puede mejorar a Pozo petrolero.',
+  },
+  pump: {
+    name: 'Pozo petrolero', cat: null, cost: 1400, hp: 700, build: 10, income: 650, on: ['grass'],
+    desc: 'Mejora de la Granja que bombea petróleo del subsuelo.',
   },
   mine: {
     name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
@@ -503,12 +509,12 @@ const BUILDINGS = {
   },
   factory: {
     name: 'Fábrica', cat: 'prod', cost: 3000, hp: 1500, build: 16, on: 'land', limit: 3,
-    produces: ['jeep', 'tank', 'aa'],
-    desc: 'Fabrica jeeps, tanques y antiaéreos.',
+    produces: ['jeep', 'tank', 'aa', 'arty'],
+    desc: 'Fabrica jeeps, tanques, antiaéreos y lanzamisiles.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 3,
-    produces: ['speedboat', 'boatEng', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    produces: ['speedboat', 'boatEng', 'transport', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
     desc: 'En agua junto a la orilla. Construye barcos y repara los cercanos.',
   },
   helipad: {
@@ -520,6 +526,11 @@ const BUILDINGS = {
     name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
     weapon: { dmg: 40, cd: 0.9, range: 4, proj: 'bullet', mult: { inf: 1.5, veh: 1, ship: 1, air: 0.8, bld: 0.6, sub: 0 } },
     desc: 'Dispara a tropas, barcos y helicópteros cercanos.',
+  },
+  aadef: {
+    name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
+    weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
+    desc: 'Misiles de largo alcance. Solo dispara a unidades aéreas.',
   },
   wall: {
     name: 'Muro', cat: 'def', cost: 150, hp: 1500, build: 3, on: 'land',
@@ -539,7 +550,7 @@ const BUILDINGS = {
 const BUILD_TABS = [
   { id: 'eco', name: 'Economía', items: ['farm', 'mine', 'rig', 'house'] },
   { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad'] },
-  { id: 'def', name: 'Defensa', items: ['turret', 'wall', 'hospital'] },
+  { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'wall', 'hospital'] },
 ];
 
 const UNITS = {
@@ -577,6 +588,11 @@ const UNITS = {
     weapon: { dmg: 70, cd: 0.9, range: 5, proj: 'flak', mult: { inf: 0, veh: 0, ship: 0, air: 2.4, bld: 0, sub: 0 } },
     desc: 'Solo dispara a unidades aéreas, pero las destroza.',
   },
+  arty: {
+    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, hp: 700, speed: 1.0, pop: 2, build: 14,
+    weapon: { dmg: 380, cd: 6, range: 7, proj: 'missile', mult: { bld: 1 } },
+    desc: 'Artillería de muy largo alcance. Solo ataca edificios.',
+  },
   speedboat: {
     name: 'Lancha', cls: 'ship', mover: 'sea', cost: 1400, hp: 650, speed: 2.8, pop: 1, build: 8,
     weapon: { dmg: 22, cd: 0.45, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.6, ship: 0.8, air: 0.4, bld: 0.5, sub: 0 } },
@@ -585,6 +601,10 @@ const UNITS = {
   boatEng: {
     name: 'Barco ingeniero', cls: 'ship', mover: 'sea', cost: 1600, hp: 500, speed: 2.2, pop: 1, build: 8,
     founds: 'sea', desc: 'Funda puestos avanzados en otras islas.',
+  },
+  transport: {
+    name: 'Transporte', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
+    desc: 'Lleva 6 tropas de tierra a otras islas (un vehículo ocupa 2).',
   },
   destroyer: {
     name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, hp: 2800, speed: 1.3, pop: 3, build: 16,
@@ -1219,6 +1239,38 @@ const MODEL_BUILDERS = {
     b.add(GEO.cone8, PAL.white, -0.12, 0.62, -0.5, 0.12, 0.14, 0.12);
     return { main: b.build() };
   },
+  pump(tc) {
+    const b = new PartBuilder();
+    b.box(1.2, 0.06, 0.95, PAL.field, 0, 0, 0.05);
+    b.box(0.5, 0.08, 0.3, PAL.dark, 0.05, 0.06, -0.05);
+    b.add(GEO.box, PAL.metal, 0.05, 0.42, -0.17, 0.06, 0.75, 0.06, 0.3, 0, 0);
+    b.add(GEO.box, PAL.metal, 0.05, 0.42, 0.07, 0.06, 0.75, 0.06, -0.3, 0, 0);
+    b.box(0.3, 0.08, 0.06, PAL.metal, 0.05, 0.74, -0.05);
+    b.cyl(0.2, 0.42, tc, -0.42, 0, -0.32);
+    b.cyl(0.21, 0.04, PAL.white, -0.42, 0.42, -0.32);
+    b.cyl(0.05, 0.3, PAL.dark, 0.05, 0.06, 0.42);
+    b.box(0.04, 0.85, 0.04, PAL.dark, 0.5, 0, -0.38);
+    b.box(0.26, 0.15, 0.02, tc, 0.64, 0.66, -0.38);
+    const r = new PartBuilder();
+    r.box(0.08, 0.08, 0.95, PAL.yellow, 0, -0.04, 0.1);
+    r.add(GEO.box, PAL.yellow, 0, -0.12, 0.6, 0.1, 0.26, 0.16, 0.35, 0, 0);
+    r.box(0.14, 0.14, 0.18, PAL.dark, 0, -0.07, -0.42);
+    return { main: b.build(), rocker: r.build(), rockerY: 0.82, rockerZ: -0.05 };
+  },
+  aadef(tc) {
+    const b = new PartBuilder();
+    b.cyl(0.5, 0.25, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.24, 0.2, PAL.dark, 0, 0.25, 0, GEO.cyl8);
+    const t = new PartBuilder();
+    t.box(0.5, 0.1, 0.36, PAL.olive, 0, 0, 0);
+    t.add(GEO.box, tc, 0, 0.3, 0.02, 0.48, 0.3, 0.5, -0.5, 0, 0);
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 2; j++) {
+        t.add(GEO.cyl8, PAL.white, -0.15 + i * 0.15, 0.3 + j * 0.13 - 0.04, 0.28 + j * 0.06, 0.045, 0.06, 0.045, 1.07, 0, 0);
+      }
+    }
+    return { main: b.build(), turret: t.build(), turretY: 0.45 };
+  },
   mine(tc) {
     const b = new PartBuilder();
     b.add(GEO.dodeca, PAL.stone, 0, 0.2, 0.05, 0.75, 0.5, 0.65);
@@ -1385,6 +1437,30 @@ const MODEL_BUILDERS = {
     t.add(GEO.cyl8, PAL.dark, 0.07, 0.18, 0.14, 0.03, 0.4, 0.03, 0.9, 0, 0);
     return { main: b.build(), turret: t.build(), turretY: 0.24, scale: 1.15 };
   },
+  arty(tc) {
+    const b = new PartBuilder();
+    for (const z of [-0.28, 0, 0.28]) {
+      for (const x of [-0.22, 0.22]) b.add(GEO.cyl8, PAL.black, x, 0.08, z, 0.08, 0.07, 0.08, 0, 0, Math.PI / 2);
+    }
+    b.box(0.44, 0.14, 0.86, PAL.olive, 0, 0.08, 0);
+    b.box(0.42, 0.2, 0.22, tc, 0, 0.22, 0.32);
+    b.box(0.36, 0.08, 0.14, PAL.glass, 0, 0.3, 0.38);
+    const t = new PartBuilder();
+    t.add(GEO.box, PAL.olive, 0, 0.12, -0.05, 0.38, 0.22, 0.5, -0.35, 0, 0);
+    t.add(GEO.box, tc, 0, 0.12, 0.2, 0.39, 0.05, 0.08, -0.35, 0, 0);
+    return { main: b.build(), turret: t.build(), turretY: 0.22, turretZ: -0.12, scale: 1.15 };
+  },
+  transport(tc) {
+    const b = new PartBuilder();
+    b.box(0.72, 0.16, 1.25, PAL.gray, 0, -0.02, 0);
+    b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), -0.34, 0.12, 0);
+    b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), 0.34, 0.12, 0);
+    b.box(0.64, 0.06, 0.12, PAL.dark, 0, 0.12, 0.6);
+    b.box(0.3, 0.26, 0.24, tc, 0.18, 0.12, -0.48);
+    b.box(0.2, 0.08, 0.14, PAL.glass, 0.18, 0.3, -0.42);
+    b.cyl(0.035, 0.32, PAL.dark, -0.2, 0.12, -0.52);
+    return { main: b.build(), scale: 1.2 };
+  },
   speedboat(tc) {
     const b = new PartBuilder();
     b.box(0.38, 0.14, 0.75, PAL.white, 0, 0, -0.05);
@@ -1457,6 +1533,8 @@ const UNIT_MODEL = {
   destroyer: (tc) => MODEL_BUILDERS.destroyer(tc),
   sub: (tc) => MODEL_BUILDERS.sub(tc),
   heli: (tc) => MODEL_BUILDERS.heli(tc),
+  arty: (tc) => MODEL_BUILDERS.arty(tc),
+  transport: (tc) => MODEL_BUILDERS.transport(tc),
 };
 
 const _modelCache = new Map();
@@ -1479,10 +1557,17 @@ function createVisual(type, color) {
   main.castShadow = true;
   main.receiveShadow = true;
   group.add(main);
-  const out = { group, main, turret: null, rotor: null, crystal: null };
+  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null };
+  if (m.rocker) {
+    out.rocker = new THREE.Mesh(m.rocker, MODEL_MAT);
+    out.rocker.position.set(0, m.rockerY, m.rockerZ || 0);
+    out.rocker.castShadow = true;
+    group.add(out.rocker);
+  }
   if (m.turret) {
     out.turret = new THREE.Mesh(m.turret, MODEL_MAT);
     out.turret.position.set(0, m.turretY || 0, m.turretZ || 0);
+    out.turretBaseY = m.turretY || 0;
     out.turret.castShadow = true;
     group.add(out.turret);
   }
@@ -1746,7 +1831,7 @@ class Game {
       alive: true, state: 'idle', path: [], pathI: 0, dest: -1, target: null, autoTarget: null,
       aggroTarget: null, cd: Math.random() * 0.5, scanT: Math.random() * 0.3, yaw: Math.random() * 6,
       aimYaw: 0, moveYaw: 0, moving: false, repathT: 0, resume: -1, foundCell: -1, role: 'home',
-      lastHit: -99, visible: true,
+      lastHit: -99, visible: true, inside: null, cargo: def.capacity ? [] : null, boardTarget: null,
     };
     u.x = cell.x + u.offX;
     u.z = cell.z + u.offZ;
@@ -1886,6 +1971,91 @@ class Game {
     this.players[b.owner].coins += UNITS[q.type].cost;
   }
 
+  upgradeInvalid(b) {
+    const to = b.def.upgrade;
+    if (!to) return 'Este edificio no se puede mejorar';
+    if (!b.built) return 'Aún en construcción';
+    if (this.players[b.owner].coins < BUILDINGS[to].cost) return 'Monedas insuficientes';
+    return null;
+  }
+
+  upgrade(b) {
+    const err = this.upgradeInvalid(b);
+    if (err) return err;
+    const p = this.players[b.owner];
+    const to = b.def.upgrade;
+    p.coins -= BUILDINGS[to].cost;
+    b.alive = false;
+    const c = this.cells[b.cell];
+    if (c.bld === b) c.bld = null;
+    const nb = this.addBuilding(b.owner, to, b.cell);
+    nb.rot = b.rot;
+    p.stats.built++;
+    this.emit('sound', { name: 'place', pid: b.owner });
+    return nb;
+  }
+
+  cargoSlots(t) {
+    let n = 0;
+    for (const u of t.cargo) n += u.cls === 'veh' ? 2 : 1;
+    return n;
+  }
+
+  orderBoard(units, t) {
+    for (const u of units) {
+      if (!u.alive || u.mover !== 'land' || u.inside) continue;
+      u.state = 'board';
+      u.boardTarget = t;
+      u.target = null;
+      u.repathT = 0;
+    }
+  }
+
+  board(u, t) {
+    const need = u.cls === 'veh' ? 2 : 1;
+    if (this.cargoSlots(t) + need > t.def.capacity) {
+      this.toast(u.owner, 'El transporte está lleno', 'bad');
+      u.state = 'idle';
+      return false;
+    }
+    t.cargo.push(u);
+    u.inside = t;
+    u.state = 'idle';
+    u.path = [];
+    u.boardTarget = null;
+    u.target = null;
+    u.autoTarget = null;
+    if (u.owner === 0) this.emit('sound', { name: 'ready' });
+    return true;
+  }
+
+  unload(t) {
+    if (!t.cargo || !t.cargo.length) return 'El transporte va vacío';
+    const c0 = this.cells[t.cell];
+    const spots = [];
+    for (const off of SPIRAL) {
+      if (off.d > 2) break;
+      const c = this.map.get(c0.q + off.q, c0.r + off.r);
+      if (c && this.passable(c, 'land', t.owner)) spots.push(c.i);
+    }
+    if (!spots.length) return 'Acerca el transporte a la orilla para desembarcar';
+    t.cargo.forEach((u, i) => {
+      const ci = spots[i % spots.length];
+      const c = this.cells[ci];
+      u.inside = null;
+      u.cell = ci;
+      u.x = c.x + u.offX;
+      u.z = c.z + u.offZ;
+      u.y = c.h;
+      u.state = 'idle';
+      u.path = [];
+    });
+    const out = t.cargo;
+    t.cargo = [];
+    if (t.owner === 0) this.emit('sound', { name: 'order' });
+    return out;
+  }
+
   // ---------- órdenes ----------
   setPath(u, dest) {
     u.dest = dest;
@@ -1954,7 +2124,7 @@ class Game {
 
   // ---------- combate ----------
   canAttack(a, w, t) {
-    if (!t.alive || !this.isEnemy(a.owner, t.owner)) return false;
+    if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
     if (t.kind === 'bld') return w.waterOnly ? t.onWater : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
@@ -2020,7 +2190,7 @@ class Game {
       this.damage(t, dmg, a.owner);
       if (w.proj === 'flak' || w.proj === 'bolt') this.fx.push({ k: 'spark', x: t.x, y: ty, z: t.z, s: 0.35 });
     } else {
-      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : 5;
+      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : 5;
       const d = Math.hypot(t.x - sx, t.z - sz);
       this.projectiles.push({
         kind: w.proj, t, dmg, owner: a.owner, sx, sy, sz, tx: t.x, ty, tz: t.z,
@@ -2051,6 +2221,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' || e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
       const c = this.cells[e.cell];
       if (c.bld === e) c.bld = null;
@@ -2152,7 +2323,7 @@ class Game {
     const fog = this.opts.fog;
     const myTeam = this.players[0].team;
     if (!fog) {
-      for (const u of this.units) u.visible = true;
+      for (const u of this.units) u.visible = !u.inside;
       return;
     }
     const eyes = [];
@@ -2163,6 +2334,7 @@ class Game {
       if (this.players[b.owner].team === myTeam) eyes.push([b.x, b.z, ((b.def.vision || 3) * SQ3) ** 2]);
     }
     for (const u of this.units) {
+      if (u.inside) { u.visible = false; continue; }
       if (this.players[u.owner].team === myTeam) { u.visible = true; continue; }
       let vis = false;
       for (const e of eyes) {
@@ -2221,7 +2393,7 @@ class Game {
         b.healT = 0.5;
         const rr = (def.heal.range * SQ3 + 0.4) ** 2;
         for (const u of this.units) {
-          if (!u.alive || this.isEnemy(u.owner, b.owner) || !def.heal.cls.includes(u.cls) || u.hp >= u.maxHp) continue;
+          if (!u.alive || u.inside || this.isEnemy(u.owner, b.owner) || !def.heal.cls.includes(u.cls) || u.hp >= u.maxHp) continue;
           const dx = u.x - b.x;
           const dz = u.z - b.z;
           if (dx * dx + dz * dz > rr) continue;
@@ -2278,6 +2450,12 @@ class Game {
   }
 
   updateUnit(u, dt) {
+    if (u.inside) {
+      u.x = u.inside.x;
+      u.z = u.inside.z;
+      u.cell = u.inside.cell;
+      return;
+    }
     u.moving = false;
     const w = u.def.weapon;
     let ft = null;
@@ -2358,6 +2536,24 @@ class Game {
             if (u.resume >= 0) this.setPath(u, u.resume);
             break;
           }
+        }
+        this.followPath(u, dt);
+        break;
+      }
+      case 'board': {
+        const t = u.boardTarget;
+        if (!t || !t.alive) {
+          u.state = 'idle';
+          break;
+        }
+        if (this.map.dist(this.cells[u.cell], this.cells[t.cell]) <= 1) {
+          this.board(u, t);
+          break;
+        }
+        u.repathT -= dt;
+        if (u.repathT <= 0) {
+          u.repathT = 1;
+          this.setPath(u, t.cell);
         }
         this.followPath(u, dt);
         break;
@@ -2497,6 +2693,7 @@ class Bot {
     this.expand(mine, units);
     this.produce(mine, units);
     this.attack(units);
+    this.ferry(mine, units);
   }
 
   coreCell() {
@@ -2528,6 +2725,10 @@ class Bot {
     if (n('factory') < 1 && T > 150 && !open) want.push('factory');
     if (ownFree('gold')) want.push('mine');
     if (n('harbor') < 1 && coast && T > 240) want.push('harbor');
+    const enemyAir = g.units.some((u) => u.cls === 'air' && g.isEnemy(u.owner, this.pid));
+    if (enemyAir && n('aadef') < 2 && T > 180) want.push('aadef');
+    const farmsBuilt = mine.filter((b) => b.type === 'farm' && b.built).length;
+    if (T > 270 && farmsBuilt && n('pump') < Math.min(6, Math.floor((T - 220) / 70))) want.push('pump');
     if (n('turret') < Math.min(4, Math.floor((T - 60) / 120))) want.push('turret');
     if (ownFree('oil')) want.push('rig');
     if (hard && n('helipad') < 1 && T > 330) want.push('helipad');
@@ -2548,6 +2749,14 @@ class Bot {
       if (actions >= 2) break;
       const cost = BUILDINGS[type].cost;
       if (this.ecoBank < cost || p.coins < cost) break;
+      if (type === 'pump') {
+        const farm = mine.find((b) => b.alive && b.type === 'farm' && b.built);
+        if (farm && typeof g.upgrade(farm) !== 'string') {
+          this.ecoBank -= cost;
+          actions++;
+        }
+        continue;
+      }
       const ci = this.pickCell(type);
       if (ci < 0) continue;
       if (!g.place(this.pid, type, ci)) {
@@ -2676,7 +2885,9 @@ class Bot {
       if (!b.botNext) {
         const r = Math.random();
         if (b.type === 'barracks') b.botNext = r < 0.45 || T < 80 ? 'rifle' : r < 0.78 ? 'rocket' : 'sniper';
-        else if (b.type === 'factory') b.botNext = enemyAir && r < 0.35 ? 'aa' : r < 0.6 ? 'tank' : 'jeep';
+        else if (b.type === 'factory') {
+          b.botNext = enemyAir && r < 0.3 ? 'aa' : r < 0.55 ? 'tank' : r < 0.8 || T < 300 ? 'jeep' : 'arty';
+        }
         else if (b.type === 'harbor') b.botNext = r < 0.4 ? 'speedboat' : r < 0.75 || T < 300 ? 'destroyer' : 'sub';
         else if (b.type === 'helipad') b.botNext = 'heli';
       }
@@ -2712,7 +2923,7 @@ class Bot {
       }
     }
     if (!threat) return;
-    const guards = units.filter((u) => u.def.weapon && u.role === 'home' &&
+    const guards = units.filter((u) => u.def.weapon && u.role === 'home' && !u.inside &&
       (u.state === 'idle' || u.state === 'move') && g.canAttack(u, u.def.weapon, threat));
     const byMover = { land: [], sea: [], air: [] };
     for (const u of guards) byMover[u.mover].push(u);
@@ -2734,6 +2945,79 @@ class Bot {
       if (c && TERRAIN[c.t].water && !c.bld && c.comp === comp) return c.i;
     }
     return -1;
+  }
+
+  coastNear(target, ship) {
+    const g = this.g;
+    const comp = g.cells[ship.cell].comp;
+    for (const off of SPIRAL) {
+      if (off.d > 6) break;
+      const c = g.map.get(target.q + off.q, target.r + off.r);
+      if (c && TERRAIN[c.t].water && !c.bld && c.comp === comp && g.map.isCoast(c)) return c.i;
+    }
+    return -1;
+  }
+
+  // Sin camino por tierra hacia ningún enemigo: lleva tropas en Transporte.
+  ferry(mine, units) {
+    const g = this.g;
+    if (g.time < 240 || !mine.some((b) => b.type === 'harbor' && b.built)) return;
+    const core = this.coreCell();
+    const landReach = g.players.some((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive &&
+      g.cells[p.core.cell].comp === core.comp);
+    if (landReach) return;
+    const t = units.find((u) => u.type === 'transport');
+    if (!t) {
+      this.queueOnce(mine, 'harbor', 'transport');
+      return;
+    }
+    t.botMode = t.botMode || 'load';
+    if (t.botMode === 'load') {
+      if (t.state !== 'idle') return;
+      if (g.map.dist(g.cells[t.cell], core) > 7) {
+        const wc = this.coastNear(core, t);
+        if (wc >= 0) g.orderMove([t], wc);
+        return;
+      }
+      const boarding = units.filter((u) => u.state === 'board' && u.boardTarget === t);
+      let slots = t.def.capacity - g.cargoSlots(t) - boarding.reduce((s, u) => s + (u.cls === 'veh' ? 2 : 1), 0);
+      const pick = [];
+      for (const u of units) {
+        if (u.mover !== 'land' || !u.def.weapon || u.inside || u.role !== 'home' || u.state !== 'idle') continue;
+        const need = u.cls === 'veh' ? 2 : 1;
+        if (need <= slots) {
+          pick.push(u);
+          slots -= need;
+        }
+      }
+      if (pick.length) g.orderBoard(pick, t);
+      t.loadT = (t.loadT || 0) + g.diff.think;
+      const full = g.cargoSlots(t) >= t.def.capacity - 1;
+      if (full || (t.cargo.length >= 3 && t.loadT > 60)) {
+        const target = this.chooseEnemyCore();
+        if (!target) return;
+        const wc = this.coastNear(g.cells[target.cell], t);
+        if (wc < 0) return;
+        for (const u of boarding) u.state = 'idle';
+        t.botMode = 'sail';
+        t.botTarget = target;
+        t.loadT = 0;
+        g.orderMove([t], wc);
+      }
+    } else if (t.botMode === 'sail') {
+      if (t.state !== 'idle') return;
+      const res = g.unload(t);
+      if (typeof res !== 'string') {
+        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.chooseEnemyCore();
+        for (const u of res) u.role = 'wave';
+        if (target) g.orderMove(res, target.cell, true);
+      }
+      t.botMode = 'return';
+      const wc = this.coastNear(core, t);
+      if (wc >= 0) g.orderMove([t], wc);
+    } else if (t.botMode === 'return' && t.state === 'idle') {
+      t.botMode = 'load';
+    }
   }
 
   chooseEnemyCore() {
@@ -3119,14 +3403,16 @@ class Renderer {
       this.booms.push({ mesh, t: 1, dur: 1, s: 1, kind: 'fire', vy: 0 });
     }
 
-    this.projMeshes = { rocket: [], shell: [], torpedo: [] };
+    this.projMeshes = { rocket: [], shell: [], torpedo: [], missile: [] };
     this.projGeo = {
       rocket: new THREE.CylinderGeometry(0.035, 0.035, 0.28, 6).rotateX(Math.PI / 2),
+      missile: new THREE.CylinderGeometry(0.05, 0.05, 0.42, 6).rotateX(Math.PI / 2),
       shell: new THREE.SphereGeometry(0.07, 6, 5),
       torpedo: new THREE.CylinderGeometry(0.05, 0.05, 0.35, 6).rotateX(Math.PI / 2),
     };
     this.projMat = {
       rocket: new THREE.MeshBasicMaterial({ color: 0xffe08a }),
+      missile: new THREE.MeshBasicMaterial({ color: 0xfff6e6 }),
       shell: new THREE.MeshBasicMaterial({ color: 0x2b2b2b }),
       torpedo: new THREE.MeshBasicMaterial({ color: 0xd8f3ff }),
     };
@@ -3250,7 +3536,7 @@ class Renderer {
     }
 
     // Proyectiles
-    const used = { rocket: 0, shell: 0, torpedo: 0 };
+    const used = { rocket: 0, shell: 0, torpedo: 0, missile: 0 };
     for (const p of this.game.projectiles) {
       const list = this.projMeshes[p.kind];
       if (!list) continue;
@@ -3262,7 +3548,8 @@ class Renderer {
       }
       used[p.kind]++;
       const k = Math.min(1, p.time / p.dur);
-      const arc = p.kind === 'shell' ? Math.sin(Math.PI * k) * 1.1 : p.kind === 'rocket' ? Math.sin(Math.PI * k) * 0.35 : 0;
+      const arc = p.kind === 'shell' ? Math.sin(Math.PI * k) * 1.1 : p.kind === 'rocket' ? Math.sin(Math.PI * k) * 0.35
+        : p.kind === 'missile' ? Math.sin(Math.PI * k) * 2.6 : 0;
       const y = p.kind === 'torpedo' ? -0.02 : p.sy + (p.ty - p.sy) * k + arc;
       mesh.position.set(p.sx + (p.tx - p.sx) * k, y, p.sz + (p.tz - p.sz) * k);
       mesh.lookAt(p.tx, p.kind === 'torpedo' ? -0.02 : p.ty, p.tz);
@@ -3321,8 +3608,12 @@ class Renderer {
       const k = b.built ? 1 : 0.2 + 0.8 * b.progress;
       v.main.scale.y = k;
       if (v.turret) {
-        v.turret.position.y = (b.type === 'turret' ? 0.5 : 0) * k;
+        v.turret.position.y = v.turretBaseY * k;
         v.turret.rotation.y = b.aimYaw - b.rot;
+      }
+      if (v.rocker) {
+        v.rocker.visible = b.built;
+        v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * 0.28 : 0;
       }
       if (v.crystal) {
         v.crystal.rotation.y = time * 0.8;
@@ -3336,7 +3627,7 @@ class Renderer {
         this.scene.add(v.group);
         this.vis.set(u.id, v);
       }
-      const seen = u.visible || g.players[u.owner].team === myTeam;
+      const seen = !u.inside && (u.visible || g.players[u.owner].team === myTeam);
       v.group.visible = seen;
       if (!seen) continue;
       let y = u.y;
@@ -3465,7 +3756,7 @@ class Renderer {
     let best = null;
     let bd = Math.max(16, 520 / this.cam.dist);
     for (const u of this.game.units) {
-      if (!u.alive || (filter && !filter(u))) continue;
+      if (!u.alive || u.inside || (filter && !filter(u))) continue;
       if (!u.visible && this.game.players[u.owner].team !== this.game.players[0].team) continue;
       const s = this.project(u.x, u.y + 0.25, u.z);
       if (!s.ok) continue;
@@ -3481,7 +3772,7 @@ class Renderer {
     const ly = Math.min(y1, y2);
     const hy = Math.max(y1, y2);
     return this.game.units.filter((u) => {
-      if (!u.alive || (filter && !filter(u))) return false;
+      if (!u.alive || u.inside || (filter && !filter(u))) return false;
       const s = this.project(u.x, u.y + 0.2, u.z);
       return s.ok && s.x >= lx && s.x <= hx && s.y >= ly && s.y <= hy;
     });
@@ -3518,7 +3809,7 @@ class Renderer {
       if (b.hp < b.maxHp || !b.built || sel.has(b) || b.lastHit > recent) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 2.0 : 1.15);
     }
     for (const u of g.units) {
-      if (!u.alive) continue;
+      if (!u.alive || u.inside) continue;
       if (!u.visible && g.players[u.owner].team !== myTeam) continue;
       if (u.hp < u.maxHp || sel.has(u)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
     }
@@ -3581,7 +3872,7 @@ class Renderer {
       }
     }
     for (const u of g.units) {
-      if (!u.visible && g.players[u.owner].team !== myTeam) continue;
+      if (u.inside || (!u.visible && g.players[u.owner].team !== myTeam)) continue;
       ctx.fillStyle = hexColor(PLAYER_COLORS[u.owner]);
       ctx.beginPath();
       ctx.arc(T.ox + u.x * T.s, T.oz + u.z * T.s, 1.8, 0, Math.PI * 2);
@@ -3890,6 +4181,17 @@ class Input {
     if (right) {
       if (mine.length && cell) this.moveTo(mine, cell.i);
       return;
+    }
+    // Tropas de tierra seleccionadas + toque en tu transporte = subir a bordo.
+    if (target && target.owner === 0 && target.def.capacity) {
+      const landers = mine.filter((u) => u.mover === 'land');
+      if (landers.length) {
+        g.orderBoard(landers, target);
+        this.r.addMoveMarker(target.cell, 0x7dd3ff);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} al transporte`);
+        app.sound.play('order');
+        return;
+      }
     }
     if (target && target.owner === 0) {
       if (target.kind === 'unit' && dbl) {
@@ -4294,8 +4596,10 @@ class UI {
     if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}`;
       if (first.def.produces) sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost).join('');
+      if (first.def.upgrade) sig += '|u' + (p.coins >= BUILDINGS[first.def.upgrade].cost);
     } else {
-      sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800);
+      sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
+        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
     }
     if (force || sig !== this.selSig) {
       this.selSig = sig;
@@ -4344,6 +4648,10 @@ class UI {
         : 'Toca una tropa para entrenarla. Toca la cola para cancelar.') + '</div>';
     }
     const acts = [];
+    if (d.upgrade && b.built) {
+      const to = BUILDINGS[d.upgrade];
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a ${esc(to.name)} · ${fmt(to.cost)}</button>`);
+    }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
       acts.push(`<button class="btn danger" type="button" data-act="demolish">${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
@@ -4364,6 +4672,14 @@ class UI {
         `<span class="chip"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</span>`).join('') + '</div>';
     }
     const acts = [];
+    const ship = sel.length === 1 && first.def.capacity ? first : null;
+    if (ship) {
+      const g = this.app.game;
+      html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
+        (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
+          : ' · Selecciona tropas de tierra y toca el transporte para subirlas.') + '</div>';
+      if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
+    }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
       acts.push(`<button class="btn gold" type="button" data-act="found">Fundar puesto · 800</button>`);
@@ -4443,6 +4759,23 @@ class UI {
       if (u) {
         app.setSelection([u]);
         app.input.startPlacement({ kind: 'found', unit: u });
+      }
+    } else if (act === 'upgrade') {
+      const res = g.upgrade(b);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else {
+        app.setSelection([res]);
+        this.toast(`Mejorando a ${res.def.name}`, 'good');
+      }
+    } else if (act === 'unload') {
+      const res = g.unload(b);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else {
+        app.setSelection(res);
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
@@ -4766,7 +5099,7 @@ const App = {
   },
 
   setSelection(list) {
-    this.selection = list.filter((e) => e && e.alive);
+    this.selection = list.filter((e) => e && e.alive && !e.inside);
     this.ui.demolishArm = -1;
     if (this.input.placement && this.input.placement.kind === 'found' && !this.selection.includes(this.input.placement.unit)) {
       this.input.cancelPlacement();
@@ -4777,7 +5110,7 @@ const App = {
   quickSelect(kind) {
     const g = this.game;
     if (!g) return;
-    const list = g.units.filter((u) => u.owner === 0 && u.alive && u.def.weapon && (
+    const list = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.weapon && (
       kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
     if (!list.length) {
       this.ui.toast(kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
@@ -4828,7 +5161,7 @@ const App = {
         if (!this.paused) this.game.update(dt);
         this.drainEvents();
         this.input.update(dt);
-        if (this.selection.some((e) => !e.alive)) this.setSelection(this.selection);
+        if (this.selection.some((e) => !e.alive || e.inside)) this.setSelection(this.selection);
         if (this.input.placement && this.input.placement.kind === 'build') {
           this.input.placeT = (this.input.placeT || 0) - dt;
           if (this.input.placeT <= 0) {
