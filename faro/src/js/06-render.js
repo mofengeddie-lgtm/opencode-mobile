@@ -42,6 +42,7 @@ class Renderer {
     this.placement = null;
     this.hoverCell = -1;
     this.markers = [];
+    this.pings = [];
     this.lastTerritory = -1;
     this.lastBuildCount = -1;
     this.miniDirty = true;
@@ -322,6 +323,12 @@ class Renderer {
     this.ringMatEnemy = new THREE.MeshBasicMaterial({ color: 0xff5050, transparent: true, opacity: 0.9, depthWrite: false });
     this.markerMat = new THREE.MeshBasicMaterial({ color: 0x7dffa8, transparent: true, opacity: 1, depthWrite: false });
 
+    this.rangeRing = new THREE.Mesh(new THREE.RingGeometry(0.985, 1, 72).rotateX(-Math.PI / 2),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, depthWrite: false }));
+    this.rangeRing.renderOrder = 5;
+    this.rangeRing.visible = false;
+    this.scene.add(this.rangeRing);
+
     const hexGeo = new THREE.CircleGeometry(0.9, 6).rotateX(-Math.PI / 2);
     this.placeMesh = new THREE.InstancedMesh(hexGeo, new THREE.MeshBasicMaterial({ color: 0xffd75e, transparent: true, opacity: 0.45, depthWrite: false }), this.game.cells.length);
     this.placeMesh.count = 0;
@@ -469,6 +476,11 @@ class Renderer {
       mk.mesh.material.opacity = 1 - k;
       return true;
     });
+  }
+
+  addPing(x, z, kind = 'bad') {
+    this.pings.push({ x, z, kind, t: performance.now() });
+    if (this.pings.length > 12) this.pings.shift();
   }
 
   addMoveMarker(ci, color = 0x7dffa8) {
@@ -671,6 +683,20 @@ class Renderer {
       const y = e.kind === 'bld' || e.kind === 'point' ? e.y + 0.05 : e.mover === 'air' ? Math.max(this.game.cells[e.cell].h, 0) + 0.05 : Math.max(e.y, 0) + 0.04;
       r.position.set(e.x, y, e.z);
     });
+    // Círculo de alcance de la tropa o defensa seleccionada.
+    const one = items.length === 1 ? items[0] : null;
+    const w = one && one.def && one.def.weapon;
+    if (w && !one.inside) {
+      const R = w.range * SQ3 + (one.kind === 'bld' ? 0.75 : 0.35);
+      this.rangeRing.visible = true;
+      this.rangeRing.scale.setScalar(R);
+      this.rangeRing.userData.radius = R;
+      const gy = one.kind === 'bld' ? one.y : Math.max(this.game.cells[one.cell].h, 0);
+      this.rangeRing.position.set(one.x, gy + 0.06, one.z);
+      this.rangeRing.material.color.set(one.owner === 0 ? 0xffffff : 0xff7070);
+    } else {
+      this.rangeRing.visible = false;
+    }
     const b = items.length === 1 && items[0].kind === 'bld' && items[0].owner === 0 ? items[0] : null;
     if (b && b.rally >= 0) {
       const c = this.game.cells[b.rally];
@@ -833,6 +859,30 @@ class Renderer {
         ctx.fillText('En disputa', s.x, s.y + R + 14);
       }
     }
+    // Producción a la vista: progreso y cola sobre tus edificios que entrenan.
+    for (const bl of g.buildings) {
+      if (!bl.alive || bl.owner !== 0 || !bl.queue.length) continue;
+      const s = this.project(bl.x, bl.y + 1.55, bl.z);
+      if (!s.ok || s.x < -30 || s.y < -30 || s.x > this.width + 30 || s.y > this.height + 30) continue;
+      const q = bl.queue[0];
+      const k = clamp(q.t / UNITS[q.type].build, 0, 1);
+      ctx.fillStyle = 'rgba(12,16,22,0.82)';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#f2ab38';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 11, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
+      ctx.stroke();
+      ctx.fillStyle = '#edf3f7';
+      ctx.font = '600 11px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(bl.queue.length), s.x, s.y + 0.5);
+      ctx.textBaseline = 'alphabetic';
+    }
+    this.prodBadges = g.buildings.filter((bl) => bl.alive && bl.owner === 0 && bl.queue.length).length;
     const recent = g.time - 4;
     for (const b of g.buildings) {
       if (!b.alive) continue;
@@ -922,6 +972,17 @@ class Renderer {
       ctx.beginPath();
       ctx.arc(T.ox + u.x * T.s, T.oz + u.z * T.s, 1.8, 0, Math.PI * 2);
       ctx.fill();
+    }
+    // Pulsos de alerta
+    const now = performance.now();
+    this.pings = this.pings.filter((pg) => now - pg.t < 5000);
+    for (const pg of this.pings) {
+      const k = ((now - pg.t) % 1000) / 1000;
+      ctx.strokeStyle = pg.kind === 'bad' ? `rgba(255,90,90,${1 - k})` : `rgba(242,171,56,${1 - k})`;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(T.ox + pg.x * T.s, T.oz + pg.z * T.s, 4 + k * 14, 0, Math.PI * 2);
+      ctx.stroke();
     }
     // Vista de la cámara
     const corners = [[0, 0], [this.width, 0], [this.width, this.height], [0, this.height]];

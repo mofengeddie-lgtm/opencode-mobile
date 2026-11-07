@@ -7,7 +7,7 @@ reglas del PRD 1.5 antes de llevarlas a Roblox Studio.
 Construye tu base, conquista islas con infantería y mantén el **Faro**: quien lo controla gana
 un 50 % más de monedas. Los rivales son bots que construyen, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.3 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.4 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -35,7 +35,14 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 - **3 mapas:** Archipiélago (islas con puentes), Mar abierto (sin puentes) y Continente.
 - **Recursos:** monedas y energía (la producen los Molinos).
 - **Puntos de captura:** el Faro (+50 % de ingresos) y Banderas en las islas (+200/min y territorio).
-- **Defensa del Núcleo:** escudo de emergencia automático al 25 % y Cúpula comprable.
+- **Defensa del Núcleo:** escudo de emergencia automático al 25 %, Cúpula comprable y curación de
+  las tropas cercanas.
+- **Bots con personalidad:** Agresivo, Constructor, Almirante y Guardián del Faro. Combinan
+  ejércitos, contrarrestan tus tropas, reúnen sus oleadas, se retiran heridos y te avisan antes
+  de atacar.
+- **Interfaz:** alertas con «Ver», mensajes de los bots, marcador (toca la lista de jugadores),
+  desglose de monedas y energía (toca la barra superior), fichas de unidad (mantén pulsada una
+  tarjeta), círculo de alcance e indicador de producción.
 - **16 edificios:** Núcleo, Granja (mejorable a Pozo petrolero), Molino, Mina, Plataforma, Casa
   (niveles 1–4), Cuartel, Fábrica, Puerto, Helipuerto, Torreta, Batería antiaérea, Muro,
   Enfermería y Puesto avanzado.

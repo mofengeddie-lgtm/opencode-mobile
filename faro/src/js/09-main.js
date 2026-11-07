@@ -156,6 +156,13 @@ const App = {
     this.sound.play('click');
   },
 
+  focusAt(x, z) {
+    if (!this.renderer) return;
+    this.renderer.cam.tx = x;
+    this.renderer.cam.tz = z;
+    this.renderer.addPing(x, z, 'look');
+  },
+
   focusCore() {
     const g = this.game;
     if (!g || !this.renderer) return;
@@ -167,7 +174,12 @@ const App = {
   drainEvents() {
     const g = this.game;
     for (const ev of g.events) {
-      if (ev.type === 'toast') this.ui.toast(ev.text, ev.kind);
+      if (ev.type === 'toast') this.ui.toast(ev.text, ev.kind, ev.x !== undefined ? { x: ev.x, z: ev.z } : null);
+      else if (ev.type === 'ping') this.renderer.addPing(ev.x, ev.z, ev.kind);
+      else if (ev.type === 'chat') {
+        this.ui.chat(ev.msg);
+        if (ev.msg.toMe && ev.msg.x !== undefined) this.renderer.addPing(ev.msg.x, ev.msg.z, 'bad');
+      }
       else if (ev.type === 'sound') {
         let vol = 1;
         if (ev.x !== undefined && this.renderer) {

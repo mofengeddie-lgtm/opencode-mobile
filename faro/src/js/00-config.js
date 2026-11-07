@@ -4,7 +4,7 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.3';
+const GAME_VERSION = '0.4';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 const MAX_POP = 80;
@@ -45,9 +45,9 @@ const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
 const BUILDINGS = {
   core: {
     name: 'Núcleo', cat: null, cost: 0, hp: 6000, build: 0, income: 900, pop: 10,
-    claim: 4, vision: 6, size: 1.25,
+    claim: 4, vision: 6, size: 1.25, heal: { cls: ['inf', 'veh', 'air', 'ship', 'sub'], pct: 0.02, range: 2 },
     weapon: { dmg: 45, cd: 1.0, range: 4, proj: 'bolt', mult: { inf: 1.3, veh: 1, ship: 1, air: 1, bld: 0, sub: 0 } },
-    desc: 'Tu base. Genera monedas y dispara a los enemigos. Si lo destruyen, pierdes.',
+    desc: 'Tu base. Genera monedas, dispara a los enemigos y cura a las tropas cercanas. Si lo destruyen, pierdes.',
   },
   farm: {
     fem: true, name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
@@ -214,11 +214,46 @@ const MAPS = {
   continent: { name: 'Continente', desc: 'Una gran isla con lagos' },
 };
 
+// Tácticas por dificultad: agrupar oleadas, retirarse, contrarrestar y atacar defensas primero.
 const DIFFICULTY = {
-  easy: { name: 'Fácil', income: 0.75, think: 3.0, firstWave: 260, wave: 8 },
-  normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 200, wave: 7 },
-  hard: { name: 'Difícil', income: 1.3, think: 1.1, firstWave: 120, wave: 6 },
+  easy: { name: 'Fácil', income: 0.75, think: 3.0, firstWave: 260, wave: 8,
+    tactics: { group: false, retreat: false, counter: false, focusDefense: false } },
+  normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 200, wave: 7,
+    tactics: { group: true, retreat: true, counter: true, focusDefense: false } },
+  hard: { name: 'Difícil', income: 1.3, think: 1.1, firstWave: 120, wave: 6,
+    tactics: { group: true, retreat: true, counter: true, focusDefense: true } },
 };
+
+// Personalidades de los bots. plan = peso de cada tipo de tropa en su ejército.
+const PERSONALITIES = {
+  aggro: {
+    name: 'Agresivo', firstWave: 0.6, waveEvery: 0.7, waveSize: 0.8, milShare: 0.12, turrets: 0.5, capture: 0,
+    plan: { inf: 3, veh: 3, sea: 1, air: 1 },
+    lines: { attack: ['¡Prepárate, voy por ti!', 'Tu base será mía.', '¡A la carga!'], faro: ['El Faro es mío. ¡Ven a quitármelo!'],
+      fall: ['Esto no ha terminado…'], provoked: ['¿Me atacas? Te arrepentirás.'] },
+  },
+  builder: {
+    name: 'Constructor', firstWave: 1.5, waveEvery: 1.3, waveSize: 1.4, milShare: -0.08, turrets: 1.6, capture: 0,
+    plan: { inf: 3, veh: 3, sea: 1, air: 2 },
+    lines: { attack: ['Mi ejército está listo. Allá voy.', 'He preparado algo grande para ti.'], faro: ['El Faro alimentará mi imperio.'],
+      fall: ['Mis murallas no bastaron.'], provoked: ['Reforzaré mis defensas… y luego iré por ti.'] },
+  },
+  admiral: {
+    name: 'Almirante', firstWave: 1.1, waveEvery: 1.0, waveSize: 1.0, milShare: 0, turrets: 1, capture: 0, harborFirst: true,
+    plan: { inf: 3, veh: 1, sea: 4, air: 1 },
+    lines: { attack: ['Mi flota zarpa hacia tu costa.', 'Rumbo a tu isla. ¡Zafarrancho!'], faro: ['Ese Faro guiará a mi flota.'],
+      fall: ['Abandonen el barco…'], provoked: ['¿Disparas a mis barcos? Error.'] },
+  },
+  keeper: {
+    name: 'Guardián del Faro', firstWave: 1.0, waveEvery: 1.0, waveSize: 1.0, milShare: 0, turrets: 1, capture: 2,
+    plan: { inf: 3, veh: 2, sea: 1, air: 1 },
+    lines: { attack: ['Despejaré el camino al Faro, empezando por ti.', 'Nadie amenaza el Faro.'], faro: ['La luz del Faro es mía.'],
+      fall: ['Que otro cuide el Faro…'], provoked: ['Aléjate de mis Banderas.'] },
+  },
+};
+const PERSONALITY_ORDER = ['aggro', 'builder', 'admiral', 'keeper'];
+const ALLY_LINES = { attack: 'Voy a atacar a {t}. ¡Cúbreme!', faro: 'Tomé el Faro para el equipo.', flag: 'Tomé una Bandera para el equipo.' };
+const CAT_NAMES = { inf: 'infantería', veh: 'vehículos', ship: 'buques', sub: 'submarinos', air: 'aeronaves', bld: 'edificios' };
 
 const OBJECTIVES = [
   { id: 'farm', text: 'Construye una Granja' },

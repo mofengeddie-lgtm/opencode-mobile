@@ -94,7 +94,40 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .sys { display: flex; gap: 6px; padding: 5px; }
 
 /* ---------- objetivos y avisos ---------- */
-#objectives { position: fixed; top: calc(var(--top) + 64px); left: var(--left); width: 236px; padding: 10px 12px; z-index: 4; }
+#leftcol { position: fixed; top: calc(var(--top) + 64px); left: var(--left); width: 236px; bottom: calc(var(--bottom) + 284px); display: flex; flex-direction: column; gap: 8px; z-index: 4; pointer-events: none; }
+#leftcol > * { pointer-events: auto; }
+#objectives { flex: none; padding: 10px 12px; }
+#feed { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; pointer-events: none; }
+.msg { pointer-events: auto; display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: start; padding: 7px 10px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); font-size: 12.5px; line-height: 1.35; animation: tin 0.18s ease-out; transition: opacity 0.6s; }
+.msg i { width: 10px; height: 10px; border-radius: 3px; margin-top: 3px; display: block; }
+.msg b { font-weight: 600; }
+.msg.bad { border-color: rgba(240, 88, 90, 0.5); }
+.msg.old { opacity: 0.45; }
+.msg button { grid-column: 2; justify-self: start; }
+.mini-btn { background: none; border: 1px solid var(--line); color: var(--gold); border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; cursor: pointer; min-height: 26px; }
+.stat[role="button"] { cursor: pointer; border-radius: 6px; }
+.stat[role="button"]:hover { background: rgba(255, 255, 255, 0.05); }
+#players { cursor: pointer; }
+.pop { position: fixed; z-index: 11; padding: 12px 14px; display: grid; gap: 8px; }
+.pop header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.pop h4 { margin: 0; font-family: var(--font-display); font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+.pop table { border-collapse: collapse; font-size: 13px; width: 100%; }
+.pop td, .pop th { padding: 4px 6px; text-align: left; white-space: nowrap; }
+.pop th { color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--line); }
+.pop td.n { text-align: right; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+.pop tr.total td { border-top: 1px solid var(--line); font-weight: 600; }
+#econ { top: calc(var(--top) + 64px); left: var(--left); width: min(300px, calc(100% - 20px)); }
+#score { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(640px, calc(100% - 20px)); }
+#score .wrap { overflow-x: auto; }
+#score i.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+#score tr.dead td { opacity: 0.45; }
+.cardinfo { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 4px 12px; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); font-size: 12.5px; }
+.cardinfo .title { grid-column: 1 / -1; font-weight: 600; }
+.cardinfo span { color: var(--muted); }
+.cardinfo b { font-family: var(--font-display); font-weight: 600; color: var(--text); }
+.cardinfo .wide { grid-column: 1 / -1; color: var(--muted); }
+.cardinfo .wide b { font-family: var(--font-body); }
+.hint-press { font-size: 11.5px; color: var(--muted); }
 #objectives header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 #objectives button { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 12px; padding: 4px; }
 #objectives ol { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 13px; }
@@ -104,7 +137,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 #objectives li.done::before { background: var(--good); border-color: var(--good); }
 #objectives.collapsed ol { display: none; }
 #toasts { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); display: grid; gap: 6px; justify-items: center; z-index: 9; pointer-events: none; width: min(440px, calc(100% - 32px)); }
-.toast { padding: 8px 14px; border-radius: 8px; background: var(--panel-solid); border: 1px solid var(--line); font-weight: 600; font-size: 14px; animation: tin 0.18s ease-out; text-align: center; }
+.toast { padding: 8px 14px; border-radius: 8px; background: var(--panel-solid); border: 1px solid var(--line); font-weight: 600; font-size: 14px; animation: tin 0.18s ease-out; text-align: center; display: flex; gap: 10px; align-items: center; justify-content: center; }
+.toast.has-btn { pointer-events: auto; }
 .toast.bad { border-color: rgba(240, 88, 90, 0.55); color: #ffc2c3; }
 .toast.good { border-color: rgba(94, 224, 122, 0.5); color: #c6f7d2; }
 @keyframes tin { from { opacity: 0; transform: translateY(-6px); } }
@@ -240,7 +274,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .stat svg { width: 18px; height: 18px; }
   .pchip span, .pchip em { display: none; }
   .pchip { padding: 4px; }
-  #objectives { display: none; }
+  #objectives, #leftcol { display: none; }
   #buildpanel { display: none; top: calc(var(--top) + 60px); width: min(300px, calc(100% - 20px)); z-index: 12; }
   #buildpanel.open { display: flex; }
   #buildpanel.min .tabs, #buildpanel.min .blist { display: grid; }
@@ -283,7 +317,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .res { padding: 4px 2px; }
   .stat b { font-size: 16px; }
   .stat .lbl { display: none; }
-  #objectives { display: none; }
+  #objectives, #leftcol { display: none; }
   #leftdock { top: calc(var(--top) + 52px); bottom: auto; flex-direction: column; align-items: flex-start; }
   #minimap { width: 96px; height: 96px; }
   .quick { grid-template-columns: repeat(2, 44px); }
@@ -325,7 +359,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 <div id="hud" hidden>
   <header class="topbar">
     <div class="res panel">
-      <div class="stat coins" title="Monedas">
+      <div class="stat coins" title="Monedas: toca para ver de dónde salen" role="button" tabindex="0" data-econ="coins">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.5 20.2 7.2v9.6L12 21.5 3.8 16.8V7.2z"/><path d="M9 9.5h4.2a1.8 1.8 0 0 1 0 3.6H10.8a1.8 1.8 0 0 0 0 3.6H15M12 7.5v1.8M12 16.7v1.8"/></svg>
         <span class="lbl">Monedas</span>
         <div><b id="coins">0</b><small id="income">+0/min</small></div>
@@ -335,7 +369,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
         <span class="lbl">Tropas</span>
         <b id="pop">0/0</b>
       </div>
-      <div class="stat energy" title="Energía">
+      <div class="stat energy" title="Energía: toca para ver de dónde sale" role="button" tabindex="0" data-econ="energy">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
         <span class="lbl">Energía</span>
         <div><b id="energy">0</b><small id="energyRate">+0/10 s</small></div>
@@ -346,7 +380,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
         <b id="clock">00:00</b>
       </div>
     </div>
-    <div id="players" class="players panel"></div>
+    <div id="players" class="players panel" role="button" tabindex="0" title="Toca para ver el marcador"></div>
     <div class="sys panel">
       <button class="btn icon" id="btn-sound" type="button" aria-label="Sonido"></button>
       <button class="btn icon" id="btn-pause" type="button" aria-label="Pausa">
@@ -355,10 +389,15 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     </div>
   </header>
 
+  <div id="leftcol">
   <aside id="objectives" class="panel">
     <header><span class="lbl">Primeros pasos</span><button type="button" id="btn-obj">Ocultar</button></header>
     <ol id="objlist"></ol>
   </aside>
+  <div id="feed" aria-live="polite"></div>
+  </div>
+  <section id="econ" class="pop panel" hidden></section>
+  <section id="score" class="pop panel" hidden></section>
 
   <div id="toasts" aria-live="polite"></div>
   <div id="king" class="panel" hidden></div>

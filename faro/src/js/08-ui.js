@@ -139,6 +139,38 @@ class UI {
     });
 
     $('selpanel').addEventListener('click', (e) => this.onSelClick(e));
+    // Fichas de unidad: mantener pulsada una tarjeta (o pasar el ratón) muestra sus datos.
+    const sp = $('selpanel');
+    sp.addEventListener('pointerdown', (e) => {
+      const card = e.target.closest('.card[data-type]');
+      if (!card) return;
+      clearTimeout(this.pressT);
+      this.suppressClick = false;
+      this.pressT = setTimeout(() => {
+        this.suppressClick = true;
+        this.showCardInfo(card.dataset.type);
+      }, 450);
+    });
+    const endPress = () => clearTimeout(this.pressT);
+    sp.addEventListener('pointerup', endPress);
+    sp.addEventListener('pointercancel', endPress);
+    sp.addEventListener('pointerover', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const card = e.target.closest('.card[data-type]');
+      if (card) this.showCardInfo(card.dataset.type);
+    });
+    sp.addEventListener('contextmenu', (e) => { if (e.target.closest('.card')) e.preventDefault(); });
+    // Desglose de economía y marcador.
+    document.querySelectorAll('[data-econ]').forEach((el) => {
+      const open = () => this.togglePop('econ', el.dataset.econ);
+      el.addEventListener('click', open);
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
+    $('players').addEventListener('click', () => this.togglePop('score'));
+    $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
+    for (const id of ['econ', 'score']) {
+      $(id).addEventListener('click', (e) => { if (e.target.closest('[data-close]')) this.togglePop(null); });
+    }
 
     const mm = $('minimap');
     const moveCam = (e) => {
@@ -176,6 +208,9 @@ class UI {
     $('objlist').innerHTML = OBJECTIVES.map((o) => `<li data-obj="${o.id}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
     $('king').hidden = !this.app.game.mode.king;
+    $('feed').innerHTML = '';
+    this.togglePop(null);
+    this.cardInfoType = null;
     this.renderBuildList();
     this.hidePlaceBar();
     $('selpanel').hidden = true;
@@ -194,17 +229,166 @@ class UI {
     if (all) setTimeout(() => { $('objectives').hidden = true; }, 4000);
   }
 
-  toast(text, kind = 'info') {
+  toast(text, kind = 'info', at = null) {
     const now = performance.now();
     if (this.lastToast[text] && now - this.lastToast[text] < 1200) return;
     this.lastToast[text] = now;
     const box = $('toasts');
     const el = document.createElement('div');
     el.className = 'toast ' + kind;
-    el.textContent = text;
+    const span = document.createElement('span');
+    span.textContent = text;
+    el.appendChild(span);
+    if (at && at.x !== undefined) {
+      el.classList.add('has-btn');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'mini-btn';
+      b.textContent = 'Ver';
+      b.addEventListener('click', () => {
+        this.app.focusAt(at.x, at.z);
+        el.remove();
+      });
+      el.appendChild(b);
+    }
     box.appendChild(el);
     while (box.children.length > 3) box.removeChild(box.firstChild);
-    setTimeout(() => el.remove(), 2800);
+    setTimeout(() => el.remove(), at ? 5000 : 2800);
+  }
+
+  // Mensaje de un bot: al panel de mensajes (pantallas anchas) o como aviso (estrechas).
+  chat(msg) {
+    const g = this.app.game;
+    if (!msg.toMe && !msg.ally && !msg.public) return;
+    const p = g.players[msg.pid];
+    const who = msg.ally ? `${p.name} (aliado)` : p.name;
+    const at = msg.x !== undefined ? { x: msg.x, z: msg.z } : null;
+    const feed = $('feed');
+    const wide = feed.offsetParent !== null;
+    if (wide) {
+      const el = document.createElement('div');
+      el.className = 'msg' + (msg.toMe ? ' bad' : '');
+      el.innerHTML = `<i style="background:${hexColor(p.color)}"></i><div><b>${esc(who)}:</b> ${esc(msg.text)}</div>`;
+      if (at) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'mini-btn';
+        b.textContent = 'Ver';
+        b.addEventListener('click', () => this.app.focusAt(at.x, at.z));
+        el.appendChild(b);
+      }
+      feed.appendChild(el);
+      while (feed.children.length > 4) feed.removeChild(feed.firstChild);
+      setTimeout(() => el.classList.add('old'), 15000);
+      setTimeout(() => el.remove(), 40000);
+    }
+    if (msg.toMe || !wide) this.toast(`${who}: ${msg.text}`, msg.toMe ? 'bad' : 'info', msg.toMe ? at : null);
+    if (msg.toMe) this.app.sound.play('alarm');
+  }
+
+  // ---------- desglose de economía y marcador ----------
+  togglePop(which, sub) {
+    const same = this.pop === which && this.popSub === sub;
+    this.pop = same ? null : which;
+    this.popSub = sub;
+    $('econ').hidden = this.pop !== 'econ';
+    $('score').hidden = this.pop !== 'score';
+    this.renderPop();
+  }
+
+  renderPop() {
+    const g = this.app.game;
+    if (!g || !this.pop) return;
+    if (this.pop === 'econ') $('econ').innerHTML = this.popSub === 'energy' ? this.energyHtml(g) : this.econHtml(g);
+    else $('score').innerHTML = this.scoreHtml(g);
+  }
+
+  econHtml(g) {
+    const p = g.players[0];
+    const rows = [];
+    const groups = new Map();
+    for (const b of g.buildings) {
+      if (!b.alive || b.owner !== 0 || !b.built || !b.def.income) continue;
+      const k = groups.get(b.type) || { n: 0, sum: 0 };
+      k.n++;
+      k.sum += b.def.income;
+      groups.set(b.type, k);
+    }
+    for (const [type, k] of groups) rows.push([`${BUILDINGS[type].name}${k.n > 1 ? ` ×${k.n}` : ''}`, k.sum]);
+    const flags = g.points.filter((pt) => pt.owner === 0 && pt.def.income);
+    if (flags.length) rows.push([`Banderas ×${flags.length}`, flags.reduce((s, pt) => s + pt.def.income, 0)]);
+    rows.sort((a, b) => b[1] - a[1]);
+    const bonus = p.income - p.baseIncome;
+    let html = '<header><h4>Monedas por minuto</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">' + ICON.close + '</button></header><table><tbody>';
+    html += rows.map(([n, v]) => `<tr><td>${esc(n)}</td><td class="n">+${fmt(v)}</td></tr>`).join('');
+    if (bonus > 0) {
+      html += `<tr><td>Subtotal</td><td class="n">${fmt(p.baseIncome)}</td></tr><tr><td>Faro (+${Math.round(p.bonus * 100)} %)</td><td class="n">+${fmt(bonus)}</td></tr>`;
+    }
+    html += `<tr class="total"><td>Total</td><td class="n" id="econ-total">+${fmt(p.income)}</td></tr></tbody></table>`;
+    if (!groups.has('farm') && !groups.has('mine')) html += '<p class="hint-press" style="margin:0">Construye Granjas y Minas para ganar más.</p>';
+    return html;
+  }
+
+  energyHtml(g) {
+    const p = g.players[0];
+    const mills = g.buildings.filter((b) => b.alive && b.owner === 0 && b.built && b.def.energy);
+    let html = '<header><h4>Energía</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">' + ICON.close + '</button></header><table><tbody>';
+    html += `<tr><td>Molinos ×${mills.length}</td><td class="n">+${mills.length * 5} / 10 s</td></tr>`;
+    html += `<tr class="total"><td>Disponible</td><td class="n">${fmt(p.energy)}</td></tr></tbody></table>`;
+    html += '<p class="hint-press" style="margin:0">La gastan: Jeep 10 · Antiaéreo 20 · Tanque 30 · Destructor 30 · Submarino 30 · Lanzamisiles 40 · Helicóptero 50 · Fábrica 50 · Helipuerto 80.</p>';
+    return html;
+  }
+
+  scoreHtml(g) {
+    const land = g.cells.filter((c) => TERRAIN[c.t].land).length || 1;
+    const terr = new Map();
+    for (const c of g.cells) if (c.owner >= 0 && TERRAIN[c.t].land) terr.set(c.owner, (terr.get(c.owner) || 0) + 1);
+    const myTeam = g.players[0].team;
+    const rows = g.players.map((p) => {
+      const army = g.units.filter((u) => u.alive && u.owner === p.id && u.def.weapon).length;
+      const blds = g.buildings.filter((b) => b.alive && b.owner === p.id).length;
+      const pts = g.points.filter((pt) => pt.owner === p.id).length;
+      const role = p.human ? '—' : PERSONALITIES[p.persona].name;
+      const rel = p.id === 0 ? '' : p.team === myTeam ? ' · aliado' : '';
+      return `<tr class="${p.alive ? '' : 'dead'}" data-pid="${p.id}"><td><i class="dot" style="background:${hexColor(p.color)}"></i>${esc(p.name)}</td>
+        <td>${esc(role)}${rel}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
+        <td class="n">${army}</td><td class="n">${blds}</td><td class="n">${p.alive ? '+' + fmt(p.income) : '—'}</td><td class="n">${pts}</td></tr>`;
+    }).join('');
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
+      <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+  }
+
+  // ---------- ficha de unidad ----------
+  statsHtml(type) {
+    const u = UNITS[type];
+    const w = u.weapon;
+    const parts = [`<div class="title">${esc(u.name)}</div>`];
+    parts.push(`<div><span>Vida</span> <b>${fmt(u.hp)}</b></div>`);
+    if (w) {
+      parts.push(`<div><span>Daño/s</span> <b>${fmt(w.dmg / w.cd)}</b></div>`);
+      parts.push(`<div><span>Alcance</span> <b>${w.range}</b> casillas</div>`);
+    }
+    parts.push(`<div><span>Velocidad</span> <b>${u.speed.toLocaleString('es-ES')}</b></div>`);
+    parts.push(`<div><span>Población</span> <b>${u.pop}</b>${u.energy ? ` · <span>Energía</span> <b>${u.energy}</b>` : ''}</div>`);
+    if (w) {
+      const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
+      const strong = cls.filter((c) => (w.mult[c] || 0) >= 1.3).map((c) => CAT_NAMES[c]);
+      const none = cls.filter((c) => !(w.mult[c] > 0)).map((c) => CAT_NAMES[c]);
+      if (strong.length) parts.push(`<div class="wide">Fuerte contra: <b>${strong.join(', ')}</b></div>`);
+      if (none.length) parts.push(`<div class="wide">No ataca a: <b>${none.join(', ')}</b></div>`);
+    } else {
+      parts.push(`<div class="wide">No combate. ${esc(u.desc)}</div>`);
+    }
+    return parts.join('');
+  }
+
+  showCardInfo(type) {
+    this.cardInfoType = type;
+    const el = $('cardinfo');
+    if (!el) return;
+    el.innerHTML = this.statsHtml(type);
+    el.hidden = false;
   }
 
   showBox(x1, y1, x2, y2) {
@@ -392,10 +576,12 @@ class UI {
           <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
         </button>`;
       }).join('') + '</div>';
+      const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
+      html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
       html += '<div class="queue" id="sel-queue">' + (b.queue.length
         ? 'En cola: ' + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Cancelar ${esc(UNITS[q.type].name)}">
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
-        : 'Toca una tropa para entrenarla. Toca la cola para cancelar.') + '</div>';
+        : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
     }
     const acts = [];
     if (d.upgrade && b.built) {
@@ -509,6 +695,10 @@ class UI {
     const g = app.game;
     const sel = app.selection.filter((x) => x.alive);
     const act = btn.dataset.act;
+    if (act === 'train' && this.suppressClick) {
+      this.suppressClick = false;
+      return;
+    }
     app.sound.play('click');
     if (act === 'close') {
       app.setSelection([]);
@@ -619,7 +809,8 @@ class UI {
       const myTeam = p.team;
       $('players').innerHTML = g.players.map((pl) => {
         const tag = pl.id === 0 ? '' : pl.team === myTeam ? '<em>aliado</em>' : '';
-        return `<div class="pchip ${pl.alive ? '' : 'dead'}" title="${esc(pl.name)}"><i style="background:${hexColor(pl.color)}"></i><span>${esc(pl.name)}</span>${tag}</div>`;
+        const style = pl.human ? '' : ` · ${PERSONALITIES[pl.persona].name}`;
+        return `<div class="pchip ${pl.alive ? '' : 'dead'}" title="${esc(pl.name + style)}"><i style="background:${hexColor(pl.color)}"></i><span>${esc(pl.name)}</span>${tag}</div>`;
       }).join('');
     }
   }
@@ -631,6 +822,11 @@ class UI {
     this.updateTop();
     this.refreshBuild();
     this.renderSel();
+    this.popT = (this.popT || 0) - 0.15;
+    if (this.pop && this.popT <= 0) {
+      this.popT = 0.5;
+      this.renderPop();
+    }
   }
 
   showEnd(result) {

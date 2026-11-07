@@ -51,6 +51,8 @@ class Game {
       return point;
     });
     this._pointT = 0;
+    this.chat = [];
+    this._alertT = {};
     for (const p of this.players) {
       const home = this.cells[this.map.homes[p.id]];
       p.core = this.addBuilding(p.id, 'core', home.i, true);
@@ -61,7 +63,17 @@ class Game {
     }
     this.recomputeTerritory();
     this.refreshEconomy();
-    this.bots = this.players.filter((p) => !p.human).map((p) => new Bot(this, p.id));
+    // Personalidades repartidas según la semilla del mapa: cada bot es distinto.
+    const order = PERSONALITY_ORDER.slice();
+    const rng = mulberry32(opts.seed + 77);
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    this.bots = this.players.filter((p) => !p.human).map((p, i) => {
+      p.persona = opts.personas && opts.personas[p.id] ? opts.personas[p.id] : order[i % order.length];
+      return new Bot(this, p.id);
+    });
   }
 
   // ---------- consultas básicas ----------
@@ -75,6 +87,35 @@ class Game {
 
   toast(pid, text, kind = 'info') {
     if (pid === 0) this.emit('toast', { text, kind });
+  }
+
+  // Mensaje de un bot. Se guarda siempre; la interfaz muestra los que te afectan.
+  say(pid, text, opts = {}) {
+    const p = this.players[pid];
+    if (!p || p.human) return false;
+    if (!opts.force && this.time - (p.lastSay || -99) < 20) {
+      // Guarda el mensaje más importante y lo dice en cuanto pueda.
+      if (opts.queue && (!p.pendingSay || p.pendingSay.opts.queue <= opts.queue)) p.pendingSay = { text, opts };
+      return false;
+    }
+    p.lastSay = this.time;
+    const me = this.players[0];
+    const msg = {
+      pid, text, time: this.time, x: opts.x, z: opts.z, kind: opts.kind || 'info',
+      ally: p.team === me.team, toMe: !!opts.toMe, public: !!opts.public,
+    };
+    this.chat.push(msg);
+    if (this.chat.length > 60) this.chat.shift();
+    this.emit('chat', { msg });
+    return true;
+  }
+
+  // Alerta para el jugador con ubicación (para el botón «Ver» y el pulso del minimapa).
+  alert(key, text, kind, x, z, every = 15) {
+    if (this.time - (this._alertT[key] || -99) < every) return;
+    this._alertT[key] = this.time;
+    this.emit('toast', { text, kind, x, z });
+    this.emit('ping', { x, z, kind });
   }
 
   passable(cell, mover, owner) {
@@ -699,10 +740,24 @@ class Game {
     t.hp -= dmg;
     t.lastHit = this.time;
     t.lastAttacker = src;
-    if (t.owner === 0 && t.type === 'core' && this.time - this._coreWarn > 15) {
-      this._coreWarn = this.time;
-      this.emit('toast', { text: '¡Tu Núcleo está bajo ataque!', kind: 'bad' });
-      this.emit('sound', { name: 'alarm' });
+    const victim = this.players[t.owner];
+    if (t.kind === 'bld' && srcEnt && (srcEnt.cls === 'ship' || srcEnt.cls === 'sub' || srcEnt.cls === 'air' || srcEnt.type === 'arty')) {
+      victim.navalHitAt = this.time;
+    }
+    if (t.owner === 0) {
+      if (t.type === 'core' && this.time - this._coreWarn > 15) {
+        this._coreWarn = this.time;
+        this.alert('core', '¡Tu Núcleo está bajo ataque!', 'bad', t.x, t.z, 0);
+        this.emit('sound', { name: 'alarm' });
+      } else if (t.kind === 'bld') {
+        this.alert('bld', `Atacan tu ${t.def.name}`, 'bad', t.x, t.z, 20);
+      } else if (this.cells[t.cell].owner === 0) {
+        this.alert('units', 'Tus tropas pelean en tu territorio', 'bad', t.x, t.z, 25);
+      }
+    } else if (src === 0 && !victim.human && !victim.provoked && t.kind === 'bld') {
+      victim.provoked = true;
+      const lines = PERSONALITIES[victim.persona].lines.provoked;
+      this.say(t.owner, lines[Math.floor(Math.random() * lines.length)], { toMe: true, force: true });
     }
     if (t.hp <= 0) this.kill(t, src);
   }
@@ -721,7 +776,10 @@ class Game {
       if (c.bld === e) c.bld = null;
       if (e.def.claim) this.territoryDirty = true;
       if (e.type === 'core') this.eliminate(e.owner, killer);
-      else if (e.owner === 0) this.emit('toast', { text: `Perdiste: ${e.def.name}`, kind: 'bad' });
+      else if (e.owner === 0) {
+        this.emit('toast', { text: `Perdiste: ${e.def.name}`, kind: 'bad', x: e.x, z: e.z });
+        this.emit('ping', { x: e.x, z: e.z, kind: 'bad' });
+      }
     }
   }
 
@@ -730,6 +788,10 @@ class Game {
     if (!p.alive) return;
     p.alive = false;
     if (killer >= 0 && killer !== pid) this.players[killer].coresKilled++;
+    if (!p.human && p.persona) {
+      const lines = PERSONALITIES[p.persona].lines.fall;
+      this.say(pid, lines[Math.floor(Math.random() * lines.length)], { force: true, public: true });
+    }
     for (const pt of this.points) {
       if (pt.owner === pid) {
         pt.owner = -1;
@@ -786,6 +848,13 @@ class Game {
       this._slowT = 0.5;
       this.refreshEconomy();
       this.checkObjectives();
+      for (const p of this.players) {
+        if (p.pendingSay && p.alive && this.time - (p.lastSay || -99) >= 20) {
+          const { text, opts } = p.pendingSay;
+          p.pendingSay = null;
+          this.say(p.id, text, { ...opts, queue: 0 });
+        }
+      }
     }
     for (const p of this.players) {
       if (!p.alive) continue;
@@ -885,7 +954,7 @@ class Game {
             pt.capTeam = team;
             this.territoryDirty = true;
             if (this.players[lost].team === this.players[0].team) {
-              this.emit('toast', { text: `Perdiste ${pt.type === 'faro' ? 'el Faro' : 'una Bandera'}`, kind: 'bad' });
+              this.alert('pt' + pt.id, `Perdiste ${pt.type === 'faro' ? 'el Faro' : 'una Bandera'}`, 'bad', pt.x, pt.z, 0);
             }
           }
         } else {
@@ -900,11 +969,21 @@ class Game {
             this.territoryDirty = true;
             this.refreshEconomy();
             const what = pt.type === 'faro' ? 'el Faro' : 'una Bandera';
+            const capP = this.players[pid];
+            if (!capP.human && capP.persona) {
+              if (capP.team === this.players[0].team) {
+                this.say(pid, pt.type === 'faro' ? ALLY_LINES.faro : ALLY_LINES.flag, { x: pt.x, z: pt.z });
+              } else if (pt.type === 'faro') {
+                const lines = PERSONALITIES[capP.persona].lines.faro;
+                this.say(pid, lines[Math.floor(Math.random() * lines.length)], { x: pt.x, z: pt.z, public: true, force: true });
+              }
+            }
             if (this.players[pid].team === this.players[0].team) {
               this.emit('toast', { text: pid === 0 ? `¡Capturaste ${what}!` : `${this.players[pid].name} capturó ${what}`, kind: 'good' });
               this.emit('sound', { name: 'done' });
             } else if (pt.type === 'faro') {
-              this.emit('toast', { text: `${this.players[pid].name} capturó el Faro`, kind: 'bad' });
+              this.emit('toast', { text: `${this.players[pid].name} capturó el Faro`, kind: 'bad', x: pt.x, z: pt.z });
+              this.emit('ping', { x: pt.x, z: pt.z, kind: 'bad' });
             }
           }
         }
