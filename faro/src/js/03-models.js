@@ -432,59 +432,195 @@ const UNIT_MODEL = {
   barge: (tc) => MODEL_BUILDERS.barge(tc),
 };
 
+// ---------- Modelos de Blender (GLB incrustados) ----------
+// Cada GLB trae partes ('main', 'turret', 'rotor', 'blades', 'rocker', 'crystal'); los materiales
+// EQUIPO y EQUIPO_OSC se pintan con el color del jugador.
+const GLB = {};
+const GLB_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.06 });
+const PART_NAMES = ['main', 'turret', 'rotor', 'blades', 'rocker', 'crystal', 'legl', 'legr'];
+
+function _b64ToBuffer(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out.buffer;
+}
+
+function _readGLB(name, gltf) {
+  const model = { parts: {} };
+  gltf.scene.updateMatrixWorld(true);
+  gltf.scene.traverse((node) => {
+    if (!node.isMesh) return;
+    // El objeto de Blender se llama como la parte; los meshes con varios materiales cuelgan de él.
+    let holder = node;
+    while (holder && !PART_NAMES.includes(holder.name.replace(/[._]\d+$/, '')) && holder.parent) holder = holder.parent;
+    const part = PART_NAMES.includes((holder.name || '').replace(/[._]\d+$/, '')) ? holder.name.replace(/[._]\d+$/, '') : 'main';
+    const g = node.geometry.index ? node.geometry.toNonIndexed() : node.geometry.clone();
+    // Geometría relativa al pivote de la parte.
+    const rel = new THREE.Matrix4().copy(holder.matrixWorld).invert().multiply(node.matrixWorld);
+    g.applyMatrix4(rel);
+    const matName = (node.material && node.material.name) || '';
+    const team = matName.startsWith('EQUIPO_OSC') ? 2 : matName.startsWith('EQUIPO') ? 1 : 0;
+    const base = node.material && node.material.color ? node.material.color.clone() : new THREE.Color(0xaaaaaa);
+    const entry = model.parts[part] || (model.parts[part] = { chunks: [], pos: holder.position.clone() });
+    entry.chunks.push({ g, team, base });
+  });
+  GLB[name] = model;
+}
+
+// Carga todos los modelos. Si falta el cargador o algo falla, el juego usa los modelos de código.
+function loadGLBModels() {
+  if (typeof FARO_GLB === 'undefined' || !THREE.GLTFLoader) return Promise.resolve(0);
+  const loader = new THREE.GLTFLoader();
+  const names = Object.keys(FARO_GLB);
+  return Promise.all(names.map((name) => new Promise((resolve) => {
+    try {
+      loader.parse(_b64ToBuffer(FARO_GLB[name]), '', (gltf) => {
+        try { _readGLB(name, gltf); } catch (err) { console.warn('[Modelos] No se pudo leer', name, err); }
+        resolve();
+      }, (err) => {
+        console.warn('[Modelos] Error en', name, err);
+        resolve();
+      });
+    } catch (err) {
+      console.warn('[Modelos] Error en', name, err);
+      resolve();
+    }
+  }))).then(() => Object.keys(GLB).length);
+}
+
+// Luz de ambiente (IBL) a partir del cielo de Poly Haven. Se calcula una vez por WebGLRenderer.
+let ENV_MAP = null;
+function loadEnvMap(gl) {
+  if (typeof FARO_ENV === 'undefined' || !FARO_ENV || !gl) return Promise.resolve(null);
+  return new Promise((resolve) => {
+    new THREE.TextureLoader().load(FARO_ENV, (tex) => {
+      try {
+        tex.mapping = THREE.EquirectangularReflectionMapping;
+        tex.encoding = THREE.sRGBEncoding;
+        const pmrem = new THREE.PMREMGenerator(gl);
+        ENV_MAP = pmrem.fromEquirectangular(tex).texture;
+        pmrem.dispose();
+        tex.dispose();
+        GLB_MAT.envMapIntensity = 0.55;
+        resolve(ENV_MAP);
+      } catch (err) {
+        console.warn('[Modelos] Sin luz de ambiente:', err);
+        resolve(null);
+      }
+    }, undefined, () => resolve(null));
+  });
+}
+
+function glbKey(type) {
+  if (GLB[type]) return type;
+  if (GLB[type + '_1']) return type + '_1';
+  return null;
+}
+
+// Aspectos de la Tienda: solo cambian los colores del modelo (vida, daño y velocidad iguales).
+const SKIN_LOOKS = {
+  selva: { name: 'Selva', tints: [0x4e6b34, 0x6b5a3a, 0x3d5530], mix: 0.55 },
+  artico: { name: 'Ártico', tints: [0xeef4f7, 0xc9dde8], mix: 0.62, teamDark: 0xdfe9ef },
+  castillo: { name: 'Castillo', tints: [0x8c7b63, 0x6e6252, 0xa39478], mix: 0.6 },
+  neon: { name: 'Neón', tints: [0x1b1830, 0x231d3d], mix: 0.8, glow: true },
+  dorado: { name: 'Dorado', tints: [0xf2c14e, 0xd9a638], mix: 0.72, teamDark: 0xb8862a },
+  // Brigada Tóxica: cambia la forma (capucha y máscara de gas), no solo el color.
+  toxico: { name: 'Tóxico', tints: [], mix: 0, geo: true },
+};
+
+function _skinColor(base, look, i) {
+  const L = SKIN_LOOKS[look];
+  if (!L || !L.tints.length) return base;
+  return base.clone().lerp(new THREE.Color(L.tints[i % L.tints.length]), L.mix);
+}
+
+function _buildPart(entry, color, look) {
+  const pos = [];
+  const nor = [];
+  const col = [];
+  const L = SKIN_LOOKS[look];
+  const team = new THREE.Color(color);
+  const teamDark = new THREE.Color(shade(color, -0.3));
+  if (L && L.glow) {
+    team.lerp(new THREE.Color(0xffffff), 0.25);
+    teamDark.copy(team);
+  } else if (L && L.teamDark) teamDark.set(L.teamDark);
+  entry.chunks.forEach((ch, idx) => {
+    const pa = ch.g.attributes.position;
+    const na = ch.g.attributes.normal;
+    const c = ch.team === 1 ? team : ch.team === 2 ? teamDark : L ? _skinColor(ch.base, look, idx) : ch.base;
+    for (let i = 0; i < pa.count; i++) {
+      pos.push(pa.getX(i), pa.getY(i), pa.getZ(i));
+      if (na) nor.push(na.getX(i), na.getY(i), na.getZ(i));
+      col.push(c.r, c.g, c.b);
+    }
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  if (nor.length) geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  else geo.computeVertexNormals();
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.computeBoundingSphere();
+  return geo;
+}
+
 const _modelCache = new Map();
-function getModel(type, color) {
-  const key = type + ':' + color;
+function getModel(type, color, look) {
+  const key = type + ':' + color + ':' + (look || '');
   let m = _modelCache.get(key);
-  if (!m) {
-    const fn = UNIT_MODEL[type] || MODEL_BUILDERS[type];
-    m = fn(color);
-    _modelCache.set(key, m);
+  if (m) return m;
+  // Algunos aspectos traen su propio modelo (por ejemplo «rifle@toxico»).
+  const gk = look && GLB[type + '@' + look] ? type + '@' + look : glbKey(type);
+  if (gk) {
+    const src = GLB[gk];
+    m = { glb: true, partPos: {} };
+    for (const [part, entry] of Object.entries(src.parts)) {
+      m[part] = _buildPart(entry, color, look);
+      m.partPos[part] = entry.pos;
+    }
+  } else {
+    const base = type.replace(/_\d+$/, '');
+    const fn = UNIT_MODEL[type] || MODEL_BUILDERS[type] || UNIT_MODEL[base] || MODEL_BUILDERS[base];
+    m = fn ? fn(color) : MODEL_BUILDERS.house(color);
   }
+  _modelCache.set(key, m);
   return m;
 }
 
-// Crea el grupo 3D de una entidad. Devuelve { group, turret, rotor, crystal }.
-function createVisual(type, color) {
-  const m = getModel(type, color);
+function _partMesh(geo, mat, out, group, name, pos) {
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.castShadow = true;
+  if (pos) mesh.position.copy(pos);
+  group.add(mesh);
+  out[name] = mesh;
+  return mesh;
+}
+
+// Crea el grupo 3D de una entidad. Devuelve { group, main, turret, rotor, blades, rocker, crystal }.
+function createVisual(type, color, look) {
+  const m = getModel(type, color, look);
   const group = new THREE.Group();
-  const main = new THREE.Mesh(m.main, MODEL_MAT);
-  main.castShadow = true;
-  main.receiveShadow = true;
-  group.add(main);
-  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null, blades: null };
-  if (m.blades) {
-    out.blades = new THREE.Mesh(m.blades, MODEL_MAT);
-    out.blades.position.set(0, m.bladesY, m.bladesZ);
-    out.blades.castShadow = true;
-    group.add(out.blades);
-  }
-  if (m.rocker) {
-    out.rocker = new THREE.Mesh(m.rocker, MODEL_MAT);
-    out.rocker.position.set(0, m.rockerY, m.rockerZ || 0);
-    out.rocker.castShadow = true;
-    group.add(out.rocker);
-  }
+  const out = { group, main: null, turret: null, rotor: null, crystal: null, rocker: null, blades: null, type };
+  const mat = m.glb ? GLB_MAT : MODEL_MAT;
+  _partMesh(m.main, mat, out, group, 'main', null).receiveShadow = true;
+  const pp = m.partPos || {};
+  if (m.blades) _partMesh(m.blades, mat, out, group, 'blades', pp.blades || new THREE.Vector3(0, m.bladesY, m.bladesZ));
+  if (m.rocker) _partMesh(m.rocker, mat, out, group, 'rocker', pp.rocker || new THREE.Vector3(0, m.rockerY, m.rockerZ || 0));
   if (m.turret) {
-    out.turret = new THREE.Mesh(m.turret, MODEL_MAT);
-    out.turret.position.set(0, m.turretY || 0, m.turretZ || 0);
-    out.turretBaseY = m.turretY || 0;
-    out.turret.castShadow = true;
-    group.add(out.turret);
+    _partMesh(m.turret, mat, out, group, 'turret', pp.turret || new THREE.Vector3(0, m.turretY || 0, m.turretZ || 0));
+    out.turretBaseY = out.turret.position.y;
   }
-  if (m.rotor) {
-    out.rotor = new THREE.Mesh(m.rotor, MODEL_MAT);
-    out.rotor.position.y = m.rotorY;
-    group.add(out.rotor);
-  }
+  if (m.rotor) _partMesh(m.rotor, mat, out, group, 'rotor', pp.rotor || new THREE.Vector3(0, m.rotorY, 0));
+  // Piernas de los soldados (se mueven al caminar).
+  if (m.legl) _partMesh(m.legl, mat, out, group, 'legl', pp.legl);
+  if (m.legr) _partMesh(m.legr, mat, out, group, 'legr', pp.legr);
   if (m.crystal) {
-    const mat = new THREE.MeshStandardMaterial({
+    const cmat = new THREE.MeshStandardMaterial({
       color, emissive: color, emissiveIntensity: 0.55, flatShading: true, roughness: 0.4,
     });
-    out.crystal = new THREE.Mesh(m.crystal, mat);
-    out.crystal.position.y = m.crystalY;
-    out.crystal.castShadow = true;
-    group.add(out.crystal);
+    _partMesh(m.crystal, cmat, out, group, 'crystal', pp.crystal || new THREE.Vector3(0, m.crystalY, 0));
+    out.crystalBaseY = out.crystal.position.y;
   }
   if (m.scale) group.scale.setScalar(m.scale);
   return out;
@@ -576,19 +712,18 @@ const Thumbs = {
     }
   },
 
-  get(type, color) {
-    const key = type + ':' + color;
+  get(type, color, look) {
+    const key = type + ':' + color + ':' + (look || '');
     if (this.cache.has(key)) return this.cache.get(key);
     let url = '';
     if (this.renderer) {
       const isPoint = type === 'faro' || type === 'flag';
-      const v = isPoint ? createPointVisual(type) : createVisual(type, color);
+      const v = isPoint ? createPointVisual(type) : createVisual(type, color, look);
       if (isPoint) {
         v.own.color.set(color);
         if (v.beam) v.beam.visible = false;
       }
       v.group.scale.setScalar(1);
-      if (v.crystal) v.crystal.position.y = 1.1;
       this.scene.add(v.group);
       const box = new THREE.Box3().setFromObject(v.group);
       const size = box.getSize(new THREE.Vector3()).length();

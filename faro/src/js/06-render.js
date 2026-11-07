@@ -21,6 +21,8 @@ class Renderer {
     this.camera = new THREE.PerspectiveCamera(42, 1, 0.5, 400);
 
     scene.add(new THREE.HemisphereLight(0xe8f6ff, 0x4d6a45, 0.62));
+    // Luz de ambiente del cielo de Poly Haven para los modelos de Blender.
+    if (ENV_MAP) scene.environment = ENV_MAP;
     const sun = new THREE.DirectionalLight(0xfff1dc, 0.88);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
@@ -373,6 +375,47 @@ class Renderer {
     }
   }
 
+  // Láser del Núcleo (punto 17): un rayo ámbar brillante que dura un instante.
+  spawnLaser(f) {
+    if (!this.lasers) {
+      this.lasers = [];
+      this.laserGeo = new THREE.CylinderGeometry(1, 1, 1, 8, 1, true).rotateX(Math.PI / 2);
+    }
+    let L = this.lasers.find((l) => l.t >= l.dur);
+    if (!L) {
+      if (this.lasers.length >= 12) return;
+      const outer = new THREE.Mesh(this.laserGeo, new THREE.MeshBasicMaterial({ color: 0xffb63a, transparent: true, opacity: 0.6, depthWrite: false, blending: THREE.AdditiveBlending }));
+      const inner = new THREE.Mesh(this.laserGeo, new THREE.MeshBasicMaterial({ color: 0xfff4d6, transparent: true, opacity: 0.95, depthWrite: false }));
+      const grp = new THREE.Group();
+      grp.add(outer);
+      grp.add(inner);
+      this.scene.add(grp);
+      L = { grp, outer, inner, t: 1, dur: 0.18 };
+      this.lasers.push(L);
+    }
+    const a = new THREE.Vector3(f.x1, f.y1, f.z1);
+    const b = new THREE.Vector3(f.x2, f.y2, f.z2);
+    const len = a.distanceTo(b);
+    L.grp.position.copy(a).add(b).multiplyScalar(0.5);
+    L.grp.lookAt(b);
+    L.outer.scale.set(0.09, 0.09, len);
+    L.inner.scale.set(0.035, 0.035, len);
+    L.grp.visible = true;
+    L.t = 0;
+  }
+
+  updateLasers(dt) {
+    if (!this.lasers) return;
+    for (const L of this.lasers) {
+      if (L.t >= L.dur) { L.grp.visible = false; continue; }
+      L.t += dt;
+      const k = 1 - L.t / L.dur;
+      L.outer.material.opacity = 0.6 * k;
+      L.inner.material.opacity = 0.95 * k;
+    }
+    this.laserCount = this.lasers.filter((L) => L.t < L.dur).length;
+  }
+
   spawnHeal(x, y, z) {
     const b = this.booms.find((bb) => bb.t >= bb.dur);
     if (!b) return;
@@ -388,7 +431,8 @@ class Renderer {
   consumeFx() {
     const g = this.game;
     for (const f of g.fx) {
-      if (f.k === 'tracer') {
+      if (f.k === 'laser') this.spawnLaser(f);
+      else if (f.k === 'tracer') {
         if (this.tracers.length < this.MAXT) this.tracers.push({ ...f, t: 0, dur: f.heavy ? 0.12 : 0.07 });
       } else if (f.k === 'boom') this.spawnBoom(f.x, f.y, f.z, f.s, f.small);
       else if (f.k === 'spark') this.spawnBoom(f.x, f.y, f.z, f.s, true);
@@ -570,18 +614,21 @@ class Renderer {
       return;
     }
     if (!this.ghost) {
-      const m = getModel(type, PLAYER_COLORS[0]);
-      const okMat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, depthWrite: false });
+      const m = getModel(type === 'wall' && GLB.wall_post ? 'wall_post' : type, PLAYER_COLORS[0]);
+      // Holograma ámbar (documento pág. 7); rojo cuando no se puede.
+      const okMat = new THREE.MeshBasicMaterial({ color: 0xffb63a, transparent: true, opacity: 0.55, depthWrite: false });
       const badMat = new THREE.MeshBasicMaterial({ color: 0xff5a5a, transparent: true, opacity: 0.55, depthWrite: false });
       const group = new THREE.Group();
       const parts = [];
+      const pp = m.partPos || {};
       for (const key of ['main', 'turret', 'rotor', 'rocker', 'blades', 'crystal']) {
         if (!m[key]) continue;
         const mesh = new THREE.Mesh(m[key], okMat);
-        if (key === 'turret') mesh.position.set(0, m.turretY || 0, m.turretZ || 0);
-        if (key === 'rocker') mesh.position.set(0, m.rockerY, m.rockerZ || 0);
-        if (key === 'blades') mesh.position.set(0, m.bladesY, m.bladesZ);
-        if (key === 'crystal') mesh.position.y = m.crystalY;
+        if (pp[key]) mesh.position.copy(pp[key]);
+        else if (key === 'turret') mesh.position.set(0, m.turretY || 0, m.turretZ || 0);
+        else if (key === 'rocker') mesh.position.set(0, m.rockerY, m.rockerZ || 0);
+        else if (key === 'blades') mesh.position.set(0, m.bladesY, m.bladesZ);
+        else if (key === 'crystal') mesh.position.y = m.crystalY;
         mesh.renderOrder = 7;
         group.add(mesh);
         parts.push(mesh);
@@ -599,6 +646,13 @@ class Renderer {
     this.setHover(ci);
   }
 
+  // Aspecto equipado en el Inventario: solo para tus tropas y tu Núcleo.
+  lookFor(e) {
+    const looks = this.game.opts.looks;
+    if (!looks || e.owner !== 0) return null;
+    return looks[skinSlotOf(e.kind === 'bld' ? 'bld' : 'unit', e.type)] || null;
+  }
+
   // ---------- entidades ----------
   syncEntities(dt, time) {
     const g = this.game;
@@ -613,34 +667,56 @@ class Renderer {
 
     const myTeam = g.players[0].team;
     for (const b of g.buildings) {
+      // Núcleo, Torreta y Enfermería tienen un modelo distinto por nivel.
+      const mkey = GLB[b.type + '_' + b.level] ? b.type + '_' + b.level : b.type;
       let v = this.vis.get(b.id);
+      if (v && v.mkey !== mkey) {
+        this.scene.remove(v.group);
+        this.vis.delete(b.id);
+        v = null;
+      }
       if (!v) {
-        v = createVisual(b.type, PLAYER_COLORS[b.owner]);
-        v.group.rotation.y = b.rot;
+        v = b.type === 'wall' ? this.createWall(b) : createVisual(mkey, PLAYER_COLORS[b.owner], this.lookFor(b));
+        v.mkey = mkey;
+        v.group.rotation.y = b.type === 'wall' ? 0 : b.rot;
         v.group.position.set(b.x, b.y, b.z);
         this.scene.add(v.group);
         this.vis.set(b.id, v);
       }
+      if (b.type === 'wall') this.updateWall(b, v);
       const k = b.built ? 1 : 0.2 + 0.8 * b.progress;
       v.main.scale.y = k;
+      // Andamio mientras se construye o se mejora.
+      const working = !b.built || !!b.upgrading;
+      if (working && !v.scaffold && GLB.scaffold) {
+        v.scaffold = new THREE.Mesh(getModel('scaffold', PLAYER_COLORS[b.owner]).main, GLB_MAT);
+        v.scaffold.rotation.y = -v.group.rotation.y;
+        if (b.type === 'core') v.scaffold.scale.set(1.35, 1.6, 1.35);
+        v.group.add(v.scaffold);
+      }
+      if (v.scaffold) v.scaffold.visible = working;
       if (v.turret) {
         v.turret.position.y = v.turretBaseY * k;
         v.turret.rotation.y = b.aimYaw - b.rot;
       }
-      if (v.blades && b.built) v.blades.rotation.z += dt * 2.2;
+      if (v.blades && b.built) {
+        if (b.type === 'hydro') v.blades.rotation.x += dt * 1.6;
+        else v.blades.rotation.z += dt * 2.2;
+      }
       if (v.rocker) {
         v.rocker.visible = b.built;
-        v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * 0.28 : 0;
+        v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * (b.type === 'wave' ? 0.12 : 0.28) : 0;
       }
+      if (v.rotor && b.built) v.rotor.rotation.y += dt * 1.6;
       if (v.crystal) {
         v.crystal.rotation.y = time * 0.8;
-        v.crystal.position.y = 1.35 + Math.sin(time * 1.6) * 0.08;
+        v.crystal.position.y = (v.crystalBaseY || 1.35) + Math.sin(time * 1.6) * 0.08;
       }
     }
     for (const u of g.units) {
       let v = this.vis.get(u.id);
       if (!v) {
-        v = createVisual(u.type, PLAYER_COLORS[u.owner]);
+        v = createVisual(u.type, PLAYER_COLORS[u.owner], this.lookFor(u));
         this.scene.add(v.group);
         this.vis.set(u.id, v);
       }
@@ -659,7 +735,102 @@ class Renderer {
         v.turret.rotation.y = lerpAngle(v.turret.rotation.y, want, Math.min(1, dt * 6));
       }
       if (v.rotor) v.rotor.rotation.y += dt * 22;
+      if (v.legl) {
+        // Paso: las piernas se balancean mientras la tropa camina.
+        const sw = u.moving && !u.inside ? Math.sin(time * 10 + u.id) * 0.55 : 0;
+        v.legl.rotation.x += (sw - v.legl.rotation.x) * Math.min(1, dt * 12);
+        v.legr.rotation.x = -v.legl.rotation.x;
+      }
     }
+    this.updateUnitShields(time);
+    this.updateSkyBeams(time);
+  }
+
+  // ---------- muralla: torreón + tramos hacia los muros vecinos ----------
+  createWall(b) {
+    const color = PLAYER_COLORS[b.owner];
+    const v = createVisual(GLB.wall_post ? 'wall_post' : 'wall', color);
+    v.segs = new THREE.Group();
+    v.group.add(v.segs);
+    v.mask = -1;
+    return v;
+  }
+
+  updateWall(b, v) {
+    const g = this.game;
+    const c = g.cells[b.cell];
+    let mask = 0;
+    HEX_DIRS.forEach(([dq, dr], i) => {
+      const n = g.map.get(c.q + dq, c.r + dr);
+      if (n && n.bld && n.bld.alive && n.bld.type === 'wall' && n.bld.owner === b.owner) mask |= 1 << i;
+    });
+    if (mask === v.mask) return;
+    v.mask = mask;
+    while (v.segs.children.length) v.segs.remove(v.segs.children[0]);
+    if (!GLB.wall_seg) return;
+    const geo = getModel('wall_seg', PLAYER_COLORS[b.owner]).main;
+    HEX_DIRS.forEach(([dq, dr], i) => {
+      if (!(mask & (1 << i))) return;
+      const w = hexToWorld(dq, dr);
+      const seg = new THREE.Mesh(geo, GLB_MAT);
+      seg.castShadow = true;
+      seg.receiveShadow = true;
+      seg.rotation.y = Math.atan2(w.x, w.z);
+      v.segs.add(seg);
+    });
+  }
+
+  // ---------- escudo personal de las tropas (Cúpula nivel 3) ----------
+  updateUnitShields(time) {
+    const g = this.game;
+    if (!this.shieldMesh) {
+      const geo = new THREE.IcosahedronGeometry(1, 1);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x6fd3ff, transparent: true, opacity: 0.22, wireframe: true, depthWrite: false });
+      this.shieldMesh = new THREE.InstancedMesh(geo, mat, 200);
+      this.shieldMesh.count = 0;
+      this.shieldMesh.renderOrder = 6;
+      this.shieldMesh.frustumCulled = false;
+      this.scene.add(this.shieldMesh);
+    }
+    const m = new THREE.Matrix4();
+    let n = 0;
+    const myTeam = g.players[0].team;
+    for (const u of g.units) {
+      if (n >= 200) break;
+      if (!u.alive || u.inside || !(u.shield > 0)) continue;
+      if (!u.visible && g.players[u.owner].team !== myTeam) continue;
+      const s = (u.cls === 'inf' ? 0.42 : u.cls === 'ship' || u.cls === 'sub' ? 0.85 : 0.6) * (0.96 + Math.sin(time * 3 + u.id) * 0.04);
+      m.makeScale(s, s, s).setPosition(u.x, u.y + s * 0.6, u.z);
+      this.shieldMesh.setMatrixAt(n++, m);
+    }
+    this.shieldMesh.count = n;
+    this.shieldMesh.instanceMatrix.needsUpdate = true;
+    this.shieldCount = n;
+  }
+
+  // ---------- rayo ámbar al cielo sobre cada Núcleo (documento pág. 13) ----------
+  updateSkyBeams(time) {
+    const g = this.game;
+    if (!this.skyBeams) {
+      const geo = new THREE.CylinderGeometry(0.09, 0.22, 26, 10, 1, true);
+      geo.translate(0, 13, 0);
+      this.skyBeams = g.players.map(() => {
+        const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+          color: 0xffb63a, transparent: true, opacity: 0.28, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+        }));
+        mesh.renderOrder = 4;
+        this.scene.add(mesh);
+        return mesh;
+      });
+    }
+    g.players.forEach((p, i) => {
+      const beam = this.skyBeams[i];
+      const c = p.core;
+      beam.visible = p.alive && c.alive;
+      if (!beam.visible) return;
+      beam.position.set(c.x, c.y + 1.2, c.z);
+      beam.material.opacity = 0.18 + Math.sin(time * 2 + i) * 0.05;
+    });
   }
 
   updateSelectionRings(selection) {
@@ -859,6 +1030,72 @@ class Renderer {
         ctx.fillText('En disputa', s.x, s.y + R + 14);
       }
     }
+    // Obras: «En construcción» o «Mejorando», con progreso y aviso si no hay constructor.
+    for (const bl of g.buildings) {
+      if (!bl.alive || g.players[bl.owner].team !== myTeam) continue;
+      const working = !bl.built || bl.upgrading;
+      if (!working && bl.level < 2) continue;
+      const s = this.project(bl.x, bl.y + (bl.type === 'core' ? 2.4 : 1.45), bl.z);
+      if (!s.ok || s.x < -60 || s.y < -30 || s.x > this.width + 60 || s.y > this.height + 30) continue;
+      if (working) {
+        const k = bl.upgrading ? bl.upgrading.progress : bl.progress;
+        const idle = g.time - bl.lastWork > 1.5 && bl.type !== 'outpost';
+        const text = (bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : 'En construcción') + ` · ${Math.floor(k * 100)} %`;
+        ctx.font = '600 11px system-ui, sans-serif';
+        const w = Math.max(ctx.measureText(text).width, idle ? ctx.measureText('Sin constructor').width : 0) + 14;
+        const h = idle ? 32 : 20;
+        ctx.fillStyle = 'rgba(12,16,22,0.85)';
+        ctx.fillRect(s.x - w / 2, s.y - h, w, h);
+        ctx.fillStyle = '#f2ab38';
+        ctx.fillRect(s.x - w / 2, s.y - 3, w * clamp(k, 0, 1), 3);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#edf3f7';
+        ctx.fillText(text, s.x, s.y - h + 13);
+        if (idle) {
+          ctx.fillStyle = '#ff9a9b';
+          ctx.fillText('Sin constructor', s.x, s.y - h + 26);
+        }
+      } else if (bl.owner === 0) {
+        // Nivel 2 o 3: marcas doradas.
+        for (let i = 0; i < bl.level - 1; i++) {
+          const x = s.x - (bl.level - 2) * 5 + i * 10;
+          ctx.fillStyle = '#f2ab38';
+          ctx.beginPath();
+          ctx.moveTo(x, s.y - 12);
+          ctx.lineTo(x + 4, s.y - 8);
+          ctx.lineTo(x, s.y - 4);
+          ctx.lineTo(x - 4, s.y - 8);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+    }
+    // Icono de combate donde hay peleas.
+    for (const f of g.fights) {
+      const age = g.time - f.t;
+      if (age > 1.6) continue;
+      const s = this.project(f.x, (f.y || 0) + 1.1, f.z);
+      if (!s.ok) continue;
+      const c = g.cells[f.cell];
+      if (g.fog && c && c.owner !== 0 && !g.units.some((u) => u.owner === 0 && Math.hypot(u.x - f.x, u.z - f.z) < 7)) continue;
+      const r = 8 + Math.sin(age * 12) * 1.5;
+      ctx.globalAlpha = 1 - age / 1.6;
+      ctx.fillStyle = '#ff8a30';
+      ctx.beginPath();
+      for (let i = 0; i < 16; i++) {
+        const a = (i / 16) * Math.PI * 2;
+        const rr = i % 2 ? r * 0.45 : r;
+        ctx.lineTo(s.x + Math.cos(a) * rr, s.y + Math.sin(a) * rr);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#ffe08a';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, r * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    this.fightIcons = g.fights.filter((f) => g.time - f.t <= 1.6).length;
     // Producción a la vista: progreso y cola sobre tus edificios que entrenan.
     for (const bl of g.buildings) {
       if (!bl.alive || bl.owner !== 0 || !bl.queue.length) continue;
@@ -1035,6 +1272,7 @@ class Renderer {
     this.consumeFx();
     this.syncEntities(dt, time);
     this.updateFx(dt);
+    this.updateLasers(dt);
     this.updatePoints(time);
     this.updateShields(time);
     this.updateSelectionRings(selection);

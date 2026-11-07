@@ -12,7 +12,10 @@ const App = {
   selection: [],
   paused: false,
   quality: 'high',
-  opts: { mode: 'ffa', mapKind: 'archipelago', difficulty: 'normal', fog: false, turbo: false, seed: 0 },
+  opts: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', seed: 0 },
+  suspended: null,
+  lobby: null,
+  saveT: 15,
   last: 0,
   time: 0,
   miniT: 0,
@@ -23,13 +26,10 @@ const App = {
     this.canvas = $('gl');
     this.overlay = $('overlay');
     try {
-      const saved = JSON.parse(localStorage.getItem('faro-opts') || 'null');
-      if (saved && MODES[saved.mode] && MAPS[saved.mapKind] && DIFFICULTY[saved.difficulty]) {
-        Object.assign(this.opts, saved);
-      }
       const q = localStorage.getItem('faro-quality');
       if (q === 'high' || q === 'low') this.quality = q;
     } catch (err) { /* sin almacenamiento */ }
+    Profile.load();
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
     this.opts.seed = (Math.random() * 1e9) | 0;
     // Al republicar la página, conserva las opciones elegidas en el menú.
@@ -46,33 +46,35 @@ const App = {
     }
     Thumbs.init();
     this.sound = new Sound();
-    this.ui = new UI(this);
-    this.input = new Input(this);
-    this.makePreview();
-    this.ui.showScreen('menu');
+    // Primero los modelos de Blender; si fallan, se usan los modelos de código.
+    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
+      this.modelCount = n;
+      this.ui = new UI(this);
+      this.input = new Input(this);
+      this.lobby = new Lobby(this);
+      this.makePreview();
+      this.ui.showScreen('menu');
+      this.loaded = true;
+      // Modo creador: solo si la plataforma confirma que quien abre el juego es su dueño.
+      Creator.detect().then(() => this.lobby.render());
+    });
 
     window.addEventListener('resize', () => this.renderer && this.renderer.resize());
     // Safari en iPad: evita que el gesto de pellizco haga zoom a toda la página.
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('dblclick', (e) => e.preventDefault());
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.state === 'play' && !this.game.over) this.togglePause(true);
+      if (document.hidden && this.state === 'play' && !this.game.over) {
+        this.togglePause(true);
+        Save.write(this.game);
+      }
+    });
+    // Si se cierra la pestaña sin querer, la partida queda guardada.
+    window.addEventListener('pagehide', () => {
+      if (this.state === 'play' && this.game && !this.game.over) Save.write(this.game);
     });
     this.last = performance.now();
     requestAnimationFrame((t) => this.loop(t));
-  },
-
-  saveOpts() {
-    try {
-      const { mode, mapKind, difficulty, fog, turbo } = this.opts;
-      localStorage.setItem('faro-opts', JSON.stringify({ mode, mapKind, difficulty, fog, turbo }));
-    } catch (err) { /* sin almacenamiento */ }
-  },
-
-  setOption(key, value) {
-    this.opts[key] = value;
-    this.saveOpts();
-    if (key === 'mode' || key === 'mapKind') this.makePreview();
   },
 
   reroll() {
@@ -87,6 +89,7 @@ const App = {
 
   makePreview() {
     this.game = new Game({ ...this.opts });
+    this.game.preview = true;
     this.newRenderer(this.game);
     const r = this.renderer;
     r.cam.tx = 0;
@@ -95,29 +98,102 @@ const App = {
     this.selection = [];
   },
 
+  // Opciones de la partida: las del vestíbulo, el aspecto equipado y el modo creador.
+  gameOpts() {
+    const o = { ...this.opts, looks: Profile.looks() };
+    delete o.creator;
+    delete o.instantBuild;
+    if (Creator.active()) {
+      o.creator = true;
+      o.instantBuild = !!Profile.data.creator.instant;
+    }
+    return o;
+  },
+
   startGame() {
     clearTimeout(this.endTimer);
+    if (this.game && this.game.over && !this.game.preview) this.lobby.finish(this.game);
     this.input.cancelPlacement();
     this.input.boxMode = false;
-    this.game = new Game({ ...this.opts });
-    this.newRenderer(this.game);
+    this.suspended = null;
+    Save.clear();
+    this.game = new Game(this.gameOpts());
+    this.enterGame();
+  },
+
+  enterGame(keepRenderer) {
+    if (!keepRenderer) this.newRenderer(this.game);
     this.selection = [];
     this.paused = false;
     this.state = 'play';
+    this.saveT = 15;
     this.ui.showScreen('play');
     this.ui.startHud();
     this.sound.unlock();
     window.FARO = this;
   },
 
+  // Salir al menú no borra la partida (punto 16): queda en pausa para «Volver a la partida».
   toMenu() {
     clearTimeout(this.endTimer);
     this.input.cancelPlacement();
+    const g = this.game;
+    if (g && !g.preview) {
+      if (g.over) {
+        this.lobby.finish(g);
+        this.suspended = null;
+        Save.clear();
+      } else {
+        this.suspended = g;
+        Save.write(g);
+      }
+    }
     this.state = 'menu';
     this.paused = false;
+    $('pause').hidden = true;
+    if (!this.suspended) {
+      this.opts.seed = (Math.random() * 1e9) | 0;
+      this.makePreview();
+    }
+    this.ui.showScreen('menu');
+  },
+
+  resumeGame() {
+    const g = this.suspended;
+    if (!g || g.over) return;
+    this.suspended = null;
+    const same = this.game === g;
+    this.game = g;
+    this.enterGame(same);
+    this.focusCore();
+  },
+
+  loadSavedGame() {
+    const g = Save.read();
+    if (!g) {
+      Save.clear();
+      this.ui.toast('No se pudo abrir la partida guardada', 'bad');
+      this.lobby.render();
+      return;
+    }
+    // El modo creador solo sigue activo para el dueño del juego.
+    if (g.creator && !Creator.owner) {
+      g.creator = false;
+      g.opts.creator = false;
+      g.opts.instantBuild = false;
+    }
+    this.suspended = null;
+    this.game = g;
+    this.enterGame(false);
+    this.focusCore();
+  },
+
+  abandonGame() {
+    this.suspended = null;
+    Save.clear();
     this.opts.seed = (Math.random() * 1e9) | 0;
     this.makePreview();
-    this.ui.showScreen('menu');
+    this.lobby.render();
   },
 
   togglePause(on) {
@@ -193,6 +269,8 @@ const App = {
       } else if (ev.type === 'objective') this.ui.markObjective(ev.id);
       else if (ev.type === 'built' || ev.type === 'spawned') this.ui.selSig = '';
       else if (ev.type === 'over') {
+        Save.clear();
+        this.lobby.finish(g);
         this.endTimer = setTimeout(() => this.ui.showEnd(ev.result), 1600);
         this.sound.play(ev.result === 'victory' ? 'done' : 'alarm');
       }
@@ -201,6 +279,11 @@ const App = {
   },
 
   loop(now) {
+    if (!this.loaded) {
+      this.last = now;
+      requestAnimationFrame((t) => this.loop(t));
+      return;
+    }
     const dt = Math.min(0.1, Math.max(0, (now - this.last) / 1000));
     this.last = now;
     this.time += dt;
@@ -218,6 +301,12 @@ const App = {
           }
         }
         this.renderer.frame(this.paused ? 0 : dt, this.time, this.selection);
+        // Guardado automático cada 15 s.
+        this.saveT -= dt;
+        if (this.saveT <= 0) {
+          this.saveT = 15;
+          if (!this.game.over) Save.write(this.game);
+        }
         this.ui.update(dt);
         this.miniT -= dt;
         if (this.miniT <= 0) {

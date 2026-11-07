@@ -40,7 +40,7 @@ body {
 }
 button { font: inherit; color: inherit; }
 button:focus-visible, input:focus-visible + span, .opt input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
-#gl, #overlay { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#gl, #overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; width: 100%; height: 100%; display: block; }
 #gl { touch-action: none; }
 #overlay { pointer-events: none; }
 .num { font-family: var(--font-display); font-variant-numeric: tabular-nums; }
@@ -151,7 +151,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 #btn-build-close svg { transition: transform 0.15s; }
 #buildpanel.min .tabs, #buildpanel.min .blist { display: none; }
 #buildpanel.min #btn-build-close svg { transform: rotate(180deg); }
-.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 0 8px 8px; }
+.tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 0 8px 8px; }
+.tab { font-size: 12px !important; }
+.lvtag { font-family: var(--font-display); font-size: 12px; color: var(--gold); border: 1px solid rgba(242,171,56,0.4); border-radius: 5px; padding: 0 5px; margin-left: 6px; vertical-align: middle; }
 .tab { min-height: 34px; border-radius: 7px; border: 1px solid transparent; background: transparent; color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer; }
 .tab[aria-selected="true"] { background: var(--raise-2); color: var(--text); border-color: var(--line); }
 .blist { overflow-y: auto; padding: 0 8px 8px; display: grid; gap: 6px; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
@@ -220,7 +222,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 #btn-build { display: none; }
 
 /* ---------- pantallas ---------- */
-.screen { position: fixed; inset: 0; z-index: 20; display: flex; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow-y: auto; touch-action: pan-y; -webkit-user-select: none; }
+.screen { position: fixed; top: 0; right: 0; bottom: 0; left: 0; inset: 0; z-index: 20; display: flex; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow-y: auto; touch-action: pan-y; -webkit-user-select: none; }
 .menu { align-items: center; justify-content: space-between; gap: 32px; background: linear-gradient(90deg, rgba(8, 15, 21, 0.86) 0%, rgba(8, 15, 21, 0.5) 46%, rgba(8, 15, 21, 0.12) 70%); }
 .menu-hero { max-width: 520px; padding-left: clamp(0px, 3vw, 40px); }
 .brand { display: flex; align-items: center; gap: 14px; }
@@ -348,6 +350,140 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .menu-card legend { margin-bottom: 4px; }
   .cta { min-height: 44px; }
 }
+/* Celular vertical: el panel de selección no sube más allá del botón de construir. */
+@media (max-width: 860px) and (orientation: portrait) {
+  #selpanel { max-height: calc(50vh - 44px - var(--bottom)); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+}
+/* ---------- vestíbulo ---------- */
+.lobby { flex-direction: column; gap: 12px; background: linear-gradient(180deg, rgba(8,15,21,0.82), rgba(8,15,21,0.55) 60%, rgba(8,15,21,0.7)); }
+.lobby-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.brand-sm { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; }
+.brand-sm svg { width: 34px; height: 34px; }
+.brand-sm b span { color: var(--gold); }
+.brand-sm .version { margin: 0; }
+.lobby-tabs { display: flex; gap: 4px; margin-inline: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
+.lobby-tabs button { min-height: 38px; padding: 0 16px; border-radius: 7px; border: 0; background: none; color: var(--muted); font-family: var(--font-display); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.lobby-tabs button[aria-selected="true"] { background: var(--raise-2); color: var(--text); }
+.lobby-res { display: flex; gap: 8px; align-items: center; }
+.crystals, .lvl, .creator-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); font-family: var(--font-display); font-weight: 600; }
+.crystals i { width: 12px; height: 12px; background: #6fd3ff; transform: rotate(45deg); border-radius: 2px; display: block; }
+.creator-badge { background: var(--gold); color: var(--gold-ink); border-color: transparent; }
+.lobby-body { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 190px minmax(0, 1fr) 230px; gap: 12px; align-items: start; }
+.lobby-body.wide { grid-template-columns: minmax(0, 1fr); }
+.lmenu { display: grid; gap: 4px; padding: 8px; }
+.lmenu button { text-align: left; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 0; background: none; color: var(--text); font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.lmenu button.on { background: var(--raise-2); box-shadow: inset 3px 0 0 var(--gold); }
+.lmenu button:disabled { color: var(--muted); cursor: not-allowed; }
+.lmenu small { font-size: 10.5px; color: var(--muted); font-weight: 500; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
+.lmain { display: grid; gap: 12px; min-width: 0; }
+.lcard { padding: 16px; display: grid; gap: 12px; }
+.lcard h2 { margin: 0; font-family: var(--font-display); font-size: 22px; letter-spacing: 0.03em; }
+.lcard h3 { margin: 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.lcard p { margin: 0; color: var(--muted); line-height: 1.45; }
+.mode-now { display: grid; gap: 4px; justify-items: center; text-align: center; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.04); }
+.mode-now small { font-size: 11px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+.mode-now b { font-family: var(--font-display); font-size: 22px; }
+.play-row { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 8px; }
+.play-row .btn { min-height: 52px; font-family: var(--font-display); font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+.play-row .btn.gold { font-size: 20px; }
+.resume { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(242,171,56,0.5); background: rgba(242,171,56,0.08); flex-wrap: wrap; }
+.resume p { color: var(--text); }
+.opts.four { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.numbers { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; font-size: 13.5px; }
+.numbers span { color: var(--muted); }
+.numbers b { font-family: var(--font-display); text-align: right; font-variant-numeric: tabular-nums; }
+.lside { display: grid; gap: 8px; }
+.sidebtn { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; text-align: left; color: var(--text); }
+.sidebtn:hover { background: var(--raise); }
+.sidebtn .ic { width: 38px; height: 38px; border-radius: 9px; display: grid; place-items: center; background: var(--raise-2); font-family: var(--font-display); font-weight: 700; color: var(--gold); }
+.sidebtn b { display: block; font-size: 14px; }
+.sidebtn small { color: var(--muted); font-size: 12px; }
+.badge { min-width: 20px; height: 20px; border-radius: 10px; background: var(--bad); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 6px; }
+.xpbar { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.xpbar i { display: block; height: 100%; background: linear-gradient(90deg, #5ee07a, #9be15d); }
+.dialog.wide { width: min(760px, 100%); max-height: calc(100vh - 40px); overflow: auto; }
+.dialog header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.mode-card { position: relative; display: grid; gap: 4px; padding: 12px; border-radius: 10px; background: var(--raise); border: 1px solid transparent; text-align: left; cursor: pointer; color: var(--text); }
+.mode-card.on { border-color: var(--gold); background: rgba(242,171,56,0.1); }
+.mode-card:disabled { opacity: 0.5; cursor: not-allowed; }
+.mode-card b { font-family: var(--font-display); font-size: 15px; letter-spacing: 0.04em; text-transform: uppercase; }
+.mode-card small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+.mode-card em { font-style: normal; font-size: 11px; color: var(--gold); font-weight: 600; }
+.daygrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day { display: grid; gap: 4px; justify-items: center; padding: 10px 4px; border-radius: 10px; background: var(--raise); border: 1px solid transparent; font-size: 12px; }
+.day b { font-family: var(--font-display); font-size: 16px; color: #6fd3ff; }
+.day.done { opacity: 0.55; }
+.day.today { border-color: var(--gold); }
+.day.big b { color: var(--gold); }
+.mission { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 10px; border-radius: 10px; background: var(--raise); }
+.mission .xpbar { grid-column: 1 / -1; }
+.mission.done { border: 1px solid rgba(94,224,122,0.5); }
+.tiers { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+.tier { display: grid; gap: 3px; justify-items: center; padding: 8px 4px; border-radius: 8px; background: var(--raise); font-size: 11.5px; text-align: center; border: 1px solid transparent; }
+.tier.reached { border-color: rgba(94,224,122,0.5); }
+.tier.claimed { opacity: 0.5; }
+.tier img { width: 46px; height: 46px; }
+.shopgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.item { display: grid; gap: 4px; justify-items: center; padding: 10px 6px; border-radius: 10px; background: var(--raise); border: 1px solid transparent; text-align: center; cursor: pointer; color: var(--text); }
+.item img { width: 76px; height: 76px; }
+.item b { font-size: 13px; }
+.item.owned { border-color: rgba(94,224,122,0.45); }
+.item.equipped { border-color: var(--gold); }
+.rar { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 5px; padding: 1px 6px; }
+.rar.comun { background: #3a434b; color: #cfd6dc; } .rar.raro { background: #1d4f8c; color: #cfe3ff; }
+.rar.epico { background: #5b2d8c; color: #e6d4ff; } .rar.legendario { background: #8c5a12; color: #ffe4b0; }
+.chest { display: grid; gap: 8px; padding: 14px; border-radius: 12px; background: var(--raise); }
+.probs { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 8px; align-items: center; font-size: 12.5px; }
+.probs .xpbar { height: 6px; }
+.subtabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.subtabs button { min-height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--raise); color: var(--muted); font-weight: 600; cursor: pointer; }
+.subtabs button.on { background: var(--gold); color: var(--gold-ink); border-color: transparent; }
+.endhero { display: flex; gap: 14px; align-items: center; }
+.endhero h2 { font-size: 40px !important; }
+.endstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.endstats div { padding: 10px; border-radius: 8px; background: var(--raise); text-align: center; }
+.endstats b { display: block; font-family: var(--font-display); font-size: 24px; }
+.endstats span { font-size: 12px; color: var(--muted); }
+.positions { display: grid; gap: 4px; }
+.positions div { display: flex; gap: 10px; align-items: center; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,0.04); font-size: 14px; }
+.positions div.me { border: 1px solid var(--gold); }
+.positions i { width: 10px; height: 10px; border-radius: 3px; display: block; }
+.prizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.prizes div { padding: 10px; border-radius: 8px; background: var(--raise); }
+.prizes b { display: block; font-family: var(--font-display); color: var(--gold); font-size: 17px; }
+.prizes span { font-size: 12px; color: var(--muted); }
+.advice { padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(111,211,255,0.4); background: rgba(111,211,255,0.07); font-size: 13.5px; }
+.field { display: grid; gap: 6px; }
+.field label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.field input[type="text"] { min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--raise); color: var(--text); padding: 0 12px; font: inherit; font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; }
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg button { min-height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--raise); color: var(--text); font-weight: 600; cursor: pointer; }
+.seg button.on { border-color: var(--gold); background: rgba(242,171,56,0.12); }
+.rowx { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.steps { margin: 0; padding-left: 20px; display: grid; gap: 6px; line-height: 1.4; }
+.dialog .btn.icon { width: 38px; min-height: 38px; padding: 0; display: grid; place-items: center; }
+.dialog .btn.icon svg { width: 18px; height: 18px; }
+#code-form { grid-template-columns: 1fr auto; align-items: end; }
+#code-form label { grid-column: 1 / -1; }
+.positions small { margin-left: auto; color: var(--muted); font-size: 12px; }
+.positions b { font-family: var(--font-display); min-width: 28px; }
+@media (max-width: 980px) {
+  .lobby-body { grid-template-columns: minmax(0, 1fr); }
+  .lmenu { display: flex; flex-wrap: wrap; }
+  .lmenu button { flex: 1 1 auto; }
+  .lside { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+}
+@media (max-width: 520px) {
+  .lobby-tabs { order: 3; width: 100%; justify-content: stretch; }
+  .lobby-tabs button { flex: 1; padding: 0 8px; }
+  .play-row { grid-template-columns: 1fr 1fr; }
+  .play-row .gold { grid-column: 1 / -1; order: -1; }
+  .endstats { grid-template-columns: repeat(2, 1fr); }
+  .prizes { grid-template-columns: 1fr; }
+  .daygrid { grid-template-columns: repeat(4, 1fr); }
+}
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
@@ -451,41 +587,28 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   <div id="boxsel" hidden></div>
 </div>
 
-<div id="menu" class="screen menu">
-  <div class="menu-hero">
-    <div class="brand">
+<div id="menu" class="screen lobby">
+  <header class="lobby-top">
+    <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
-      <h1>Faro de <span>Ámbar</span></h1>
+      <b>Faro de <span>Ámbar</span></b>
+      <span class="version">v0.5</span>
     </div>
-    <span class="version">Prototipo web v0.3</span>
-    <p class="tagline">Construye tu base en un archipiélago de hexágonos, conquista las islas y defiende el Faro: quien lo controla gana un 50 % más de monedas.</p>
-    <ul class="facts">
-      <li><b>16</b>edificios</li>
-      <li><b>14</b>unidades</li>
-      <li><b>6</b>modos</li>
-      <li><b>Bots</b>que capturan y atacan</li>
-    </ul>
-    <p class="hint">Un dedo mueve el mapa · Dos dedos: zoom y giro · Toca una tropa y luego un destino</p>
-  </div>
-  <form class="menu-card panel" id="menu-form">
-    <fieldset>
-      <legend>Modo de juego</legend>
-      <div class="opts" id="opt-mode"></div>
-    </fieldset>
-    <fieldset>
-      <div class="legend-row"><legend>Mapa</legend><button class="linkbtn" type="button" id="btn-reroll">Generar otro</button></div>
-      <div class="opts three" id="opt-map"></div>
-    </fieldset>
-    <fieldset>
-      <legend>Dificultad de los bots</legend>
-      <div class="opts three" id="opt-diff"></div>
-    </fieldset>
-    <fieldset class="toggles opts">
-      <label class="check"><input type="checkbox" id="opt-fog">Niebla de guerra</label>
-      <label class="check"><input type="checkbox" id="opt-turbo">Ritmo ×2</label>
-    </fieldset>
-    <button class="btn gold cta" id="btn-start" type="submit">Jugar</button>
-  </form>
+    <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
+      <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
+      <button type="button" role="tab" data-view="shop" aria-selected="false">Tienda</button>
+      <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
+    </nav>
+    <div class="lobby-res">
+      <span class="creator-badge" id="creator-badge" hidden>Creador</span>
+      <span class="crystals" title="Cristales: se ganan jugando"><i></i><b id="crystals">0</b></span>
+      <span class="lvl" id="lvl-badge">Nivel 1</span>
+    </div>
+  </header>
+  <div class="lobby-body" id="lobby-body"></div>
+</div>
+<div id="modal" class="screen overlay-dim" hidden>
+  <div class="dialog panel wide" id="modal-body"></div>
 </div>
 
 <div id="pause" class="screen overlay-dim" hidden>
@@ -506,13 +629,15 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
-      <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa, «Girar» si quieres y «Construir».</li>
+      <li><b>Constructores:</b> entrénalos en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.</li>
+      <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa y «Construir». El constructor libre más cercano va solo; también puedes tocar la obra con él seleccionado.</li>
+      <li><b>Lugares:</b> Granjas en tierra fértil, Minas en vetas de oro, Bombas en petróleo de tierra y Plataformas en petróleo del mar.</li>
+      <li><b>Energía:</b> Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.</li>
+      <li><b>Mejorar:</b> toca un edificio terminado y «Mejorar»: niveles 1 a 3 (la Casa hasta 4). Con el Núcleo en nivel 3 se compra la Cúpula.</li>
       <li><b>Capturar:</b> lleva infantería junto a una Bandera o al Faro y despeja la zona de enemigos durante 12 s.</li>
-      <li><b>Energía:</b> los Molinos la producen; la gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.</li>
-      <li><b>Reparar:</b> selecciona un Ingeniero y toca un edificio tuyo dañado.</li>
-      <li><b>Expandirte:</b> selecciona un Ingeniero y toca «Fundar puesto».</li>
+      <li><b>Reparar:</b> selecciona un Constructor o Ingeniero y toca un edificio tuyo dañado.</li>
       <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Barcaza y luego «Desembarcar» junto a otra isla.</li>
-      <li><b>Mejorar:</b> toca una Granja o una Casa terminada. Toca tu Núcleo para comprar la Cúpula.</li>
+      <li><b>Salir:</b> «Salir al menú» deja la partida en pausa; vuelves con «Volver a la partida». También se guarda sola cada 15 s.</li>
       <li><b>Ganar:</b> destruye todos los Núcleos enemigos.</li>
     </ul>
     <div class="row">
@@ -527,6 +652,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 /*__SCRIPTS__*/
 </script>

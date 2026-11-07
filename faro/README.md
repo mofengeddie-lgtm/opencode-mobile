@@ -1,13 +1,14 @@
 # Faro de Ámbar · prototipo web
 
 Juego de estrategia en tiempo real sobre un mapa de hexágonos, hecho para el navegador.
-Funciona en iPad, celular y computadora, sin instalar nada. Es el banco de pruebas de las
-reglas del PRD 1.5 antes de llevarlas a Roblox Studio.
+Funciona en iPad, celular y computadora (Safari o Chrome), sin instalar nada. Es el banco de
+pruebas de las reglas del PRD 1.5 antes de llevarlas a Roblox Studio.
 
-Construye tu base, conquista islas con infantería y mantén el **Faro**: quien lo controla gana
-un 50 % más de monedas. Los rivales son bots que construyen, capturan, cruzan el mar y atacan.
+Empiezas solo con tu Núcleo y una Granja: entrena Constructores, levanta tu base, conquista
+islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
+mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.4 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.5 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -21,33 +22,34 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Todas las tropas de un tipo | Doble toque | Doble clic |
 | Varias tropas | Botón «Recuadro» y arrastra | Mayús + arrastrar |
 | Mover / atacar | Toca un destino o un enemigo | Clic izquierdo o derecho |
-| Construir | Elige edificio → toca casilla → «Girar» → «Construir» | Igual; R gira, Enter confirma |
+| Construir | Elige edificio → toca casilla → «Construir» | Igual; R gira, Enter confirma |
+| Mejorar | Toca un edificio terminado → «Mejorar» | Igual |
 | Capturar | Lleva infantería junto a una Bandera o al Faro | Igual |
-| Reparar | Ingeniero seleccionado + toca tu edificio dañado | Igual |
-| Pausa | Botón de pausa | Esc o P |
+| Pausa / salir | Botón de pausa → «Salir al menú» (la partida queda guardada) | Esc o P |
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
 
-## Contenido
+## Contenido de la v0.5
 
-- **6 modos:** Duelo, Todos contra todos, Equipos 2 vs 2, Gran batalla, Rey del Faro y Relámpago.
-- **3 mapas:** Archipiélago (islas con puentes), Mar abierto (sin puentes) y Continente.
-- **Recursos:** monedas y energía (la producen los Molinos).
-- **Puntos de captura:** el Faro (+50 % de ingresos) y Banderas en las islas (+200/min y territorio).
-- **Defensa del Núcleo:** escudo de emergencia automático al 25 %, Cúpula comprable y curación de
-  las tropas cercanas.
-- **Bots con personalidad:** Agresivo, Constructor, Almirante y Guardián del Faro. Combinan
-  ejércitos, contrarrestan tus tropas, reúnen sus oleadas, se retiran heridos y te avisan antes
-  de atacar.
-- **Interfaz:** alertas con «Ver», mensajes de los bots, marcador (toca la lista de jugadores),
-  desglose de monedas y energía (toca la barra superior), fichas de unidad (mantén pulsada una
-  tarjeta), círculo de alcance e indicador de producción.
-- **16 edificios:** Núcleo, Granja (mejorable a Pozo petrolero), Molino, Mina, Plataforma, Casa
-  (niveles 1–4), Cuartel, Fábrica, Puerto, Helipuerto, Torreta, Batería antiaérea, Muro,
-  Enfermería y Puesto avanzado.
-- **14 unidades:** Ingeniero, Fusilero, Tirador, Lanzacohetes, Jeep, Tanque, Antiaéreo,
-  Lanzamisiles, Lancha, Barco ingeniero, Barcaza, Destructor, Submarino y Helicóptero.
+- **Constructores:** las obras quedan «En construcción» hasta que un Constructor, un Ingeniero
+  (el doble de rápido) o un Barco constructor (obras de mar) las termina.
+- **Niveles 1-3** en todos los edificios (Casa hasta 4). Núcleo con láser en todos los niveles y
+  doble láser en el 3; la Cúpula se compra con el Núcleo en nivel 3 y, en su nivel 3, da escudo a
+  tus tropas. Torreta con 1 minigun en nivel 2 y 2 en nivel 3. Enfermería: clínica, mini hospital
+  y hospital grande.
+- **Cinco energías:** Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz, cada una en su lugar.
+- **Lugares de recursos:** Granjas en tierra fértil, Minas en vetas de oro, Bombas en petróleo de
+  tierra y Plataformas en petróleo del mar (sin aviso de territorio). Cada edificio tiene límite.
+- **20 unidades** y **AIR DEFENSE**. 5 mapas: Archipiélago Ámbar, Mar abierto, Continente,
+  Bahía Gris y Arrecife Doble.
+- **Vestíbulo:** PLAY, CAMBIAR modo, Personalizado, Tutorial, Tus números, Pase de 40 niveles,
+  misiones, premio diario, códigos, Tienda (apariencias y cofres) e Inventario.
+- **Volver a la partida:** salir al menú la deja en pausa y se guarda sola cada 15 s.
+- **Modo creador** (solo para la cuenta dueña del juego): monedas y energía infinitas.
+- **Modelos 3D hechos con Blender** (`blender/`), incluido el skin Brigada Tóxica, y luz de
+  ambiente con un cielo de [Poly Haven](https://polyhaven.com) (CC0, «Kloofendal 48d Partly
+  Cloudy», Greg Zaal).
 
 ## Editar el juego
 
@@ -55,21 +57,25 @@ El código está en `src/` y se une en un solo archivo:
 
 ```bash
 node faro/build.mjs                                   # genera faro/faro.html
-node faro/docs/pdf.cjs faro/docs/prd/PRD_web_v0.3.html  # PDF del PRD (requiere Playwright)
+node faro/docs/pdf.cjs faro/docs/prd/PRD_web_v0.5.html  # PDF del PRD (requiere Playwright)
+python faro/blender/generate_models.py faro/assets/models  # modelos 3D (requiere el módulo bpy)
 ```
 
 | Archivo | Qué contiene |
 | --- | --- |
-| `src/js/00-config.js` | Costos, energía, vida, daño, capturas, escudos, modos y dificultad |
-| `src/js/02-map.js` | Generación de islas, el Faro y las Banderas |
-| `src/js/04-world.js` | Reglas: economía, combate, captura, territorio, victoria |
+| `src/js/00-config.js` | Costos, niveles, energías, límites, unidades, modos y dificultad |
+| `src/js/02-map.js` | Generación de islas, lugares de recursos, el Faro y las Banderas |
+| `src/js/03-models.js` | Carga de los modelos GLB, aspectos y luz de ambiente |
+| `src/js/04-world.js` | Reglas: obras, mejoras, economía, combate, captura, victoria |
+| `src/js/045-save.js` | Guardar y cargar la partida |
 | `src/js/05-ai.js` | Comportamiento de los bots |
-| `src/js/03-models.js` | Modelos 3D de edificios, tropas, Faro y Banderas |
 | `src/js/06-render.js` | Gráficos, efectos, Cúpulas, minimapa y cámara |
 | `src/js/07-input.js` | Controles táctiles, ratón y teclado |
-| `src/js/08-ui.js` | Menús, paneles y sonido |
+| `src/js/08-ui.js` | Barra superior, paneles, avisos y sonido |
+| `src/js/085-meta.js` | Vestíbulo, progresión, tienda, final de partida y modo creador |
+| `blender/` | Generador de modelos 3D en Python para Blender |
 | `src/index.template.html` | Estructura y estilos de la interfaz |
 
 Cada versión empieza con su PRD y termina con su PDF (ver `AGENTS.md`).
 
-Usa [three.js](https://threejs.org) r128 desde cdnjs para los gráficos 3D.
+Usa [three.js](https://threejs.org) r128 desde cdnjs y su cargador GLTF desde jsDelivr.

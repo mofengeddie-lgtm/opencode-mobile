@@ -25,6 +25,7 @@ class Bot {
     this.saveFor = null;
     this.raid = null;
     this.threatAt = -99;
+    this.siegeAt = -99;
     this.ferryTrips = 0;
     // Métricas para las pruebas.
     this.wavesSent = 0;
@@ -64,7 +65,8 @@ class Bot {
     this.lastT = g.time;
     const T = g.time;
     const base = T < 50 ? 0.2 : army < this.targetArmy() ? (T < 240 ? 0.45 : 0.55) : 0.38;
-    const milShare = clamp(base + (T < 50 ? 0 : this.persona.milShare), 0.1, 0.75);
+    const overdue = T > this.nextWaveAt + 60 ? 0.15 : 0;
+    const milShare = clamp(base + overdue + (T < 50 ? 0 : this.persona.milShare), 0.1, 0.8);
     this.milBank += gained * milShare;
     this.ecoBank += gained * (1 - milShare);
     const total = this.milBank + this.ecoBank;
@@ -80,6 +82,8 @@ class Bot {
     }
 
     this.defend(units);
+    if (g.mode.tutorial) return;
+    this.staffBuilders(mine, units);
     this.build(mine);
     this.expand(mine, units);
     this.produce(mine, units);
@@ -103,52 +107,64 @@ class Bot {
     const coast = g.cells.some((c) => c.owner === this.pid && c.t === 'shallow' && !c.bld && g.map.isCoast(c));
     const easy = g.opts.difficulty === 'easy';
     const plan = this.persona.plan;
+    const core = p.core;
     const want = [];
     const open = g.opts.mapKind === 'open';
+    // Sin constructores no se levanta nada: obras pendientes frente a constructores disponibles.
+    const units = g.units.filter((u) => u.alive && u.owner === this.pid);
+    const builders = units.filter((u) => u.def.builds === 'land').length;
+    const sites = mine.filter((b) => g.needsWork(b) && (b.def.builtBy || 'land') !== 'sea').length;
+    const tooBusy = sites >= builders * 2 + 1;
     // Base castigada por buques, aeronaves o artillería (o Núcleo muy dañado): Cúpula primero.
     const shelled = p.navalHitAt !== undefined && T - p.navalHitAt < 90;
-    if (!p.dome && T > 200 && (shelled || p.core.hp < p.core.maxHp * 0.8)) want.push('dome');
+    if (core.level >= 3 && (!p.dome || (p.dome.level < 3 && T > 700)) && (shelled || core.hp < core.maxHp * 0.8 || T > 650)) want.push('dome');
     if (n('farm') < 2) want.push('farm');
     if (n('barracks') < 1 && T > 10) want.push('barracks');
     if (this.persona.harborFirst && coast && n('harbor') < 1 && T > 60) want.push('harbor');
-    // Mucho dinero militar sin gastar: hace falta más capacidad de producción.
     if (this.milBank > 2500) {
       if (!open && n('factory') < 2 && T > 240) want.push('factory');
       else if (n('barracks') < 3) want.push('barracks');
     }
-    if (n('farm') < 4) want.push('farm');
-    // La Fábrica entra pronto en la lista: sin ella el ejército solo puede ser infantería.
+    if (ownFree('fertile') && n('farm') < 4) want.push('farm');
     const factoryAt = plan.veh >= 3 ? 120 : 170;
     if (n('factory') < 1 && T > (open ? 300 : factoryAt)) want.push('factory');
+    const energyB = mine.filter((b) => b.def.cat === 'energy').length;
     const heavyNow = n('factory') + n('harbor') + n('helipad');
-    if (n('mill') < 1 && (heavyNow > 0 || T > 240)) want.push('mill');
+    if (energyB < 1 && (heavyNow > 0 || T > 200)) want.push(n('wind') < 8 ? 'wind' : 'solar');
     if (p.popCap - p.popUsed < 6 && p.popCap < MAX_POP) {
-      const houseUp = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
+      const houseUp = mine.find((b) => b.type === 'house' && b.built && !b.upgrading && b.level < b.def.maxLevel);
       if (n('house') < g.limitFor(this.pid, 'house')) want.push('house');
-      else if (houseUp) want.push('houseUp');
+      else if (houseUp) want.push('up:house');
     }
-    const heavy = n('factory') + n('harbor') + n('helipad');
-    if (heavy && p.energy < 60 && n('mill') < Math.min(4, 1 + n('factory') + n('helipad'))) want.push('mill');
+    if (heavyNow && p.energy < 60 && energyB < Math.min(5, 1 + n('factory') + n('helipad') + n('harbor'))) {
+      want.push(ownFree('shallow') && n('hydro') < 2 ? 'hydro' : n('wind') < 8 ? 'wind' : 'solar');
+    }
+    if (T > 240 && core.level < 2 && n('barracks') >= 1 && energyB >= 1) want.push('up:core');
     if (ownFree('gold') && n('mine') < 2) want.push('mine');
+    if (ownFree('oilland') && n('pump') < 2) want.push('pump');
     if (n('harbor') < 1 && coast && open) want.push('harbor');
-    if (ownFree('gold')) want.push('mine');
+    if (ownFree('gold') && n('mine') < 3 + Math.floor(T / 300)) want.push('mine');
     if (n('harbor') < 1 && coast && T > (plan.sea >= 3 ? 90 : 240)) want.push('harbor');
     const enemyAir = g.units.some((u) => u.cls === 'air' && g.isEnemy(u.owner, this.pid));
     if (enemyAir && n('aadef') < 2 && T > 180) want.push('aadef');
-    const farmsBuilt = mine.filter((b) => b.type === 'farm' && b.built).length;
-    if (T > 270 && farmsBuilt && n('pump') < Math.min(6, Math.floor((T - 220) / 70))) want.push('pump');
+    // Mejoras: Núcleo primero (nivel 3 abre la Cúpula), luego economía y defensas.
+    if (T > 260 && core.level < 2) want.push('up:core');
+    if (T > 520 && core.level < 3) want.push('up:core');
+    if (T > 300) want.push('up:farm', 'up:mine', 'up:pump', 'up:barracks');
+    if (T > 420) want.push('up:turret', 'up:barracks');
     const turretCap = Math.round(4 * this.persona.turrets);
     if (n('turret') < Math.min(turretCap, Math.floor(((T - 60) * this.persona.turrets) / 120))) want.push('turret');
-    if (ownFree('oil')) want.push('rig');
+    if (n('harbor') && (ownFree('oil') || this.seaSpot('rig') >= 0)) want.push('rig');
+    if (n('harbor') && heavyNow > 1 && p.energy < 80 && n('tidal') < 2 && this.seaSpot('tidal') >= 0) want.push('tidal');
     if (!easy && plan.air >= 1 && n('helipad') < 1 && T > (plan.air >= 2 ? 300 : 380)) want.push('helipad');
-    if (n('farm') < Math.min(8, 3 + Math.floor(T / 70))) want.push('farm');
+    if (ownFree('fertile') && n('farm') < Math.min(10, 3 + Math.floor(T / 70))) want.push('farm');
+    if (ownFree('oilland') && n('pump') < 2 + Math.floor(T / 300)) want.push('pump');
     if (n('barracks') < 2 && T > 280) want.push('barracks');
     if (n('hospital') < 1 && T > (this.tac.retreat ? 300 : 420)) want.push('hospital');
     if (n('factory') < 2 && T > 480 && !open) want.push('factory');
     if (n('harbor') < 2 && coast && T > (plan.sea >= 3 ? 300 : 420)) want.push('harbor');
 
     if (!want.length) {
-      // Nada que construir: el dinero de economía pasa al ejército.
       this.milBank += this.ecoBank * 0.5;
       this.ecoBank *= 0.5;
       return;
@@ -156,44 +172,79 @@ class Bot {
     let actions = 0;
     for (const type of want) {
       if (actions >= 2) break;
-      if (type === 'houseUp') {
-        const h = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
-        const hc = h ? g.upgradeCost(h) : 0;
-        if (!h || this.ecoBank < hc) break;
-        if (typeof g.upgrade(h) !== 'string') {
-          this.ecoBank -= hc;
+      if (type.startsWith('up:')) {
+        const t = type.slice(3);
+        const b = mine.find((x) => x.type === t && x.built && !x.upgrading && x.level < x.def.maxLevel);
+        if (!b || tooBusy) continue;
+        const uc = g.upgradeCost(b);
+        if (this.ecoBank < uc) {
+          if (t === 'core') break;
+          continue;
+        }
+        if (typeof g.upgrade(b) !== 'string') {
+          this.ecoBank -= uc;
           actions++;
         }
         continue;
       }
       if (type === 'dome') {
-        if (this.ecoBank + this.milBank < DOME.cost) break;
+        const dc = g.domeCost(this.pid);
+        if (this.ecoBank + this.milBank < dc) break;
         if (!g.buyDome(this.pid)) {
-          const fromEco = Math.min(this.ecoBank, DOME.cost);
+          const fromEco = Math.min(this.ecoBank, dc);
           this.ecoBank -= fromEco;
-          this.milBank = Math.max(0, this.milBank - (DOME.cost - fromEco));
+          this.milBank = Math.max(0, this.milBank - (dc - fromEco));
           actions++;
         }
         continue;
       }
-      const cost = BUILDINGS[type].cost;
+      const def = BUILDINGS[type];
+      if (!def.sea && tooBusy) continue;
+      const cost = def.cost;
       if (this.ecoBank < cost || p.coins < cost) break;
-      if (BUILDINGS[type].energyCost && p.energy < BUILDINGS[type].energyCost) continue;
-      if (type === 'pump') {
-        const farm = mine.find((b) => b.alive && b.type === 'farm' && b.built);
-        if (farm && typeof g.upgrade(farm) !== 'string') {
-          this.ecoBank -= cost;
-          actions++;
-        }
-        continue;
-      }
-      const ci = this.pickCell(type);
+      if (def.energyCost && p.energy < def.energyCost) continue;
+      const ci = def.sea ? this.seaSpot(type) : this.pickCell(type);
       if (ci < 0) continue;
       if (!g.place(this.pid, type, ci)) {
         this.ecoBank -= cost;
         actions++;
       }
     }
+  }
+
+  // Estructuras de mar: el lugar libre más cercano a la base (puede estar fuera del territorio).
+  seaSpot(type) {
+    const g = this.g;
+    const core = this.coreCell();
+    let best = -1;
+    let bd = Infinity;
+    for (const c of g.cells) {
+      if (c.bld || (c.owner >= 0 && c.owner !== this.pid)) continue;
+      const d = g.map.dist(c, core);
+      if (d > 9) continue;
+      if (g.placeInvalid(this.pid, type, c.i, true)) continue;
+      if (d < bd) { bd = d; best = c.i; }
+    }
+    return best;
+  }
+
+  // Constructores: 2 al empezar y más a medida que crece la base (máximo 5).
+  // Barco constructor si hay estructuras de mar esperando.
+  staffBuilders(mine, units) {
+    const g = this.g;
+    const want = Math.min(5, 2 + Math.floor(mine.length / 6));
+    const have = units.filter((u) => u.def.builds === 'land').length +
+      mine.reduce((s, b) => s + b.queue.filter((q) => UNITS[q.type].builds === 'land').length, 0);
+    const sieged = g.time - this.siegeAt < 15;
+    if (have < want && (!sieged || have === 0)) {
+      const prod = mine.filter((b) => b.built && b.def.produces && b.def.produces.includes('builder') && b.queue.length < 2)
+        .sort((a, b) => a.queue.length - b.queue.length)[0];
+      if (prod && this.p.coins >= UNITS.builder.cost && !g.enqueue(prod, 'builder')) {
+        this.ecoBank = Math.max(0, this.ecoBank - UNITS.builder.cost);
+      }
+    }
+    const seaWork = mine.some((b) => g.needsWork(b) && b.def.builtBy === 'sea');
+    if (seaWork) this.queueOnce(mine, 'harbor', 'boatEng');
   }
 
   pickCell(type) {
@@ -241,7 +292,7 @@ class Bot {
     if (outposts + busy.length >= maxOut) return;
     this.claimed = new Set(busy.map((u) => u.foundCell));
 
-    const landEng = units.filter((u) => u.type === 'engineer' && u.state !== 'found' && u.state !== 'repair');
+    const landEng = units.filter((u) => u.type === 'engineer' && u.state !== 'found' && u.state !== 'repair' && u.state !== 'build');
     const target = this.findExpansion('land');
     if (target >= 0) {
       if (landEng.length) {
@@ -365,10 +416,10 @@ class Bot {
     const r = Math.random();
     const counter = this.tac.counter && mix.total >= 3;
     if (cat === 'inf') {
-      if (T < 90) return 'rifle';
+      if (T < 90) return r < 0.7 ? 'rifle' : 'shotgun';
       if (counter && mix.veh >= 0.3) return r < 0.65 ? 'rocket' : 'rifle';
-      if (counter && mix.inf >= 0.6) return r < 0.4 ? 'sniper' : 'rifle';
-      return r < 0.45 ? 'rifle' : r < 0.8 ? 'rocket' : 'sniper';
+      if (counter && mix.inf >= 0.6) return r < 0.3 ? 'sniper' : r < 0.55 ? 'breaker' : r < 0.75 ? 'hunter' : 'rifle';
+      return r < 0.3 ? 'rifle' : r < 0.45 ? 'ranger' : r < 0.58 ? 'shotgun' : r < 0.78 ? 'rocket' : r < 0.88 ? 'sniper' : r < 0.95 ? 'breaker' : 'hunter';
     }
     if (cat === 'veh') {
       const aaHave = units.filter((u) => u.type === 'aa').length;
@@ -382,7 +433,7 @@ class Bot {
       if (counter && mix.sea >= 0.25) return r < 0.5 ? 'destroyer' : 'sub';
       return r < 0.55 ? 'destroyer' : r < 0.85 ? 'speedboat' : 'sub';
     }
-    return 'heli';
+    return !units.some((u) => u.type === 'apache') && this.p.coins > UNITS.apache.cost * 1.5 ? 'apache' : 'heli';
   }
 
   produce(mine, units) {
@@ -436,6 +487,7 @@ class Bot {
     // Urgencia (comprar infantería rápida) solo si el peligro está junto al Núcleo y el ejército es pequeño.
     const armySize = units.filter((u) => u.def.weapon).length;
     if (td <= 4 && armySize < 8) this.threatAt = g.time;
+    if (td <= 3) this.siegeAt = g.time;
     // Una oleada que se estaba reuniendo vuelve a defender si el peligro está cerca del Núcleo.
     if (this.raid && td <= 4) {
       for (const u of this.raid.units) if (u.alive && u.role === 'raid') u.role = 'home';
@@ -597,6 +649,7 @@ class Bot {
         t.botTarget = target;
         t.loadT = 0;
         this.ferryTrips++;
+        if (target.kind === 'bld') this.coreRaids = (this.coreRaids || 0) + 1;
         g.orderMove([t], wc);
       }
     } else if (t.botMode === 'sail') {
@@ -859,11 +912,18 @@ class Bot {
       return;
     }
     if (g.time < this.nextWaveAt) return;
-    const home = army.filter((u) => u.role === 'home');
-    const need = Math.min(this.wave, Math.max(5, Math.floor(this.p.popCap * 0.5)));
-    if (home.length < need) return;
+    // v0.5 empieza sin tropas: la primera oleada pide menos y crece con el tiempo.
+    // Si se atrasa más de 1 min, también salen los guardias de las Banderas.
+    const late = g.time > this.nextWaveAt + 60;
+    const need = Math.min(this.wave, Math.max(5, Math.floor(this.p.popCap * 0.5)), 4 + Math.floor(g.time / 150));
+    if (army.length < need) return;
     const target = this.chooseEnemyCore();
     if (!target) return;
+    // Solo van las tropas que pueden llegar: las de tierra, si hay camino por tierra hasta el Núcleo.
+    const tc = g.cells[target.cell];
+    const reach = (u) => u.mover !== 'land' || g.cells[u.cell].comp === tc.comp || tc.nb.some((ni) => g.cells[ni].comp === g.cells[u.cell].comp);
+    const home = army.filter((u) => (u.role === 'home' || (late && u.role === 'guard')) && reach(u));
+    if (home.length < need) return;
     if (this.tac.group) {
       // Solo se reúnen las tropas de tierra de la isla principal (más aéreas y navales).
       const coreComp = this.coreCell().comp;

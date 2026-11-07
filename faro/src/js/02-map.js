@@ -11,6 +11,8 @@ class GameMap {
     this.lookup = new Map();
     this.homes = [];
     this.points = [];
+    this.startFarms = [];
+    this.hubs = [];
     this.generate();
   }
 
@@ -64,14 +66,39 @@ class GameMap {
     const a0 = rng() * Math.PI * 2;
     const blobs = [];
     const homePos = [];
+    const homeXZ = [];
+    if (kind === 'reef') {
+      // Arrecife Doble: dos grupos de islas, uno a cada lado, separados por agua navegable.
+      const side = [[], []];
+      for (let i = 0; i < n; i++) side[i % 2].push(i);
+      for (let g = 0; g < 2; g++) {
+        const sx = g === 0 ? -1 : 1;
+        const k = side[g].length;
+        side[g].forEach((pid, j) => {
+          const zz = k === 1 ? 0 : (j - (k - 1) / 2) * (ring * (k === 2 ? 1.1 : 0.72));
+          homeXZ[pid] = [sx * ring * 0.82, zz];
+        });
+        this.hubs.push({ x: sx * ring * 0.42, z: 0 });
+      }
+    } else {
+      for (let i = 0; i < n; i++) {
+        let ang = a0 + (i * Math.PI * 2) / n;
+        let rad = ring;
+        if (kind === 'bay') {
+          // Bahía Gris: posiciones irregulares.
+          ang += (rng() - 0.5) * 0.55;
+          rad *= 0.86 + rng() * 0.2;
+        }
+        homeXZ[i] = [Math.cos(ang) * rad, Math.sin(ang) * rad];
+      }
+    }
     for (let i = 0; i < n; i++) {
-      const ang = a0 + (i * Math.PI * 2) / n;
-      const cell = this.atWorld(Math.cos(ang) * ring, Math.sin(ang) * ring);
+      const cell = this.atWorld(homeXZ[i][0], homeXZ[i][1]);
       this.homes.push(cell.i);
-      homePos.push({ x: cell.x, z: cell.z, ang });
+      homePos.push({ x: cell.x, z: cell.z, ang: Math.atan2(cell.z, cell.x) });
       blobs.push({ x: cell.x, z: cell.z, r: 4.8 * SQ3 });
     }
-    const centerR = kind === 'open' ? 3.2 : 4.3;
+    const centerR = kind === 'open' || kind === 'reef' ? 3.2 : 4.3;
     blobs.push({ x: 0, z: 0, r: centerR * SQ3 });
     const small = [];
     const addSmall = (ang, dist, rad) => {
@@ -80,7 +107,15 @@ class GameMap {
       small.push({ x: c.x, z: c.z, r: rad * SQ3, i: c.i });
       blobs.push(small[small.length - 1]);
     };
-    if (n === 2) {
+    if (kind === 'reef') {
+      for (const h of this.hubs) {
+        const c = this.atWorld(h.x, h.z);
+        small.push({ x: c.x, z: c.z, r: 2.6 * SQ3, i: c.i, hub: true });
+        blobs.push(small[small.length - 1]);
+      }
+      addSmall(Math.PI / 2, ringHex * 0.78, 1.8);
+      addSmall(-Math.PI / 2, ringHex * 0.78, 1.8);
+    } else if (n === 2) {
       addSmall(a0 + Math.PI / 2, 10, 2.4);
       addSmall(a0 - Math.PI / 2, 10, 2.4);
       addSmall(a0 + Math.PI / 2, 17, 1.7);
@@ -90,6 +125,9 @@ class GameMap {
         const ang = a0 + ((i + 0.5) * Math.PI * 2) / n;
         addSmall(ang, ringHex + 1, 1.9);
         if (kind !== 'continent') addSmall(ang, 8.6, 1.5);
+      }
+      if (kind === 'bay') {
+        for (let k = 0; k < 3; k++) addSmall(rng() * Math.PI * 2, 6 + rng() * 10, 1.3 + rng() * 0.6);
       }
     }
 
@@ -133,22 +171,24 @@ class GameMap {
       for (const c of this.cells) if (this.dist(c, cc) <= 1) c.land = true;
     }
 
-    // Puentes de arena hacia la isla central.
-    if (kind === 'archipelago') {
-      for (const hp of homePos) {
-        const ax = hp.x;
-        const az = hp.z;
-        const len = Math.hypot(ax, az);
-        for (const c of this.cells) {
-          const t = clamp((c.x * ax + c.z * az) / (len * len), 0, 1);
-          const d = Math.hypot(c.x - ax * t, c.z - az * t);
-          if (d <= 0.95 && !c.land) {
-            c.land = true;
-            c.bridge = true;
-          }
+    // Puentes de arena: hacia la isla central (Archipiélago; en Bahía Gris solo algunos)
+    // o hacia el centro de cada grupo (Arrecife Doble).
+    const bridge = (ax, az, bx, bz) => {
+      const dx = bx - ax;
+      const dz = bz - az;
+      const len2 = dx * dx + dz * dz || 1;
+      for (const c of this.cells) {
+        const t = clamp(((c.x - ax) * dx + (c.z - az) * dz) / len2, 0, 1);
+        const d = Math.hypot(c.x - (ax + dx * t), c.z - (az + dz * t));
+        if (d <= 0.95 && !c.land) {
+          c.land = true;
+          c.bridge = true;
         }
       }
-    }
+    };
+    if (kind === 'archipelago') for (const hp of homePos) bridge(hp.x, hp.z, 0, 0);
+    if (kind === 'bay') homePos.forEach((hp, i) => { if (i % 2 === 0) bridge(hp.x, hp.z, 0, 0); });
+    if (kind === 'reef') homePos.forEach((hp, i) => { const h = this.hubs[i % 2]; bridge(hp.x, hp.z, h.x, h.z); });
 
     // Bahía: agua dentro del territorio inicial para poder construir un puerto.
     homePos.forEach((hp, idx) => {
@@ -231,6 +271,38 @@ class GameMap {
       if (nb) nb.t = 'gold';
     }
 
+    // Lugares de recursos: tierra fértil (Granjas) y petróleo en tierra (Bombas).
+    const spot = (center, dmin, dmax, k, type, loose = false) => {
+      const cand = this.cells.filter((c) => (c.t === 'grass' || (loose && (c.t === 'forest' || c.t === 'sand'))) &&
+        !c.bridge && this.dist(c, center) >= dmin &&
+        this.dist(c, center) <= dmax && !this.points.some((pt) => pt.cell === c.i) && c.i !== center.i);
+      const got = pick(cand, k);
+      for (const c of got) c.t = type;
+      return got;
+    };
+    for (const hi of this.homes) {
+      const h = this.cells[hi];
+      const first = spot(h, 2, 2, 1, 'fertile');
+      this.startFarms.push(first.length ? first[0].i : -1);
+      spot(h, 2, 4, 5, 'fertile');
+      if (!spot(h, 3, 4, 1, 'oilland').length) spot(h, 2, 4, 1, 'oilland', true);
+    }
+    const hubCells = small.filter((s) => s.hub).map((s) => this.cells[s.i]);
+    for (const hc of hubCells) {
+      spot(hc, 1, 2, 2, 'fertile');
+      spot(hc, 1, 2, 1, 'oilland');
+    }
+    if (kind !== 'continent') {
+      spot(cc0, 1, 3, 3, 'fertile');
+      spot(cc0, 1, 3, 2, 'oilland');
+    } else {
+      for (let i = 0; i < n; i++) {
+        const ang = a0 + ((i + 0.5) * Math.PI * 2) / n;
+        const c = this.atWorld(Math.cos(ang) * ring * 0.45, Math.sin(ang) * ring * 0.45);
+        if (c) { spot(c, 0, 2, 2, 'fertile'); spot(c, 0, 2, 1, 'oilland'); }
+      }
+    }
+
     // Manchas de petróleo junto a islas pequeñas, la isla central y fuera de cada bahía.
     const waterNear = (center, dmin, dmax) => this.cells.filter((c) => !c.land && c.t !== 'oil' &&
       this.dist(c, center) >= dmin && this.dist(c, center) <= dmax && waterDist[c.i] <= 2);
@@ -244,6 +316,13 @@ class GameMap {
     for (const l of lakes) {
       const c = this.atWorld(l.x, l.z);
       if (c && !c.land) c.t = 'oil';
+    }
+
+    // Banderas: tierra fértil y petróleo cerca, para que valga la pena tomarlas.
+    for (const pt of this.points) {
+      const pc = this.cells[pt.cell];
+      spot(pc, 1, 2, 2, 'fertile');
+      spot(pc, 1, 2, 1, 'oilland');
     }
 
     // Continente: banderas entre las bases, a medio camino del centro.
@@ -269,17 +348,21 @@ class GameMap {
     center.t = 'grass';
     for (const ni of center.nb) {
       const c = this.cells[ni];
-      if (c.t === 'mount' || c.t === 'gold') c.t = 'grass';
+      if (c.t === 'mount' || c.t === 'gold' || c.t === 'fertile' || c.t === 'oilland') c.t = 'grass';
     }
     this.points.unshift({ type: 'faro', cell: center.i });
 
     for (const c of this.cells) c.h = TERRAIN[c.t].h;
     this.computeComponents();
 
-    // Garantiza que cada isla de inicio llegue a pie al centro cuando hay puentes.
-    if (kind !== 'open') {
+    // Garantiza los caminos a pie que el mapa promete (al centro, o al centro de cada grupo).
+    if (kind === 'archipelago' || kind === 'continent' || kind === 'reef' || kind === 'bay') {
       const target = this.get(0, 0).comp;
-      const bad = this.homes.some((hi) => this.cells[hi].comp !== target);
+      const bad = kind === 'reef'
+        ? this.homes.some((hi, i) => this.cells[hi].comp !== this.atWorld(this.hubs[i % 2].x, this.hubs[i % 2].z).comp)
+        : kind === 'bay'
+          ? this.homes.some((hi, i) => i % 2 === 0 && this.cells[hi].comp !== target)
+          : this.homes.some((hi) => this.cells[hi].comp !== target);
       if (bad) {
         for (const c of this.cells) if (c.t === 'mount') { c.t = 'forest'; c.h = TERRAIN.forest.h; }
         this.computeComponents();

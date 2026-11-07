@@ -26,39 +26,7 @@ class UI {
     this.lastToast = {};
     this.demolishArm = -1;
     this.playersSig = '';
-    this.initMenu();
     this.initHud();
-  }
-
-  // ---------- menú ----------
-  initMenu() {
-    const o = this.app.opts;
-    const radios = (el, name, dict, selected) => {
-      el.innerHTML = Object.entries(dict).map(([k, d]) => `
-        <label class="opt"><input type="radio" name="${name}" id="${name}-${k}" value="${k}" ${k === selected ? 'checked' : ''}>
-        <span><b>${esc(d.name)}</b>${d.desc ? `<small>${esc(d.desc)}</small>` : ''}</span></label>`).join('');
-    };
-    radios($('opt-mode'), 'mode', MODES, o.mode);
-    radios($('opt-map'), 'map', MAPS, o.mapKind);
-    const diffs = {};
-    for (const [k, d] of Object.entries(DIFFICULTY)) diffs[k] = { name: d.name };
-    radios($('opt-diff'), 'diff', diffs, o.difficulty);
-    $('opt-fog').checked = !!o.fog;
-    $('opt-turbo').checked = !!o.turbo;
-    $('menu-form').addEventListener('change', (e) => {
-      const t = e.target;
-      if (t.name === 'mode') this.app.setOption('mode', t.value);
-      else if (t.name === 'map') this.app.setOption('mapKind', t.value);
-      else if (t.name === 'diff') this.app.setOption('difficulty', t.value);
-      else if (t.id === 'opt-fog') this.app.setOption('fog', t.checked);
-      else if (t.id === 'opt-turbo') this.app.setOption('turbo', t.checked);
-    });
-    $('menu-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.app.sound.unlock();
-      this.app.startGame();
-    });
-    $('btn-reroll').addEventListener('click', () => this.app.reroll());
   }
 
   showScreen(name) {
@@ -66,6 +34,17 @@ class UI {
     $('hud').hidden = name !== 'play';
     $('pause').hidden = true;
     $('end').hidden = true;
+    $('modal').hidden = true;
+    if (this.app.lobby) {
+      this.app.lobby.modal = null;
+      if (name === 'menu') this.app.lobby.render();
+    }
+  }
+
+  // Objetivos de la partida: en el Tutorial son sus 3 pasos.
+  objList() {
+    const g = this.app.game;
+    return g && g.mode.tutorial ? TUTORIAL_STEPS : OBJECTIVES;
   }
 
   // ---------- HUD ----------
@@ -205,7 +184,7 @@ class UI {
     $('objectives').hidden = false;
     $('objectives').classList.remove('collapsed');
     $('btn-obj').textContent = 'Ocultar';
-    $('objlist').innerHTML = OBJECTIVES.map((o) => `<li data-obj="${o.id}">${esc(o.text)}</li>`).join('');
+    $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
     $('king').hidden = !this.app.game.mode.king;
     $('feed').innerHTML = '';
@@ -225,7 +204,7 @@ class UI {
   markObjective(id) {
     const li = document.querySelector(`[data-obj="${id}"]`);
     if (li) li.classList.add('done');
-    const all = OBJECTIVES.every((o) => this.app.game.objDone[o.id]);
+    const all = this.objList().every((o) => this.app.game.objDone[o.id]);
     if (all) setTimeout(() => { $('objectives').hidden = true; }, 4000);
   }
 
@@ -331,11 +310,19 @@ class UI {
 
   energyHtml(g) {
     const p = g.players[0];
-    const mills = g.buildings.filter((b) => b.alive && b.owner === 0 && b.built && b.def.energy);
+    const groups = new Map();
+    for (const b of g.buildings) {
+      if (!b.alive || b.owner !== 0 || !b.built || !b.def.energy) continue;
+      const k = groups.get(b.type) || { n: 0, sum: 0 };
+      k.n++;
+      k.sum += g.bEnergy(b);
+      groups.set(b.type, k);
+    }
     let html = '<header><h4>Energía</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">' + ICON.close + '</button></header><table><tbody>';
-    html += `<tr><td>Molinos ×${mills.length}</td><td class="n">+${mills.length * 5} / 10 s</td></tr>`;
+    if (!groups.size) html += '<tr><td>Sin energías</td><td class="n">+0 / 10 s</td></tr>';
+    for (const [type, k] of groups) html += `<tr><td>${esc(BUILDINGS[type].name)} ×${k.n}</td><td class="n">+${k.sum} / 10 s</td></tr>`;
     html += `<tr class="total"><td>Disponible</td><td class="n">${fmt(p.energy)}</td></tr></tbody></table>`;
-    html += '<p class="hint-press" style="margin:0">La gastan: Jeep 10 · Antiaéreo 20 · Tanque 30 · Destructor 30 · Submarino 30 · Lanzamisiles 40 · Helicóptero 50 · Fábrica 50 · Helipuerto 80.</p>';
+    html += '<p class="hint-press" style="margin:0">La producen Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, buques de guerra, helicópteros, la Fábrica y el Helipuerto.</p>';
     return html;
   }
 
@@ -499,7 +486,9 @@ class UI {
     if (first.kind === 'point') {
       sig += `|${first.owner}|${first.contested}|${Math.round(first.prog * 20)}`;
     } else if (first.kind === 'bld') {
-      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level || 1}`;
+      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level}` +
+        `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
+        `|${g.time - first.lastWork > 1.5}`;
       if (first.def.produces) {
         sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
       }
@@ -507,7 +496,7 @@ class UI {
       if (uc) sig += '|u' + (p.coins >= uc);
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
-        sig += `|d${d ? (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : p.coins >= DOME.cost}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
+        sig += `|d${d ? d.level + ':' + (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : ''}${p.coins >= g.domeCost(0)}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
@@ -539,15 +528,28 @@ class UI {
     const own = b.owner === 0;
     const d = b.def;
     const extra = [];
-    if (d.income) extra.push(`+${fmt(d.income * g.incomeMult(g.players[b.owner]))} monedas/min`);
-    if (d.pop) extra.push(`+${d.pop * (b.level || 1)} de población`);
-    if (d.energy) extra.push(`+${d.energy} energía cada 10 s`);
+    const inc = g.bIncome(b);
+    if (inc) extra.push(`+${fmt(inc * g.incomeMult(g.players[b.owner]))} monedas/min`);
+    if (g.bPop(b)) extra.push(`+${g.bPop(b)} de población`);
+    if (d.energy) extra.push(`+${g.bEnergy(b)} energía cada 10 s`);
+    if (d.healLevels) extra.push(`${d.healLevels[b.level].name}: cura ${Math.round(d.healLevels[b.level].pct * 100)} %/s`);
+    if (d.minigun) extra.push(b.level > 1 ? `${b.level - 1} minigun${b.level > 2 ? 's' : ''}` : 'sin minigun');
     const sub = (own ? '' : `<b style="color:${hexColor(PLAYER_COLORS[b.owner])}">${esc(g.players[b.owner].name)}</b> · `) +
       esc(d.desc) + (extra.length ? ' · ' + extra.join(' · ') : '');
-    const lv = b.type === 'house'
-      ? `<span class="levels" title="Nivel ${b.level || 1} de 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= (b.level || 1) ? 'on' : ''}"></i>`).join('')}</span>` : '';
-    let html = this.head(b.type, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
+    const maxLv = d.maxLevel;
+    const lv = maxLv > 1
+      ? ` <span class="lvtag">Nivel ${b.level}</span><span class="levels" title="Nivel ${b.level} de ${maxLv}">${Array.from({ length: maxLv }, (_, i) => `<i class="${i < b.level ? 'on' : ''}"></i>`).join('')}</span>` : '';
+    const mkey = GLB[b.type + '_' + b.level] ? b.type + '_' + b.level : b.type;
+    let html = this.head(mkey, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
     if (!own) return html;
+    // Obra o mejora en curso.
+    if (!b.built || b.upgrading) {
+      const k = b.upgrading ? b.upgrading.progress : b.progress;
+      const idle = g.time - b.lastWork > 1.5 && b.type !== 'outpost';
+      const by = d.builtBy === 'sea' ? 'un Barco constructor' : d.builtBy === 'engineer' ? 'un Ingeniero' : 'un Constructor o Ingeniero';
+      html += `<div class="queue"><b>${b.upgrading ? `Mejorando a nivel ${b.upgrading.level}` : 'En construcción'}</b> · ${Math.floor(k * 100)} % · ` +
+        (idle ? `<span style="color:#ffb4b5">Sin constructor: selecciona ${by} y toca la obra.</span>` : 'Un constructor está trabajando.') + '</div>';
+    }
     if (b.type === 'core') {
       const p = g.players[0];
       const dome = p.dome;
@@ -555,14 +557,21 @@ class UI {
       lines.push(p.emergencyUsed
         ? (b.shieldUntil > g.time ? '<b style="color:var(--gold)">Escudo de emergencia activo</b>' : 'Escudo de emergencia: ya usado en esta partida')
         : `Escudo de emergencia: listo (se activa solo al ${Math.round(EMERGENCY.at * 100)} % de vida)`);
+      const L = d.levels[b.level];
+      lines.push(`Láser: ${L.laser.beams > 1 ? 'doble, ' : ''}${L.laser.dmg} de daño, alcance ${L.laser.range}`);
       if (dome) {
-        lines.push(dome.hp > 0 ? `Cúpula: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}`
+        lines.push(dome.hp > 0 ? `Cúpula nivel ${dome.level}: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}${dome.level >= 3 ? ' · escudo para tus tropas' : ''}`
           : `Cúpula rota: vuelve en ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`);
       }
       html += `<div class="queue">${lines.join(' · ')}</div>`;
-      if (!dome) {
-        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome">Comprar Cúpula · ${fmt(DOME.cost)}</button>
-          <span class="queue" style="flex:1 1 200px">Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME.range} casillas del Núcleo.</span></div>`;
+      const derr = g.domeInvalid(0);
+      if (!dome || dome.level < 3) {
+        const next = dome ? dome.level + 1 : 1;
+        const label = dome ? `Mejorar Cúpula a nivel ${next}` : 'Comprar Cúpula';
+        const why = b.level < 3 ? 'Necesita el Núcleo en nivel 3.' : next === 3 ? 'Nivel 3: escudo personal para todas tus tropas.'
+          : `Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
+        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${label} · ${fmt(g.domeCost(0))}</button>
+          <span class="queue" style="flex:1 1 200px">${why}</span></div>`;
       }
     }
     if (d.produces && b.built) {
@@ -584,12 +593,8 @@ class UI {
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
     }
     const acts = [];
-    if (d.upgrade && b.built) {
-      const to = BUILDINGS[d.upgrade];
-      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a ${esc(to.name)} · ${fmt(to.cost)}</button>`);
-    }
-    if (b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length) {
-      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Ampliar a nivel ${(b.level || 1) + 1} · ${fmt(g.upgradeCost(b))}</button>`);
+    if (b.built && !b.upgrading && b.level < maxLv) {
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a nivel ${b.level + 1} · ${fmt(g.upgradeCost(b))}</button>`);
     }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
@@ -619,8 +624,8 @@ class UI {
           : ' · Selecciona tropas de tierra y toca la Barcaza para subirlas.') + '</div>';
       if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
     }
-    if (sel.some((u) => u.def.repairs)) {
-      html += `<div class="queue">Toca un edificio tuyo dañado para repararlo (no repara mientras recibe disparos). Junto a una obra, la termina el doble de rápido.</div>`;
+    if (sel.some((u) => u.def.builds)) {
+      html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
@@ -733,7 +738,7 @@ class UI {
         app.sound.play('error');
       } else {
         app.setSelection([res]);
-        this.toast(res.type === 'house' ? `Casa ampliada a nivel ${res.level}` : `Mejorando a ${res.def.name}`, 'good');
+        this.toast(`Mejora de ${res.def.name} pagada: un constructor la hará`, 'good');
       }
     } else if (act === 'dome') {
       const err = g.buyDome(0);
@@ -741,7 +746,7 @@ class UI {
         this.toast(err, 'bad');
         app.sound.play('error');
       } else {
-        this.toast('Cúpula levantada sobre tu Núcleo', 'good');
+        this.toast(`Cúpula nivel ${g.players[0].dome.level}`, 'good');
       }
       this.renderSel(true);
     } else if (act === 'unload') {
@@ -829,29 +834,11 @@ class UI {
     }
   }
 
-  showEnd(result) {
+  showEnd() {
     const g = this.app.game;
-    const s = g.players[0].stats;
-    const win = result === 'victory';
-    $('enddialog').className = 'dialog panel ' + (win ? 'result-victory' : 'result-defeat');
-    $('enddialog').innerHTML = `
-      <h2>${win ? 'Victoria' : 'Derrota'}</h2>
-      <p>${g.kingWinner !== undefined
-    ? (win ? `Tu equipo mantuvo el Faro ${fmtTime(KING_TIME)}. El archipiélago es tuyo.` : 'Otro imperio mantuvo el Faro el tiempo necesario. Ataca su guarnición antes.')
-    : (win ? 'Todos los Núcleos rivales han caído. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido. Prueba otra estrategia: más torretas, más economía o ataca antes.')}</p>
-      <div class="stats">
-        <div><b>${fmtTime(g.time)}</b><span>Duración</span></div>
-        <div><b>${fmt(s.earned)}</b><span>Monedas ganadas</span></div>
-        <div><b>${s.trained}</b><span>Tropas entrenadas</span></div>
-        <div><b>${s.kills}</b><span>Enemigos destruidos</span></div>
-        <div><b>${s.built}</b><span>Edificios construidos</span></div>
-        <div><b>${s.lost}</b><span>Tropas perdidas</span></div>
-      </div>
-      <div class="row">
-        <button class="btn gold" type="button" id="btn-again">Revancha</button>
-        <button class="btn" type="button" id="btn-watch">Ver el mapa</button>
-        <button class="btn" type="button" id="btn-menu">Menú</button>
-      </div>`;
+    const win = g.result === 'victory';
+    $('enddialog').className = 'dialog panel wide ' + (win ? 'result-victory' : 'result-defeat');
+    $('enddialog').innerHTML = this.app.lobby.endHtml(g);
     $('end').hidden = false;
     $('btn-again').addEventListener('click', () => this.app.startGame());
     $('btn-menu').addEventListener('click', () => this.app.toMenu());

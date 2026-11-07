@@ -247,6 +247,17 @@ class Input {
       if (mine.length && cell) this.moveTo(mine, cell.i);
       return;
     }
+    // Constructores seleccionados + toque en una obra tuya = construir o mejorar.
+    if (bld && bld.owner === 0 && g.needsWork(bld)) {
+      const workers = mine.filter((u) => g.canBuildSite(u, bld));
+      if (workers.length) {
+        g.orderBuild(workers, bld);
+        this.r.addMoveMarker(bld.cell, 0xf2ab38);
+        app.ui.toast(`${workers.length === 1 ? 'Construyendo' : `${workers.length} constructores en`} ${bld.def.name}`);
+        app.sound.play('order');
+        return;
+      }
+    }
     // Ingeniero seleccionado + toque en un edificio tuyo dañado = reparar.
     if (bld && bld.owner === 0 && bld.hp < bld.maxHp && bld.built) {
       const fixers = mine.filter((u) => u.def.repairs);
@@ -365,7 +376,7 @@ class Input {
     this.lastRot[p.btype] = p.rot;
     this.r.addMoveMarker(p.cell, 0xf5c542);
     this.app.ui.refreshBuild(true);
-    if (p.btype === 'wall' || p.btype === 'farm' || p.btype === 'mill' || p.btype === 'house') {
+    if (['wall', 'farm', 'solar', 'wind', 'house'].includes(p.btype)) {
       p.cell = -1;
       p.err = null;
       this.r.setGhost(null, -1);
@@ -383,7 +394,7 @@ class Input {
     const g = this.game;
     let cells = [];
     if (p.kind === 'build') {
-      cells = g.cells.filter((c) => c.owner === 0 && !g.placeInvalid(0, p.btype, c.i, true)).map((c) => c.i);
+      cells = g.cells.filter((c) => !g.placeInvalid(0, p.btype, c.i, true)).map((c) => c.i);
     } else if (p.kind === 'found') {
       const u = p.unit;
       const comp = g.cells[u.cell].comp;

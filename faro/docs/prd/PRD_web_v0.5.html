@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Faro de Ámbar · PRD prototipo web v0.5</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.5</p>
+  <p class="meta">7 de noviembre de 2026 · Estado: <b id="estado">En desarrollo</b> · Fuentes: tus 21 puntos, documento_juego_v2.pdf (30 págs.), Faro_de_Ambar_Informe_Completo.pdf (14 págs.) y PRD 1.5</p>
+  <div class="tiles">
+    <div class="tile"><b>Constructores</b><span>Los edificios los levantan Constructores, Ingenieros y Barcos constructores.</span></div>
+    <div class="tile"><b>Niveles 1-3</b><span>Todos los edificios se mejoran; la Cúpula pide Núcleo nivel 3.</span></div>
+    <div class="tile"><b>Blender</b><span>Modelos 3D nuevos para edificios, tropas, barcos y muros.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Pulir el juego y completar lo que faltaba de tus documentos, sin rehacer lo que ya funciona. Esta versión agrega constructores, mejoras por niveles, cinco energías, lugares de recursos, las 20 unidades del documento, modelos hechos con Blender, el vestíbulo con progresión y los arreglos que pediste.</p>
+
+  <h3>2. Lo que respondiste</h3>
+  <ul>
+    <li><b>Punto 15 (territorio):</b> el aviso salió al poner una Plataforma petrolera en el mar. Las estructuras de mar (Plataforma, Mareomotriz, Undimotriz) se construyen en su lugar del mar aunque esté fuera de tu territorio, mientras no sea territorio enemigo.</li>
+    <li><b>Punto 6 (Cúpula y NPC):</b> con la Cúpula en nivel 3, cada una de tus tropas lleva un escudo personal de hexágonos.</li>
+    <li><b>Punto 20 (exportar):</b> todavía no. Queda fuera de esta versión hasta que avises.</li>
+  </ul>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1</td><td>6 nov 2026</td><td>Primera versión jugable (entonces «HEXBOX»).</td></tr>
+      <tr><td>0.2</td><td>7 nov 2026</td><td>Transporte, Pozo petrolero, Batería antiaérea y Lanzamisiles.</td></tr>
+      <tr><td>0.3</td><td>7 nov 2026</td><td>Faro, Banderas, energía, escudos, Cúpula, vista previa, 6 modos.</td></tr>
+      <tr><td>0.4</td><td>7 nov 2026</td><td>Bots con personalidad e interfaz con alertas, marcador y fichas.</td></tr>
+      <tr><td>0.5</td><td>7 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Construir</div>
+  <h2>Constructores y obras (puntos 2 y 10)</h2>
+  <ul>
+    <li><b>Inicio:</b> Núcleo, 1 Granja ya hecha, 2.000 monedas, 60 de energía y capacidad de 20 tropas. <b>Sin tropas.</b> El Núcleo entrena Constructores.</li>
+    <li><b>Quién construye:</b> el Constructor (velocidad normal) y el Ingeniero (el doble de rápido) levantan los edificios de tierra y el Puerto. El Barco constructor levanta las estructuras de mar.</li>
+    <li><b>Cómo:</b> eliges el edificio, la casilla y confirmas. Se cobra al confirmar y aparece la obra con andamios, la etiqueta <b>«En construcción»</b> y una barra de progreso. El constructor libre más cercano va solo a trabajar; también puedes mandarlo tocando la obra. Sin constructor la obra se queda parada y lo avisa.</li>
+    <li><b>Mejoras:</b> también las hace un constructor (la mitad del tiempo de obra). Mientras se mejora, el edificio sigue funcionando con su nivel anterior.</li>
+    <li><b>Reparar:</b> Constructor e Ingeniero reparan edificios dañados, como en la v0.4. El Ingeniero además funda Puestos avanzados y pone la Torreta chica.</li>
+  </ul>
+
+  <h3>Niveles (puntos 5, 6, 8, 17 y 18)</h3>
+  <p>Todos los edificios tienen nivel 1 a 3 (la Casa, 1 a 4). Mejorar a nivel 2 cuesta el 50 % del precio del edificio y a nivel 3 el 100 %. Cada nivel da +50 % de vida y +50 % de producción; los productores entrenan un 20 % más rápido por nivel.</p>
+  <table>
+    <thead><tr><th style="width:18%">Edificio</th><th style="width:27%">Nivel 1</th><th style="width:27%">Nivel 2</th><th>Nivel 3</th></tr></thead>
+    <tbody>
+      <tr><td>Núcleo</td><td>+900/min · láser (45, alcance 4) · 20 tropas</td><td>2.500 · +1.200/min · láser 70, alcance 5 · 25 tropas</td><td>5.000 · +1.500/min · doble láser · 30 tropas · desbloquea la Cúpula</td></tr>
+      <tr><td>Cúpula</td><td>6.000 · 3.000 de vida · radio 3</td><td>4.000 · 4.500 de vida · radio 4</td><td>6.000 · 6.000 de vida · escudo personal para tus tropas (25 % de su vida, se recarga tras 5 s sin daño)</td></tr>
+      <tr><td>Torreta</td><td>Cañón</td><td>Cañón + 1 minigun</td><td>Cañón + 2 miniguns</td></tr>
+      <tr><td>Enfermería</td><td>Clínica · cura 3 %/s</td><td>Mini hospital · 5 %/s</td><td>Hospital grande · 8 %/s, alcance 3</td></tr>
+      <tr><td>Casa</td><td colspan="3">+5 tropas por nivel hasta el 4 (mejoras 600, 900 y 1.300, como en la v0.3)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Economía</div>
+  <h2>Energía, lugares y límites (puntos 7, 9, 11 y 15)</h2>
+  <p>El Molino se reemplaza por cinco energías. Producción por cada 10 segundos en nivel 1 (×1,5 en nivel 2 y ×2 en nivel 3):</p>
+  <table>
+    <thead><tr><th style="width:20%">Energía</th><th style="width:12%">Precio</th><th style="width:14%">Energía</th><th style="width:34%">Dónde</th><th>Límite</th></tr></thead>
+    <tbody>
+      <tr><td>Solar</td><td>200</td><td>+3</td><td>Cualquier tierra</td><td>8</td></tr>
+      <tr><td>Eólica</td><td>300</td><td>+5</td><td>Cualquier tierra</td><td>8</td></tr>
+      <tr><td>Hidráulica</td><td>700</td><td>+8</td><td>Tierra junto al agua</td><td>4</td></tr>
+      <tr><td>Mareomotriz</td><td>1.000</td><td>+11</td><td>Agua poco profunda junto a la costa (Barco constructor)</td><td>4</td></tr>
+      <tr><td>Undimotriz</td><td>1.500</td><td>+15</td><td>Mar profundo (Barco constructor)</td><td>3</td></tr>
+    </tbody>
+  </table>
+  <h3>Lugares de recursos y límites</h3>
+  <table>
+    <thead><tr><th style="width:22%">Edificio</th><th style="width:12%">Precio</th><th style="width:16%">Produce</th><th style="width:34%">Lugar</th><th>Límite</th></tr></thead>
+    <tbody>
+      <tr><td>Granja</td><td>300</td><td>+240/min</td><td><b>Tierra fértil</b> (parcelas marcadas)</td><td>10</td></tr>
+      <tr><td>Bomba de petróleo</td><td>1.400</td><td>+650/min</td><td><b>Petróleo en tierra</b> (manchas oscuras)</td><td>6</td></tr>
+      <tr><td>Mina de oro</td><td>1.000</td><td>+600/min</td><td><b>Veta de oro</b></td><td>8</td></tr>
+      <tr><td>Plataforma petrolera</td><td>2.000</td><td>+1.100/min</td><td>Petróleo en el mar (Barco constructor, sin aviso de territorio)</td><td>6</td></tr>
+      <tr><td>Casa · Cuartel · Fábrica · Puerto · Helipuerto</td><td colspan="3">Precios de la v0.4</td><td>6 (+2 por Núcleo) · 3 · 2 · 2 · 1</td></tr>
+      <tr><td>Torreta · AIR DEFENSE · Muro · Enfermería</td><td colspan="3">Precios de la v0.4</td><td>10 · 6 · 40 · 2</td></tr>
+      <tr><td>Torreta chica (Ingeniero) · Puesto avanzado</td><td colspan="3">400 · 800</td><td>4 · 6</td></tr>
+    </tbody>
+  </table>
+  <p>La Granja deja de mejorarse a «Pozo petrolero»: ahora sube de nivel como las demás, y la <b>Bomba de petróleo</b> es un edificio aparte, como en el documento (pág. 6).</p>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Unidades</div>
+  <h2>Las 20 unidades (lo que faltaba del documento)</h2>
+  <p>El documento trae 18 unidades; se agregan las que faltaban y se conservan el Jeep y el Lanzamisiles. Los precios siguen la escala de este prototipo, con el mismo orden de más barato a más caro que el documento.</p>
+  <table>
+    <thead><tr><th style="width:18%">Dónde</th><th>Unidades (precio)</th></tr></thead>
+    <tbody>
+      <tr><td>Núcleo</td><td>Constructor (200)</td></tr>
+      <tr><td>Cuartel</td><td>Constructor 200 · Ingeniero 500 · Artillero 400 (antes Fusilero) · Escopetero 600 · Ranger 700 · Francotirador 900 (antes Tirador) · Rompedor 950 · Cazador 1.300 · Cohetero 1.500 (antes Lanzacohetes)</td></tr>
+      <tr><td>Fábrica</td><td>Tanque 3.400 · Camión antiaéreo 2.400 · Jeep 1.600 · Lanzamisiles 3.800</td></tr>
+      <tr><td>Puerto</td><td>Lancha rápida 1.400 · Barco constructor 1.600 (antes Barco ingeniero) · Barcaza 1.800 · Destructor 4.500 (ocupa 4) · Submarino 3.800 (ocupa 3)</td></tr>
+      <tr><td>Helipuerto</td><td>Helicóptero 5.500 (ocupa 3) · <b>Apache Guardián</b> 7.500 (ocupa 5, máximo 1, más vida y daño, más lento)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Modelos y aspecto (puntos 3, 13, 14 y 21)</h3>
+  <ul>
+    <li><b>Blender:</b> un generador en Python crea los modelos 3D con bordes biselados y más detalle: todos los edificios (con modelo distinto por nivel en Núcleo, Torreta y Enfermería), las 20 unidades, el Faro, las banderas y los andamios de obra. Se guardan como archivos GLB, que Roblox Studio también puede importar.</li>
+    <li><b>Muro:</b> deja de ser un bloque; cada muro tiene un torreón y tramos de muralla que se unen con los muros vecinos.</li>
+    <li><b>Barcos:</b> cascos con forma de barco, cubierta, puente y detalles para cada uno de los cinco.</li>
+    <li><b>Del documento:</b> holograma ámbar al construir (pág. 7), rayo ámbar al cielo sobre cada Núcleo (pág. 13), láser del Núcleo (punto 17) e icono de combate donde hay peleas (pág. 13).</li>
+    <li><b>AIR DEFENSE:</b> nuevo nombre de la Batería antiaérea en todo el juego.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Vestíbulo</div>
+  <h2>Vestíbulo, modos y progresión (documento págs. 14-27)</h2>
+  <ul>
+    <li><b>Vestíbulo:</b> botón PLAY grande, CAMBIAR para elegir modo, «Tus números» (partidas, victorias, %, islas tomadas, jugando desde) y accesos a Pase, Misiones, Premio diario y Códigos. Pestañas Tienda e Inventario y contador de cristales.</li>
+    <li><b>Modos (CAMBIAR):</b> Conquista de islas, Islas en la niebla, Turbo ×2, Liga 3 vs 3 (desde nivel 10), Rey del Faro y Relámpago. <b>Mapas:</b> Archipiélago Ámbar, Mar abierto, Continente y los nuevos <b>Bahía Gris</b> y <b>Arrecife Doble</b>.</li>
+    <li><b>Personalizado:</b> eliges modo, mapa, jugadores (2 a 6, incluye Duelo 1 vs 1), monedas iniciales, dificultad y equipos. Da la mitad de XP.</li>
+    <li><b>Tutorial:</b> Construí, Producí y Atacá contra un bot lento. Premio único: insignia «Primer Faro», 150 cristales y el aspecto Soldado Dorado.</li>
+    <li><b>Progresión:</b> XP (jugar +40, ganar +60, isla tomada +10, Núcleo destruido +20, misión +50), nivel cada 1.000 XP, pase de 40 niveles (pista gratis), 3 misiones diarias y 3 semanales (se puede cambiar 1 al día), premio diario de 7 días (20, 20, 30, 30, 40, 40 y Cofre del Faro; si faltas un día, la racha baja 1).</li>
+    <li><b>Tienda e inventario:</b> apariencias de las colecciones Selva, Ártico, Castillo y Neón (solo cambian cómo se ve: vida, daño y velocidad iguales); Cofre de Isla (60/28/10/2 %) y Cofre del Faro (40/38/17/5 %) con probabilidades a la vista, garantía de 1 legendario cada 30 y devolución de cristales por repetidos.</li>
+    <li><b>Final de partida:</b> resumen (tiempo, islas, tropas, Núcleos), posiciones, XP ganada y un consejo si pierdes. Botones Mirar el final, Revancha y Vestíbulo.</li>
+    <li><b>Volver a la partida (punto 16):</b> salir al menú pausa la partida y aparece «Volver a la partida». Además se guarda sola cada 15 s en el navegador: si cierras sin querer, al abrir aparece «Continuar partida guardada».</li>
+    <li><b>Modo creador (punto 19):</b> monedas y energía infinitas y todo desbloqueado. Solo aparece para la cuenta dueña del juego: la plataforma de Claude dice quién abre el enlace. En Roblox se hará igual con tu UserId en el servidor.</li>
+  </ul>
+  <h3>Fuera de alcance</h3>
+  <ul>
+    <li><b>Necesitan servidores (Roblox):</b> Rangos, Top jugadores, Servidores, modo espectador, partidas con amigos por código y compra de cristales con dinero real. Se muestran en el menú como «Disponible en Roblox», sin datos inventados.</li>
+    <li><b>Exportar:</b> pospuesto por decisión tuya. Ver repeticiones: requiere grabar partidas; queda para después.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">07b · Agregado el 7 de noviembre (noche)</div>
+  <h2>Tus referencias, el skin nuevo y las herramientas</h2>
+  <p>Mandaste capturas de modelos de referencia, un skin que te gustó y una lista de herramientas. Esto se suma a la v0.5 antes de cerrarla.</p>
+  <h3>Modelos según tus referencias (diseño propio)</h3>
+  <p>Las capturas sirven para saber <b>qué tipo de cosa</b> quieres ver; los modelos se hacen con nuestro estilo, colores y proporciones, sin copiar los de otro juego (regla del proyecto).</p>
+  <table>
+    <thead><tr><th style="width:24%">Modelo</th><th>Cómo se va a ver</th></tr></thead>
+    <tbody>
+      <tr><td>Torreta (niveles 1-3)</td><td>Torreta tipo naval: base blindada de dos piezas, cañón largo y sensor arriba. Nivel 2 suma una minigun de 6 cañones a un lado y nivel 3 una a cada lado.</td></tr>
+      <tr><td>Jeep</td><td>Vehículo militar ancho tipo Humvee, con faros encendidos y un artillero asomado con ametralladora.</td></tr>
+      <tr><td>Núcleo (niveles 1-3)</td><td>Fortaleza hexagonal con muros bajos y torres, y el cristal ámbar brillando en el centro (más alto y con más torres en cada nivel).</td></tr>
+      <tr><td>Barcos</td><td>Destructor con más superestructura y mástil; Barcaza como aerodeslizador con faldón y dos hélices atrás; Lancha rápida tipo bote neumático con arco; Barco constructor tipo buque de apoyo con grúa, en naranja.</td></tr>
+      <tr><td>Aire</td><td>Helicóptero con cabina grande, patines y dos ametralladoras laterales; Helipuerto redondo con la H, anillo y barandas.</td></tr>
+      <tr><td>Defensa y vehículos</td><td>AIR DEFENSE con caja de misiles y radar; Tanque con antenas y faros; Lanzamisiles sobre orugas.</td></tr>
+      <tr><td>Economía</td><td>Granja con establo rojo y parcelas cercadas; Mina con rocas, entrada de madera, vagoneta y oro; Bomba de petróleo tipo balancín; Plataforma con torre de perforación, grúas, helipuerto y patas.</td></tr>
+      <tr><td>Tropas</td><td>Constructor con casco naranja, chaleco reflectivo y viga al hombro; cada soldado con su arma propia (francotirador con rifle largo, cohetero con lanzador al hombro, etc.). Al caminar mueven las piernas.</td></tr>
+    </tbody>
+  </table>
+  <h3>Skin nuevo: Brigada Tóxica</h3>
+  <p>Inspirado en el skin que te gustó, con diseño propio: capucha oscura, máscara de gas amarilla con filtro y traje con camuflaje digital. Cambia la forma del soldado (no solo el color). Aspecto legendario para los Soldados: sale en el Cofre del Faro y se compra en la Tienda. Vida, daño y velocidad iguales.</p>
+  <h3>Herramientas</h3>
+  <table>
+    <thead><tr><th style="width:24%">Herramienta</th><th>Qué pasa</th></tr></thead>
+    <tbody>
+      <tr><td>Blender</td><td>Sí: con Python hace todos los modelos (ya en uso).</td></tr>
+      <tr><td>Poly Haven</td><td>Sí: abrí el acceso. Sus recursos son libres (CC0). Se usa un cielo HDRI de Poly Haven, reducido, para la iluminación de los modelos.</td></tr>
+      <tr><td>Pixabay</td><td>No desde aquí: el sitio bloquea las descargas automáticas con una verificación anti-robots. Si bajas sonidos en tu iPad y me los mandas, los agrego.</td></tr>
+      <tr><td>CMU (captura de movimiento)</td><td>No por ahora: el sitio falla por su certificado, y esos movimientos son para personajes con esqueleto realista. Nuestras tropas son de bloques; se animan con movimiento propio.</td></tr>
+      <tr><td>Tripo</td><td>Necesita tu cuenta y una clave de pago. Hace modelos realistas y pesados que no combinan con el estilo y van lentos con muchas tropas en un iPad. Queda para después si consigues una clave.</td></tr>
+      <tr><td>Mixamo</td><td>Necesita iniciar sesión con tu cuenta de Adobe; no puedo entrar por ti. Sirve más para Roblox (animaciones de personajes).</td></tr>
+      <tr><td>Unity</td><td>No: sería un tercer motor. El juego web sigue con three.js y el destino final es Roblox Studio.</td></tr>
+    </tbody>
+  </table>
+  <h3>Chrome y Safari</h3>
+  <p>El juego es una página web: el enlace publicado se abre en Chrome o Safari (con tu sesión de Claude), y el archivo <code>faro.html</code> también. En el iPad, Chrome usa por dentro el mismo motor que Safari.</p>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Las pruebas automáticas usan Chromium con tamaño de iPad y toques simulados, y partidas simuladas para los bots. No miden el rendimiento de un iPad real.</p>
+  <table style="table-layout: fixed">
+    <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>B01</td><td>Partida empieza con Núcleo, 1 Granja, 2.000 monedas y 0 tropas; el Núcleo entrena Constructores.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B02</td><td>Un edificio nuevo queda «En construcción» y solo avanza con un Constructor, Ingeniero o Barco constructor al lado; el Ingeniero va el doble de rápido; aviso si no hay constructor.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B03</td><td>Todos los edificios suben a nivel 3 (Casa a 4): cobra el precio, lo construye un constructor, sube vida y producción.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B04</td><td>Núcleo nivel 1-3: láser en todos los niveles, doble láser en nivel 3; la Cúpula solo se compra con Núcleo nivel 3.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B05</td><td>Cúpula nivel 1-3; en nivel 3 tus tropas llevan escudo personal que absorbe daño y se recarga.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B06</td><td>Torreta: nivel 2 con 1 minigun, nivel 3 con 2 miniguns (más disparos por segundo).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B07</td><td>Enfermería nivel 1-3 con más curación y modelo distinto en cada nivel.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B08</td><td>Cinco energías con su lugar y su producción; el Molino ya no existe.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B09</td><td>Cada edificio tiene límite; al llegar al límite no deja construir y lo explica.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B10</td><td>Granja solo en tierra fértil, Bomba de petróleo solo en petróleo en tierra, Mina solo en veta de oro.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B11</td><td>La Plataforma petrolera se construye en el petróleo del mar sin el aviso «Fuera de tu territorio».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B12</td><td>Las 20 unidades existen, cada una con su modelo; Apache Guardián máximo 1 y ocupa 5.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B13</td><td>Modelos hechos con Blender cargan sin errores: edificios, variantes por nivel, unidades y barcos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B14</td><td>El Muro se ve como muralla: tramos que se unen con los muros vecinos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B15</td><td>Holograma ámbar, rayo ámbar al cielo sobre cada Núcleo e icono de combate donde hay peleas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B16</td><td>Vestíbulo: PLAY, CAMBIAR modo (6 tarjetas), tus números, pase, misiones, premio diario, códigos, tienda, cofres e inventario.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B17</td><td>Personalizado: jugadores 2-6, mapa, monedas iniciales, dificultad, equipos; da la mitad de XP.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B18</td><td>Tutorial de 3 pasos contra un bot lento; al terminar da insignia, 150 cristales y el aspecto Soldado Dorado una sola vez.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B19</td><td>Pantallas de victoria y derrota con resumen, posiciones, premios y un consejo al perder.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B20</td><td>Salir al menú no borra la partida: «Volver a la partida»; tras recargar la página aparece «Continuar partida guardada».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B21</td><td>Modo creador con monedas y energía infinitas: visible solo para la cuenta dueña del juego.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B22</td><td>La Batería antiaérea se llama AIR DEFENSE en todo el juego.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B23</td><td>Mapas nuevos Bahía Gris y Arrecife Doble generan islas válidas con caminos por tierra o por mar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B24</td><td>Bots usan constructores, mejoran edificios, construyen energías y siguen atacando en los 5 mapas, sin errores.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B25</td><td>Las pruebas de v0.1 a v0.4 que siguen aplicando pasan; nada tapado en 5 tamaños de pantalla.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B26</td><td>Rendimiento en un iPad físico (objetivo 30 fps).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B27</td><td>Modelos nuevos según tus referencias: torreta naval con miniguns, jeep con artillero, Núcleo fortaleza, barcos, helicóptero, helipuerto, AIR DEFENSE, tanque, lanzamisiles, economía y Constructor.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B28</td><td>Skin Brigada Tóxica: capucha y máscara de gas en los soldados; en la Tienda y el Cofre del Faro.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B29</td><td>Iluminación con un cielo HDRI de Poly Haven (CC0), sin errores y sin pasar de 4 MB el archivo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B30</td><td>Las tropas mueven las piernas al caminar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>B31</td><td>Se abre en Safari y en Chrome (motor de Safari).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">09 · Decisiones</div>
+  <h2>Decisiones abiertas</h2>
+  <ul>
+    <li><b>Precios del documento:</b> los del documento están marcados como EJEMPLO y usan otra escala (por ejemplo, Granja +2.000/min). Se mantiene la escala ya probada en la v0.4; si prefieres los números exactos del documento, se cambian en un solo archivo.</li>
+    <li><b>Ritmo inicial:</b> empezar sin tropas hace la apertura más lenta. Si se siente lenta, se puede regalar el primer Constructor.</li>
+    <li><b>Cristales o gemas, nombre del modo y logo del vestíbulo:</b> siguen «Por decidir» como en el documento; se usa «cristales».</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Se programa esta versión, se completan las pruebas con evidencia y se entrega el PDF final.</p>
+</section>
+
+</body>
+</html>
