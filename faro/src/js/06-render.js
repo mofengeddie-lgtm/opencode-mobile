@@ -50,6 +50,8 @@ class Renderer {
     this.buildDecor();
     this.buildBorders();
     this.buildFx();
+    this.buildPoints();
+    this.buildShields();
     this.resize();
   }
 
@@ -479,6 +481,112 @@ class Renderer {
     this.markers.push({ mesh, t: 0 });
   }
 
+  // ---------- Faro, Banderas, Cúpulas y escudos ----------
+  buildPoints() {
+    this.pointVis = this.game.points.map((pt) => {
+      const v = createPointVisual(pt.type);
+      v.group.position.set(pt.x, pt.y, pt.z);
+      this.scene.add(v.group);
+      return v;
+    });
+  }
+
+  updatePoints(time) {
+    const tmp = new THREE.Color();
+    this.game.points.forEach((pt, i) => {
+      const v = this.pointVis[i];
+      tmp.set(pt.owner >= 0 ? PLAYER_COLORS[pt.owner] : NEUTRAL);
+      if (!v.own.color.equals(tmp)) v.own.color.copy(tmp);
+      if (v.beam) v.beam.rotation.y = time * 0.9;
+      if (v.cloth) v.cloth.rotation.y = Math.sin(time * 2.4 + i) * 0.25;
+    });
+  }
+
+  buildShields() {
+    this.shieldVis = this.game.players.map((p) => {
+      const r = DOME.range * SQ3 + 0.5;
+      const dome = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 14, 0, Math.PI * 2, 0, Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.08, depthWrite: false }));
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(r, 0.05, 6, 48).rotateX(Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.7, depthWrite: false }));
+      dome.add(rim);
+      dome.renderOrder = 6;
+      dome.visible = false;
+      const bubble = new THREE.Mesh(new THREE.SphereGeometry(1.7, 24, 14),
+        new THREE.MeshBasicMaterial({ color: 0xffb63a, transparent: true, opacity: 0.3, depthWrite: false }));
+      bubble.renderOrder = 6;
+      bubble.visible = false;
+      this.scene.add(dome);
+      this.scene.add(bubble);
+      return { dome, rim, bubble };
+    });
+  }
+
+  updateShields(time) {
+    const g = this.game;
+    g.players.forEach((p, i) => {
+      const v = this.shieldVis[i];
+      const core = p.core;
+      const domeOn = p.alive && core.alive && p.dome && p.dome.hp > 0;
+      v.dome.visible = !!domeOn;
+      if (domeOn) {
+        const k = p.dome.hp / p.dome.maxHp;
+        const col = k > 0.6 ? 0x4aa8ff : k > 0.3 ? 0xf2c94c : 0xef5350;
+        v.dome.material.color.set(col);
+        v.rim.material.color.set(col);
+        const hit = g.time - p.dome.lastHit < 0.25;
+        v.dome.material.opacity = hit ? 0.22 : 0.08;
+        v.dome.position.set(core.x, core.y, core.z);
+      }
+      const shield = p.alive && core.alive && core.shieldUntil > g.time;
+      v.bubble.visible = !!shield;
+      if (shield) {
+        v.bubble.position.set(core.x, core.y + 0.6, core.z);
+        v.bubble.material.opacity = 0.22 + Math.sin(time * 6) * 0.08;
+      }
+    });
+  }
+
+  // ---------- vista previa de construcción ----------
+  setGhost(type, ci, rot, valid) {
+    if (this.ghost && (this.ghost.type !== type)) {
+      this.scene.remove(this.ghost.group);
+      this.ghost = null;
+    }
+    if (!type || ci < 0) {
+      if (this.ghost) this.ghost.group.visible = false;
+      return;
+    }
+    if (!this.ghost) {
+      const m = getModel(type, PLAYER_COLORS[0]);
+      const okMat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, depthWrite: false });
+      const badMat = new THREE.MeshBasicMaterial({ color: 0xff5a5a, transparent: true, opacity: 0.55, depthWrite: false });
+      const group = new THREE.Group();
+      const parts = [];
+      for (const key of ['main', 'turret', 'rotor', 'rocker', 'blades', 'crystal']) {
+        if (!m[key]) continue;
+        const mesh = new THREE.Mesh(m[key], okMat);
+        if (key === 'turret') mesh.position.set(0, m.turretY || 0, m.turretZ || 0);
+        if (key === 'rocker') mesh.position.set(0, m.rockerY, m.rockerZ || 0);
+        if (key === 'blades') mesh.position.set(0, m.bladesY, m.bladesZ);
+        if (key === 'crystal') mesh.position.y = m.crystalY;
+        mesh.renderOrder = 7;
+        group.add(mesh);
+        parts.push(mesh);
+      }
+      this.scene.add(group);
+      this.ghost = { type, group, parts, okMat, badMat };
+    }
+    const c = this.game.cells[ci];
+    const gh = this.ghost;
+    gh.group.visible = true;
+    gh.group.position.set(c.x, c.h, c.z);
+    gh.group.rotation.y = rot;
+    for (const mesh of gh.parts) mesh.material = valid ? gh.okMat : gh.badMat;
+    this.hoverMesh.material.color.set(valid ? 0x8dffb0 : 0xff6b6b);
+    this.setHover(ci);
+  }
+
   // ---------- entidades ----------
   syncEntities(dt, time) {
     const g = this.game;
@@ -507,6 +615,7 @@ class Renderer {
         v.turret.position.y = v.turretBaseY * k;
         v.turret.rotation.y = b.aimYaw - b.rot;
       }
+      if (v.blades && b.built) v.blades.rotation.z += dt * 2.2;
       if (v.rocker) {
         v.rocker.visible = b.built;
         v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * 0.28 : 0;
@@ -556,10 +665,10 @@ class Renderer {
         return;
       }
       r.visible = true;
-      r.material = e.owner === 0 ? this.ringMatOwn : this.ringMatEnemy;
-      const s = e.kind === 'bld' ? 1.85 : e.cls === 'inf' ? 0.75 : e.cls === 'ship' || e.cls === 'sub' ? 1.4 : 1.1;
+      r.material = e.owner === 0 || (e.kind === 'point' && e.owner < 0) ? this.ringMatOwn : this.ringMatEnemy;
+      const s = e.kind === 'bld' || e.kind === 'point' ? 1.85 : e.cls === 'inf' ? 0.75 : e.cls === 'ship' || e.cls === 'sub' ? 1.4 : 1.1;
       r.scale.setScalar(s);
-      const y = e.kind === 'bld' ? e.y + 0.05 : e.mover === 'air' ? Math.max(this.game.cells[e.cell].h, 0) + 0.05 : Math.max(e.y, 0) + 0.04;
+      const y = e.kind === 'bld' || e.kind === 'point' ? e.y + 0.05 : e.mover === 'air' ? Math.max(this.game.cells[e.cell].h, 0) + 0.05 : Math.max(e.y, 0) + 0.04;
       r.position.set(e.x, y, e.z);
     });
     const b = items.length === 1 && items[0].kind === 'bld' && items[0].owner === 0 ? items[0] : null;
@@ -699,6 +808,31 @@ class Renderer {
       ctx.fillStyle = hexColor(PLAYER_COLORS[e.owner]);
       ctx.fillRect(x - 1, y - 1, 3, 6);
     };
+    // Progreso de captura sobre el Faro y las Banderas.
+    for (const pt of g.points) {
+      const busy = pt.contested || (pt.prog > 0 && pt.prog < 1) || (pt.owner >= 0 && pt.prog < 1);
+      if (!busy && !sel.has(pt)) continue;
+      const s = this.project(pt.x, pt.y + (pt.type === 'faro' ? 3.3 : 1.7), pt.z);
+      if (!s.ok) continue;
+      const R = pt.type === 'faro' ? 15 : 12;
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(12,16,22,0.7)';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, R, 0, Math.PI * 2);
+      ctx.stroke();
+      const capColor = pt.owner >= 0 ? PLAYER_COLORS[pt.owner]
+        : pt.capTeam >= 0 ? PLAYER_COLORS[g.players.findIndex((p) => p.team === pt.capTeam)] : NEUTRAL;
+      ctx.strokeStyle = hexColor(capColor);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(pt.prog, 0, 1));
+      ctx.stroke();
+      if (pt.contested) {
+        ctx.fillStyle = '#ffd36a';
+        ctx.font = '600 11px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('En disputa', s.x, s.y + R + 14);
+      }
+    }
     const recent = g.time - 4;
     for (const b of g.buildings) {
       if (!b.alive) continue;
@@ -755,6 +889,21 @@ class Renderer {
     }
     ctx.drawImage(this.miniBase, 0, 0);
     const myTeam = g.players[0].team;
+    for (const pt of g.points) {
+      const x = T.ox + pt.x * T.s;
+      const y = T.oz + pt.z * T.s;
+      ctx.fillStyle = pt.owner >= 0 ? hexColor(PLAYER_COLORS[pt.owner]) : '#e6e8ea';
+      ctx.strokeStyle = pt.type === 'faro' ? '#ffb63a' : '#1b2630';
+      ctx.lineWidth = pt.type === 'faro' ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 5);
+      ctx.lineTo(x + 4, y);
+      ctx.lineTo(x, y + 5);
+      ctx.lineTo(x - 4, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
     for (const bl of g.buildings) {
       ctx.fillStyle = hexColor(PLAYER_COLORS[bl.owner]);
       const x = T.ox + bl.x * T.s;
@@ -825,6 +974,8 @@ class Renderer {
     this.consumeFx();
     this.syncEntities(dt, time);
     this.updateFx(dt);
+    this.updatePoints(time);
+    this.updateShields(time);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);

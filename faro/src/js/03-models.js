@@ -136,6 +136,22 @@ const MODEL_BUILDERS = {
     r.box(0.14, 0.14, 0.18, PAL.dark, 0, -0.07, -0.42);
     return { main: b.build(), rocker: r.build(), rockerY: 0.82, rockerZ: -0.05 };
   },
+  mill(tc) {
+    const b = new PartBuilder();
+    b.cyl(0.42, 0.12, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.add(GEO.cyl8, PAL.white, 0, 0.62, 0, 0.26, 1.0, 0.26);
+    b.add(GEO.cone8, tc, 0, 1.28, 0, 0.32, 0.32, 0.32);
+    b.box(0.16, 0.24, 0.02, PAL.wood, 0, 0.12, 0.27);
+    b.box(0.1, 0.1, 0.02, PAL.glass, 0, 0.62, 0.27);
+    const r = new PartBuilder();
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      r.add(GEO.box, PAL.wood, Math.cos(a) * 0.32, Math.sin(a) * 0.32, 0, 0.62, 0.05, 0.02, 0, 0, a);
+      r.add(GEO.box, PAL.white, Math.cos(a) * 0.38, Math.sin(a) * 0.38, 0.015, 0.46, 0.14, 0.01, 0, 0, a);
+    }
+    r.add(GEO.cyl8, PAL.dark, 0, 0, 0, 0.06, 0.08, 0.06, Math.PI / 2, 0, 0);
+    return { main: b.build(), blades: r.build(), bladesY: 1.0, bladesZ: 0.3 };
+  },
   aadef(tc) {
     const b = new PartBuilder();
     b.cyl(0.5, 0.25, PAL.stone, 0, 0, 0, GEO.cyl6);
@@ -329,7 +345,7 @@ const MODEL_BUILDERS = {
     t.add(GEO.box, tc, 0, 0.12, 0.2, 0.39, 0.05, 0.08, -0.35, 0, 0);
     return { main: b.build(), turret: t.build(), turretY: 0.22, turretZ: -0.12, scale: 1.15 };
   },
-  transport(tc) {
+  barge(tc) {
     const b = new PartBuilder();
     b.box(0.72, 0.16, 1.25, PAL.gray, 0, -0.02, 0);
     b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), -0.34, 0.12, 0);
@@ -413,7 +429,7 @@ const UNIT_MODEL = {
   sub: (tc) => MODEL_BUILDERS.sub(tc),
   heli: (tc) => MODEL_BUILDERS.heli(tc),
   arty: (tc) => MODEL_BUILDERS.arty(tc),
-  transport: (tc) => MODEL_BUILDERS.transport(tc),
+  barge: (tc) => MODEL_BUILDERS.barge(tc),
 };
 
 const _modelCache = new Map();
@@ -436,7 +452,13 @@ function createVisual(type, color) {
   main.castShadow = true;
   main.receiveShadow = true;
   group.add(main);
-  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null };
+  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null, blades: null };
+  if (m.blades) {
+    out.blades = new THREE.Mesh(m.blades, MODEL_MAT);
+    out.blades.position.set(0, m.bladesY, m.bladesZ);
+    out.blades.castShadow = true;
+    group.add(out.blades);
+  }
   if (m.rocker) {
     out.rocker = new THREE.Mesh(m.rocker, MODEL_MAT);
     out.rocker.position.set(0, m.rockerY, m.rockerZ || 0);
@@ -465,6 +487,67 @@ function createVisual(type, color) {
     group.add(out.crystal);
   }
   if (m.scale) group.scale.setScalar(m.scale);
+  return out;
+}
+
+// El Faro y las Banderas: partes neutras + piezas que cambian de color según el dueño.
+const NEUTRAL = 0xd9dcdf;
+function createPointVisual(type) {
+  const group = new THREE.Group();
+  const own = new THREE.MeshStandardMaterial({ color: NEUTRAL, flatShading: true, roughness: 0.7 });
+  const out = { group, own, beam: null, lamp: null };
+  const b = new PartBuilder();
+  if (type === 'faro') {
+    b.cyl(0.95, 0.18, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.62, 0.22, shade(PAL.stone, 0.12), 0, 0.18, 0, GEO.cyl6);
+    const levels = 5;
+    for (let i = 0; i < levels; i++) {
+      const r0 = 0.42 - i * 0.035;
+      b.add(GEO.cyl12, i % 2 ? 0xc0392b : PAL.white, 0, 0.4 + i * 0.36 + 0.18, 0, r0, 0.36, r0);
+    }
+    b.cyl(0.34, 0.06, PAL.dark, 0, 2.2, 0, GEO.cyl12);
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      b.box(0.03, 0.34, 0.03, PAL.dark, Math.cos(a) * 0.24, 2.26, Math.sin(a) * 0.24);
+    }
+    b.add(GEO.cone8, PAL.dark, 0, 2.78, 0, 0.3, 0.32, 0.3);
+    b.box(0.2, 0.3, 0.02, PAL.wood, 0, 0.4, 0.44);
+    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    main.castShadow = true;
+    group.add(main);
+    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10),
+      new THREE.MeshStandardMaterial({ color: 0xffc35a, emissive: 0xffa21f, emissiveIntensity: 1.4 }));
+    lamp.position.y = 2.42;
+    group.add(lamp);
+    const beamGeo = new THREE.ConeGeometry(0.7, 5, 16, 1, true);
+    beamGeo.translate(0, -2.5, 0);
+    beamGeo.rotateZ(Math.PI / 2);
+    const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({
+      color: 0xffc35a, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+    }));
+    const pivot = new THREE.Group();
+    pivot.position.y = 2.42;
+    pivot.add(beam);
+    group.add(pivot);
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.08, 6, 1, false, Math.PI / 6), own);
+    band.position.y = 0.42;
+    group.add(band);
+    out.beam = pivot;
+    out.lamp = lamp;
+  } else {
+    b.cyl(0.32, 0.1, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.035, 1.25, PAL.dark, 0, 0.1, 0);
+    b.add(GEO.sphere, PAL.yellow, 0, 1.38, 0, 0.05, 0.05, 0.05);
+    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    main.castShadow = true;
+    group.add(main);
+    const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.02), own);
+    cloth.position.set(0.27, 1.16, 0);
+    cloth.castShadow = true;
+    group.add(cloth);
+    out.cloth = cloth;
+  }
   return out;
 }
 
@@ -498,7 +581,12 @@ const Thumbs = {
     if (this.cache.has(key)) return this.cache.get(key);
     let url = '';
     if (this.renderer) {
-      const v = createVisual(type, color);
+      const isPoint = type === 'faro' || type === 'flag';
+      const v = isPoint ? createPointVisual(type) : createVisual(type, color);
+      if (isPoint) {
+        v.own.color.set(color);
+        if (v.beam) v.beam.visible = false;
+      }
       v.group.scale.setScalar(1);
       if (v.crystal) v.crystal.position.y = 1.1;
       this.scene.add(v.group);

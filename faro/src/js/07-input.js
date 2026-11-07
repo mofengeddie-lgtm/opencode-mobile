@@ -12,6 +12,7 @@ class Input {
     this.boxMode = false;
     this.placement = null;
     this.lastTap = { t: 0, x: 0, y: 0, id: -1 };
+    this.lastRot = {};
     this.bind();
   }
 
@@ -169,7 +170,9 @@ class Input {
       if (this.placement) this.cancelPlacement();
       else if (this.app.selection.length) this.app.setSelection([]);
       else this.app.togglePause(true);
-    } else if (k === 'b') this.app.ui.toggleBuild();
+    } else if (k === 'r' && this.placement && this.placement.kind === 'build') this.rotatePlacement();
+    else if (k === 'enter' && this.placement && this.placement.kind === 'build') this.confirmPlacement();
+    else if (k === 'b') this.app.ui.toggleBuild();
     else if (k === ' ') {
       e.preventDefault();
       this.app.focusCore();
@@ -217,6 +220,7 @@ class Input {
     const unit = this.r.pickUnit(x, y);
     const cell = this.r.pickCell(x, y);
     const bld = cell && cell.bld && cell.bld.alive ? cell.bld : null;
+    const point = !unit && !bld && cell && cell.point ? cell.point : null;
     const target = unit || bld;
     const now = performance.now();
     const dbl = now - this.lastTap.t < 330 && Math.hypot(x - this.lastTap.x, y - this.lastTap.y) < 30;
@@ -243,13 +247,41 @@ class Input {
       if (mine.length && cell) this.moveTo(mine, cell.i);
       return;
     }
-    // Tropas de tierra seleccionadas + toque en tu transporte = subir a bordo.
+    // Ingeniero seleccionado + toque en un edificio tuyo dañado = reparar.
+    if (bld && bld.owner === 0 && bld.hp < bld.maxHp && bld.built) {
+      const fixers = mine.filter((u) => u.def.repairs);
+      if (fixers.length) {
+        g.orderRepair(fixers, bld);
+        const rest = mine.filter((u) => !u.def.repairs);
+        if (rest.length) g.orderMove(rest, bld.cell);
+        this.r.addMoveMarker(bld.cell, 0x6dff8a);
+        app.ui.toast(`Reparando ${bld.def.name}`);
+        app.sound.play('order');
+        return;
+      }
+    }
+    // Toque en el Faro o una Bandera: con tropas seleccionadas, ir a capturarlo.
+    if (point) {
+      if (mine.length) {
+        g.orderMove(mine, cell.i, true);
+        this.r.addMoveMarker(cell.i, 0xffb63a);
+        const inf = mine.some((u) => u.cls === 'inf');
+        app.ui.toast(inf ? 'Quédate junto al punto sin enemigos cerca para capturarlo'
+          : 'Solo la infantería captura puntos', inf ? 'info' : 'bad');
+        app.sound.play('order');
+      } else {
+        app.setSelection([point]);
+        app.sound.play('click');
+      }
+      return;
+    }
+    // Tropas de tierra seleccionadas + toque en tu Barcaza = subir a bordo.
     if (target && target.owner === 0 && target.def.capacity) {
       const landers = mine.filter((u) => u.mover === 'land');
       if (landers.length) {
         g.orderBoard(landers, target);
         this.r.addMoveMarker(target.cell, 0x7dd3ff);
-        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} al transporte`);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} a la Barcaza`);
         app.sound.play('order');
         return;
       }
@@ -286,9 +318,63 @@ class Input {
 
   // ---------- colocación ----------
   startPlacement(p) {
+    if (p.kind === 'build') {
+      p.rot = this.lastRot[p.btype] || 0;
+      p.cell = -1;
+      p.err = null;
+    }
     this.placement = p;
     this.refreshPlacement();
     this.app.ui.showPlaceBar(p);
+  }
+
+  previewAt(ci) {
+    const p = this.placement;
+    p.cell = ci;
+    p.err = this.game.placeInvalid(0, p.btype, ci);
+    this.r.setGhost(p.btype, ci, p.rot, !p.err);
+    this.app.ui.showPlaceBar(p);
+  }
+
+  rotatePlacement() {
+    const p = this.placement;
+    if (!p || p.kind !== 'build') return;
+    p.rot = (p.rot + Math.PI / 3) % (Math.PI * 2);
+    this.lastRot[p.btype] = p.rot;
+    if (p.cell >= 0) this.r.setGhost(p.btype, p.cell, p.rot, !p.err);
+    this.app.sound.play('click');
+  }
+
+  confirmPlacement() {
+    const g = this.game;
+    const p = this.placement;
+    if (!p || p.kind !== 'build') return;
+    if (p.cell < 0) {
+      this.app.ui.toast('Primero toca una casilla para ver la vista previa', 'bad');
+      return;
+    }
+    const err = g.place(0, p.btype, p.cell, p.rot);
+    if (err) {
+      p.err = err;
+      this.r.setGhost(p.btype, p.cell, p.rot, false);
+      this.app.ui.showPlaceBar(p);
+      this.app.ui.toast(err, 'bad');
+      this.app.sound.play('error');
+      return;
+    }
+    this.lastRot[p.btype] = p.rot;
+    this.r.addMoveMarker(p.cell, 0xf5c542);
+    this.app.ui.refreshBuild(true);
+    if (p.btype === 'wall' || p.btype === 'farm' || p.btype === 'mill' || p.btype === 'house') {
+      p.cell = -1;
+      p.err = null;
+      this.r.setGhost(null, -1);
+      this.r.setHover(-1);
+      this.refreshPlacement();
+      this.app.ui.showPlaceBar(p);
+    } else {
+      this.cancelPlacement();
+    }
   }
 
   refreshPlacement() {
@@ -308,12 +394,22 @@ class Input {
     }
     p.valid = new Set(cells);
     this.r.setPlacement(cells);
+    if (p.kind === 'build' && p.cell >= 0) {
+      const err = g.placeInvalid(0, p.btype, p.cell);
+      if (err !== p.err) {
+        p.err = err;
+        this.r.setGhost(p.btype, p.cell, p.rot, !err);
+        this.app.ui.showPlaceBar(p);
+      }
+    }
   }
 
   cancelPlacement() {
     this.placement = null;
     if (this.r) {
       this.r.setPlacement(null);
+      this.r.setGhost(null, -1);
+      this.r.hoverMesh.material.color.set(0xffffff);
       this.r.setHover(-1);
     }
     this.app.ui.hidePlaceBar();
@@ -325,16 +421,9 @@ class Input {
     const cell = this.r.pickCell(x, y);
     if (!cell) return;
     if (p.kind === 'build') {
-      const err = g.place(0, p.btype, cell.i);
-      if (err) {
-        this.app.ui.toast(err, 'bad');
-        this.app.sound.play('error');
-        return;
-      }
-      this.r.addMoveMarker(cell.i, 0xf5c542);
-      if (p.btype === 'wall' || p.btype === 'farm') this.refreshPlacement();
-      else this.cancelPlacement();
-      this.app.ui.refreshBuild(true);
+      this.previewAt(cell.i);
+      if (p.err) this.app.sound.play('error');
+      else this.app.sound.play('click');
     } else if (p.kind === 'found') {
       if (!p.unit.alive) {
         this.cancelPlacement();

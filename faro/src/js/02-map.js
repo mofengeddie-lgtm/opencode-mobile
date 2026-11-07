@@ -10,6 +10,7 @@ class GameMap {
     this.cells = [];
     this.lookup = new Map();
     this.homes = [];
+    this.points = [];
     this.generate();
   }
 
@@ -219,9 +220,15 @@ class GameMap {
       const cand = this.cells.filter((c) => c.land && this.dist(c, cc0) <= 2);
       for (const c of pick(cand, 3)) c.t = 'gold';
     }
+    // Islas pequeñas: bandera en el centro y una veta de oro al lado.
     for (const s of small) {
       const sc = this.cells[s.i];
-      if (sc.land) sc.t = 'gold';
+      if (!sc.land || this.points.some((pt) => this.dist(this.cells[pt.cell], sc) < 4)) continue;
+      if (this.homes.some((hi) => this.dist(this.cells[hi], sc) < 6)) continue;
+      sc.t = 'grass';
+      this.points.push({ type: 'flag', cell: sc.i });
+      const nb = sc.nb.map((ni) => this.cells[ni]).find((c) => c.land && !c.bridge);
+      if (nb) nb.t = 'gold';
     }
 
     // Manchas de petróleo junto a islas pequeñas, la isla central y fuera de cada bahía.
@@ -238,6 +245,33 @@ class GameMap {
       const c = this.atWorld(l.x, l.z);
       if (c && !c.land) c.t = 'oil';
     }
+
+    // Continente: banderas entre las bases, a medio camino del centro.
+    if (kind === 'continent') {
+      for (let i = 0; i < n; i++) {
+        const ang = a0 + ((i + 0.5) * Math.PI * 2) / n;
+        for (const k of [0.7, 0.62, 0.78]) {
+          const c = this.atWorld(Math.cos(ang) * ring * k, Math.sin(ang) * ring * k);
+          if (!c || !c.land || c.t === 'gold' || c.t === 'mount') continue;
+          if (this.points.some((pt) => this.dist(this.cells[pt.cell], c) < 4)) continue;
+          if (this.homes.some((hi) => this.dist(this.cells[hi], c) < 6)) continue;
+          c.t = 'grass';
+          this.points.push({ type: 'flag', cell: c.i });
+          break;
+        }
+      }
+    }
+
+    // El Faro ocupa el centro del mapa.
+    const center = this.get(0, 0);
+    center.land = true;
+    center.bridge = false;
+    center.t = 'grass';
+    for (const ni of center.nb) {
+      const c = this.cells[ni];
+      if (c.t === 'mount' || c.t === 'gold') c.t = 'grass';
+    }
+    this.points.unshift({ type: 'faro', cell: center.i });
 
     for (const c of this.cells) c.h = TERRAIN[c.t].h;
     this.computeComponents();

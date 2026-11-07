@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Faro de Ámbar · PRD prototipo web v0.3</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.3</p>
+  <p class="meta">7 de noviembre de 2026 · Estado: <b id="estado">Implementada · probada en navegador · pendiente de prueba en iPad</b> · Fuente principal: PRD Faro de Ámbar v1.5 (6 nov 2026)</p>
+  <div class="tiles">
+    <div class="tile"><b>Web ahora</b><span>Se juega en el iPad desde un enlace, sin instalar nada.</span></div>
+    <div class="tile"><b>Roblox después</b><span>La ruta final sigue siendo Roblox Studio + Luau (PRD 1.5).</span></div>
+    <div class="tile"><b>PRD + PDF</b><span>Cada versión empieza con su PRD y termina con su PDF.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Probar en el navegador del iPad las reglas nuevas del PRD 1.5 (el Faro, la energía, las capturas, los escudos y la construcción con confirmación) antes de pasarlas a Roblox. Este prototipo no sustituye la ruta de Roblox: sirve para decidir qué reglas funcionan y con qué números.</p>
+
+  <h3>2. Relación con el PRD 1.5</h3>
+  <p>El PRD 1.5 es el documento maestro para Roblox. Este PRD solo cubre la versión web. Las cifras del PRD 1.5 marcadas como EJEMPLO no se copian: el prototipo usa números propios, a escala de su economía, para poder ajustarlos jugando.</p>
+  <p>Los nombres, mapas y gráficos son propios. Las capturas de otros juegos se usan solo como referencia de composición.</p>
+
+  <h3>3. Historial de versiones</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1</td><td>6 nov 2026</td><td>Primera versión jugable (entonces «HEXBOX»): mapa hexagonal, 13 edificios, 12 unidades, bots, 4 modos, 3 mapas, controles táctiles.</td></tr>
+      <tr><td>0.2</td><td>7 nov 2026</td><td>Transporte entre islas, mejora de Granja a Pozo petrolero, Batería antiaérea y Lanzamisiles. Los bots cruzan el mar.</td></tr>
+      <tr><td>0.3</td><td>7 nov 2026</td><td>Esta versión. Nuevo nombre y las reglas del PRD 1.5 que se listan abajo.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Alcance</div>
+  <h2>Qué entra en la versión 0.3</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:27%">Función</th><th>Comportamiento esperado</th><th style="width:11%">PRD 1.5</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Nombre e identidad</td><td>El juego se llama Faro de Ámbar. Ámbar como color de acento; icono de faro.</td><td>Sección 3</td></tr>
+      <tr><td>2</td><td>El Faro</td><td>Torre en la isla central. Quien lo captura gana +50 % de ingresos mientras lo mantenga. Se puede recapturar.</td><td>RF-07, CA-04</td></tr>
+      <tr><td>3</td><td>Banderas de islas</td><td>Puntos de captura en las islas pequeñas. Dan territorio para construir (radio 2) y +200 monedas/min.</td><td>RF-12</td></tr>
+      <tr><td>4</td><td>Reglas de captura</td><td>Infantería a 1 casilla o menos, sin enemigos a 2 casillas o menos, durante 12 s. Si hay enemigos, la captura se pausa.</td><td>RF-12, CA-13</td></tr>
+      <tr><td>5</td><td>Energía y Molino</td><td>Nuevo recurso. El Molino da +5 de energía cada 10 s. Vehículos, aeronaves, buques de guerra, la Fábrica y el Helipuerto gastan energía.</td><td>RF-04</td></tr>
+      <tr><td>6</td><td>Construir con confirmación</td><td>Elegir edificio → tocar casilla → vista previa (verde válida, roja inválida con motivo) → Girar → Construir. Confirmar cobra una vez; cancelar no cobra; el giro se conserva.</td><td>RF-03, CA-03</td></tr>
+      <tr><td>7</td><td>Escudo de emergencia</td><td>Cuando el Núcleo baja al 25 % de vida, queda invulnerable 20 s. Solo una vez por partida.</td><td>RF-11, CA-12</td></tr>
+      <tr><td>8</td><td>Cúpula</td><td>Compra en el Núcleo (6.000). Absorbe el daño de barcos, aeronaves y Lanzamisiles a 3 casillas del Núcleo. Azul, amarillo o rojo según su vida; si se rompe, vuelve en 60 s. Una por jugador.</td><td>RF-11, CA-12</td></tr>
+      <tr><td>9</td><td>Ingeniero de apoyo</td><td>Repara edificios propios (toca un edificio dañado con el Ingeniero seleccionado) y duplica la velocidad de las obras a su lado.</td><td>RF-13, CA-14</td></tr>
+      <tr><td>10</td><td>Sigilo del Submarino</td><td>Invisible e inatacable salvo a 3 casillas o menos de un Destructor, Helicóptero o Puerto enemigo, o durante 3 s después de disparar.</td><td>RF-13, CA-14</td></tr>
+      <tr><td>11</td><td>Ocultación en bosque</td><td>Una tropa en bosque solo puede ser atacada desde 2 casillas o menos, salvo desde el aire.</td><td>RF-12</td></tr>
+      <tr><td>12</td><td>Casas por niveles</td><td>Hasta nivel 4, +5 de población por nivel. Máximo 6 Casas; +2 por cada Núcleo que destruyas.</td><td>p. 10</td></tr>
+      <tr><td>13</td><td>Barcaza</td><td>El Transporte pasa a llamarse Barcaza. Lleva soldados y tanques entre islas.</td><td>RF-06, CA-06</td></tr>
+      <tr><td>14</td><td>Seis modos</td><td>Se añaden «Rey del Faro» (gana quien mantenga el Faro 3 min en total) y «Relámpago» (6.000 monedas iniciales y ritmo ×2).</td><td>RF-10</td></tr>
+      <tr><td>15</td><td>Primeros pasos</td><td>Tutorial por objetivos: Granja, Molino, Cuartel, 5 tropas, capturar una bandera o el Faro, destruir un Núcleo.</td><td>RF-10</td></tr>
+      <tr><td>16</td><td>Minimapa plegable</td><td>El minimapa se puede plegar para ver más mapa.</td><td>Sección 4</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Fuera de alcance en la web</h3>
+  <ul>
+    <li><b>Propio de Roblox:</b> perfil con DataStoreService (RF-09), progreso cosmético, cofres y pase (RF-14), Rojo, Wally y Rokit.</li>
+    <li><b>Multijugador</b> (CA-16): la web es contra bots en un solo dispositivo.</li>
+    <li><b>Las 18 unidades del PRD 1.5:</b> la web mantiene 14. Escopetero, Ranger, Rompedor, Cazador y Apache Guardián quedan para Roblox.</li>
+    <li><b>Mejoras de nivel 3</b> para todos los edificios y la visión ampliada en montaña: falta definir la regla.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Reglas</div>
+  <h2>Números de esta versión</h2>
+  <p>Son valores propios del prototipo para probar el ritmo de la partida. Se ajustarán jugando; no son precios aprobados.</p>
+  <table>
+    <thead><tr><th style="width:34%">Elemento</th><th>Valor en v0.3</th></tr></thead>
+    <tbody>
+      <tr><td>Energía inicial</td><td>60</td></tr>
+      <tr><td>Molino</td><td>300 monedas · +5 energía cada 10 s · 400 de vida</td></tr>
+      <tr><td>Coste de energía (edificios)</td><td>Fábrica 50 · Helipuerto 80</td></tr>
+      <tr><td>Coste de energía (unidades)</td><td>Jeep 10 · Tanque 30 · Antiaéreo 20 · Lanzamisiles 40 · Destructor 30 · Submarino 30 · Helicóptero 50</td></tr>
+      <tr><td>Faro</td><td>+50 % de ingresos para su dueño · territorio de radio 3</td></tr>
+      <tr><td>Bandera de isla</td><td>+200 monedas/min · territorio de radio 2</td></tr>
+      <tr><td>Captura</td><td>12 s con infantería a 1 casilla o menos y sin enemigos a 2 casillas o menos</td></tr>
+      <tr><td>Rey del Faro</td><td>Gana quien acumule 3 min con el Faro, o el último Núcleo en pie</td></tr>
+      <tr><td>Escudo de emergencia</td><td>Al 25 % de vida del Núcleo · 20 s · una vez por partida</td></tr>
+      <tr><td>Cúpula</td><td>6.000 monedas · 3.000 de vida · radio 3 · recupera en 60 s · una por jugador</td></tr>
+      <tr><td>Reparación del Ingeniero</td><td>25 de vida por segundo · gratis · se pausa 4 s cada vez que el edificio recibe daño</td></tr>
+      <tr><td>Casas</td><td>Nivel 2: 600 · nivel 3: 900 · nivel 4: 1.300 · máximo 6 (+2 por Núcleo destruido)</td></tr>
+      <tr><td>Relámpago</td><td>6.000 monedas y 150 de energía iniciales · ritmo ×2</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Controles nuevos</h3>
+  <ul>
+    <li><b>Construir:</b> elige el edificio, toca una casilla, revisa la vista previa, toca «Girar» si quieres y luego «Construir». En computadora: R gira y Enter confirma.</li>
+    <li><b>Reparar:</b> selecciona un Ingeniero y toca un edificio tuyo dañado.</li>
+    <li><b>Capturar:</b> lleva infantería junto a una bandera o al Faro y despeja la zona de enemigos.</li>
+    <li><b>Cúpula:</b> toca tu Núcleo y elige «Comprar Cúpula».</li>
+    <li><b>Ampliar Casa:</b> toca una Casa terminada y elige «Ampliar».</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Cada prueba indica su resultado real. «Pendiente» no significa aprobada. Las pruebas automáticas usan un navegador Chromium con tamaño de iPad y toques simulados; no miden el rendimiento de un iPad real.</p>
+  <table style="table-layout: fixed">
+    <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+      <tr><td>W01</td><td>Iniciar, ganar, revancha y volver al menú sin bloqueos.</td><td><span class="chip ok">Aprobada</span></td><td>3 ciclos seguidos de victoria → «Revancha» → pausa → «Salir al menú» sin bloqueos.</td></tr>
+      <tr><td>W02</td><td>Vista previa válida e inválida, girar, confirmar cobra una vez, cancelar no cobra, el giro se conserva.</td><td><span class="chip ok">Aprobada</span></td><td>Casilla inválida: vista previa roja, motivo «Solo sobre pasto» y botón bloqueado. Válida: verde y sin cobrar. Confirmar dos veces cobró 300 una sola vez. Giro de 120° aplicado y conservado. Cancelar no cobró.</td></tr>
+      <tr><td>W03</td><td>El Molino suma energía; Fábrica y Tanque la gastan; cancelar la cola devuelve monedas y energía.</td><td><span class="chip ok">Aprobada</span></td><td>Molino: +5 cada 10 s. Fábrica: −50. Tanque: −3.400 y −30. Cancelar devolvió lo exacto. Sin energía: «Energía insuficiente (30): construye Molinos».</td></tr>
+      <tr><td>W04</td><td>Capturar el Faro: el ingreso sube 50 % en el HUD; un enemigo cerca pausa la captura; se puede recapturar.</td><td><span class="chip ok">Aprobada</span></td><td>Enemigo a 2 casillas: progreso 0 y «En disputa». Captura en 12 s. Ingreso 900 → 1.350 (+50 %) visible en el HUD. Recaptura: primero neutral y luego del rival.</td></tr>
+      <tr><td>W05</td><td>Capturar una bandera da territorio y permite construir allí.</td><td><span class="chip ok">Aprobada</span></td><td>Bandera capturada: territorio propio y se construyó un Molino en la isla. Ingreso base +200/min.</td></tr>
+      <tr><td>W06</td><td>Barcaza: subir soldados y un tanque, cruzar, desembarcar; lejos de la orilla avisa.</td><td><span class="chip ok">Aprobada</span></td><td>2 soldados + 1 tanque = 4 plazas. Cruzó y desembarcó a los 3 en tierra. En alta mar: «Acerca la Barcaza a la orilla…». Barcaza hundida: su carga se destruye; nadie queda atrapado.</td></tr>
+      <tr><td>W07</td><td>El escudo de emergencia se activa una vez al 25 % y no una segunda vez.</td><td><span class="chip ok">Aprobada</span></td><td>Al 25 % el Núcleo quedó en 1.500/6.000 con 20 s de escudo; no recibió daño durante el escudo; después sí. No se repitió.</td></tr>
+      <tr><td>W08</td><td>La Cúpula absorbe daño naval y aéreo, no el de infantería; se rompe y se recupera.</td><td><span class="chip ok">Aprobada</span></td><td>Compra única de 6.000. Daño naval dentro del radio: Cúpula 3.000 → 2.900, edificio intacto. Infantería: daña al edificio, no a la Cúpula. Rota, deja pasar el daño y vuelve a los 60 s.</td></tr>
+      <tr><td>W09</td><td>El Ingeniero repara; el Submarino es invisible hasta ser detectado; el bosque oculta.</td><td><span class="chip ok">Aprobada</span></td><td>Reparó hasta el máximo. Obra junto al Ingeniero: 60 % frente a 30 % en 3 s. Submarino lejos: invisible e inatacable; a 2 casillas de un Destructor: detectado. Bosque: no desde 3 casillas, sí desde 2 y desde el aire (el Helicóptero mantiene además su regla de cobertura).</td></tr>
+      <tr><td>W10</td><td>Casas por niveles y límite de 6.</td><td><span class="chip ok">Aprobada</span></td><td>6 Casas como máximo; niveles 2, 3 y 4 (+15 de población); la 4.ª ampliación se rechaza. Tras destruir un Núcleo, el límite sube a 8.</td></tr>
+      <tr><td>W11</td><td>Toque, arrastre y pellizco no duplican órdenes; nada queda tapado en iPad horizontal y vertical ni en celular.</td><td><span class="chip ok">Aprobada</span></td><td>Pellizco: zoom sin órdenes ni cambio de selección. Arrastre: mueve la cámara sin órdenes. Sin solapes ni controles fuera de pantalla en 1180×820, 1280×720, 820×1180, 844×390 y 390×844. Toques simulados en Chromium, no en un iPad.</td></tr>
+      <tr><td>W12</td><td>Los 6 modos arrancan; «Rey del Faro» termina al cumplir el tiempo.</td><td><span class="chip ok">Aprobada</span></td><td>Los 6 modos arrancan y corren. Relámpago: 6.000 monedas, 150 de energía, ritmo ×2. Rey del Faro: victoria al llegar a 3 min con el Faro.</td></tr>
+      <tr><td>W13</td><td>Bots en los 3 mapas durante 15 min simulados: construyen, capturan, usan la Barcaza y atacan, sin errores.</td><td><span class="chip np">Aprobada con observación</span></td><td>7 partidas simuladas (los 6 modos, los 3 mapas, niebla activada, hasta 15 min): sin errores. Capturaron puntos en 6 de 7 (hasta 7 capturas por partida); en «Mar abierto» desembarcaron con la Barcaza (3 y 12 veces); activaron el escudo de emergencia. Observaciones: en Duelo con «Mar abierto» no capturan Banderas de otras islas (la Barcaza solo va a Núcleos o al Faro) y no llegaron a comprar la Cúpula.</td></tr>
+      <tr><td>W14</td><td>Rendimiento en un iPad físico (objetivo 30 fps, PRD 1.5 RNF-01).</td><td><span class="chip np">No probada</span></td><td>Requiere jugar en tu iPad. Si va lento: Pausa → «Más fluido».</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Resultados</div>
+  <h2>Qué cambió al probar</h2>
+  <p>Las pruebas encontraron cuatro problemas reales que se corrigieron antes de entregar:</p>
+  <ul>
+    <li><b>Reparación demasiado fuerte:</b> con 40 de vida por segundo, un Ingeniero junto al Núcleo anulaba el daño de un Lanzamisiles. Ahora repara 25 por segundo y se pausa 4 s cada vez que el edificio recibe daño. Comprobado en 40 mapas: el asedio siempre causa daño neto.</li>
+    <li><b>Barra de «Rey del Faro»:</b> tapaba el panel de construir en iPad horizontal. Ahora va centrada bajo la barra superior; en celular vertical, a la derecha.</li>
+    <li><b>Zona vacía junto al minimapa:</b> bloqueaba los toques al mapa. Ahora deja pasar los toques.</li>
+    <li><b>Textos:</b> «Granja terminado» pasó a «Granja terminada» (concordancia en todos los edificios).</li>
+  </ul>
+  <h3>Pruebas de versiones anteriores</h3>
+  <p>Siguen pasando: 18 pruebas de controles de la v0.1 (dos ejecuciones) y 10 pruebas de la v0.2 (tres ejecuciones). La suite de la v0.3 tiene 43 comprobaciones: 43 de 43 en la última ejecución.</p>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Decisiones</div>
+  <h2>Decisiones abiertas</h2>
+  <ul>
+    <li><b>Balance:</b> todos los números de la sección 5 son provisionales. Se ajustan según cómo se sientan las partidas en el iPad.</li>
+    <li><b>Bots y Banderas lejanas:</b> en «Mar abierto» los bots no llevan la Barcaza a las Banderas de otras islas. Falta decidir si deben hacerlo en la v0.4.</li>
+    <li><b>Cúpula de los bots:</b> los bots solo ahorran para la Cúpula si su Núcleo pierde más del 20 % de vida a partir del minuto 5. En las simulaciones no llegó a ocurrir; falta decidir si deben comprarla antes.</li>
+    <li><b>Nombre:</b> «Faro de Ámbar» es el nombre de trabajo del PRD 1.5. «X-BOX» no se puede usar porque es una marca registrada.</li>
+    <li><b>Paso a Roblox:</b> cuando haya Mac y Roblox Studio, las reglas probadas aquí se reescriben en Luau. El código JavaScript no se convierte solo; la estructura (tablas de datos, reglas y bots separados) se puede reutilizar como guía.</li>
+    <li><b>Unidades que faltan:</b> decidir cuáles de las 18 del PRD 1.5 entran en la web antes de Roblox.</li>
+  </ul>
+
+  <h3>Siguiente paso</h3>
+  <p>El usuario juega la versión 0.3 en el iPad y dice qué cambiar. La versión 0.4 empieza con su propio PRD y PDF.</p>
+</section>
+
+</body>
+</html>

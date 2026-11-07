@@ -12,7 +12,7 @@ class Game {
     this.diff = DIFFICULTY[opts.difficulty];
     this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
     this.cells = this.map.cells;
-    this.speed = opts.turbo ? 2 : 1;
+    this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.time = 0;
     this.over = false;
     this.result = null;
@@ -29,14 +29,28 @@ class Game {
     this._slowT = 0;
     this._fogT = 0;
 
+    this.kingTime = {};
     this.players = [];
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
         id: i, team: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
-        coins: START_COINS, human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0,
+        coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
+        human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
+        emergencyUsed: false, dome: null,
         stats: { built: 0, trained: 0, lost: 0, kills: 0, earned: 0 },
       });
     }
+    // Puntos de captura: el Faro y las Banderas.
+    this.points = this.map.points.map((pt, i) => {
+      const c = this.cells[pt.cell];
+      const point = {
+        id: i, type: pt.type, def: POINTS[pt.type], cell: pt.cell, x: c.x, z: c.z, y: c.h, alive: true, kind: 'point',
+        owner: -1, prog: 0, capTeam: -1, contested: false,
+      };
+      c.point = point;
+      return point;
+    });
+    this._pointT = 0;
     for (const p of this.players) {
       const home = this.cells[this.map.homes[p.id]];
       p.core = this.addBuilding(p.id, 'core', home.i, true);
@@ -206,11 +220,15 @@ class Game {
       c.ownerD = 99;
       c.ownerId = 0;
     }
-    for (const b of this.buildings) {
-      if (!b.alive || !b.def.claim) continue;
+    const claimers = this.buildings.filter((b) => b.alive && b.def.claim)
+      .map((b) => ({ owner: b.owner, cell: b.cell, claim: b.def.claim, id: b.id }));
+    for (const pt of this.points) {
+      if (pt.owner >= 0) claimers.push({ owner: pt.owner, cell: pt.cell, claim: pt.def.claim, id: 1e6 + pt.id });
+    }
+    for (const b of claimers) {
       const bc = this.cells[b.cell];
       for (const off of SPIRAL) {
-        if (off.d > b.def.claim) break;
+        if (off.d > b.claim) break;
         const c = this.map.get(bc.q + off.q, bc.r + off.r);
         if (!c) continue;
         if (off.d < c.ownerD || (off.d === c.ownerD && b.id < c.ownerId)) {
@@ -230,18 +248,31 @@ class Game {
       p.income = 0;
       p.popCap = 0;
       p.popUsed = 0;
+      p.energyRate = 0;
+      p.bonus = 0;
     }
     for (const b of this.buildings) {
       if (!b.alive) continue;
       const p = this.players[b.owner];
       if (b.built) {
         p.income += b.def.income || 0;
-        p.popCap += b.def.pop || 0;
+        p.popCap += (b.def.pop || 0) * (b.level || 1);
+        p.energyRate += b.def.energy || 0;
       }
       for (const q of b.queue) p.popUsed += UNITS[q.type].pop;
     }
+    for (const pt of this.points) {
+      if (pt.owner < 0) continue;
+      const p = this.players[pt.owner];
+      p.income += pt.def.income;
+      p.bonus += pt.def.bonus;
+    }
     for (const u of this.units) if (u.alive) this.players[u.owner].popUsed += u.def.pop;
-    for (const p of this.players) p.popCap = Math.min(MAX_POP, p.popCap);
+    for (const p of this.players) {
+      p.popCap = Math.min(MAX_POP, p.popCap);
+      p.baseIncome = p.income;
+      p.income = Math.round(p.income * (1 + p.bonus));
+    }
   }
 
   incomeMult(p) {
@@ -254,12 +285,19 @@ class Game {
     return n;
   }
 
+  limitFor(pid, type) {
+    const def = BUILDINGS[type];
+    if (type === 'house') return HOUSE_LIMIT + 2 * this.players[pid].coresKilled;
+    return def.limit || 0;
+  }
+
   placeInvalid(pid, type, ci, ignoreCost = false) {
     const def = BUILDINGS[type];
     const c = this.cells[ci];
     const p = this.players[pid];
     if (!c) return 'Casilla no válida';
     if (c.owner !== pid) return 'Fuera de tu territorio';
+    if (c.point) return `Aquí está ${c.point.type === 'faro' ? 'el Faro' : 'una Bandera'}`;
     if (c.bld) return 'Casilla ocupada';
     if (Array.isArray(def.on)) {
       if (!def.on.includes(c.t)) return 'Solo sobre ' + def.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ');
@@ -269,17 +307,22 @@ class Game {
     } else if (def.on === 'coast') {
       if (c.t !== 'shallow' || !this.map.isCoast(c)) return 'Debe ir en el agua, junto a la orilla';
     }
-    if (def.limit && this.count(pid, type) >= def.limit) return `Límite alcanzado (${def.limit})`;
+    const limit = this.limitFor(pid, type);
+    if (limit && this.count(pid, type) >= limit) return `Límite alcanzado (${limit})`;
     if (!ignoreCost && p.coins < def.cost) return 'Monedas insuficientes';
+    if (!ignoreCost && def.energyCost && p.energy < def.energyCost) return `Energía insuficiente (${def.energyCost}): construye Molinos`;
     return null;
   }
 
-  place(pid, type, ci) {
+  place(pid, type, ci, rot) {
     const err = this.placeInvalid(pid, type, ci);
     if (err) return err;
     const p = this.players[pid];
-    p.coins -= BUILDINGS[type].cost;
-    this.addBuilding(pid, type, ci);
+    const def = BUILDINGS[type];
+    p.coins -= def.cost;
+    p.energy -= def.energyCost || 0;
+    const b = this.addBuilding(pid, type, ci);
+    if (rot !== undefined) b.rot = rot;
     p.stats.built++;
     this.emit('sound', { name: 'place', pid });
     return null;
@@ -288,8 +331,13 @@ class Game {
   demolish(b) {
     if (!b.alive || b.type === 'core') return;
     const p = this.players[b.owner];
-    p.coins += Math.floor(b.def.cost * (b.built ? 0.4 : 0.75));
-    for (const q of b.queue) p.coins += UNITS[q.type].cost;
+    const back = b.built ? 0.4 : 0.75;
+    p.coins += Math.floor(b.def.cost * back);
+    p.energy += Math.floor((b.def.energyCost || 0) * back);
+    for (const q of b.queue) {
+      p.coins += UNITS[q.type].cost;
+      p.energy += UNITS[q.type].energy || 0;
+    }
     b.queue = [];
     b.alive = false;
     const c = this.cells[b.cell];
@@ -302,6 +350,7 @@ class Game {
     const c = this.cells[ci];
     if (!c || !TERRAIN[c.t].land) return 'Elige una casilla de tierra';
     if (c.t === 'gold') return 'No sobre vetas de oro: ponlo al lado';
+    if (c.point) return 'Ese punto se captura con infantería';
     if (c.bld) return 'Casilla ocupada';
     if (c.owner >= 0 && this.isEnemy(c.owner, pid)) return 'Es territorio enemigo';
     if (how === 'sea' && !c.nb.some((ni) => TERRAIN[this.cells[ni].t].water)) return 'Debe estar en la costa';
@@ -315,9 +364,11 @@ class Game {
     if (!b.def.produces || !b.def.produces.includes(type)) return 'No se produce aquí';
     if (b.queue.length >= 5) return 'Cola llena (5)';
     if (p.coins < def.cost) return 'Monedas insuficientes';
+    if (def.energy && p.energy < def.energy) return `Energía insuficiente (${def.energy}): construye Molinos`;
     this.refreshEconomy();
-    if (p.popUsed + def.pop > p.popCap) return 'Población llena: construye Casas';
+    if (p.popUsed + def.pop > p.popCap) return 'Población llena: construye o amplía Casas';
     p.coins -= def.cost;
+    p.energy -= def.energy || 0;
     b.queue.push({ type, t: 0 });
     p.popUsed += def.pop;
     return null;
@@ -327,14 +378,21 @@ class Game {
     const q = b.queue[idx];
     if (!q) return;
     b.queue.splice(idx, 1);
-    this.players[b.owner].coins += UNITS[q.type].cost;
+    const p = this.players[b.owner];
+    p.coins += UNITS[q.type].cost;
+    p.energy += UNITS[q.type].energy || 0;
+  }
+
+  upgradeCost(b) {
+    if (b.type === 'house') return (b.level || 1) < HOUSE_LEVELS.length ? HOUSE_LEVELS[b.level || 1] : 0;
+    return b.def.upgrade ? BUILDINGS[b.def.upgrade].cost : 0;
   }
 
   upgradeInvalid(b) {
-    const to = b.def.upgrade;
-    if (!to) return 'Este edificio no se puede mejorar';
+    const cost = this.upgradeCost(b);
+    if (!cost) return b.type === 'house' ? 'La Casa ya está en el nivel máximo' : 'Este edificio no se puede mejorar';
     if (!b.built) return 'Aún en construcción';
-    if (this.players[b.owner].coins < BUILDINGS[to].cost) return 'Monedas insuficientes';
+    if (this.players[b.owner].coins < cost) return 'Monedas insuficientes';
     return null;
   }
 
@@ -342,6 +400,15 @@ class Game {
     const err = this.upgradeInvalid(b);
     if (err) return err;
     const p = this.players[b.owner];
+    if (b.type === 'house') {
+      p.coins -= this.upgradeCost(b);
+      b.level = (b.level || 1) + 1;
+      b.maxHp += 150;
+      b.hp += 150;
+      this.refreshEconomy();
+      this.emit('sound', { name: 'place', pid: b.owner });
+      return b;
+    }
     const to = b.def.upgrade;
     p.coins -= BUILDINGS[to].cost;
     b.alive = false;
@@ -360,6 +427,37 @@ class Game {
     return n;
   }
 
+  orderRepair(units, b) {
+    let n = 0;
+    for (const u of units) {
+      if (!u.alive || !u.def.repairs || u.inside) continue;
+      u.state = 'repair';
+      u.repairTarget = b;
+      u.target = null;
+      u.repathT = 0;
+      n++;
+    }
+    return n;
+  }
+
+  repairBuilding(u, b, dt) {
+    u.aimYaw = Math.atan2(b.x - u.x, b.z - u.z);
+    if (this.time - b.lastHit < REPAIR.pause) return;
+    b.hp = Math.min(b.maxHp, b.hp + REPAIR.rate * dt);
+    if (Math.random() < dt * 2) this.fx.push({ k: 'heal', x: b.x + (Math.random() - 0.5) * 0.6, y: b.y + 0.6, z: b.z + (Math.random() - 0.5) * 0.6 });
+  }
+
+  repairAround(u, dt) {
+    const uc = this.cells[u.cell];
+    for (const ci of [uc.i, ...uc.nb]) {
+      const b = this.cells[ci].bld;
+      if (b && b.alive && b.built && b.owner === u.owner && b.hp < b.maxHp) {
+        this.repairBuilding(u, b, dt);
+        return;
+      }
+    }
+  }
+
   orderBoard(units, t) {
     for (const u of units) {
       if (!u.alive || u.mover !== 'land' || u.inside) continue;
@@ -373,7 +471,7 @@ class Game {
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
     if (this.cargoSlots(t) + need > t.def.capacity) {
-      this.toast(u.owner, 'El transporte está lleno', 'bad');
+      this.toast(u.owner, 'La Barcaza está llena', 'bad');
       u.state = 'idle';
       return false;
     }
@@ -389,7 +487,7 @@ class Game {
   }
 
   unload(t) {
-    if (!t.cargo || !t.cargo.length) return 'El transporte va vacío';
+    if (!t.cargo || !t.cargo.length) return 'La Barcaza va vacía';
     const c0 = this.cells[t.cell];
     const spots = [];
     for (const off of SPIRAL) {
@@ -397,7 +495,7 @@ class Game {
       const c = this.map.get(c0.q + off.q, c0.r + off.r);
       if (c && this.passable(c, 'land', t.owner)) spots.push(c.i);
     }
-    if (!spots.length) return 'Acerca el transporte a la orilla para desembarcar';
+    if (!spots.length) return 'Acerca la Barcaza a la orilla para desembarcar';
     t.cargo.forEach((u, i) => {
       const ci = spots[i % spots.length];
       const c = this.cells[ci];
@@ -484,6 +582,7 @@ class Game {
   // ---------- combate ----------
   canAttack(a, w, t) {
     if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
+    if (t.def.stealth && !(t.seenBy & (1 << this.players[a.owner].team))) return false;
     if (t.kind === 'bld') return w.waterOnly ? t.onWater : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
@@ -507,6 +606,8 @@ class Game {
     const reach = (rr) => rr * SQ3 + (t.kind === 'bld' ? 0.75 : 0.35);
     if (d > reach(r)) return false;
     if (a.def.losBlock && d > reach(2) && this.coverBetween(a, t)) r = Math.min(r, 2);
+    // Ocultación: una tropa en bosque solo se ataca de cerca, salvo desde el aire.
+    if (t.kind === 'unit' && t.mover === 'land' && a.mover !== 'air' && this.cells[t.cell].t === 'forest') r = Math.min(r, 2);
     return d <= reach(r);
   }
 
@@ -537,6 +638,7 @@ class Game {
   }
 
   fire(a, w, t) {
+    if (a.def.stealth) a.lastShot = this.time;
     const mult = t.kind === 'bld' ? w.mult.bld || 0 : w.mult[t.cls] || 0;
     const dmg = w.dmg * mult;
     const sx = a.x;
@@ -546,21 +648,54 @@ class Game {
     const color = PLAYER_COLORS[a.owner];
     if (w.proj === 'bullet' || w.proj === 'bolt' || w.proj === 'flak') {
       this.fx.push({ k: 'tracer', x1: sx, y1: sy, z1: sz, x2: t.x, y2: ty, z2: t.z, color, heavy: w.proj !== 'bullet' });
-      this.damage(t, dmg, a.owner);
+      this.damage(t, dmg, a.owner, a);
       if (w.proj === 'flak' || w.proj === 'bolt') this.fx.push({ k: 'spark', x: t.x, y: ty, z: t.z, s: 0.35 });
     } else {
       const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : 5;
       const d = Math.hypot(t.x - sx, t.z - sz);
       this.projectiles.push({
-        kind: w.proj, t, dmg, owner: a.owner, sx, sy, sz, tx: t.x, ty, tz: t.z,
+        kind: w.proj, t, dmg, owner: a.owner, src: a, sx, sy, sz, tx: t.x, ty, tz: t.z,
         time: 0, dur: Math.max(0.12, d / speed), color,
       });
     }
     this.emit('sound', { name: w.proj, x: sx, z: sz });
   }
 
-  damage(t, dmg, src) {
+  domeCovers(owner, t) {
+    const p = this.players[owner];
+    if (!p.dome || p.dome.hp <= 0 || !p.core.alive) return false;
+    return Math.hypot(t.x - p.core.x, t.z - p.core.z) <= DOME.range * SQ3 + 0.5;
+  }
+
+  damage(t, dmg, src, srcEnt) {
     if (!t.alive || dmg <= 0) return;
+    // Cúpula: absorbe el daño de barcos, aeronaves y lanzamisiles cerca del Núcleo.
+    if (srcEnt && (srcEnt.cls === 'ship' || srcEnt.cls === 'sub' || srcEnt.cls === 'air' || srcEnt.type === 'arty') &&
+      this.domeCovers(t.owner, t)) {
+      const dome = this.players[t.owner].dome;
+      dome.hp -= dmg;
+      dome.lastHit = this.time;
+      if (dome.hp <= 0) {
+        dome.hp = 0;
+        dome.brokenAt = this.time;
+        this.fx.push({ k: 'boom', x: this.players[t.owner].core.x, y: 2, z: this.players[t.owner].core.z, s: 1.2 });
+        if (t.owner === 0) this.emit('toast', { text: `La Cúpula se rompió. Vuelve en ${DOME.recover} s`, kind: 'bad' });
+      }
+      return;
+    }
+    if (t.type === 'core') {
+      if (t.shieldUntil > this.time) return;
+      const p = this.players[t.owner];
+      if (!p.emergencyUsed && t.hp - dmg <= t.maxHp * EMERGENCY.at) {
+        p.emergencyUsed = true;
+        t.hp = Math.max(1, Math.min(t.hp, t.maxHp * EMERGENCY.at));
+        t.shieldUntil = this.time + EMERGENCY.time;
+        this.emit('toast', { text: t.owner === 0 ? `¡Escudo de emergencia! ${EMERGENCY.time} s de protección`
+          : `${p.name} activó su escudo de emergencia`, kind: t.owner === 0 ? 'good' : 'info' });
+        this.emit('sound', { name: 'alarm' });
+        return;
+      }
+    }
     t.hp -= dmg;
     t.lastHit = this.time;
     t.lastAttacker = src;
@@ -594,11 +729,28 @@ class Game {
     const p = this.players[pid];
     if (!p.alive) return;
     p.alive = false;
+    if (killer >= 0 && killer !== pid) this.players[killer].coresKilled++;
+    for (const pt of this.points) {
+      if (pt.owner === pid) {
+        pt.owner = -1;
+        pt.prog = 0;
+        pt.capTeam = -1;
+        this.territoryDirty = true;
+      }
+    }
     for (const u of this.units) if (u.alive && u.owner === pid) this.kill(u, -1);
     for (const b of this.buildings) if (b.alive && b.owner === pid) this.kill(b, -1);
     this.emit('toast', { text: pid === 0 ? 'Tu Núcleo ha caído' : `${p.name} ha sido eliminado`, kind: pid === 0 ? 'bad' : 'good' });
     if (killer === 0 && pid !== 0) this.completeObjective('kill');
     this.checkEnd();
+  }
+
+  endKing(team) {
+    if (this.over) return;
+    this.over = true;
+    this.result = team === this.players[0].team ? 'victory' : 'defeat';
+    this.kingWinner = team;
+    this.emit('over', { result: this.result, king: true });
   }
 
   checkEnd() {
@@ -640,7 +792,13 @@ class Game {
       const inc = (p.income / 60) * dt * this.incomeMult(p);
       p.coins += inc;
       p.stats.earned += inc;
+      p.energy += (p.energyRate / 10) * dt;
+      if (p.dome && p.dome.hp <= 0 && this.time - p.dome.brokenAt >= DOME.recover) {
+        p.dome.hp = p.dome.maxHp;
+        if (p.id === 0) this.emit('toast', { text: 'La Cúpula volvió a levantarse', kind: 'good' });
+      }
     }
+    this.updatePoints(dt);
 
     for (let i = 0; i < this.buildings.length; i++) {
       const b = this.buildings[i];
@@ -675,14 +833,123 @@ class Game {
     if (this.buildings.some((b) => b.owner === 0 && b.type === 'barracks' && b.built)) this.completeObjective('barracks');
     const army = this.units.filter((u) => u.owner === 0 && u.def.weapon).length;
     if (army >= 5) this.completeObjective('army');
-    if (this.buildings.some((b) => b.owner === 0 && b.type === 'outpost')) this.completeObjective('outpost');
+    if (this.buildings.some((b) => b.owner === 0 && b.type === 'mill' && b.built)) this.completeObjective('mill');
+    if (this.points.some((pt) => pt.owner === 0)) this.completeObjective('capture');
+  }
+
+  buyDome(pid) {
+    const p = this.players[pid];
+    if (p.dome) return 'Ya tienes una Cúpula';
+    if (p.coins < DOME.cost) return 'Monedas insuficientes';
+    p.coins -= DOME.cost;
+    p.dome = { hp: DOME.hp, maxHp: DOME.hp, brokenAt: -99, lastHit: -99 };
+    this.emit('sound', { name: 'done', pid });
+    return null;
+  }
+
+  // ---------- captura de puntos ----------
+  updatePoints(dt) {
+    this._pointT -= dt;
+    if (this._pointT > 0) return;
+    const step = 0.25 - this._pointT;
+    this._pointT = 0.25;
+    const nearD = CAPTURE.near * SQ3 + 0.5;
+    const clearD = CAPTURE.clear * SQ3 + 0.5;
+    for (const pt of this.points) {
+      const near = new Map();
+      const close = new Set();
+      for (const u of this.units) {
+        if (!u.alive || u.inside) continue;
+        const d = Math.hypot(u.x - pt.x, u.z - pt.z);
+        if (d > clearD) continue;
+        const team = this.players[u.owner].team;
+        close.add(team);
+        if (d <= nearD && u.cls === 'inf') {
+          if (!near.has(team)) near.set(team, u.owner);
+        }
+      }
+      const ownerTeam = pt.owner >= 0 ? this.players[pt.owner].team : -1;
+      pt.contested = close.size > 1;
+      if (pt.contested) continue;
+      if (near.size === 1) {
+        const [team, pid] = [...near.entries()][0];
+        const k = step / CAPTURE.time;
+        if (team === ownerTeam) {
+          pt.prog = Math.min(1, pt.prog + k);
+        } else if (pt.owner >= 0) {
+          pt.prog -= k;
+          if (pt.prog <= 0) {
+            const lost = pt.owner;
+            pt.owner = -1;
+            pt.prog = 0;
+            pt.capTeam = team;
+            this.territoryDirty = true;
+            if (this.players[lost].team === this.players[0].team) {
+              this.emit('toast', { text: `Perdiste ${pt.type === 'faro' ? 'el Faro' : 'una Bandera'}`, kind: 'bad' });
+            }
+          }
+        } else {
+          if (pt.capTeam !== team) {
+            pt.capTeam = team;
+            pt.prog = 0;
+          }
+          pt.prog += k;
+          if (pt.prog >= 1) {
+            pt.prog = 1;
+            pt.owner = pid;
+            this.territoryDirty = true;
+            this.refreshEconomy();
+            const what = pt.type === 'faro' ? 'el Faro' : 'una Bandera';
+            if (this.players[pid].team === this.players[0].team) {
+              this.emit('toast', { text: pid === 0 ? `¡Capturaste ${what}!` : `${this.players[pid].name} capturó ${what}`, kind: 'good' });
+              this.emit('sound', { name: 'done' });
+            } else if (pt.type === 'faro') {
+              this.emit('toast', { text: `${this.players[pid].name} capturó el Faro`, kind: 'bad' });
+            }
+          }
+        }
+      } else if (pt.owner < 0 && pt.prog > 0 && near.size === 0) {
+        pt.prog = Math.max(0, pt.prog - step / (CAPTURE.time * 2));
+      }
+    }
+    if (this.mode.king && !this.over) {
+      const faro = this.points.find((pt) => pt.type === 'faro');
+      if (faro && faro.owner >= 0) {
+        const team = this.players[faro.owner].team;
+        this.kingTime[team] = (this.kingTime[team] || 0) + step;
+        if (this.kingTime[team] >= KING_TIME) this.endKing(team);
+      }
+    }
+  }
+
+  updateStealth() {
+    const detR = (3 * SQ3 + 0.5) ** 2;
+    for (const s of this.units) {
+      if (!s.alive || !s.def.stealth) continue;
+      if (this.time - (s.lastShot || -99) < 3) {
+        s.seenBy = 0xff;
+        continue;
+      }
+      let mask = 1 << this.players[s.owner].team;
+      const check = (e) => {
+        if (!e.alive || !this.isEnemy(e.owner, s.owner)) return;
+        const dx = e.x - s.x;
+        const dz = e.z - s.z;
+        if (dx * dx + dz * dz <= detR) mask |= 1 << this.players[e.owner].team;
+      };
+      for (const u of this.units) if (u.def.detects) check(u);
+      for (const b of this.buildings) if (b.type === 'harbor' && b.built) check(b);
+      s.seenBy = mask;
+    }
   }
 
   updateVisibility() {
     const fog = this.opts.fog;
     const myTeam = this.players[0].team;
+    this.updateStealth();
+    const stealthy = (u) => u.def.stealth && !(u.seenBy & (1 << myTeam));
     if (!fog) {
-      for (const u of this.units) u.visible = !u.inside;
+      for (const u of this.units) u.visible = !u.inside && !stealthy(u);
       return;
     }
     const eyes = [];
@@ -695,11 +962,14 @@ class Game {
     for (const u of this.units) {
       if (u.inside) { u.visible = false; continue; }
       if (this.players[u.owner].team === myTeam) { u.visible = true; continue; }
+      if (stealthy(u)) { u.visible = false; continue; }
+      const inForest = u.mover === 'land' && this.cells[u.cell].t === 'forest';
+      const forestR = (2 * SQ3 + 0.4) ** 2;
       let vis = false;
       for (const e of eyes) {
         const dx = u.x - e[0];
         const dz = u.z - e[1];
-        if (dx * dx + dz * dz <= e[2]) { vis = true; break; }
+        if (dx * dx + dz * dz <= (inForest ? Math.min(e[2], forestR) : e[2])) { vis = true; break; }
       }
       u.visible = vis;
     }
@@ -708,14 +978,19 @@ class Game {
   updateBuilding(b, dt) {
     const def = b.def;
     if (!b.built) {
-      b.progress += dt / def.build;
-      b.hp = Math.min(b.maxHp, b.hp + (def.hp * 0.9 * dt) / def.build);
+      const bc = this.cells[b.cell];
+      const helped = this.units.some((u) => u.alive && !u.inside && u.owner === b.owner && u.def.repairs &&
+        hexDist(this.cells[u.cell].q, this.cells[u.cell].r, bc.q, bc.r) <= 1);
+      b.helped = helped;
+      const rate = helped ? 2 : 1;
+      b.progress += (dt * rate) / def.build;
+      b.hp = Math.min(b.maxHp, b.hp + (def.hp * 0.9 * dt * rate) / def.build);
       if (b.progress >= 1) {
         b.progress = 1;
         b.built = true;
         this.emit('built', { b });
         if (b.owner === 0) {
-          this.emit('toast', { text: `${def.name} terminado`, kind: 'good' });
+          this.emit('toast', { text: `${def.name} ${def.fem ? 'terminada' : 'terminado'}`, kind: 'good' });
           this.emit('sound', { name: 'done' });
         }
       }
@@ -839,6 +1114,7 @@ class Game {
 
     switch (u.state) {
       case 'idle':
+        if (u.def.repairs) this.repairAround(u, dt);
         if (u.aggroTarget && u.aggroTarget.alive && u.def.weapon) {
           u.state = 'attack';
           u.target = u.aggroTarget;
@@ -895,6 +1171,29 @@ class Game {
             if (u.resume >= 0) this.setPath(u, u.resume);
             break;
           }
+        }
+        this.followPath(u, dt);
+        break;
+      }
+      case 'repair': {
+        const b = u.repairTarget;
+        if (!b || !b.alive || b.hp >= b.maxHp) {
+          u.state = 'idle';
+          u.repairTarget = null;
+          u.path = [];
+          break;
+        }
+        const bc = this.cells[b.cell];
+        const uc = this.cells[u.cell];
+        if (hexDist(uc.q, uc.r, bc.q, bc.r) <= 1) {
+          u.path = [];
+          this.repairBuilding(u, b, dt);
+          break;
+        }
+        u.repathT -= dt;
+        if (u.repathT <= 0) {
+          u.repathT = 1;
+          this.setPath(u, b.cell);
         }
         this.followPath(u, dt);
         break;
@@ -978,7 +1277,7 @@ class Game {
       }
       if (p.time >= p.dur) {
         p.done = true;
-        if (p.t.alive) this.damage(p.t, p.dmg, p.owner);
+        if (p.t.alive) this.damage(p.t, p.dmg, p.owner, p.src);
         this.fx.push({ k: 'boom', x: p.tx, y: p.ty, z: p.tz, s: p.kind === 'torpedo' ? 0.7 : 0.5, small: true });
       }
     }

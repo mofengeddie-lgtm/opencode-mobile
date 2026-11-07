@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>HEXBOX</title>
+<title>Faro de Ámbar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap">
@@ -19,8 +19,9 @@
   --line: rgba(205, 226, 240, 0.13);
   --text: #edf3f7;
   --muted: #9aaebd;
-  --gold: #f5bb3c;
-  --gold-ink: #2a1d02;
+  --gold: #f2ab38;
+  --gold-ink: #2a1902;
+  --energy: #7fd4ff;
   --sea: #3aa6c2;
   --good: #5ee07a;
   --bad: #f0585a;
@@ -78,6 +79,11 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .stat + .stat { border-left: 1px solid var(--line); }
 .stat svg { grid-row: span 2; width: 22px; height: 22px; color: var(--muted); }
 .stat.coins svg { color: var(--gold); }
+.stat.energy svg { color: var(--energy); }
+.stat.energy small { color: var(--energy); }
+#king { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); z-index: 4; display: flex; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+#king .bar { width: 90px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.12); overflow: hidden; }
+#king .bar i { display: block; height: 100%; }
 .stat b { font-family: var(--font-display); font-size: 21px; line-height: 1.1; font-weight: 600; font-variant-numeric: tabular-nums; }
 .stat .lbl { line-height: 1.2; }
 .stat small { font-family: var(--font-display); color: var(--good); font-size: 12px; margin-left: 4px; font-weight: 500; }
@@ -132,7 +138,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .bitem.active { border-color: var(--gold); }
 
 /* ---------- dock izquierdo ---------- */
-#leftdock { position: fixed; left: var(--left); bottom: var(--bottom); display: flex; gap: 8px; align-items: flex-end; z-index: 4; }
+#leftdock { position: fixed; left: var(--left); bottom: var(--bottom); display: flex; gap: 8px; align-items: flex-end; z-index: 4; pointer-events: none; }
+#leftdock > * { pointer-events: auto; }
 #minimap { width: 172px; height: 172px; border-radius: var(--r); border: 1px solid var(--line); display: block; background: #16405a; cursor: pointer; touch-action: none; }
 .quick { display: grid; gap: 6px; }
 .qbtn { width: 50px; min-height: 50px; display: grid; justify-items: center; align-content: center; gap: 2px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-size: 10.5px; font-weight: 600; color: var(--muted); padding: 4px 0; }
@@ -165,7 +172,20 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { display: flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px; border-radius: 7px; background: var(--raise); font-size: 13px; font-weight: 600; }
 .chip img { width: 30px; height: 30px; }
-#placebar { padding: 8px 8px 8px 14px; display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+#placebar { padding: 8px 8px 8px 14px; display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+#placebar p { flex: 1 1 240px; min-width: 0; }
+#placebar .err { color: #ffb4b5; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.ecost { font-family: var(--font-display); font-weight: 600; color: var(--energy); font-size: 13px; white-space: nowrap; }
+.costs { display: flex; gap: 6px; align-items: baseline; }
+.bitem.poorE .ecost { color: var(--bad); }
+.levels { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+.levels i { width: 8px; height: 8px; border-radius: 2px; background: rgba(255,255,255,0.15); display: block; }
+.levels i.on { background: var(--gold); }
+.minimap-wrap { position: relative; }
+#btn-mini { position: absolute; top: 4px; right: 4px; width: 30px; min-height: 30px; padding: 0; background: rgba(12,21,29,0.8); }
+.minimap-wrap.min #minimap { width: 40px; height: 40px; opacity: 0; pointer-events: none; }
+.minimap-wrap.min #btn-mini { position: static; width: 44px; min-height: 44px; }
 #placebar p { margin: 0; font-size: 14px; line-height: 1.3; }
 #boxsel { position: fixed; border: 1.5px dashed #fff; background: rgba(255, 255, 255, 0.08); pointer-events: none; z-index: 8; border-radius: 3px; }
 #btn-build { display: none; }
@@ -176,7 +196,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .menu-hero { max-width: 520px; padding-left: clamp(0px, 3vw, 40px); }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand svg { width: 64px; height: 64px; flex: none; }
-.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 9vw, 92px); letter-spacing: 0.04em; line-height: 0.9; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 6.6vw, 76px); letter-spacing: 0.01em; line-height: 0.95; text-wrap: balance; }
+.version { display: inline-block; margin-top: 10px; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
 .brand h1 span { color: var(--gold); }
 .tagline { font-size: clamp(16px, 2vw, 19px); line-height: 1.5; color: #d3e0e8; max-width: 44ch; margin: 18px 0 20px; text-wrap: pretty; }
 .facts { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; }
@@ -257,6 +278,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 }
 @media (max-width: 420px) {
   .stat.clock { display: none; }
+  .players { display: none; }
+  #king { left: auto; right: var(--right); transform: none; top: calc(var(--top) + 56px); }
+  #king .bar { width: 48px; }
 }
 /* Pantallas bajas: celular en horizontal. */
 @media (max-height: 520px) {
@@ -316,6 +340,11 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
         <span class="lbl">Tropas</span>
         <b id="pop">0/0</b>
       </div>
+      <div class="stat energy" title="Energía">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+        <span class="lbl">Energía</span>
+        <div><b id="energy">0</b><small id="energyRate">+0/10 s</small></div>
+      </div>
       <div class="stat clock" title="Tiempo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>
         <span class="lbl">Tiempo</span>
@@ -337,6 +366,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </aside>
 
   <div id="toasts" aria-live="polite"></div>
+  <div id="king" class="panel" hidden></div>
 
   <section id="buildpanel" class="panel" aria-label="Construir">
     <header>
@@ -354,8 +384,13 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </button>
 
   <div id="leftdock">
-    <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
-    <div class="quick">
+    <div class="minimap-wrap" id="miniwrap">
+      <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
+      <button class="btn icon" id="btn-mini" type="button" aria-label="Plegar minimapa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
+      </button>
+    </div>
+    <div class="quick" id="quick">
       <button class="qbtn" type="button" data-quick="army" title="Seleccionar ejército (T)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M6 21v-5a6 6 0 0 1 12 0v5M12 13v8"/></svg>Ejército</button>
       <button class="qbtn" type="button" data-quick="sea" title="Seleccionar barcos">
@@ -372,7 +407,12 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   <section id="selpanel" class="panel" hidden></section>
   <div id="placebar" class="panel" hidden>
     <p id="placetext"></p>
-    <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
+    <div class="actions">
+      <button class="btn" id="btn-place-rot" type="button" title="Girar (R)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg>Girar</button>
+      <button class="btn gold" id="btn-place-ok" type="button" title="Construir (Enter)">Construir</button>
+      <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
+    </div>
   </div>
   <div id="boxsel" hidden></div>
 </div>
@@ -380,14 +420,16 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 <div id="menu" class="screen menu">
   <div class="menu-hero">
     <div class="brand">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f5bb3c" stroke-width="3"/><rect x="21" y="21" width="22" height="22" rx="2" fill="#f5bb3c" transform="rotate(45 32 32)"/></svg>
-      <h1>HEX<span>BOX</span></h1>
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
+      <h1>Faro de <span>Ámbar</span></h1>
     </div>
-    <p class="tagline">Construye tu base sobre un archipiélago de hexágonos, expande tu territorio con ingenieros y derriba los Núcleos rivales por tierra, mar y aire.</p>
+    <span class="version">Prototipo web v0.3</span>
+    <p class="tagline">Construye tu base en un archipiélago de hexágonos, conquista las islas y defiende el Faro: quien lo controla gana un 50 % más de monedas.</p>
     <ul class="facts">
-      <li><b>15</b>edificios</li>
+      <li><b>16</b>edificios</li>
       <li><b>14</b>unidades</li>
-      <li><b>Bots</b>que construyen y atacan</li>
+      <li><b>6</b>modos</li>
+      <li><b>Bots</b>que capturan y atacan</li>
     </ul>
     <p class="hint">Un dedo mueve el mapa · Dos dedos: zoom y giro · Toca una tropa y luego un destino</p>
   </div>
@@ -430,9 +472,13 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
+      <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa, «Girar» si quieres y «Construir».</li>
+      <li><b>Capturar:</b> lleva infantería junto a una Bandera o al Faro y despeja la zona de enemigos durante 12 s.</li>
+      <li><b>Energía:</b> los Molinos la producen; la gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.</li>
+      <li><b>Reparar:</b> selecciona un Ingeniero y toca un edificio tuyo dañado.</li>
       <li><b>Expandirte:</b> selecciona un Ingeniero y toca «Fundar puesto».</li>
-      <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Transporte y luego «Desembarcar» junto a otra isla.</li>
-      <li><b>Mejorar:</b> toca una Granja terminada y elige «Mejorar a Pozo petrolero».</li>
+      <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Barcaza y luego «Desembarcar» junto a otra isla.</li>
+      <li><b>Mejorar:</b> toca una Granja o una Casa terminada. Toca tu Núcleo para comprar la Cúpula.</li>
       <li><b>Ganar:</b> destruye todos los Núcleos enemigos.</li>
     </ul>
     <div class="row">
@@ -450,13 +496,31 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 <script>
 // ---- 00-config.js ----
 'use strict';
-// HEXBOX: datos del juego (edificios, unidades, terreno, jugadores).
+// Faro de Ámbar: datos del juego (edificios, unidades, terreno, jugadores).
 // Todo el balance vive aquí para poder ajustarlo sin tocar la lógica.
 
 const SQ3 = Math.sqrt(3);
-const GAME_NAME = 'HEXBOX';
+const GAME_NAME = 'Faro de Ámbar';
+const GAME_VERSION = '0.3';
 const START_COINS = 2000;
+const START_ENERGY = 60;
 const MAX_POP = 80;
+
+// Puntos de captura (PRD 1.5 RF-07 y RF-12).
+const CAPTURE = { time: 12, near: 1, clear: 2 };
+const POINTS = {
+  faro: { name: 'Faro', claim: 3, bonus: 0.5, income: 0, desc: '+50 % de ingresos para quien lo controle.' },
+  flag: { name: 'Bandera', claim: 2, bonus: 0, income: 200, desc: '+200 monedas/min y territorio en la isla.' },
+};
+const KING_TIME = 180;
+
+// Escudos del Núcleo (PRD 1.5 RF-11).
+const EMERGENCY = { at: 0.25, time: 20 };
+const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
+const HOUSE_LEVELS = [0, 600, 900, 1300];
+// Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
+const REPAIR = { rate: 25, pause: 4 };
+const HOUSE_LIMIT = 6;
 
 // h = altura de la cara superior de la casilla.
 const TERRAIN = {
@@ -471,7 +535,7 @@ const TERRAIN = {
 };
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
-const PLAYER_NAMES = ['Tú', 'Rojo', 'Ámbar', 'Violeta', 'Rosa', 'Turquesa'];
+const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
 
 // Multiplicadores de daño por tipo de objetivo:
 // inf = infantería, veh = vehículo, ship = barco, sub = submarino, air = aéreo, bld = edificio.
@@ -483,7 +547,7 @@ const BUILDINGS = {
     desc: 'Tu base. Genera monedas y dispara a los enemigos. Si lo destruyen, pierdes.',
   },
   farm: {
-    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
+    fem: true, name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
     desc: '+240 monedas/min. Solo sobre pasto. Se puede mejorar a Pozo petrolero.',
   },
   pump: {
@@ -491,16 +555,20 @@ const BUILDINGS = {
     desc: 'Mejora de la Granja que bombea petróleo del subsuelo.',
   },
   mine: {
-    name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
+    fem: true, name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
     desc: '+600 monedas/min. Solo sobre vetas de oro.',
   },
   rig: {
-    name: 'Plataforma', cat: 'eco', cost: 2000, hp: 900, build: 14, income: 1100, on: ['oil'],
+    fem: true, name: 'Plataforma', cat: 'eco', cost: 2000, hp: 900, build: 14, income: 1100, on: ['oil'],
     desc: '+1100 monedas/min. Solo sobre manchas de petróleo en el mar.',
   },
+  mill: {
+    name: 'Molino', cat: 'eco', cost: 300, hp: 400, build: 6, energy: 5, on: 'land',
+    desc: '+5 de energía cada 10 s. La energía paga vehículos, aeronaves y buques.',
+  },
   house: {
-    name: 'Casa', cat: 'eco', cost: 500, hp: 400, build: 6, pop: 5, on: 'land',
-    desc: '+5 de población para tus tropas.',
+    fem: true, name: 'Casa', cat: 'eco', cost: 500, hp: 400, build: 6, pop: 5, on: 'land', limit: HOUSE_LIMIT,
+    desc: '+5 de población por nivel. Se amplía hasta el nivel 4.',
   },
   barracks: {
     name: 'Cuartel', cat: 'prod', cost: 1000, hp: 900, build: 10, on: 'land', limit: 3,
@@ -508,27 +576,27 @@ const BUILDINGS = {
     desc: 'Entrena infantería e ingenieros.',
   },
   factory: {
-    name: 'Fábrica', cat: 'prod', cost: 3000, hp: 1500, build: 16, on: 'land', limit: 3,
+    fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 3,
     produces: ['jeep', 'tank', 'aa', 'arty'],
     desc: 'Fabrica jeeps, tanques, antiaéreos y lanzamisiles.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 3,
-    produces: ['speedboat', 'boatEng', 'transport', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    produces: ['speedboat', 'boatEng', 'barge', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
     desc: 'En agua junto a la orilla. Construye barcos y repara los cercanos.',
   },
   helipad: {
-    name: 'Helipuerto', cat: 'prod', cost: 4000, hp: 1000, build: 18, on: 'land', limit: 2,
+    name: 'Helipuerto', cat: 'prod', cost: 4000, energyCost: 80, hp: 1000, build: 18, on: 'land', limit: 2,
     produces: ['heli'],
     desc: 'Produce helicópteros de ataque.',
   },
   turret: {
-    name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
+    fem: true, name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
     weapon: { dmg: 40, cd: 0.9, range: 4, proj: 'bullet', mult: { inf: 1.5, veh: 1, ship: 1, air: 0.8, bld: 0.6, sub: 0 } },
     desc: 'Dispara a tropas, barcos y helicópteros cercanos.',
   },
   aadef: {
-    name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
+    fem: true, name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
     weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
     desc: 'Misiles de largo alcance. Solo dispara a unidades aéreas.',
   },
@@ -537,7 +605,7 @@ const BUILDINGS = {
     desc: 'Bloquea el paso a las tropas enemigas. Las tuyas pasan.',
   },
   hospital: {
-    name: 'Enfermería', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2,
+    fem: true, name: 'Enfermería', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2,
     heal: { cls: ['inf', 'veh'], pct: 0.04, range: 2 },
     desc: 'Cura infantería y vehículos cercanos (4% de vida por segundo).',
   },
@@ -548,7 +616,7 @@ const BUILDINGS = {
 };
 
 const BUILD_TABS = [
-  { id: 'eco', name: 'Economía', items: ['farm', 'mine', 'rig', 'house'] },
+  { id: 'eco', name: 'Economía', items: ['farm', 'mill', 'mine', 'rig', 'house'] },
   { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad'] },
   { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'wall', 'hospital'] },
 ];
@@ -556,7 +624,8 @@ const BUILD_TABS = [
 const UNITS = {
   engineer: {
     name: 'Ingeniero', cls: 'inf', mover: 'land', cost: 300, hp: 120, speed: 1.6, pop: 1, build: 5, vision: 3,
-    founds: 'land', desc: 'Funda puestos avanzados para ampliar tu territorio.',
+    founds: 'land', repairs: true,
+    desc: 'Funda puestos avanzados, repara edificios y acelera las obras cercanas.',
   },
   rifle: {
     name: 'Fusilero', cls: 'inf', mover: 'land', cost: 400, hp: 260, speed: 1.5, pop: 1, build: 5,
@@ -574,22 +643,22 @@ const UNITS = {
     desc: 'Cohetes contra vehículos, barcos y edificios.',
   },
   jeep: {
-    name: 'Jeep', cls: 'veh', mover: 'land', cost: 1600, hp: 750, speed: 2.6, pop: 2, build: 9,
+    name: 'Jeep', cls: 'veh', mover: 'land', cost: 1600, energy: 10, hp: 750, speed: 2.6, pop: 2, build: 9,
     weapon: { dmg: 20, cd: 0.4, range: 3, proj: 'bullet', mult: { inf: 1.3, veh: 0.6, ship: 0.5, air: 0.5, bld: 0.5, sub: 0 } },
     desc: 'Rápido. Ideal para cazar infantería.',
   },
   tank: {
-    name: 'Tanque', cls: 'veh', mover: 'land', cost: 3400, hp: 2200, speed: 1.2, pop: 3, build: 14,
+    name: 'Tanque', cls: 'veh', mover: 'land', cost: 3400, energy: 30, hp: 2200, speed: 1.2, pop: 3, build: 14,
     weapon: { dmg: 140, cd: 2.2, range: 4, proj: 'shell', mult: { inf: 0.9, veh: 1.3, ship: 1, air: 0, bld: 1.5, sub: 0 } },
     desc: 'Blindado y potente. No puede disparar al aire.',
   },
   aa: {
-    name: 'Antiaéreo', cls: 'veh', mover: 'land', cost: 2400, hp: 900, speed: 1.8, pop: 2, build: 10,
+    name: 'Antiaéreo', cls: 'veh', mover: 'land', cost: 2400, energy: 20, hp: 900, speed: 1.8, pop: 2, build: 10,
     weapon: { dmg: 70, cd: 0.9, range: 5, proj: 'flak', mult: { inf: 0, veh: 0, ship: 0, air: 2.4, bld: 0, sub: 0 } },
     desc: 'Solo dispara a unidades aéreas, pero las destroza.',
   },
   arty: {
-    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, hp: 700, speed: 1.0, pop: 2, build: 14,
+    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, energy: 40, hp: 700, speed: 1.0, pop: 2, build: 14,
     weapon: { dmg: 380, cd: 6, range: 7, proj: 'missile', mult: { bld: 1 } },
     desc: 'Artillería de muy largo alcance. Solo ataca edificios.',
   },
@@ -602,22 +671,22 @@ const UNITS = {
     name: 'Barco ingeniero', cls: 'ship', mover: 'sea', cost: 1600, hp: 500, speed: 2.2, pop: 1, build: 8,
     founds: 'sea', desc: 'Funda puestos avanzados en otras islas.',
   },
-  transport: {
-    name: 'Transporte', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
+  barge: {
+    name: 'Barcaza', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
     desc: 'Lleva 6 tropas de tierra a otras islas (un vehículo ocupa 2).',
   },
   destroyer: {
-    name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, hp: 2800, speed: 1.3, pop: 3, build: 16,
+    name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, energy: 30, detects: true, hp: 2800, speed: 1.3, pop: 3, build: 16,
     weapon: { dmg: 120, cd: 1.7, range: 5, proj: 'shell', mult: { inf: 1, veh: 1, ship: 1.2, air: 0.3, bld: 1.3, sub: 1.4 } },
     desc: 'Cañón de largo alcance. Puede atacar la costa y submarinos.',
   },
   sub: {
-    name: 'Submarino', cls: 'sub', mover: 'sea', cost: 3800, hp: 1400, speed: 1.6, pop: 2, build: 14,
+    name: 'Submarino', cls: 'sub', mover: 'sea', cost: 3800, energy: 30, stealth: true, hp: 1400, speed: 1.6, pop: 2, build: 14,
     weapon: { dmg: 240, cd: 3, range: 3, proj: 'torpedo', waterOnly: true, mult: { ship: 1.5, sub: 1, bld: 1.5 } },
-    desc: 'Torpedos contra barcos y edificios en el agua. Solo destructores y helicópteros pueden dañarlo.',
+    desc: 'Torpedos contra barcos y edificios en el agua. Invisible salvo cerca de Destructores, Helicópteros o Puertos enemigos.',
   },
   heli: {
-    name: 'Helicóptero', cls: 'air', mover: 'air', cost: 5500, hp: 1500, speed: 2.4, pop: 2, build: 18,
+    name: 'Helicóptero', cls: 'air', mover: 'air', cost: 5500, energy: 50, detects: true, hp: 1500, speed: 2.4, pop: 2, build: 18,
     losBlock: true,
     weapon: { dmg: 60, cd: 0.8, range: 4, proj: 'rocket', mult: { inf: 1.2, veh: 1.2, ship: 1, air: 1, bld: 1, sub: 0.8 } },
     desc: 'Vuela sobre todo. Montañas y bosques le reducen el alcance a 2.',
@@ -632,6 +701,8 @@ const MODES = {
   ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3] },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5] },
+  king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total', players: 4, teams: [0, 1, 2, 3], king: true },
+  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2 },
 };
 
 const MAPS = {
@@ -648,9 +719,10 @@ const DIFFICULTY = {
 
 const OBJECTIVES = [
   { id: 'farm', text: 'Construye una Granja' },
+  { id: 'mill', text: 'Construye un Molino para tener energía' },
   { id: 'barracks', text: 'Construye un Cuartel' },
   { id: 'army', text: 'Ten 5 tropas de combate' },
-  { id: 'outpost', text: 'Funda un Puesto avanzado con un Ingeniero' },
+  { id: 'capture', text: 'Captura una Bandera o el Faro con infantería' },
   { id: 'kill', text: 'Destruye un Núcleo enemigo' },
 ];
 
@@ -834,6 +906,7 @@ class GameMap {
     this.cells = [];
     this.lookup = new Map();
     this.homes = [];
+    this.points = [];
     this.generate();
   }
 
@@ -1043,9 +1116,15 @@ class GameMap {
       const cand = this.cells.filter((c) => c.land && this.dist(c, cc0) <= 2);
       for (const c of pick(cand, 3)) c.t = 'gold';
     }
+    // Islas pequeñas: bandera en el centro y una veta de oro al lado.
     for (const s of small) {
       const sc = this.cells[s.i];
-      if (sc.land) sc.t = 'gold';
+      if (!sc.land || this.points.some((pt) => this.dist(this.cells[pt.cell], sc) < 4)) continue;
+      if (this.homes.some((hi) => this.dist(this.cells[hi], sc) < 6)) continue;
+      sc.t = 'grass';
+      this.points.push({ type: 'flag', cell: sc.i });
+      const nb = sc.nb.map((ni) => this.cells[ni]).find((c) => c.land && !c.bridge);
+      if (nb) nb.t = 'gold';
     }
 
     // Manchas de petróleo junto a islas pequeñas, la isla central y fuera de cada bahía.
@@ -1062,6 +1141,33 @@ class GameMap {
       const c = this.atWorld(l.x, l.z);
       if (c && !c.land) c.t = 'oil';
     }
+
+    // Continente: banderas entre las bases, a medio camino del centro.
+    if (kind === 'continent') {
+      for (let i = 0; i < n; i++) {
+        const ang = a0 + ((i + 0.5) * Math.PI * 2) / n;
+        for (const k of [0.7, 0.62, 0.78]) {
+          const c = this.atWorld(Math.cos(ang) * ring * k, Math.sin(ang) * ring * k);
+          if (!c || !c.land || c.t === 'gold' || c.t === 'mount') continue;
+          if (this.points.some((pt) => this.dist(this.cells[pt.cell], c) < 4)) continue;
+          if (this.homes.some((hi) => this.dist(this.cells[hi], c) < 6)) continue;
+          c.t = 'grass';
+          this.points.push({ type: 'flag', cell: c.i });
+          break;
+        }
+      }
+    }
+
+    // El Faro ocupa el centro del mapa.
+    const center = this.get(0, 0);
+    center.land = true;
+    center.bridge = false;
+    center.t = 'grass';
+    for (const ni of center.nb) {
+      const c = this.cells[ni];
+      if (c.t === 'mount' || c.t === 'gold') c.t = 'grass';
+    }
+    this.points.unshift({ type: 'faro', cell: center.i });
 
     for (const c of this.cells) c.h = TERRAIN[c.t].h;
     this.computeComponents();
@@ -1257,6 +1363,22 @@ const MODEL_BUILDERS = {
     r.box(0.14, 0.14, 0.18, PAL.dark, 0, -0.07, -0.42);
     return { main: b.build(), rocker: r.build(), rockerY: 0.82, rockerZ: -0.05 };
   },
+  mill(tc) {
+    const b = new PartBuilder();
+    b.cyl(0.42, 0.12, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.add(GEO.cyl8, PAL.white, 0, 0.62, 0, 0.26, 1.0, 0.26);
+    b.add(GEO.cone8, tc, 0, 1.28, 0, 0.32, 0.32, 0.32);
+    b.box(0.16, 0.24, 0.02, PAL.wood, 0, 0.12, 0.27);
+    b.box(0.1, 0.1, 0.02, PAL.glass, 0, 0.62, 0.27);
+    const r = new PartBuilder();
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      r.add(GEO.box, PAL.wood, Math.cos(a) * 0.32, Math.sin(a) * 0.32, 0, 0.62, 0.05, 0.02, 0, 0, a);
+      r.add(GEO.box, PAL.white, Math.cos(a) * 0.38, Math.sin(a) * 0.38, 0.015, 0.46, 0.14, 0.01, 0, 0, a);
+    }
+    r.add(GEO.cyl8, PAL.dark, 0, 0, 0, 0.06, 0.08, 0.06, Math.PI / 2, 0, 0);
+    return { main: b.build(), blades: r.build(), bladesY: 1.0, bladesZ: 0.3 };
+  },
   aadef(tc) {
     const b = new PartBuilder();
     b.cyl(0.5, 0.25, PAL.stone, 0, 0, 0, GEO.cyl6);
@@ -1450,7 +1572,7 @@ const MODEL_BUILDERS = {
     t.add(GEO.box, tc, 0, 0.12, 0.2, 0.39, 0.05, 0.08, -0.35, 0, 0);
     return { main: b.build(), turret: t.build(), turretY: 0.22, turretZ: -0.12, scale: 1.15 };
   },
-  transport(tc) {
+  barge(tc) {
     const b = new PartBuilder();
     b.box(0.72, 0.16, 1.25, PAL.gray, 0, -0.02, 0);
     b.box(0.08, 0.2, 1.2, shade(PAL.gray, -0.15), -0.34, 0.12, 0);
@@ -1534,7 +1656,7 @@ const UNIT_MODEL = {
   sub: (tc) => MODEL_BUILDERS.sub(tc),
   heli: (tc) => MODEL_BUILDERS.heli(tc),
   arty: (tc) => MODEL_BUILDERS.arty(tc),
-  transport: (tc) => MODEL_BUILDERS.transport(tc),
+  barge: (tc) => MODEL_BUILDERS.barge(tc),
 };
 
 const _modelCache = new Map();
@@ -1557,7 +1679,13 @@ function createVisual(type, color) {
   main.castShadow = true;
   main.receiveShadow = true;
   group.add(main);
-  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null };
+  const out = { group, main, turret: null, rotor: null, crystal: null, rocker: null, blades: null };
+  if (m.blades) {
+    out.blades = new THREE.Mesh(m.blades, MODEL_MAT);
+    out.blades.position.set(0, m.bladesY, m.bladesZ);
+    out.blades.castShadow = true;
+    group.add(out.blades);
+  }
   if (m.rocker) {
     out.rocker = new THREE.Mesh(m.rocker, MODEL_MAT);
     out.rocker.position.set(0, m.rockerY, m.rockerZ || 0);
@@ -1586,6 +1714,67 @@ function createVisual(type, color) {
     group.add(out.crystal);
   }
   if (m.scale) group.scale.setScalar(m.scale);
+  return out;
+}
+
+// El Faro y las Banderas: partes neutras + piezas que cambian de color según el dueño.
+const NEUTRAL = 0xd9dcdf;
+function createPointVisual(type) {
+  const group = new THREE.Group();
+  const own = new THREE.MeshStandardMaterial({ color: NEUTRAL, flatShading: true, roughness: 0.7 });
+  const out = { group, own, beam: null, lamp: null };
+  const b = new PartBuilder();
+  if (type === 'faro') {
+    b.cyl(0.95, 0.18, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.62, 0.22, shade(PAL.stone, 0.12), 0, 0.18, 0, GEO.cyl6);
+    const levels = 5;
+    for (let i = 0; i < levels; i++) {
+      const r0 = 0.42 - i * 0.035;
+      b.add(GEO.cyl12, i % 2 ? 0xc0392b : PAL.white, 0, 0.4 + i * 0.36 + 0.18, 0, r0, 0.36, r0);
+    }
+    b.cyl(0.34, 0.06, PAL.dark, 0, 2.2, 0, GEO.cyl12);
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      b.box(0.03, 0.34, 0.03, PAL.dark, Math.cos(a) * 0.24, 2.26, Math.sin(a) * 0.24);
+    }
+    b.add(GEO.cone8, PAL.dark, 0, 2.78, 0, 0.3, 0.32, 0.3);
+    b.box(0.2, 0.3, 0.02, PAL.wood, 0, 0.4, 0.44);
+    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    main.castShadow = true;
+    group.add(main);
+    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10),
+      new THREE.MeshStandardMaterial({ color: 0xffc35a, emissive: 0xffa21f, emissiveIntensity: 1.4 }));
+    lamp.position.y = 2.42;
+    group.add(lamp);
+    const beamGeo = new THREE.ConeGeometry(0.7, 5, 16, 1, true);
+    beamGeo.translate(0, -2.5, 0);
+    beamGeo.rotateZ(Math.PI / 2);
+    const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({
+      color: 0xffc35a, transparent: true, opacity: 0.22, depthWrite: false, side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+    }));
+    const pivot = new THREE.Group();
+    pivot.position.y = 2.42;
+    pivot.add(beam);
+    group.add(pivot);
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.08, 6, 1, false, Math.PI / 6), own);
+    band.position.y = 0.42;
+    group.add(band);
+    out.beam = pivot;
+    out.lamp = lamp;
+  } else {
+    b.cyl(0.32, 0.1, PAL.stone, 0, 0, 0, GEO.cyl6);
+    b.cyl(0.035, 1.25, PAL.dark, 0, 0.1, 0);
+    b.add(GEO.sphere, PAL.yellow, 0, 1.38, 0, 0.05, 0.05, 0.05);
+    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    main.castShadow = true;
+    group.add(main);
+    const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.02), own);
+    cloth.position.set(0.27, 1.16, 0);
+    cloth.castShadow = true;
+    group.add(cloth);
+    out.cloth = cloth;
+  }
   return out;
 }
 
@@ -1619,7 +1808,12 @@ const Thumbs = {
     if (this.cache.has(key)) return this.cache.get(key);
     let url = '';
     if (this.renderer) {
-      const v = createVisual(type, color);
+      const isPoint = type === 'faro' || type === 'flag';
+      const v = isPoint ? createPointVisual(type) : createVisual(type, color);
+      if (isPoint) {
+        v.own.color.set(color);
+        if (v.beam) v.beam.visible = false;
+      }
       v.group.scale.setScalar(1);
       if (v.crystal) v.crystal.position.y = 1.1;
       this.scene.add(v.group);
@@ -1653,7 +1847,7 @@ class Game {
     this.diff = DIFFICULTY[opts.difficulty];
     this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
     this.cells = this.map.cells;
-    this.speed = opts.turbo ? 2 : 1;
+    this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.time = 0;
     this.over = false;
     this.result = null;
@@ -1670,14 +1864,28 @@ class Game {
     this._slowT = 0;
     this._fogT = 0;
 
+    this.kingTime = {};
     this.players = [];
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
         id: i, team: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
-        coins: START_COINS, human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0,
+        coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
+        human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
+        emergencyUsed: false, dome: null,
         stats: { built: 0, trained: 0, lost: 0, kills: 0, earned: 0 },
       });
     }
+    // Puntos de captura: el Faro y las Banderas.
+    this.points = this.map.points.map((pt, i) => {
+      const c = this.cells[pt.cell];
+      const point = {
+        id: i, type: pt.type, def: POINTS[pt.type], cell: pt.cell, x: c.x, z: c.z, y: c.h, alive: true, kind: 'point',
+        owner: -1, prog: 0, capTeam: -1, contested: false,
+      };
+      c.point = point;
+      return point;
+    });
+    this._pointT = 0;
     for (const p of this.players) {
       const home = this.cells[this.map.homes[p.id]];
       p.core = this.addBuilding(p.id, 'core', home.i, true);
@@ -1847,11 +2055,15 @@ class Game {
       c.ownerD = 99;
       c.ownerId = 0;
     }
-    for (const b of this.buildings) {
-      if (!b.alive || !b.def.claim) continue;
+    const claimers = this.buildings.filter((b) => b.alive && b.def.claim)
+      .map((b) => ({ owner: b.owner, cell: b.cell, claim: b.def.claim, id: b.id }));
+    for (const pt of this.points) {
+      if (pt.owner >= 0) claimers.push({ owner: pt.owner, cell: pt.cell, claim: pt.def.claim, id: 1e6 + pt.id });
+    }
+    for (const b of claimers) {
       const bc = this.cells[b.cell];
       for (const off of SPIRAL) {
-        if (off.d > b.def.claim) break;
+        if (off.d > b.claim) break;
         const c = this.map.get(bc.q + off.q, bc.r + off.r);
         if (!c) continue;
         if (off.d < c.ownerD || (off.d === c.ownerD && b.id < c.ownerId)) {
@@ -1871,18 +2083,31 @@ class Game {
       p.income = 0;
       p.popCap = 0;
       p.popUsed = 0;
+      p.energyRate = 0;
+      p.bonus = 0;
     }
     for (const b of this.buildings) {
       if (!b.alive) continue;
       const p = this.players[b.owner];
       if (b.built) {
         p.income += b.def.income || 0;
-        p.popCap += b.def.pop || 0;
+        p.popCap += (b.def.pop || 0) * (b.level || 1);
+        p.energyRate += b.def.energy || 0;
       }
       for (const q of b.queue) p.popUsed += UNITS[q.type].pop;
     }
+    for (const pt of this.points) {
+      if (pt.owner < 0) continue;
+      const p = this.players[pt.owner];
+      p.income += pt.def.income;
+      p.bonus += pt.def.bonus;
+    }
     for (const u of this.units) if (u.alive) this.players[u.owner].popUsed += u.def.pop;
-    for (const p of this.players) p.popCap = Math.min(MAX_POP, p.popCap);
+    for (const p of this.players) {
+      p.popCap = Math.min(MAX_POP, p.popCap);
+      p.baseIncome = p.income;
+      p.income = Math.round(p.income * (1 + p.bonus));
+    }
   }
 
   incomeMult(p) {
@@ -1895,12 +2120,19 @@ class Game {
     return n;
   }
 
+  limitFor(pid, type) {
+    const def = BUILDINGS[type];
+    if (type === 'house') return HOUSE_LIMIT + 2 * this.players[pid].coresKilled;
+    return def.limit || 0;
+  }
+
   placeInvalid(pid, type, ci, ignoreCost = false) {
     const def = BUILDINGS[type];
     const c = this.cells[ci];
     const p = this.players[pid];
     if (!c) return 'Casilla no válida';
     if (c.owner !== pid) return 'Fuera de tu territorio';
+    if (c.point) return `Aquí está ${c.point.type === 'faro' ? 'el Faro' : 'una Bandera'}`;
     if (c.bld) return 'Casilla ocupada';
     if (Array.isArray(def.on)) {
       if (!def.on.includes(c.t)) return 'Solo sobre ' + def.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ');
@@ -1910,17 +2142,22 @@ class Game {
     } else if (def.on === 'coast') {
       if (c.t !== 'shallow' || !this.map.isCoast(c)) return 'Debe ir en el agua, junto a la orilla';
     }
-    if (def.limit && this.count(pid, type) >= def.limit) return `Límite alcanzado (${def.limit})`;
+    const limit = this.limitFor(pid, type);
+    if (limit && this.count(pid, type) >= limit) return `Límite alcanzado (${limit})`;
     if (!ignoreCost && p.coins < def.cost) return 'Monedas insuficientes';
+    if (!ignoreCost && def.energyCost && p.energy < def.energyCost) return `Energía insuficiente (${def.energyCost}): construye Molinos`;
     return null;
   }
 
-  place(pid, type, ci) {
+  place(pid, type, ci, rot) {
     const err = this.placeInvalid(pid, type, ci);
     if (err) return err;
     const p = this.players[pid];
-    p.coins -= BUILDINGS[type].cost;
-    this.addBuilding(pid, type, ci);
+    const def = BUILDINGS[type];
+    p.coins -= def.cost;
+    p.energy -= def.energyCost || 0;
+    const b = this.addBuilding(pid, type, ci);
+    if (rot !== undefined) b.rot = rot;
     p.stats.built++;
     this.emit('sound', { name: 'place', pid });
     return null;
@@ -1929,8 +2166,13 @@ class Game {
   demolish(b) {
     if (!b.alive || b.type === 'core') return;
     const p = this.players[b.owner];
-    p.coins += Math.floor(b.def.cost * (b.built ? 0.4 : 0.75));
-    for (const q of b.queue) p.coins += UNITS[q.type].cost;
+    const back = b.built ? 0.4 : 0.75;
+    p.coins += Math.floor(b.def.cost * back);
+    p.energy += Math.floor((b.def.energyCost || 0) * back);
+    for (const q of b.queue) {
+      p.coins += UNITS[q.type].cost;
+      p.energy += UNITS[q.type].energy || 0;
+    }
     b.queue = [];
     b.alive = false;
     const c = this.cells[b.cell];
@@ -1943,6 +2185,7 @@ class Game {
     const c = this.cells[ci];
     if (!c || !TERRAIN[c.t].land) return 'Elige una casilla de tierra';
     if (c.t === 'gold') return 'No sobre vetas de oro: ponlo al lado';
+    if (c.point) return 'Ese punto se captura con infantería';
     if (c.bld) return 'Casilla ocupada';
     if (c.owner >= 0 && this.isEnemy(c.owner, pid)) return 'Es territorio enemigo';
     if (how === 'sea' && !c.nb.some((ni) => TERRAIN[this.cells[ni].t].water)) return 'Debe estar en la costa';
@@ -1956,9 +2199,11 @@ class Game {
     if (!b.def.produces || !b.def.produces.includes(type)) return 'No se produce aquí';
     if (b.queue.length >= 5) return 'Cola llena (5)';
     if (p.coins < def.cost) return 'Monedas insuficientes';
+    if (def.energy && p.energy < def.energy) return `Energía insuficiente (${def.energy}): construye Molinos`;
     this.refreshEconomy();
-    if (p.popUsed + def.pop > p.popCap) return 'Población llena: construye Casas';
+    if (p.popUsed + def.pop > p.popCap) return 'Población llena: construye o amplía Casas';
     p.coins -= def.cost;
+    p.energy -= def.energy || 0;
     b.queue.push({ type, t: 0 });
     p.popUsed += def.pop;
     return null;
@@ -1968,14 +2213,21 @@ class Game {
     const q = b.queue[idx];
     if (!q) return;
     b.queue.splice(idx, 1);
-    this.players[b.owner].coins += UNITS[q.type].cost;
+    const p = this.players[b.owner];
+    p.coins += UNITS[q.type].cost;
+    p.energy += UNITS[q.type].energy || 0;
+  }
+
+  upgradeCost(b) {
+    if (b.type === 'house') return (b.level || 1) < HOUSE_LEVELS.length ? HOUSE_LEVELS[b.level || 1] : 0;
+    return b.def.upgrade ? BUILDINGS[b.def.upgrade].cost : 0;
   }
 
   upgradeInvalid(b) {
-    const to = b.def.upgrade;
-    if (!to) return 'Este edificio no se puede mejorar';
+    const cost = this.upgradeCost(b);
+    if (!cost) return b.type === 'house' ? 'La Casa ya está en el nivel máximo' : 'Este edificio no se puede mejorar';
     if (!b.built) return 'Aún en construcción';
-    if (this.players[b.owner].coins < BUILDINGS[to].cost) return 'Monedas insuficientes';
+    if (this.players[b.owner].coins < cost) return 'Monedas insuficientes';
     return null;
   }
 
@@ -1983,6 +2235,15 @@ class Game {
     const err = this.upgradeInvalid(b);
     if (err) return err;
     const p = this.players[b.owner];
+    if (b.type === 'house') {
+      p.coins -= this.upgradeCost(b);
+      b.level = (b.level || 1) + 1;
+      b.maxHp += 150;
+      b.hp += 150;
+      this.refreshEconomy();
+      this.emit('sound', { name: 'place', pid: b.owner });
+      return b;
+    }
     const to = b.def.upgrade;
     p.coins -= BUILDINGS[to].cost;
     b.alive = false;
@@ -2001,6 +2262,37 @@ class Game {
     return n;
   }
 
+  orderRepair(units, b) {
+    let n = 0;
+    for (const u of units) {
+      if (!u.alive || !u.def.repairs || u.inside) continue;
+      u.state = 'repair';
+      u.repairTarget = b;
+      u.target = null;
+      u.repathT = 0;
+      n++;
+    }
+    return n;
+  }
+
+  repairBuilding(u, b, dt) {
+    u.aimYaw = Math.atan2(b.x - u.x, b.z - u.z);
+    if (this.time - b.lastHit < REPAIR.pause) return;
+    b.hp = Math.min(b.maxHp, b.hp + REPAIR.rate * dt);
+    if (Math.random() < dt * 2) this.fx.push({ k: 'heal', x: b.x + (Math.random() - 0.5) * 0.6, y: b.y + 0.6, z: b.z + (Math.random() - 0.5) * 0.6 });
+  }
+
+  repairAround(u, dt) {
+    const uc = this.cells[u.cell];
+    for (const ci of [uc.i, ...uc.nb]) {
+      const b = this.cells[ci].bld;
+      if (b && b.alive && b.built && b.owner === u.owner && b.hp < b.maxHp) {
+        this.repairBuilding(u, b, dt);
+        return;
+      }
+    }
+  }
+
   orderBoard(units, t) {
     for (const u of units) {
       if (!u.alive || u.mover !== 'land' || u.inside) continue;
@@ -2014,7 +2306,7 @@ class Game {
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
     if (this.cargoSlots(t) + need > t.def.capacity) {
-      this.toast(u.owner, 'El transporte está lleno', 'bad');
+      this.toast(u.owner, 'La Barcaza está llena', 'bad');
       u.state = 'idle';
       return false;
     }
@@ -2030,7 +2322,7 @@ class Game {
   }
 
   unload(t) {
-    if (!t.cargo || !t.cargo.length) return 'El transporte va vacío';
+    if (!t.cargo || !t.cargo.length) return 'La Barcaza va vacía';
     const c0 = this.cells[t.cell];
     const spots = [];
     for (const off of SPIRAL) {
@@ -2038,7 +2330,7 @@ class Game {
       const c = this.map.get(c0.q + off.q, c0.r + off.r);
       if (c && this.passable(c, 'land', t.owner)) spots.push(c.i);
     }
-    if (!spots.length) return 'Acerca el transporte a la orilla para desembarcar';
+    if (!spots.length) return 'Acerca la Barcaza a la orilla para desembarcar';
     t.cargo.forEach((u, i) => {
       const ci = spots[i % spots.length];
       const c = this.cells[ci];
@@ -2125,6 +2417,7 @@ class Game {
   // ---------- combate ----------
   canAttack(a, w, t) {
     if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
+    if (t.def.stealth && !(t.seenBy & (1 << this.players[a.owner].team))) return false;
     if (t.kind === 'bld') return w.waterOnly ? t.onWater : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
@@ -2148,6 +2441,8 @@ class Game {
     const reach = (rr) => rr * SQ3 + (t.kind === 'bld' ? 0.75 : 0.35);
     if (d > reach(r)) return false;
     if (a.def.losBlock && d > reach(2) && this.coverBetween(a, t)) r = Math.min(r, 2);
+    // Ocultación: una tropa en bosque solo se ataca de cerca, salvo desde el aire.
+    if (t.kind === 'unit' && t.mover === 'land' && a.mover !== 'air' && this.cells[t.cell].t === 'forest') r = Math.min(r, 2);
     return d <= reach(r);
   }
 
@@ -2178,6 +2473,7 @@ class Game {
   }
 
   fire(a, w, t) {
+    if (a.def.stealth) a.lastShot = this.time;
     const mult = t.kind === 'bld' ? w.mult.bld || 0 : w.mult[t.cls] || 0;
     const dmg = w.dmg * mult;
     const sx = a.x;
@@ -2187,21 +2483,54 @@ class Game {
     const color = PLAYER_COLORS[a.owner];
     if (w.proj === 'bullet' || w.proj === 'bolt' || w.proj === 'flak') {
       this.fx.push({ k: 'tracer', x1: sx, y1: sy, z1: sz, x2: t.x, y2: ty, z2: t.z, color, heavy: w.proj !== 'bullet' });
-      this.damage(t, dmg, a.owner);
+      this.damage(t, dmg, a.owner, a);
       if (w.proj === 'flak' || w.proj === 'bolt') this.fx.push({ k: 'spark', x: t.x, y: ty, z: t.z, s: 0.35 });
     } else {
       const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : 5;
       const d = Math.hypot(t.x - sx, t.z - sz);
       this.projectiles.push({
-        kind: w.proj, t, dmg, owner: a.owner, sx, sy, sz, tx: t.x, ty, tz: t.z,
+        kind: w.proj, t, dmg, owner: a.owner, src: a, sx, sy, sz, tx: t.x, ty, tz: t.z,
         time: 0, dur: Math.max(0.12, d / speed), color,
       });
     }
     this.emit('sound', { name: w.proj, x: sx, z: sz });
   }
 
-  damage(t, dmg, src) {
+  domeCovers(owner, t) {
+    const p = this.players[owner];
+    if (!p.dome || p.dome.hp <= 0 || !p.core.alive) return false;
+    return Math.hypot(t.x - p.core.x, t.z - p.core.z) <= DOME.range * SQ3 + 0.5;
+  }
+
+  damage(t, dmg, src, srcEnt) {
     if (!t.alive || dmg <= 0) return;
+    // Cúpula: absorbe el daño de barcos, aeronaves y lanzamisiles cerca del Núcleo.
+    if (srcEnt && (srcEnt.cls === 'ship' || srcEnt.cls === 'sub' || srcEnt.cls === 'air' || srcEnt.type === 'arty') &&
+      this.domeCovers(t.owner, t)) {
+      const dome = this.players[t.owner].dome;
+      dome.hp -= dmg;
+      dome.lastHit = this.time;
+      if (dome.hp <= 0) {
+        dome.hp = 0;
+        dome.brokenAt = this.time;
+        this.fx.push({ k: 'boom', x: this.players[t.owner].core.x, y: 2, z: this.players[t.owner].core.z, s: 1.2 });
+        if (t.owner === 0) this.emit('toast', { text: `La Cúpula se rompió. Vuelve en ${DOME.recover} s`, kind: 'bad' });
+      }
+      return;
+    }
+    if (t.type === 'core') {
+      if (t.shieldUntil > this.time) return;
+      const p = this.players[t.owner];
+      if (!p.emergencyUsed && t.hp - dmg <= t.maxHp * EMERGENCY.at) {
+        p.emergencyUsed = true;
+        t.hp = Math.max(1, Math.min(t.hp, t.maxHp * EMERGENCY.at));
+        t.shieldUntil = this.time + EMERGENCY.time;
+        this.emit('toast', { text: t.owner === 0 ? `¡Escudo de emergencia! ${EMERGENCY.time} s de protección`
+          : `${p.name} activó su escudo de emergencia`, kind: t.owner === 0 ? 'good' : 'info' });
+        this.emit('sound', { name: 'alarm' });
+        return;
+      }
+    }
     t.hp -= dmg;
     t.lastHit = this.time;
     t.lastAttacker = src;
@@ -2235,11 +2564,28 @@ class Game {
     const p = this.players[pid];
     if (!p.alive) return;
     p.alive = false;
+    if (killer >= 0 && killer !== pid) this.players[killer].coresKilled++;
+    for (const pt of this.points) {
+      if (pt.owner === pid) {
+        pt.owner = -1;
+        pt.prog = 0;
+        pt.capTeam = -1;
+        this.territoryDirty = true;
+      }
+    }
     for (const u of this.units) if (u.alive && u.owner === pid) this.kill(u, -1);
     for (const b of this.buildings) if (b.alive && b.owner === pid) this.kill(b, -1);
     this.emit('toast', { text: pid === 0 ? 'Tu Núcleo ha caído' : `${p.name} ha sido eliminado`, kind: pid === 0 ? 'bad' : 'good' });
     if (killer === 0 && pid !== 0) this.completeObjective('kill');
     this.checkEnd();
+  }
+
+  endKing(team) {
+    if (this.over) return;
+    this.over = true;
+    this.result = team === this.players[0].team ? 'victory' : 'defeat';
+    this.kingWinner = team;
+    this.emit('over', { result: this.result, king: true });
   }
 
   checkEnd() {
@@ -2281,7 +2627,13 @@ class Game {
       const inc = (p.income / 60) * dt * this.incomeMult(p);
       p.coins += inc;
       p.stats.earned += inc;
+      p.energy += (p.energyRate / 10) * dt;
+      if (p.dome && p.dome.hp <= 0 && this.time - p.dome.brokenAt >= DOME.recover) {
+        p.dome.hp = p.dome.maxHp;
+        if (p.id === 0) this.emit('toast', { text: 'La Cúpula volvió a levantarse', kind: 'good' });
+      }
     }
+    this.updatePoints(dt);
 
     for (let i = 0; i < this.buildings.length; i++) {
       const b = this.buildings[i];
@@ -2316,14 +2668,123 @@ class Game {
     if (this.buildings.some((b) => b.owner === 0 && b.type === 'barracks' && b.built)) this.completeObjective('barracks');
     const army = this.units.filter((u) => u.owner === 0 && u.def.weapon).length;
     if (army >= 5) this.completeObjective('army');
-    if (this.buildings.some((b) => b.owner === 0 && b.type === 'outpost')) this.completeObjective('outpost');
+    if (this.buildings.some((b) => b.owner === 0 && b.type === 'mill' && b.built)) this.completeObjective('mill');
+    if (this.points.some((pt) => pt.owner === 0)) this.completeObjective('capture');
+  }
+
+  buyDome(pid) {
+    const p = this.players[pid];
+    if (p.dome) return 'Ya tienes una Cúpula';
+    if (p.coins < DOME.cost) return 'Monedas insuficientes';
+    p.coins -= DOME.cost;
+    p.dome = { hp: DOME.hp, maxHp: DOME.hp, brokenAt: -99, lastHit: -99 };
+    this.emit('sound', { name: 'done', pid });
+    return null;
+  }
+
+  // ---------- captura de puntos ----------
+  updatePoints(dt) {
+    this._pointT -= dt;
+    if (this._pointT > 0) return;
+    const step = 0.25 - this._pointT;
+    this._pointT = 0.25;
+    const nearD = CAPTURE.near * SQ3 + 0.5;
+    const clearD = CAPTURE.clear * SQ3 + 0.5;
+    for (const pt of this.points) {
+      const near = new Map();
+      const close = new Set();
+      for (const u of this.units) {
+        if (!u.alive || u.inside) continue;
+        const d = Math.hypot(u.x - pt.x, u.z - pt.z);
+        if (d > clearD) continue;
+        const team = this.players[u.owner].team;
+        close.add(team);
+        if (d <= nearD && u.cls === 'inf') {
+          if (!near.has(team)) near.set(team, u.owner);
+        }
+      }
+      const ownerTeam = pt.owner >= 0 ? this.players[pt.owner].team : -1;
+      pt.contested = close.size > 1;
+      if (pt.contested) continue;
+      if (near.size === 1) {
+        const [team, pid] = [...near.entries()][0];
+        const k = step / CAPTURE.time;
+        if (team === ownerTeam) {
+          pt.prog = Math.min(1, pt.prog + k);
+        } else if (pt.owner >= 0) {
+          pt.prog -= k;
+          if (pt.prog <= 0) {
+            const lost = pt.owner;
+            pt.owner = -1;
+            pt.prog = 0;
+            pt.capTeam = team;
+            this.territoryDirty = true;
+            if (this.players[lost].team === this.players[0].team) {
+              this.emit('toast', { text: `Perdiste ${pt.type === 'faro' ? 'el Faro' : 'una Bandera'}`, kind: 'bad' });
+            }
+          }
+        } else {
+          if (pt.capTeam !== team) {
+            pt.capTeam = team;
+            pt.prog = 0;
+          }
+          pt.prog += k;
+          if (pt.prog >= 1) {
+            pt.prog = 1;
+            pt.owner = pid;
+            this.territoryDirty = true;
+            this.refreshEconomy();
+            const what = pt.type === 'faro' ? 'el Faro' : 'una Bandera';
+            if (this.players[pid].team === this.players[0].team) {
+              this.emit('toast', { text: pid === 0 ? `¡Capturaste ${what}!` : `${this.players[pid].name} capturó ${what}`, kind: 'good' });
+              this.emit('sound', { name: 'done' });
+            } else if (pt.type === 'faro') {
+              this.emit('toast', { text: `${this.players[pid].name} capturó el Faro`, kind: 'bad' });
+            }
+          }
+        }
+      } else if (pt.owner < 0 && pt.prog > 0 && near.size === 0) {
+        pt.prog = Math.max(0, pt.prog - step / (CAPTURE.time * 2));
+      }
+    }
+    if (this.mode.king && !this.over) {
+      const faro = this.points.find((pt) => pt.type === 'faro');
+      if (faro && faro.owner >= 0) {
+        const team = this.players[faro.owner].team;
+        this.kingTime[team] = (this.kingTime[team] || 0) + step;
+        if (this.kingTime[team] >= KING_TIME) this.endKing(team);
+      }
+    }
+  }
+
+  updateStealth() {
+    const detR = (3 * SQ3 + 0.5) ** 2;
+    for (const s of this.units) {
+      if (!s.alive || !s.def.stealth) continue;
+      if (this.time - (s.lastShot || -99) < 3) {
+        s.seenBy = 0xff;
+        continue;
+      }
+      let mask = 1 << this.players[s.owner].team;
+      const check = (e) => {
+        if (!e.alive || !this.isEnemy(e.owner, s.owner)) return;
+        const dx = e.x - s.x;
+        const dz = e.z - s.z;
+        if (dx * dx + dz * dz <= detR) mask |= 1 << this.players[e.owner].team;
+      };
+      for (const u of this.units) if (u.def.detects) check(u);
+      for (const b of this.buildings) if (b.type === 'harbor' && b.built) check(b);
+      s.seenBy = mask;
+    }
   }
 
   updateVisibility() {
     const fog = this.opts.fog;
     const myTeam = this.players[0].team;
+    this.updateStealth();
+    const stealthy = (u) => u.def.stealth && !(u.seenBy & (1 << myTeam));
     if (!fog) {
-      for (const u of this.units) u.visible = !u.inside;
+      for (const u of this.units) u.visible = !u.inside && !stealthy(u);
       return;
     }
     const eyes = [];
@@ -2336,11 +2797,14 @@ class Game {
     for (const u of this.units) {
       if (u.inside) { u.visible = false; continue; }
       if (this.players[u.owner].team === myTeam) { u.visible = true; continue; }
+      if (stealthy(u)) { u.visible = false; continue; }
+      const inForest = u.mover === 'land' && this.cells[u.cell].t === 'forest';
+      const forestR = (2 * SQ3 + 0.4) ** 2;
       let vis = false;
       for (const e of eyes) {
         const dx = u.x - e[0];
         const dz = u.z - e[1];
-        if (dx * dx + dz * dz <= e[2]) { vis = true; break; }
+        if (dx * dx + dz * dz <= (inForest ? Math.min(e[2], forestR) : e[2])) { vis = true; break; }
       }
       u.visible = vis;
     }
@@ -2349,14 +2813,19 @@ class Game {
   updateBuilding(b, dt) {
     const def = b.def;
     if (!b.built) {
-      b.progress += dt / def.build;
-      b.hp = Math.min(b.maxHp, b.hp + (def.hp * 0.9 * dt) / def.build);
+      const bc = this.cells[b.cell];
+      const helped = this.units.some((u) => u.alive && !u.inside && u.owner === b.owner && u.def.repairs &&
+        hexDist(this.cells[u.cell].q, this.cells[u.cell].r, bc.q, bc.r) <= 1);
+      b.helped = helped;
+      const rate = helped ? 2 : 1;
+      b.progress += (dt * rate) / def.build;
+      b.hp = Math.min(b.maxHp, b.hp + (def.hp * 0.9 * dt * rate) / def.build);
       if (b.progress >= 1) {
         b.progress = 1;
         b.built = true;
         this.emit('built', { b });
         if (b.owner === 0) {
-          this.emit('toast', { text: `${def.name} terminado`, kind: 'good' });
+          this.emit('toast', { text: `${def.name} ${def.fem ? 'terminada' : 'terminado'}`, kind: 'good' });
           this.emit('sound', { name: 'done' });
         }
       }
@@ -2480,6 +2949,7 @@ class Game {
 
     switch (u.state) {
       case 'idle':
+        if (u.def.repairs) this.repairAround(u, dt);
         if (u.aggroTarget && u.aggroTarget.alive && u.def.weapon) {
           u.state = 'attack';
           u.target = u.aggroTarget;
@@ -2536,6 +3006,29 @@ class Game {
             if (u.resume >= 0) this.setPath(u, u.resume);
             break;
           }
+        }
+        this.followPath(u, dt);
+        break;
+      }
+      case 'repair': {
+        const b = u.repairTarget;
+        if (!b || !b.alive || b.hp >= b.maxHp) {
+          u.state = 'idle';
+          u.repairTarget = null;
+          u.path = [];
+          break;
+        }
+        const bc = this.cells[b.cell];
+        const uc = this.cells[u.cell];
+        if (hexDist(uc.q, uc.r, bc.q, bc.r) <= 1) {
+          u.path = [];
+          this.repairBuilding(u, b, dt);
+          break;
+        }
+        u.repathT -= dt;
+        if (u.repathT <= 0) {
+          u.repathT = 1;
+          this.setPath(u, b.cell);
         }
         this.followPath(u, dt);
         break;
@@ -2619,7 +3112,7 @@ class Game {
       }
       if (p.time >= p.dur) {
         p.done = true;
-        if (p.t.alive) this.damage(p.t, p.dmg, p.owner);
+        if (p.t.alive) this.damage(p.t, p.dmg, p.owner, p.src);
         this.fx.push({ k: 'boom', x: p.tx, y: p.ty, z: p.tz, s: p.kind === 'torpedo' ? 0.7 : 0.5, small: true });
       }
     }
@@ -2711,6 +3204,8 @@ class Bot {
     const hard = g.opts.difficulty !== 'easy';
     const want = [];
     const open = g.opts.mapKind === 'open';
+    // Núcleo castigado a media partida: ahorra para la Cúpula antes que nada.
+    if (!p.dome && T > 300 && p.core.hp < p.core.maxHp * 0.8) want.push('dome');
     if (n('farm') < 2) want.push('farm');
     if (n('barracks') < 1 && T > 10) want.push('barracks');
     // Mucho dinero militar sin gastar: hace falta más capacidad de producción.
@@ -2719,7 +3214,14 @@ class Bot {
       else if (n('barracks') < 3) want.push('barracks');
     }
     if (n('farm') < 4) want.push('farm');
-    if (p.popCap - p.popUsed < 6 && p.popCap < MAX_POP && n('house') < 14) want.push('house');
+    if (n('mill') < 1 && T > 40) want.push('mill');
+    if (p.popCap - p.popUsed < 6 && p.popCap < MAX_POP) {
+      const houseUp = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
+      if (n('house') < g.limitFor(this.pid, 'house')) want.push('house');
+      else if (houseUp) want.push('houseUp');
+    }
+    const heavy = n('factory') + n('harbor') + n('helipad');
+    if (heavy && p.energy < 200 && n('mill') < Math.min(4, 1 + heavy)) want.push('mill');
     if (ownFree('gold') && n('mine') < 2) want.push('mine');
     if (n('harbor') < 1 && coast && open) want.push('harbor');
     if (n('factory') < 1 && T > 150 && !open) want.push('factory');
@@ -2747,8 +3249,29 @@ class Bot {
     let actions = 0;
     for (const type of want) {
       if (actions >= 2) break;
+      if (type === 'houseUp') {
+        const h = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
+        const hc = h ? g.upgradeCost(h) : 0;
+        if (!h || this.ecoBank < hc) break;
+        if (typeof g.upgrade(h) !== 'string') {
+          this.ecoBank -= hc;
+          actions++;
+        }
+        continue;
+      }
+      if (type === 'dome') {
+        if (this.ecoBank + this.milBank < DOME.cost) break;
+        if (!g.buyDome(this.pid)) {
+          const fromEco = Math.min(this.ecoBank, DOME.cost);
+          this.ecoBank -= fromEco;
+          this.milBank = Math.max(0, this.milBank - (DOME.cost - fromEco));
+          actions++;
+        }
+        continue;
+      }
       const cost = BUILDINGS[type].cost;
       if (this.ecoBank < cost || p.coins < cost) break;
+      if (BUILDINGS[type].energyCost && p.energy < BUILDINGS[type].energyCost) continue;
       if (type === 'pump') {
         const farm = mine.find((b) => b.alive && b.type === 'farm' && b.built);
         if (farm && typeof g.upgrade(farm) !== 'string') {
@@ -2900,7 +3423,7 @@ class Bot {
         spend -= cost;
         this.milBank -= cost;
         b.botNext = null;
-      } else if (err.startsWith('Población')) {
+      } else if (err.startsWith('Población') || err.startsWith('Energía')) {
         b.botNext = null;
       }
     }
@@ -2965,10 +3488,12 @@ class Bot {
     const core = this.coreCell();
     const landReach = g.players.some((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive &&
       g.cells[p.core.cell].comp === core.comp);
-    if (landReach) return;
-    const t = units.find((u) => u.type === 'transport');
+    const faro = g.points.find((pt) => pt.type === 'faro');
+    const faroByLand = !g.mode.king || !faro || g.cells[faro.cell].comp === core.comp;
+    if (landReach && faroByLand) return;
+    const t = units.find((u) => u.type === 'barge');
     if (!t) {
-      this.queueOnce(mine, 'harbor', 'transport');
+      this.queueOnce(mine, 'harbor', 'barge');
       return;
     }
     t.botMode = t.botMode || 'load';
@@ -2994,7 +3519,7 @@ class Bot {
       t.loadT = (t.loadT || 0) + g.diff.think;
       const full = g.cargoSlots(t) >= t.def.capacity - 1;
       if (full || (t.cargo.length >= 3 && t.loadT > 60)) {
-        const target = this.chooseEnemyCore();
+        const target = this.ferryTarget();
         if (!target) return;
         const wc = this.coastNear(g.cells[target.cell], t);
         if (wc < 0) return;
@@ -3008,7 +3533,7 @@ class Bot {
       if (t.state !== 'idle') return;
       const res = g.unload(t);
       if (typeof res !== 'string') {
-        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.chooseEnemyCore();
+        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.ferryTarget();
         for (const u of res) u.role = 'wave';
         if (target) g.orderMove(res, target.cell, true);
       }
@@ -3018,6 +3543,15 @@ class Bot {
     } else if (t.botMode === 'return' && t.state === 'idle') {
       t.botMode = 'load';
     }
+  }
+
+  ferryTarget() {
+    const g = this.g;
+    if (g.mode.king) {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      if (faro && (faro.owner < 0 || g.players[faro.owner].team !== this.p.team)) return faro;
+    }
+    return this.chooseEnemyCore();
   }
 
   chooseEnemyCore() {
@@ -3066,8 +3600,51 @@ class Bot {
     return [...land, ...air, ...(sea.length && this.waterNear(tc, sea[0]) >= 0 ? sea : [])];
   }
 
+  // Envía escuadras de infantería a capturar Banderas y el Faro.
+  capture(units) {
+    const g = this.g;
+    const T = g.time;
+    if (T < 45) return;
+    const myTeam = this.p.team;
+    const core = this.coreCell();
+    const king = !!g.mode.king;
+    const squads = new Map();
+    for (const u of units) {
+      if (u.role !== 'cap') continue;
+      const pt = u.capPoint;
+      if (!pt || (pt.owner >= 0 && g.players[pt.owner].team === myTeam && T - (u.capSince || 0) > (king && pt.type === 'faro' ? 9999 : 90))) {
+        u.role = 'home';
+        u.capPoint = null;
+        continue;
+      }
+      squads.set(pt, (squads.get(pt) || 0) + 1);
+      if (u.state === 'idle' && g.map.dist(g.cells[u.cell], g.cells[pt.cell]) > 1) g.orderMove([u], pt.cell, true);
+    }
+    const maxSquads = king ? 3 : 2;
+    if (squads.size >= maxSquads) return;
+    const targets = g.points
+      .filter((pt) => !squads.has(pt) && (pt.owner < 0 || g.players[pt.owner].team !== myTeam))
+      .filter((pt) => g.cells[pt.cell].comp === core.comp)
+      .map((pt) => ({ pt, d: g.map.dist(g.cells[pt.cell], core) - (pt.type === 'faro' ? (king ? 30 : 6) : 0) }))
+      .sort((a, b) => a.d - b.d);
+    if (!targets.length) return;
+    const pt = targets[0].pt;
+    const size = pt.type === 'faro' ? (king ? 6 : 4) : 3;
+    const free = units.filter((u) => u.cls === 'inf' && u.def.weapon && u.role === 'home' && !u.inside &&
+      (u.state === 'idle' || u.state === 'move'));
+    if (free.length < size + (T < 200 ? 0 : 2)) return;
+    const squad = free.slice(0, size);
+    for (const u of squad) {
+      u.role = 'cap';
+      u.capPoint = pt;
+      u.capSince = T;
+    }
+    g.orderMove(squad, pt.cell, true);
+  }
+
   attack(units) {
     const g = this.g;
+    this.capture(units);
     const army = units.filter((u) => u.def.weapon);
     // Las tropas que terminaron su ataque buscan el siguiente objetivo.
     for (const u of army) {
@@ -3154,6 +3731,8 @@ class Renderer {
     this.buildDecor();
     this.buildBorders();
     this.buildFx();
+    this.buildPoints();
+    this.buildShields();
     this.resize();
   }
 
@@ -3583,6 +4162,112 @@ class Renderer {
     this.markers.push({ mesh, t: 0 });
   }
 
+  // ---------- Faro, Banderas, Cúpulas y escudos ----------
+  buildPoints() {
+    this.pointVis = this.game.points.map((pt) => {
+      const v = createPointVisual(pt.type);
+      v.group.position.set(pt.x, pt.y, pt.z);
+      this.scene.add(v.group);
+      return v;
+    });
+  }
+
+  updatePoints(time) {
+    const tmp = new THREE.Color();
+    this.game.points.forEach((pt, i) => {
+      const v = this.pointVis[i];
+      tmp.set(pt.owner >= 0 ? PLAYER_COLORS[pt.owner] : NEUTRAL);
+      if (!v.own.color.equals(tmp)) v.own.color.copy(tmp);
+      if (v.beam) v.beam.rotation.y = time * 0.9;
+      if (v.cloth) v.cloth.rotation.y = Math.sin(time * 2.4 + i) * 0.25;
+    });
+  }
+
+  buildShields() {
+    this.shieldVis = this.game.players.map((p) => {
+      const r = DOME.range * SQ3 + 0.5;
+      const dome = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 14, 0, Math.PI * 2, 0, Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.08, depthWrite: false }));
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(r, 0.05, 6, 48).rotateX(Math.PI / 2),
+        new THREE.MeshBasicMaterial({ color: 0x4aa8ff, transparent: true, opacity: 0.7, depthWrite: false }));
+      dome.add(rim);
+      dome.renderOrder = 6;
+      dome.visible = false;
+      const bubble = new THREE.Mesh(new THREE.SphereGeometry(1.7, 24, 14),
+        new THREE.MeshBasicMaterial({ color: 0xffb63a, transparent: true, opacity: 0.3, depthWrite: false }));
+      bubble.renderOrder = 6;
+      bubble.visible = false;
+      this.scene.add(dome);
+      this.scene.add(bubble);
+      return { dome, rim, bubble };
+    });
+  }
+
+  updateShields(time) {
+    const g = this.game;
+    g.players.forEach((p, i) => {
+      const v = this.shieldVis[i];
+      const core = p.core;
+      const domeOn = p.alive && core.alive && p.dome && p.dome.hp > 0;
+      v.dome.visible = !!domeOn;
+      if (domeOn) {
+        const k = p.dome.hp / p.dome.maxHp;
+        const col = k > 0.6 ? 0x4aa8ff : k > 0.3 ? 0xf2c94c : 0xef5350;
+        v.dome.material.color.set(col);
+        v.rim.material.color.set(col);
+        const hit = g.time - p.dome.lastHit < 0.25;
+        v.dome.material.opacity = hit ? 0.22 : 0.08;
+        v.dome.position.set(core.x, core.y, core.z);
+      }
+      const shield = p.alive && core.alive && core.shieldUntil > g.time;
+      v.bubble.visible = !!shield;
+      if (shield) {
+        v.bubble.position.set(core.x, core.y + 0.6, core.z);
+        v.bubble.material.opacity = 0.22 + Math.sin(time * 6) * 0.08;
+      }
+    });
+  }
+
+  // ---------- vista previa de construcción ----------
+  setGhost(type, ci, rot, valid) {
+    if (this.ghost && (this.ghost.type !== type)) {
+      this.scene.remove(this.ghost.group);
+      this.ghost = null;
+    }
+    if (!type || ci < 0) {
+      if (this.ghost) this.ghost.group.visible = false;
+      return;
+    }
+    if (!this.ghost) {
+      const m = getModel(type, PLAYER_COLORS[0]);
+      const okMat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, depthWrite: false });
+      const badMat = new THREE.MeshBasicMaterial({ color: 0xff5a5a, transparent: true, opacity: 0.55, depthWrite: false });
+      const group = new THREE.Group();
+      const parts = [];
+      for (const key of ['main', 'turret', 'rotor', 'rocker', 'blades', 'crystal']) {
+        if (!m[key]) continue;
+        const mesh = new THREE.Mesh(m[key], okMat);
+        if (key === 'turret') mesh.position.set(0, m.turretY || 0, m.turretZ || 0);
+        if (key === 'rocker') mesh.position.set(0, m.rockerY, m.rockerZ || 0);
+        if (key === 'blades') mesh.position.set(0, m.bladesY, m.bladesZ);
+        if (key === 'crystal') mesh.position.y = m.crystalY;
+        mesh.renderOrder = 7;
+        group.add(mesh);
+        parts.push(mesh);
+      }
+      this.scene.add(group);
+      this.ghost = { type, group, parts, okMat, badMat };
+    }
+    const c = this.game.cells[ci];
+    const gh = this.ghost;
+    gh.group.visible = true;
+    gh.group.position.set(c.x, c.h, c.z);
+    gh.group.rotation.y = rot;
+    for (const mesh of gh.parts) mesh.material = valid ? gh.okMat : gh.badMat;
+    this.hoverMesh.material.color.set(valid ? 0x8dffb0 : 0xff6b6b);
+    this.setHover(ci);
+  }
+
   // ---------- entidades ----------
   syncEntities(dt, time) {
     const g = this.game;
@@ -3611,6 +4296,7 @@ class Renderer {
         v.turret.position.y = v.turretBaseY * k;
         v.turret.rotation.y = b.aimYaw - b.rot;
       }
+      if (v.blades && b.built) v.blades.rotation.z += dt * 2.2;
       if (v.rocker) {
         v.rocker.visible = b.built;
         v.rocker.rotation.x = b.built ? Math.sin(time * 2.2 + b.id) * 0.28 : 0;
@@ -3660,10 +4346,10 @@ class Renderer {
         return;
       }
       r.visible = true;
-      r.material = e.owner === 0 ? this.ringMatOwn : this.ringMatEnemy;
-      const s = e.kind === 'bld' ? 1.85 : e.cls === 'inf' ? 0.75 : e.cls === 'ship' || e.cls === 'sub' ? 1.4 : 1.1;
+      r.material = e.owner === 0 || (e.kind === 'point' && e.owner < 0) ? this.ringMatOwn : this.ringMatEnemy;
+      const s = e.kind === 'bld' || e.kind === 'point' ? 1.85 : e.cls === 'inf' ? 0.75 : e.cls === 'ship' || e.cls === 'sub' ? 1.4 : 1.1;
       r.scale.setScalar(s);
-      const y = e.kind === 'bld' ? e.y + 0.05 : e.mover === 'air' ? Math.max(this.game.cells[e.cell].h, 0) + 0.05 : Math.max(e.y, 0) + 0.04;
+      const y = e.kind === 'bld' || e.kind === 'point' ? e.y + 0.05 : e.mover === 'air' ? Math.max(this.game.cells[e.cell].h, 0) + 0.05 : Math.max(e.y, 0) + 0.04;
       r.position.set(e.x, y, e.z);
     });
     const b = items.length === 1 && items[0].kind === 'bld' && items[0].owner === 0 ? items[0] : null;
@@ -3803,6 +4489,31 @@ class Renderer {
       ctx.fillStyle = hexColor(PLAYER_COLORS[e.owner]);
       ctx.fillRect(x - 1, y - 1, 3, 6);
     };
+    // Progreso de captura sobre el Faro y las Banderas.
+    for (const pt of g.points) {
+      const busy = pt.contested || (pt.prog > 0 && pt.prog < 1) || (pt.owner >= 0 && pt.prog < 1);
+      if (!busy && !sel.has(pt)) continue;
+      const s = this.project(pt.x, pt.y + (pt.type === 'faro' ? 3.3 : 1.7), pt.z);
+      if (!s.ok) continue;
+      const R = pt.type === 'faro' ? 15 : 12;
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = 'rgba(12,16,22,0.7)';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, R, 0, Math.PI * 2);
+      ctx.stroke();
+      const capColor = pt.owner >= 0 ? PLAYER_COLORS[pt.owner]
+        : pt.capTeam >= 0 ? PLAYER_COLORS[g.players.findIndex((p) => p.team === pt.capTeam)] : NEUTRAL;
+      ctx.strokeStyle = hexColor(capColor);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(pt.prog, 0, 1));
+      ctx.stroke();
+      if (pt.contested) {
+        ctx.fillStyle = '#ffd36a';
+        ctx.font = '600 11px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('En disputa', s.x, s.y + R + 14);
+      }
+    }
     const recent = g.time - 4;
     for (const b of g.buildings) {
       if (!b.alive) continue;
@@ -3859,6 +4570,21 @@ class Renderer {
     }
     ctx.drawImage(this.miniBase, 0, 0);
     const myTeam = g.players[0].team;
+    for (const pt of g.points) {
+      const x = T.ox + pt.x * T.s;
+      const y = T.oz + pt.z * T.s;
+      ctx.fillStyle = pt.owner >= 0 ? hexColor(PLAYER_COLORS[pt.owner]) : '#e6e8ea';
+      ctx.strokeStyle = pt.type === 'faro' ? '#ffb63a' : '#1b2630';
+      ctx.lineWidth = pt.type === 'faro' ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 5);
+      ctx.lineTo(x + 4, y);
+      ctx.lineTo(x, y + 5);
+      ctx.lineTo(x - 4, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
     for (const bl of g.buildings) {
       ctx.fillStyle = hexColor(PLAYER_COLORS[bl.owner]);
       const x = T.ox + bl.x * T.s;
@@ -3929,6 +4655,8 @@ class Renderer {
     this.consumeFx();
     this.syncEntities(dt, time);
     this.updateFx(dt);
+    this.updatePoints(time);
+    this.updateShields(time);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
@@ -3951,6 +4679,7 @@ class Input {
     this.boxMode = false;
     this.placement = null;
     this.lastTap = { t: 0, x: 0, y: 0, id: -1 };
+    this.lastRot = {};
     this.bind();
   }
 
@@ -4108,7 +4837,9 @@ class Input {
       if (this.placement) this.cancelPlacement();
       else if (this.app.selection.length) this.app.setSelection([]);
       else this.app.togglePause(true);
-    } else if (k === 'b') this.app.ui.toggleBuild();
+    } else if (k === 'r' && this.placement && this.placement.kind === 'build') this.rotatePlacement();
+    else if (k === 'enter' && this.placement && this.placement.kind === 'build') this.confirmPlacement();
+    else if (k === 'b') this.app.ui.toggleBuild();
     else if (k === ' ') {
       e.preventDefault();
       this.app.focusCore();
@@ -4156,6 +4887,7 @@ class Input {
     const unit = this.r.pickUnit(x, y);
     const cell = this.r.pickCell(x, y);
     const bld = cell && cell.bld && cell.bld.alive ? cell.bld : null;
+    const point = !unit && !bld && cell && cell.point ? cell.point : null;
     const target = unit || bld;
     const now = performance.now();
     const dbl = now - this.lastTap.t < 330 && Math.hypot(x - this.lastTap.x, y - this.lastTap.y) < 30;
@@ -4182,13 +4914,41 @@ class Input {
       if (mine.length && cell) this.moveTo(mine, cell.i);
       return;
     }
-    // Tropas de tierra seleccionadas + toque en tu transporte = subir a bordo.
+    // Ingeniero seleccionado + toque en un edificio tuyo dañado = reparar.
+    if (bld && bld.owner === 0 && bld.hp < bld.maxHp && bld.built) {
+      const fixers = mine.filter((u) => u.def.repairs);
+      if (fixers.length) {
+        g.orderRepair(fixers, bld);
+        const rest = mine.filter((u) => !u.def.repairs);
+        if (rest.length) g.orderMove(rest, bld.cell);
+        this.r.addMoveMarker(bld.cell, 0x6dff8a);
+        app.ui.toast(`Reparando ${bld.def.name}`);
+        app.sound.play('order');
+        return;
+      }
+    }
+    // Toque en el Faro o una Bandera: con tropas seleccionadas, ir a capturarlo.
+    if (point) {
+      if (mine.length) {
+        g.orderMove(mine, cell.i, true);
+        this.r.addMoveMarker(cell.i, 0xffb63a);
+        const inf = mine.some((u) => u.cls === 'inf');
+        app.ui.toast(inf ? 'Quédate junto al punto sin enemigos cerca para capturarlo'
+          : 'Solo la infantería captura puntos', inf ? 'info' : 'bad');
+        app.sound.play('order');
+      } else {
+        app.setSelection([point]);
+        app.sound.play('click');
+      }
+      return;
+    }
+    // Tropas de tierra seleccionadas + toque en tu Barcaza = subir a bordo.
     if (target && target.owner === 0 && target.def.capacity) {
       const landers = mine.filter((u) => u.mover === 'land');
       if (landers.length) {
         g.orderBoard(landers, target);
         this.r.addMoveMarker(target.cell, 0x7dd3ff);
-        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} al transporte`);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} a la Barcaza`);
         app.sound.play('order');
         return;
       }
@@ -4225,9 +4985,63 @@ class Input {
 
   // ---------- colocación ----------
   startPlacement(p) {
+    if (p.kind === 'build') {
+      p.rot = this.lastRot[p.btype] || 0;
+      p.cell = -1;
+      p.err = null;
+    }
     this.placement = p;
     this.refreshPlacement();
     this.app.ui.showPlaceBar(p);
+  }
+
+  previewAt(ci) {
+    const p = this.placement;
+    p.cell = ci;
+    p.err = this.game.placeInvalid(0, p.btype, ci);
+    this.r.setGhost(p.btype, ci, p.rot, !p.err);
+    this.app.ui.showPlaceBar(p);
+  }
+
+  rotatePlacement() {
+    const p = this.placement;
+    if (!p || p.kind !== 'build') return;
+    p.rot = (p.rot + Math.PI / 3) % (Math.PI * 2);
+    this.lastRot[p.btype] = p.rot;
+    if (p.cell >= 0) this.r.setGhost(p.btype, p.cell, p.rot, !p.err);
+    this.app.sound.play('click');
+  }
+
+  confirmPlacement() {
+    const g = this.game;
+    const p = this.placement;
+    if (!p || p.kind !== 'build') return;
+    if (p.cell < 0) {
+      this.app.ui.toast('Primero toca una casilla para ver la vista previa', 'bad');
+      return;
+    }
+    const err = g.place(0, p.btype, p.cell, p.rot);
+    if (err) {
+      p.err = err;
+      this.r.setGhost(p.btype, p.cell, p.rot, false);
+      this.app.ui.showPlaceBar(p);
+      this.app.ui.toast(err, 'bad');
+      this.app.sound.play('error');
+      return;
+    }
+    this.lastRot[p.btype] = p.rot;
+    this.r.addMoveMarker(p.cell, 0xf5c542);
+    this.app.ui.refreshBuild(true);
+    if (p.btype === 'wall' || p.btype === 'farm' || p.btype === 'mill' || p.btype === 'house') {
+      p.cell = -1;
+      p.err = null;
+      this.r.setGhost(null, -1);
+      this.r.setHover(-1);
+      this.refreshPlacement();
+      this.app.ui.showPlaceBar(p);
+    } else {
+      this.cancelPlacement();
+    }
   }
 
   refreshPlacement() {
@@ -4247,12 +5061,22 @@ class Input {
     }
     p.valid = new Set(cells);
     this.r.setPlacement(cells);
+    if (p.kind === 'build' && p.cell >= 0) {
+      const err = g.placeInvalid(0, p.btype, p.cell);
+      if (err !== p.err) {
+        p.err = err;
+        this.r.setGhost(p.btype, p.cell, p.rot, !err);
+        this.app.ui.showPlaceBar(p);
+      }
+    }
   }
 
   cancelPlacement() {
     this.placement = null;
     if (this.r) {
       this.r.setPlacement(null);
+      this.r.setGhost(null, -1);
+      this.r.hoverMesh.material.color.set(0xffffff);
       this.r.setHover(-1);
     }
     this.app.ui.hidePlaceBar();
@@ -4264,16 +5088,9 @@ class Input {
     const cell = this.r.pickCell(x, y);
     if (!cell) return;
     if (p.kind === 'build') {
-      const err = g.place(0, p.btype, cell.i);
-      if (err) {
-        this.app.ui.toast(err, 'bad');
-        this.app.sound.play('error');
-        return;
-      }
-      this.r.addMoveMarker(cell.i, 0xf5c542);
-      if (p.btype === 'wall' || p.btype === 'farm') this.refreshPlacement();
-      else this.cancelPlacement();
-      this.app.ui.refreshBuild(true);
+      this.previewAt(cell.i);
+      if (p.err) this.app.sound.play('error');
+      else this.app.sound.play('click');
     } else if (p.kind === 'found') {
       if (!p.unit.alive) {
         this.cancelPlacement();
@@ -4309,6 +5126,7 @@ const ICON = {
   soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
   close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   pop: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>',
 };
 
 function esc(s) {
@@ -4395,6 +5213,13 @@ class UI {
       else $('buildpanel').classList.toggle('min');
     });
     $('btn-place-cancel').addEventListener('click', () => app.input.cancelPlacement());
+    $('btn-place-rot').addEventListener('click', () => app.input.rotatePlacement());
+    $('btn-place-ok').addEventListener('click', () => app.input.confirmPlacement());
+    $('btn-mini').addEventListener('click', () => {
+      const w = $('miniwrap');
+      w.classList.toggle('min');
+      $('btn-mini').setAttribute('aria-label', w.classList.contains('min') ? 'Mostrar minimapa' : 'Plegar minimapa');
+    });
     $('btn-home').addEventListener('click', () => app.focusCore());
     $('btn-box').addEventListener('click', () => {
       app.input.boxMode = !app.input.boxMode;
@@ -4467,6 +5292,7 @@ class UI {
     $('btn-obj').textContent = 'Ocultar';
     $('objlist').innerHTML = OBJECTIVES.map((o) => `<li data-obj="${o.id}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
+    $('king').hidden = !this.app.game.mode.king;
     this.renderBuildList();
     this.hidePlaceBar();
     $('selpanel').hidden = true;
@@ -4513,11 +5339,18 @@ class UI {
 
   showPlaceBar(p) {
     let text = '';
-    if (p.kind === 'build') {
+    const isBuild = p.kind === 'build';
+    $('btn-place-rot').hidden = !isBuild;
+    $('btn-place-ok').hidden = !isBuild;
+    if (isBuild) {
       const d = BUILDINGS[p.btype];
-      text = p.valid && p.valid.size
-        ? `Toca una casilla resaltada para colocar <b>${esc(d.name)}</b> · <span class="cost">${fmt(d.cost)}</span>`
-        : `No hay casillas válidas para ${esc(d.name)} en tu territorio. ${esc(d.desc)}`;
+      const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
+      if (p.cell >= 0 && p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>`;
+      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Gira si quieres y toca «Construir».`;
+      else if (p.valid && p.valid.size) text = `Toca una casilla dorada para ver <b>${esc(d.name)}</b> · ${price}`;
+      else text = `No hay casillas válidas para ${esc(d.name)} en tu territorio. ${esc(d.desc)}`;
+      $('btn-place-ok').disabled = !(p.cell >= 0 && !p.err);
+      $('btn-place-rot').disabled = p.cell < 0;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
         ? 'Toca dónde fundar el <b>Puesto avanzado</b> · <span class="cost">800</span> al llegar'
@@ -4542,7 +5375,7 @@ class UI {
       const d = BUILDINGS[k];
       return `<button class="bitem" type="button" data-b="${k}">
         <img src="${Thumbs.get(k, PLAYER_COLORS[0])}" alt="">
-        <div class="top"><b>${esc(d.name)}</b><span class="cost">${fmt(d.cost)}</span></div>
+        <div class="top"><b>${esc(d.name)}</b><span class="costs"><span class="cost">${fmt(d.cost)}</span>${d.energyCost ? `<span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}</span></div>
         <div class="desc">${esc(d.desc)}<span data-count="${k}"></span></div>
       </button>`;
     }).join('');
@@ -4563,19 +5396,22 @@ class UI {
       const d = BUILDINGS[k];
       const n = g.count(0, k);
       const poor = p.coins < d.cost;
-      const maxed = d.limit && n >= d.limit;
+      const poorE = !!d.energyCost && p.energy < d.energyCost;
+      const limit = g.limitFor(0, k);
+      const maxed = limit && n >= limit;
       const act = placing && placing.kind === 'build' && placing.btype === k;
-      states.push([el, k, d, n, poor, maxed, act]);
-      sig += `${k}${n}${poor}${maxed}${act}|`;
+      states.push([el, k, d, n, poor, maxed, act, poorE, limit]);
+      sig += `${k}${n}${poor}${maxed}${act}${poorE}${limit}|`;
     });
     if (!force && sig === this.buildSig) return;
     this.buildSig = sig;
-    for (const [el, k, d, n, poor, maxed, act] of states) {
+    for (const [el, k, d, n, poor, maxed, act, poorE, limit] of states) {
       el.classList.toggle('poor', poor);
+      el.classList.toggle('poorE', poorE);
       el.classList.toggle('maxed', !!maxed);
       el.classList.toggle('active', !!act);
       const cnt = el.querySelector(`[data-count="${k}"]`);
-      if (cnt) cnt.textContent = d.limit ? ` (${n}/${d.limit})` : n ? ` (${n})` : '';
+      if (cnt) cnt.textContent = limit ? ` (${n}/${limit})` : n ? ` (${n})` : '';
     }
   }
 
@@ -4593,10 +5429,19 @@ class UI {
     const p = g.players[0];
     let sig = sel.map((e) => e.id).join(',');
     const first = sel[0];
-    if (first.kind === 'bld') {
-      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}`;
-      if (first.def.produces) sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost).join('');
-      if (first.def.upgrade) sig += '|u' + (p.coins >= BUILDINGS[first.def.upgrade].cost);
+    if (first.kind === 'point') {
+      sig += `|${first.owner}|${first.contested}|${Math.round(first.prog * 20)}`;
+    } else if (first.kind === 'bld') {
+      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level || 1}`;
+      if (first.def.produces) {
+        sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
+      }
+      const uc = g.upgradeCost(first);
+      if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'core' && first.owner === 0) {
+        const d = p.dome;
+        sig += `|d${d ? (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : p.coins >= DOME.cost}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
+      }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
         sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
@@ -4604,7 +5449,8 @@ class UI {
     if (force || sig !== this.selSig) {
       this.selSig = sig;
       panel.hidden = false;
-      if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
+      if (first.kind === 'point') panel.innerHTML = this.pointHtml(first);
+      else if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
       else if (first.owner === 0) panel.innerHTML = this.unitsHtml(sel);
       else panel.innerHTML = this.inspectHtml(first);
     }
@@ -4627,19 +5473,40 @@ class UI {
     const d = b.def;
     const extra = [];
     if (d.income) extra.push(`+${fmt(d.income * g.incomeMult(g.players[b.owner]))} monedas/min`);
-    if (d.pop) extra.push(`+${d.pop} de población`);
+    if (d.pop) extra.push(`+${d.pop * (b.level || 1)} de población`);
+    if (d.energy) extra.push(`+${d.energy} energía cada 10 s`);
     const sub = (own ? '' : `<b style="color:${hexColor(PLAYER_COLORS[b.owner])}">${esc(g.players[b.owner].name)}</b> · `) +
       esc(d.desc) + (extra.length ? ' · ' + extra.join(' · ') : '');
-    let html = this.head(b.type, PLAYER_COLORS[b.owner], esc(d.name), sub);
+    const lv = b.type === 'house'
+      ? `<span class="levels" title="Nivel ${b.level || 1} de 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= (b.level || 1) ? 'on' : ''}"></i>`).join('')}</span>` : '';
+    let html = this.head(b.type, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
     if (!own) return html;
+    if (b.type === 'core') {
+      const p = g.players[0];
+      const dome = p.dome;
+      const lines = [];
+      lines.push(p.emergencyUsed
+        ? (b.shieldUntil > g.time ? '<b style="color:var(--gold)">Escudo de emergencia activo</b>' : 'Escudo de emergencia: ya usado en esta partida')
+        : `Escudo de emergencia: listo (se activa solo al ${Math.round(EMERGENCY.at * 100)} % de vida)`);
+      if (dome) {
+        lines.push(dome.hp > 0 ? `Cúpula: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}`
+          : `Cúpula rota: vuelve en ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`);
+      }
+      html += `<div class="queue">${lines.join(' · ')}</div>`;
+      if (!dome) {
+        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome">Comprar Cúpula · ${fmt(DOME.cost)}</button>
+          <span class="queue" style="flex:1 1 200px">Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME.range} casillas del Núcleo.</span></div>`;
+      }
+    }
     if (d.produces && b.built) {
-      const coins = g.players[0].coins;
+      const pl = g.players[0];
       html += '<div class="cards">' + d.produces.map((t) => {
         const u = UNITS[t];
-        return `<button class="card ${coins < u.cost ? 'poor' : ''}" type="button" data-act="train" data-type="${t}" title="${esc(u.desc)}">
+        const poor = pl.coins < u.cost || pl.energy < (u.energy || 0);
+        return `<button class="card ${poor ? 'poor' : ''}" type="button" data-act="train" data-type="${t}" title="${esc(u.desc)}">
           <img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">
           <b>${esc(u.name)}</b>
-          <div class="meta"><span class="cost">${fmt(u.cost)}</span><span>${ICON.pop}${u.pop}</span></div>
+          <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
         </button>`;
       }).join('') + '</div>';
       html += '<div class="queue" id="sel-queue">' + (b.queue.length
@@ -4651,6 +5518,9 @@ class UI {
     if (d.upgrade && b.built) {
       const to = BUILDINGS[d.upgrade];
       acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a ${esc(to.name)} · ${fmt(to.cost)}</button>`);
+    }
+    if (b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length) {
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Ampliar a nivel ${(b.level || 1) + 1} · ${fmt(g.upgradeCost(b))}</button>`);
     }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
@@ -4677,8 +5547,11 @@ class UI {
       const g = this.app.game;
       html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
         (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
-          : ' · Selecciona tropas de tierra y toca el transporte para subirlas.') + '</div>';
+          : ' · Selecciona tropas de tierra y toca la Barcaza para subirlas.') + '</div>';
       if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
+    }
+    if (sel.some((u) => u.def.repairs)) {
+      html += `<div class="queue">Toca un edificio tuyo dañado para repararlo (no repara mientras recibe disparos). Junto a una obra, la termina el doble de rápido.</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
@@ -4686,6 +5559,26 @@ class UI {
     }
     acts.push('<button class="btn" type="button" data-act="stop">Detener</button>');
     html += `<div class="actions">${acts.join('')}</div>`;
+    return html;
+  }
+
+  pointHtml(pt) {
+    const g = this.app.game;
+    const ownerTxt = pt.owner >= 0
+      ? `<b style="color:${hexColor(PLAYER_COLORS[pt.owner])}">${esc(g.players[pt.owner].name)}</b>` : 'Sin dueño';
+    const state = pt.contested ? 'En disputa: hay tropas de varios equipos cerca'
+      : pt.owner < 0 && pt.prog > 0 ? `Capturando… ${Math.floor(pt.prog * 100)} %`
+        : `Para capturarlo: infantería a 1 casilla y sin enemigos a ${CAPTURE.clear} casillas durante ${CAPTURE.time} s.`;
+    let html = this.head(pt.type, pt.owner >= 0 ? PLAYER_COLORS[pt.owner] : NEUTRAL, esc(pt.def.name),
+      `${ownerTxt} · ${esc(pt.def.desc)}`, false);
+    html += `<div class="queue">${state}</div>`;
+    if (g.mode.king && pt.type === 'faro') {
+      const parts = Object.entries(g.kingTime).map(([team, t]) => {
+        const pid = g.players.findIndex((p) => String(p.team) === team);
+        return `<b style="color:${hexColor(PLAYER_COLORS[pid])}">${esc(g.players[pid].name)}</b> ${fmtTime(t)}`;
+      });
+      html += `<div class="queue">Rey del Faro (meta ${fmtTime(KING_TIME)}): ${parts.join(' · ') || 'nadie lo ha controlado aún'}</div>`;
+    }
     return html;
   }
 
@@ -4699,7 +5592,7 @@ class UI {
 
   updateSelLive(sel) {
     const hp = $('sel-hp');
-    if (!hp) return;
+    if (!hp || sel[0].kind === 'point') return;
     const first = sel[0];
     const bar = $('sel-hpbar');
     if (first.kind === 'bld' && !first.built) {
@@ -4767,8 +5660,17 @@ class UI {
         app.sound.play('error');
       } else {
         app.setSelection([res]);
-        this.toast(`Mejorando a ${res.def.name}`, 'good');
+        this.toast(res.type === 'house' ? `Casa ampliada a nivel ${res.level}` : `Mejorando a ${res.def.name}`, 'good');
       }
+    } else if (act === 'dome') {
+      const err = g.buyDome(0);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        this.toast('Cúpula levantada sobre tu Núcleo', 'good');
+      }
+      this.renderSel(true);
     } else if (act === 'unload') {
       const res = g.unload(b);
       if (typeof res === 'string') {
@@ -4790,7 +5692,7 @@ class UI {
       app.game.demolish(b);
       this.demolishArm = -1;
       app.setSelection([]);
-      this.toast(`${b.def.name} demolido`);
+      this.toast(`${b.def.name} ${b.def.fem ? 'demolida' : 'demolido'}`);
       return;
     }
     this.demolishArm = b.id;
@@ -4810,6 +5712,22 @@ class UI {
     $('coins').textContent = fmt(p.coins);
     $('income').textContent = `+${fmt(p.income)}/min`;
     $('pop').textContent = `${p.popUsed}/${p.popCap}`;
+    $('energy').textContent = fmt(p.energy);
+    $('energyRate').textContent = `+${p.energyRate}/10 s`;
+    if (g.mode.king) {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      const ownerTeam = faro && faro.owner >= 0 ? g.players[faro.owner].team : -1;
+      const myT = g.kingTime[p.team] || 0;
+      let best = -1;
+      let bestT = 0;
+      for (const [team, t] of Object.entries(g.kingTime)) {
+        if (Number(team) !== p.team && t > bestT) { bestT = t; best = Number(team); }
+      }
+      const rival = best >= 0 ? g.players.findIndex((pl) => pl.team === best) : -1;
+      const bar = (t, color) => `<span class="bar"><i style="width:${Math.min(100, (t / KING_TIME) * 100)}%;background:${color}"></i></span>`;
+      $('king').innerHTML = `Faro: ${ownerTeam < 0 ? 'libre' : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
+        (rival >= 0 ? ` ${esc(g.players[rival].name)} ${bar(bestT, hexColor(PLAYER_COLORS[rival]))}` : '');
+    }
     $('stat-pop').classList.toggle('full', p.popUsed >= p.popCap);
     $('clock').textContent = fmtTime(g.time);
     const sig = g.players.map((pl) => pl.alive).join(',');
@@ -4839,7 +5757,9 @@ class UI {
     $('enddialog').className = 'dialog panel ' + (win ? 'result-victory' : 'result-defeat');
     $('enddialog').innerHTML = `
       <h2>${win ? 'Victoria' : 'Derrota'}</h2>
-      <p>${win ? 'Todos los Núcleos rivales han caído. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido. Prueba otra estrategia: más torretas, más economía o ataca antes.'}</p>
+      <p>${g.kingWinner !== undefined
+    ? (win ? `Tu equipo mantuvo el Faro ${fmtTime(KING_TIME)}. El archipiélago es tuyo.` : 'Otro imperio mantuvo el Faro el tiempo necesario. Ataca su guarnición antes.')
+    : (win ? 'Todos los Núcleos rivales han caído. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido. Prueba otra estrategia: más torretas, más economía o ataca antes.')}</p>
       <div class="stats">
         <div><b>${fmtTime(g.time)}</b><span>Duración</span></div>
         <div><b>${fmt(s.earned)}</b><span>Monedas ganadas</span></div>
@@ -4867,7 +5787,7 @@ class Sound {
     this.on = true;
     this.last = {};
     try {
-      this.on = localStorage.getItem('hexbox-sound') !== 'off';
+      this.on = localStorage.getItem('faro-sound') !== 'off';
     } catch (err) { /* sin almacenamiento */ }
   }
 
@@ -4895,7 +5815,7 @@ class Sound {
   toggle() {
     this.on = !this.on;
     try {
-      localStorage.setItem('hexbox-sound', this.on ? 'on' : 'off');
+      localStorage.setItem('faro-sound', this.on ? 'on' : 'off');
     } catch (err) { /* sin almacenamiento */ }
     if (this.on) this.unlock();
   }
@@ -4984,14 +5904,15 @@ const App = {
   endTimer: null,
 
   init(hotData) {
+    window.FARO = this;
     this.canvas = $('gl');
     this.overlay = $('overlay');
     try {
-      const saved = JSON.parse(localStorage.getItem('hexbox-opts') || 'null');
+      const saved = JSON.parse(localStorage.getItem('faro-opts') || 'null');
       if (saved && MODES[saved.mode] && MAPS[saved.mapKind] && DIFFICULTY[saved.difficulty]) {
         Object.assign(this.opts, saved);
       }
-      const q = localStorage.getItem('hexbox-quality');
+      const q = localStorage.getItem('faro-quality');
       if (q === 'high' || q === 'low') this.quality = q;
     } catch (err) { /* sin almacenamiento */ }
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -5029,7 +5950,7 @@ const App = {
   saveOpts() {
     try {
       const { mode, mapKind, difficulty, fog, turbo } = this.opts;
-      localStorage.setItem('hexbox-opts', JSON.stringify({ mode, mapKind, difficulty, fog, turbo }));
+      localStorage.setItem('faro-opts', JSON.stringify({ mode, mapKind, difficulty, fog, turbo }));
     } catch (err) { /* sin almacenamiento */ }
   },
 
@@ -5071,7 +5992,7 @@ const App = {
     this.ui.showScreen('play');
     this.ui.startHud();
     this.sound.unlock();
-    window.HEXBOX = this;
+    window.FARO = this;
   },
 
   toMenu() {
@@ -5093,7 +6014,7 @@ const App = {
 
   setQuality(q) {
     this.quality = q;
-    try { localStorage.setItem('hexbox-quality', q); } catch (err) { /* sin almacenamiento */ }
+    try { localStorage.setItem('faro-quality', q); } catch (err) { /* sin almacenamiento */ }
     if (this.renderer) this.renderer.applyQuality(q);
     document.querySelectorAll('[data-quality]').forEach((b) => b.classList.toggle('gold', b.dataset.quality === q));
   },
@@ -5181,7 +6102,7 @@ const App = {
         this.renderer.frame(dt, this.time, []);
       }
     } catch (err) {
-      console.error('[HEXBOX] Error en el bucle:', err);
+      console.error('[Faro] Error en el bucle:', err);
     }
     requestAnimationFrame((t) => this.loop(t));
   },

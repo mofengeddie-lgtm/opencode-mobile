@@ -1,11 +1,29 @@
 'use strict';
-// HEXBOX: datos del juego (edificios, unidades, terreno, jugadores).
+// Faro de Ámbar: datos del juego (edificios, unidades, terreno, jugadores).
 // Todo el balance vive aquí para poder ajustarlo sin tocar la lógica.
 
 const SQ3 = Math.sqrt(3);
-const GAME_NAME = 'HEXBOX';
+const GAME_NAME = 'Faro de Ámbar';
+const GAME_VERSION = '0.3';
 const START_COINS = 2000;
+const START_ENERGY = 60;
 const MAX_POP = 80;
+
+// Puntos de captura (PRD 1.5 RF-07 y RF-12).
+const CAPTURE = { time: 12, near: 1, clear: 2 };
+const POINTS = {
+  faro: { name: 'Faro', claim: 3, bonus: 0.5, income: 0, desc: '+50 % de ingresos para quien lo controle.' },
+  flag: { name: 'Bandera', claim: 2, bonus: 0, income: 200, desc: '+200 monedas/min y territorio en la isla.' },
+};
+const KING_TIME = 180;
+
+// Escudos del Núcleo (PRD 1.5 RF-11).
+const EMERGENCY = { at: 0.25, time: 20 };
+const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
+const HOUSE_LEVELS = [0, 600, 900, 1300];
+// Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
+const REPAIR = { rate: 25, pause: 4 };
+const HOUSE_LIMIT = 6;
 
 // h = altura de la cara superior de la casilla.
 const TERRAIN = {
@@ -20,7 +38,7 @@ const TERRAIN = {
 };
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
-const PLAYER_NAMES = ['Tú', 'Rojo', 'Ámbar', 'Violeta', 'Rosa', 'Turquesa'];
+const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
 
 // Multiplicadores de daño por tipo de objetivo:
 // inf = infantería, veh = vehículo, ship = barco, sub = submarino, air = aéreo, bld = edificio.
@@ -32,7 +50,7 @@ const BUILDINGS = {
     desc: 'Tu base. Genera monedas y dispara a los enemigos. Si lo destruyen, pierdes.',
   },
   farm: {
-    name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
+    fem: true, name: 'Granja', cat: 'eco', cost: 300, hp: 350, build: 6, income: 240, on: ['grass'], upgrade: 'pump',
     desc: '+240 monedas/min. Solo sobre pasto. Se puede mejorar a Pozo petrolero.',
   },
   pump: {
@@ -40,16 +58,20 @@ const BUILDINGS = {
     desc: 'Mejora de la Granja que bombea petróleo del subsuelo.',
   },
   mine: {
-    name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
+    fem: true, name: 'Mina', cat: 'eco', cost: 1000, hp: 650, build: 10, income: 600, on: ['gold'],
     desc: '+600 monedas/min. Solo sobre vetas de oro.',
   },
   rig: {
-    name: 'Plataforma', cat: 'eco', cost: 2000, hp: 900, build: 14, income: 1100, on: ['oil'],
+    fem: true, name: 'Plataforma', cat: 'eco', cost: 2000, hp: 900, build: 14, income: 1100, on: ['oil'],
     desc: '+1100 monedas/min. Solo sobre manchas de petróleo en el mar.',
   },
+  mill: {
+    name: 'Molino', cat: 'eco', cost: 300, hp: 400, build: 6, energy: 5, on: 'land',
+    desc: '+5 de energía cada 10 s. La energía paga vehículos, aeronaves y buques.',
+  },
   house: {
-    name: 'Casa', cat: 'eco', cost: 500, hp: 400, build: 6, pop: 5, on: 'land',
-    desc: '+5 de población para tus tropas.',
+    fem: true, name: 'Casa', cat: 'eco', cost: 500, hp: 400, build: 6, pop: 5, on: 'land', limit: HOUSE_LIMIT,
+    desc: '+5 de población por nivel. Se amplía hasta el nivel 4.',
   },
   barracks: {
     name: 'Cuartel', cat: 'prod', cost: 1000, hp: 900, build: 10, on: 'land', limit: 3,
@@ -57,27 +79,27 @@ const BUILDINGS = {
     desc: 'Entrena infantería e ingenieros.',
   },
   factory: {
-    name: 'Fábrica', cat: 'prod', cost: 3000, hp: 1500, build: 16, on: 'land', limit: 3,
+    fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 3,
     produces: ['jeep', 'tank', 'aa', 'arty'],
     desc: 'Fabrica jeeps, tanques, antiaéreos y lanzamisiles.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 3,
-    produces: ['speedboat', 'boatEng', 'transport', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    produces: ['speedboat', 'boatEng', 'barge', 'destroyer', 'sub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
     desc: 'En agua junto a la orilla. Construye barcos y repara los cercanos.',
   },
   helipad: {
-    name: 'Helipuerto', cat: 'prod', cost: 4000, hp: 1000, build: 18, on: 'land', limit: 2,
+    name: 'Helipuerto', cat: 'prod', cost: 4000, energyCost: 80, hp: 1000, build: 18, on: 'land', limit: 2,
     produces: ['heli'],
     desc: 'Produce helicópteros de ataque.',
   },
   turret: {
-    name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
+    fem: true, name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 12, vision: 5,
     weapon: { dmg: 40, cd: 0.9, range: 4, proj: 'bullet', mult: { inf: 1.5, veh: 1, ship: 1, air: 0.8, bld: 0.6, sub: 0 } },
     desc: 'Dispara a tropas, barcos y helicópteros cercanos.',
   },
   aadef: {
-    name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
+    fem: true, name: 'Batería antiaérea', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6,
     weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
     desc: 'Misiles de largo alcance. Solo dispara a unidades aéreas.',
   },
@@ -86,7 +108,7 @@ const BUILDINGS = {
     desc: 'Bloquea el paso a las tropas enemigas. Las tuyas pasan.',
   },
   hospital: {
-    name: 'Enfermería', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2,
+    fem: true, name: 'Enfermería', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2,
     heal: { cls: ['inf', 'veh'], pct: 0.04, range: 2 },
     desc: 'Cura infantería y vehículos cercanos (4% de vida por segundo).',
   },
@@ -97,7 +119,7 @@ const BUILDINGS = {
 };
 
 const BUILD_TABS = [
-  { id: 'eco', name: 'Economía', items: ['farm', 'mine', 'rig', 'house'] },
+  { id: 'eco', name: 'Economía', items: ['farm', 'mill', 'mine', 'rig', 'house'] },
   { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad'] },
   { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'wall', 'hospital'] },
 ];
@@ -105,7 +127,8 @@ const BUILD_TABS = [
 const UNITS = {
   engineer: {
     name: 'Ingeniero', cls: 'inf', mover: 'land', cost: 300, hp: 120, speed: 1.6, pop: 1, build: 5, vision: 3,
-    founds: 'land', desc: 'Funda puestos avanzados para ampliar tu territorio.',
+    founds: 'land', repairs: true,
+    desc: 'Funda puestos avanzados, repara edificios y acelera las obras cercanas.',
   },
   rifle: {
     name: 'Fusilero', cls: 'inf', mover: 'land', cost: 400, hp: 260, speed: 1.5, pop: 1, build: 5,
@@ -123,22 +146,22 @@ const UNITS = {
     desc: 'Cohetes contra vehículos, barcos y edificios.',
   },
   jeep: {
-    name: 'Jeep', cls: 'veh', mover: 'land', cost: 1600, hp: 750, speed: 2.6, pop: 2, build: 9,
+    name: 'Jeep', cls: 'veh', mover: 'land', cost: 1600, energy: 10, hp: 750, speed: 2.6, pop: 2, build: 9,
     weapon: { dmg: 20, cd: 0.4, range: 3, proj: 'bullet', mult: { inf: 1.3, veh: 0.6, ship: 0.5, air: 0.5, bld: 0.5, sub: 0 } },
     desc: 'Rápido. Ideal para cazar infantería.',
   },
   tank: {
-    name: 'Tanque', cls: 'veh', mover: 'land', cost: 3400, hp: 2200, speed: 1.2, pop: 3, build: 14,
+    name: 'Tanque', cls: 'veh', mover: 'land', cost: 3400, energy: 30, hp: 2200, speed: 1.2, pop: 3, build: 14,
     weapon: { dmg: 140, cd: 2.2, range: 4, proj: 'shell', mult: { inf: 0.9, veh: 1.3, ship: 1, air: 0, bld: 1.5, sub: 0 } },
     desc: 'Blindado y potente. No puede disparar al aire.',
   },
   aa: {
-    name: 'Antiaéreo', cls: 'veh', mover: 'land', cost: 2400, hp: 900, speed: 1.8, pop: 2, build: 10,
+    name: 'Antiaéreo', cls: 'veh', mover: 'land', cost: 2400, energy: 20, hp: 900, speed: 1.8, pop: 2, build: 10,
     weapon: { dmg: 70, cd: 0.9, range: 5, proj: 'flak', mult: { inf: 0, veh: 0, ship: 0, air: 2.4, bld: 0, sub: 0 } },
     desc: 'Solo dispara a unidades aéreas, pero las destroza.',
   },
   arty: {
-    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, hp: 700, speed: 1.0, pop: 2, build: 14,
+    name: 'Lanzamisiles', cls: 'veh', mover: 'land', cost: 3800, energy: 40, hp: 700, speed: 1.0, pop: 2, build: 14,
     weapon: { dmg: 380, cd: 6, range: 7, proj: 'missile', mult: { bld: 1 } },
     desc: 'Artillería de muy largo alcance. Solo ataca edificios.',
   },
@@ -151,22 +174,22 @@ const UNITS = {
     name: 'Barco ingeniero', cls: 'ship', mover: 'sea', cost: 1600, hp: 500, speed: 2.2, pop: 1, build: 8,
     founds: 'sea', desc: 'Funda puestos avanzados en otras islas.',
   },
-  transport: {
-    name: 'Transporte', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
+  barge: {
+    name: 'Barcaza', cls: 'ship', mover: 'sea', cost: 1800, hp: 900, speed: 1.8, pop: 1, build: 10, capacity: 6,
     desc: 'Lleva 6 tropas de tierra a otras islas (un vehículo ocupa 2).',
   },
   destroyer: {
-    name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, hp: 2800, speed: 1.3, pop: 3, build: 16,
+    name: 'Destructor', cls: 'ship', mover: 'sea', cost: 4500, energy: 30, detects: true, hp: 2800, speed: 1.3, pop: 3, build: 16,
     weapon: { dmg: 120, cd: 1.7, range: 5, proj: 'shell', mult: { inf: 1, veh: 1, ship: 1.2, air: 0.3, bld: 1.3, sub: 1.4 } },
     desc: 'Cañón de largo alcance. Puede atacar la costa y submarinos.',
   },
   sub: {
-    name: 'Submarino', cls: 'sub', mover: 'sea', cost: 3800, hp: 1400, speed: 1.6, pop: 2, build: 14,
+    name: 'Submarino', cls: 'sub', mover: 'sea', cost: 3800, energy: 30, stealth: true, hp: 1400, speed: 1.6, pop: 2, build: 14,
     weapon: { dmg: 240, cd: 3, range: 3, proj: 'torpedo', waterOnly: true, mult: { ship: 1.5, sub: 1, bld: 1.5 } },
-    desc: 'Torpedos contra barcos y edificios en el agua. Solo destructores y helicópteros pueden dañarlo.',
+    desc: 'Torpedos contra barcos y edificios en el agua. Invisible salvo cerca de Destructores, Helicópteros o Puertos enemigos.',
   },
   heli: {
-    name: 'Helicóptero', cls: 'air', mover: 'air', cost: 5500, hp: 1500, speed: 2.4, pop: 2, build: 18,
+    name: 'Helicóptero', cls: 'air', mover: 'air', cost: 5500, energy: 50, detects: true, hp: 1500, speed: 2.4, pop: 2, build: 18,
     losBlock: true,
     weapon: { dmg: 60, cd: 0.8, range: 4, proj: 'rocket', mult: { inf: 1.2, veh: 1.2, ship: 1, air: 1, bld: 1, sub: 0.8 } },
     desc: 'Vuela sobre todo. Montañas y bosques le reducen el alcance a 2.',
@@ -181,6 +204,8 @@ const MODES = {
   ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3] },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5] },
+  king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total', players: 4, teams: [0, 1, 2, 3], king: true },
+  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2 },
 };
 
 const MAPS = {
@@ -197,8 +222,9 @@ const DIFFICULTY = {
 
 const OBJECTIVES = [
   { id: 'farm', text: 'Construye una Granja' },
+  { id: 'mill', text: 'Construye un Molino para tener energía' },
   { id: 'barracks', text: 'Construye un Cuartel' },
   { id: 'army', text: 'Ten 5 tropas de combate' },
-  { id: 'outpost', text: 'Funda un Puesto avanzado con un Ingeniero' },
+  { id: 'capture', text: 'Captura una Bandera o el Faro con infantería' },
   { id: 'kill', text: 'Destruye un Núcleo enemigo' },
 ];

@@ -19,14 +19,15 @@ const App = {
   endTimer: null,
 
   init(hotData) {
+    window.FARO = this;
     this.canvas = $('gl');
     this.overlay = $('overlay');
     try {
-      const saved = JSON.parse(localStorage.getItem('hexbox-opts') || 'null');
+      const saved = JSON.parse(localStorage.getItem('faro-opts') || 'null');
       if (saved && MODES[saved.mode] && MAPS[saved.mapKind] && DIFFICULTY[saved.difficulty]) {
         Object.assign(this.opts, saved);
       }
-      const q = localStorage.getItem('hexbox-quality');
+      const q = localStorage.getItem('faro-quality');
       if (q === 'high' || q === 'low') this.quality = q;
     } catch (err) { /* sin almacenamiento */ }
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -64,7 +65,7 @@ const App = {
   saveOpts() {
     try {
       const { mode, mapKind, difficulty, fog, turbo } = this.opts;
-      localStorage.setItem('hexbox-opts', JSON.stringify({ mode, mapKind, difficulty, fog, turbo }));
+      localStorage.setItem('faro-opts', JSON.stringify({ mode, mapKind, difficulty, fog, turbo }));
     } catch (err) { /* sin almacenamiento */ }
   },
 
@@ -106,7 +107,7 @@ const App = {
     this.ui.showScreen('play');
     this.ui.startHud();
     this.sound.unlock();
-    window.HEXBOX = this;
+    window.FARO = this;
   },
 
   toMenu() {
@@ -128,7 +129,7 @@ const App = {
 
   setQuality(q) {
     this.quality = q;
-    try { localStorage.setItem('hexbox-quality', q); } catch (err) { /* sin almacenamiento */ }
+    try { localStorage.setItem('faro-quality', q); } catch (err) { /* sin almacenamiento */ }
     if (this.renderer) this.renderer.applyQuality(q);
     document.querySelectorAll('[data-quality]').forEach((b) => b.classList.toggle('gold', b.dataset.quality === q));
   },
@@ -216,7 +217,7 @@ const App = {
         this.renderer.frame(dt, this.time, []);
       }
     } catch (err) {
-      console.error('[HEXBOX] Error en el bucle:', err);
+      console.error('[Faro] Error en el bucle:', err);
     }
     requestAnimationFrame((t) => this.loop(t));
   },

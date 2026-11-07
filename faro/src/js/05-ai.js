@@ -81,6 +81,8 @@ class Bot {
     const hard = g.opts.difficulty !== 'easy';
     const want = [];
     const open = g.opts.mapKind === 'open';
+    // Núcleo castigado a media partida: ahorra para la Cúpula antes que nada.
+    if (!p.dome && T > 300 && p.core.hp < p.core.maxHp * 0.8) want.push('dome');
     if (n('farm') < 2) want.push('farm');
     if (n('barracks') < 1 && T > 10) want.push('barracks');
     // Mucho dinero militar sin gastar: hace falta más capacidad de producción.
@@ -89,7 +91,14 @@ class Bot {
       else if (n('barracks') < 3) want.push('barracks');
     }
     if (n('farm') < 4) want.push('farm');
-    if (p.popCap - p.popUsed < 6 && p.popCap < MAX_POP && n('house') < 14) want.push('house');
+    if (n('mill') < 1 && T > 40) want.push('mill');
+    if (p.popCap - p.popUsed < 6 && p.popCap < MAX_POP) {
+      const houseUp = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
+      if (n('house') < g.limitFor(this.pid, 'house')) want.push('house');
+      else if (houseUp) want.push('houseUp');
+    }
+    const heavy = n('factory') + n('harbor') + n('helipad');
+    if (heavy && p.energy < 200 && n('mill') < Math.min(4, 1 + heavy)) want.push('mill');
     if (ownFree('gold') && n('mine') < 2) want.push('mine');
     if (n('harbor') < 1 && coast && open) want.push('harbor');
     if (n('factory') < 1 && T > 150 && !open) want.push('factory');
@@ -117,8 +126,29 @@ class Bot {
     let actions = 0;
     for (const type of want) {
       if (actions >= 2) break;
+      if (type === 'houseUp') {
+        const h = mine.find((b) => b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length);
+        const hc = h ? g.upgradeCost(h) : 0;
+        if (!h || this.ecoBank < hc) break;
+        if (typeof g.upgrade(h) !== 'string') {
+          this.ecoBank -= hc;
+          actions++;
+        }
+        continue;
+      }
+      if (type === 'dome') {
+        if (this.ecoBank + this.milBank < DOME.cost) break;
+        if (!g.buyDome(this.pid)) {
+          const fromEco = Math.min(this.ecoBank, DOME.cost);
+          this.ecoBank -= fromEco;
+          this.milBank = Math.max(0, this.milBank - (DOME.cost - fromEco));
+          actions++;
+        }
+        continue;
+      }
       const cost = BUILDINGS[type].cost;
       if (this.ecoBank < cost || p.coins < cost) break;
+      if (BUILDINGS[type].energyCost && p.energy < BUILDINGS[type].energyCost) continue;
       if (type === 'pump') {
         const farm = mine.find((b) => b.alive && b.type === 'farm' && b.built);
         if (farm && typeof g.upgrade(farm) !== 'string') {
@@ -270,7 +300,7 @@ class Bot {
         spend -= cost;
         this.milBank -= cost;
         b.botNext = null;
-      } else if (err.startsWith('Población')) {
+      } else if (err.startsWith('Población') || err.startsWith('Energía')) {
         b.botNext = null;
       }
     }
@@ -335,10 +365,12 @@ class Bot {
     const core = this.coreCell();
     const landReach = g.players.some((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive &&
       g.cells[p.core.cell].comp === core.comp);
-    if (landReach) return;
-    const t = units.find((u) => u.type === 'transport');
+    const faro = g.points.find((pt) => pt.type === 'faro');
+    const faroByLand = !g.mode.king || !faro || g.cells[faro.cell].comp === core.comp;
+    if (landReach && faroByLand) return;
+    const t = units.find((u) => u.type === 'barge');
     if (!t) {
-      this.queueOnce(mine, 'harbor', 'transport');
+      this.queueOnce(mine, 'harbor', 'barge');
       return;
     }
     t.botMode = t.botMode || 'load';
@@ -364,7 +396,7 @@ class Bot {
       t.loadT = (t.loadT || 0) + g.diff.think;
       const full = g.cargoSlots(t) >= t.def.capacity - 1;
       if (full || (t.cargo.length >= 3 && t.loadT > 60)) {
-        const target = this.chooseEnemyCore();
+        const target = this.ferryTarget();
         if (!target) return;
         const wc = this.coastNear(g.cells[target.cell], t);
         if (wc < 0) return;
@@ -378,7 +410,7 @@ class Bot {
       if (t.state !== 'idle') return;
       const res = g.unload(t);
       if (typeof res !== 'string') {
-        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.chooseEnemyCore();
+        const target = t.botTarget && t.botTarget.alive ? t.botTarget : this.ferryTarget();
         for (const u of res) u.role = 'wave';
         if (target) g.orderMove(res, target.cell, true);
       }
@@ -388,6 +420,15 @@ class Bot {
     } else if (t.botMode === 'return' && t.state === 'idle') {
       t.botMode = 'load';
     }
+  }
+
+  ferryTarget() {
+    const g = this.g;
+    if (g.mode.king) {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      if (faro && (faro.owner < 0 || g.players[faro.owner].team !== this.p.team)) return faro;
+    }
+    return this.chooseEnemyCore();
   }
 
   chooseEnemyCore() {
@@ -436,8 +477,51 @@ class Bot {
     return [...land, ...air, ...(sea.length && this.waterNear(tc, sea[0]) >= 0 ? sea : [])];
   }
 
+  // Envía escuadras de infantería a capturar Banderas y el Faro.
+  capture(units) {
+    const g = this.g;
+    const T = g.time;
+    if (T < 45) return;
+    const myTeam = this.p.team;
+    const core = this.coreCell();
+    const king = !!g.mode.king;
+    const squads = new Map();
+    for (const u of units) {
+      if (u.role !== 'cap') continue;
+      const pt = u.capPoint;
+      if (!pt || (pt.owner >= 0 && g.players[pt.owner].team === myTeam && T - (u.capSince || 0) > (king && pt.type === 'faro' ? 9999 : 90))) {
+        u.role = 'home';
+        u.capPoint = null;
+        continue;
+      }
+      squads.set(pt, (squads.get(pt) || 0) + 1);
+      if (u.state === 'idle' && g.map.dist(g.cells[u.cell], g.cells[pt.cell]) > 1) g.orderMove([u], pt.cell, true);
+    }
+    const maxSquads = king ? 3 : 2;
+    if (squads.size >= maxSquads) return;
+    const targets = g.points
+      .filter((pt) => !squads.has(pt) && (pt.owner < 0 || g.players[pt.owner].team !== myTeam))
+      .filter((pt) => g.cells[pt.cell].comp === core.comp)
+      .map((pt) => ({ pt, d: g.map.dist(g.cells[pt.cell], core) - (pt.type === 'faro' ? (king ? 30 : 6) : 0) }))
+      .sort((a, b) => a.d - b.d);
+    if (!targets.length) return;
+    const pt = targets[0].pt;
+    const size = pt.type === 'faro' ? (king ? 6 : 4) : 3;
+    const free = units.filter((u) => u.cls === 'inf' && u.def.weapon && u.role === 'home' && !u.inside &&
+      (u.state === 'idle' || u.state === 'move'));
+    if (free.length < size + (T < 200 ? 0 : 2)) return;
+    const squad = free.slice(0, size);
+    for (const u of squad) {
+      u.role = 'cap';
+      u.capPoint = pt;
+      u.capSince = T;
+    }
+    g.orderMove(squad, pt.cell, true);
+  }
+
   attack(units) {
     const g = this.g;
+    this.capture(units);
     const army = units.filter((u) => u.def.weapon);
     // Las tropas que terminaron su ataque buscan el siguiente objetivo.
     for (const u of army) {

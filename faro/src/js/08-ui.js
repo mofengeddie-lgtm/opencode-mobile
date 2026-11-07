@@ -9,6 +9,7 @@ const ICON = {
   soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
   close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   pop: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>',
 };
 
 function esc(s) {
@@ -95,6 +96,13 @@ class UI {
       else $('buildpanel').classList.toggle('min');
     });
     $('btn-place-cancel').addEventListener('click', () => app.input.cancelPlacement());
+    $('btn-place-rot').addEventListener('click', () => app.input.rotatePlacement());
+    $('btn-place-ok').addEventListener('click', () => app.input.confirmPlacement());
+    $('btn-mini').addEventListener('click', () => {
+      const w = $('miniwrap');
+      w.classList.toggle('min');
+      $('btn-mini').setAttribute('aria-label', w.classList.contains('min') ? 'Mostrar minimapa' : 'Plegar minimapa');
+    });
     $('btn-home').addEventListener('click', () => app.focusCore());
     $('btn-box').addEventListener('click', () => {
       app.input.boxMode = !app.input.boxMode;
@@ -167,6 +175,7 @@ class UI {
     $('btn-obj').textContent = 'Ocultar';
     $('objlist').innerHTML = OBJECTIVES.map((o) => `<li data-obj="${o.id}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
+    $('king').hidden = !this.app.game.mode.king;
     this.renderBuildList();
     this.hidePlaceBar();
     $('selpanel').hidden = true;
@@ -213,11 +222,18 @@ class UI {
 
   showPlaceBar(p) {
     let text = '';
-    if (p.kind === 'build') {
+    const isBuild = p.kind === 'build';
+    $('btn-place-rot').hidden = !isBuild;
+    $('btn-place-ok').hidden = !isBuild;
+    if (isBuild) {
       const d = BUILDINGS[p.btype];
-      text = p.valid && p.valid.size
-        ? `Toca una casilla resaltada para colocar <b>${esc(d.name)}</b> · <span class="cost">${fmt(d.cost)}</span>`
-        : `No hay casillas válidas para ${esc(d.name)} en tu territorio. ${esc(d.desc)}`;
+      const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
+      if (p.cell >= 0 && p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>`;
+      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Gira si quieres y toca «Construir».`;
+      else if (p.valid && p.valid.size) text = `Toca una casilla dorada para ver <b>${esc(d.name)}</b> · ${price}`;
+      else text = `No hay casillas válidas para ${esc(d.name)} en tu territorio. ${esc(d.desc)}`;
+      $('btn-place-ok').disabled = !(p.cell >= 0 && !p.err);
+      $('btn-place-rot').disabled = p.cell < 0;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
         ? 'Toca dónde fundar el <b>Puesto avanzado</b> · <span class="cost">800</span> al llegar'
@@ -242,7 +258,7 @@ class UI {
       const d = BUILDINGS[k];
       return `<button class="bitem" type="button" data-b="${k}">
         <img src="${Thumbs.get(k, PLAYER_COLORS[0])}" alt="">
-        <div class="top"><b>${esc(d.name)}</b><span class="cost">${fmt(d.cost)}</span></div>
+        <div class="top"><b>${esc(d.name)}</b><span class="costs"><span class="cost">${fmt(d.cost)}</span>${d.energyCost ? `<span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}</span></div>
         <div class="desc">${esc(d.desc)}<span data-count="${k}"></span></div>
       </button>`;
     }).join('');
@@ -263,19 +279,22 @@ class UI {
       const d = BUILDINGS[k];
       const n = g.count(0, k);
       const poor = p.coins < d.cost;
-      const maxed = d.limit && n >= d.limit;
+      const poorE = !!d.energyCost && p.energy < d.energyCost;
+      const limit = g.limitFor(0, k);
+      const maxed = limit && n >= limit;
       const act = placing && placing.kind === 'build' && placing.btype === k;
-      states.push([el, k, d, n, poor, maxed, act]);
-      sig += `${k}${n}${poor}${maxed}${act}|`;
+      states.push([el, k, d, n, poor, maxed, act, poorE, limit]);
+      sig += `${k}${n}${poor}${maxed}${act}${poorE}${limit}|`;
     });
     if (!force && sig === this.buildSig) return;
     this.buildSig = sig;
-    for (const [el, k, d, n, poor, maxed, act] of states) {
+    for (const [el, k, d, n, poor, maxed, act, poorE, limit] of states) {
       el.classList.toggle('poor', poor);
+      el.classList.toggle('poorE', poorE);
       el.classList.toggle('maxed', !!maxed);
       el.classList.toggle('active', !!act);
       const cnt = el.querySelector(`[data-count="${k}"]`);
-      if (cnt) cnt.textContent = d.limit ? ` (${n}/${d.limit})` : n ? ` (${n})` : '';
+      if (cnt) cnt.textContent = limit ? ` (${n}/${limit})` : n ? ` (${n})` : '';
     }
   }
 
@@ -293,10 +312,19 @@ class UI {
     const p = g.players[0];
     let sig = sel.map((e) => e.id).join(',');
     const first = sel[0];
-    if (first.kind === 'bld') {
-      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}`;
-      if (first.def.produces) sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost).join('');
-      if (first.def.upgrade) sig += '|u' + (p.coins >= BUILDINGS[first.def.upgrade].cost);
+    if (first.kind === 'point') {
+      sig += `|${first.owner}|${first.contested}|${Math.round(first.prog * 20)}`;
+    } else if (first.kind === 'bld') {
+      sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level || 1}`;
+      if (first.def.produces) {
+        sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
+      }
+      const uc = g.upgradeCost(first);
+      if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'core' && first.owner === 0) {
+        const d = p.dome;
+        sig += `|d${d ? (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : p.coins >= DOME.cost}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
+      }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
         sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
@@ -304,7 +332,8 @@ class UI {
     if (force || sig !== this.selSig) {
       this.selSig = sig;
       panel.hidden = false;
-      if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
+      if (first.kind === 'point') panel.innerHTML = this.pointHtml(first);
+      else if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
       else if (first.owner === 0) panel.innerHTML = this.unitsHtml(sel);
       else panel.innerHTML = this.inspectHtml(first);
     }
@@ -327,19 +356,40 @@ class UI {
     const d = b.def;
     const extra = [];
     if (d.income) extra.push(`+${fmt(d.income * g.incomeMult(g.players[b.owner]))} monedas/min`);
-    if (d.pop) extra.push(`+${d.pop} de población`);
+    if (d.pop) extra.push(`+${d.pop * (b.level || 1)} de población`);
+    if (d.energy) extra.push(`+${d.energy} energía cada 10 s`);
     const sub = (own ? '' : `<b style="color:${hexColor(PLAYER_COLORS[b.owner])}">${esc(g.players[b.owner].name)}</b> · `) +
       esc(d.desc) + (extra.length ? ' · ' + extra.join(' · ') : '');
-    let html = this.head(b.type, PLAYER_COLORS[b.owner], esc(d.name), sub);
+    const lv = b.type === 'house'
+      ? `<span class="levels" title="Nivel ${b.level || 1} de 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= (b.level || 1) ? 'on' : ''}"></i>`).join('')}</span>` : '';
+    let html = this.head(b.type, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
     if (!own) return html;
+    if (b.type === 'core') {
+      const p = g.players[0];
+      const dome = p.dome;
+      const lines = [];
+      lines.push(p.emergencyUsed
+        ? (b.shieldUntil > g.time ? '<b style="color:var(--gold)">Escudo de emergencia activo</b>' : 'Escudo de emergencia: ya usado en esta partida')
+        : `Escudo de emergencia: listo (se activa solo al ${Math.round(EMERGENCY.at * 100)} % de vida)`);
+      if (dome) {
+        lines.push(dome.hp > 0 ? `Cúpula: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}`
+          : `Cúpula rota: vuelve en ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`);
+      }
+      html += `<div class="queue">${lines.join(' · ')}</div>`;
+      if (!dome) {
+        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome">Comprar Cúpula · ${fmt(DOME.cost)}</button>
+          <span class="queue" style="flex:1 1 200px">Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME.range} casillas del Núcleo.</span></div>`;
+      }
+    }
     if (d.produces && b.built) {
-      const coins = g.players[0].coins;
+      const pl = g.players[0];
       html += '<div class="cards">' + d.produces.map((t) => {
         const u = UNITS[t];
-        return `<button class="card ${coins < u.cost ? 'poor' : ''}" type="button" data-act="train" data-type="${t}" title="${esc(u.desc)}">
+        const poor = pl.coins < u.cost || pl.energy < (u.energy || 0);
+        return `<button class="card ${poor ? 'poor' : ''}" type="button" data-act="train" data-type="${t}" title="${esc(u.desc)}">
           <img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">
           <b>${esc(u.name)}</b>
-          <div class="meta"><span class="cost">${fmt(u.cost)}</span><span>${ICON.pop}${u.pop}</span></div>
+          <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
         </button>`;
       }).join('') + '</div>';
       html += '<div class="queue" id="sel-queue">' + (b.queue.length
@@ -351,6 +401,9 @@ class UI {
     if (d.upgrade && b.built) {
       const to = BUILDINGS[d.upgrade];
       acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a ${esc(to.name)} · ${fmt(to.cost)}</button>`);
+    }
+    if (b.type === 'house' && b.built && (b.level || 1) < HOUSE_LEVELS.length) {
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Ampliar a nivel ${(b.level || 1) + 1} · ${fmt(g.upgradeCost(b))}</button>`);
     }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
@@ -377,8 +430,11 @@ class UI {
       const g = this.app.game;
       html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
         (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
-          : ' · Selecciona tropas de tierra y toca el transporte para subirlas.') + '</div>';
+          : ' · Selecciona tropas de tierra y toca la Barcaza para subirlas.') + '</div>';
       if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
+    }
+    if (sel.some((u) => u.def.repairs)) {
+      html += `<div class="queue">Toca un edificio tuyo dañado para repararlo (no repara mientras recibe disparos). Junto a una obra, la termina el doble de rápido.</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
@@ -386,6 +442,26 @@ class UI {
     }
     acts.push('<button class="btn" type="button" data-act="stop">Detener</button>');
     html += `<div class="actions">${acts.join('')}</div>`;
+    return html;
+  }
+
+  pointHtml(pt) {
+    const g = this.app.game;
+    const ownerTxt = pt.owner >= 0
+      ? `<b style="color:${hexColor(PLAYER_COLORS[pt.owner])}">${esc(g.players[pt.owner].name)}</b>` : 'Sin dueño';
+    const state = pt.contested ? 'En disputa: hay tropas de varios equipos cerca'
+      : pt.owner < 0 && pt.prog > 0 ? `Capturando… ${Math.floor(pt.prog * 100)} %`
+        : `Para capturarlo: infantería a 1 casilla y sin enemigos a ${CAPTURE.clear} casillas durante ${CAPTURE.time} s.`;
+    let html = this.head(pt.type, pt.owner >= 0 ? PLAYER_COLORS[pt.owner] : NEUTRAL, esc(pt.def.name),
+      `${ownerTxt} · ${esc(pt.def.desc)}`, false);
+    html += `<div class="queue">${state}</div>`;
+    if (g.mode.king && pt.type === 'faro') {
+      const parts = Object.entries(g.kingTime).map(([team, t]) => {
+        const pid = g.players.findIndex((p) => String(p.team) === team);
+        return `<b style="color:${hexColor(PLAYER_COLORS[pid])}">${esc(g.players[pid].name)}</b> ${fmtTime(t)}`;
+      });
+      html += `<div class="queue">Rey del Faro (meta ${fmtTime(KING_TIME)}): ${parts.join(' · ') || 'nadie lo ha controlado aún'}</div>`;
+    }
     return html;
   }
 
@@ -399,7 +475,7 @@ class UI {
 
   updateSelLive(sel) {
     const hp = $('sel-hp');
-    if (!hp) return;
+    if (!hp || sel[0].kind === 'point') return;
     const first = sel[0];
     const bar = $('sel-hpbar');
     if (first.kind === 'bld' && !first.built) {
@@ -467,8 +543,17 @@ class UI {
         app.sound.play('error');
       } else {
         app.setSelection([res]);
-        this.toast(`Mejorando a ${res.def.name}`, 'good');
+        this.toast(res.type === 'house' ? `Casa ampliada a nivel ${res.level}` : `Mejorando a ${res.def.name}`, 'good');
       }
+    } else if (act === 'dome') {
+      const err = g.buyDome(0);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        this.toast('Cúpula levantada sobre tu Núcleo', 'good');
+      }
+      this.renderSel(true);
     } else if (act === 'unload') {
       const res = g.unload(b);
       if (typeof res === 'string') {
@@ -490,7 +575,7 @@ class UI {
       app.game.demolish(b);
       this.demolishArm = -1;
       app.setSelection([]);
-      this.toast(`${b.def.name} demolido`);
+      this.toast(`${b.def.name} ${b.def.fem ? 'demolida' : 'demolido'}`);
       return;
     }
     this.demolishArm = b.id;
@@ -510,6 +595,22 @@ class UI {
     $('coins').textContent = fmt(p.coins);
     $('income').textContent = `+${fmt(p.income)}/min`;
     $('pop').textContent = `${p.popUsed}/${p.popCap}`;
+    $('energy').textContent = fmt(p.energy);
+    $('energyRate').textContent = `+${p.energyRate}/10 s`;
+    if (g.mode.king) {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      const ownerTeam = faro && faro.owner >= 0 ? g.players[faro.owner].team : -1;
+      const myT = g.kingTime[p.team] || 0;
+      let best = -1;
+      let bestT = 0;
+      for (const [team, t] of Object.entries(g.kingTime)) {
+        if (Number(team) !== p.team && t > bestT) { bestT = t; best = Number(team); }
+      }
+      const rival = best >= 0 ? g.players.findIndex((pl) => pl.team === best) : -1;
+      const bar = (t, color) => `<span class="bar"><i style="width:${Math.min(100, (t / KING_TIME) * 100)}%;background:${color}"></i></span>`;
+      $('king').innerHTML = `Faro: ${ownerTeam < 0 ? 'libre' : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
+        (rival >= 0 ? ` ${esc(g.players[rival].name)} ${bar(bestT, hexColor(PLAYER_COLORS[rival]))}` : '');
+    }
     $('stat-pop').classList.toggle('full', p.popUsed >= p.popCap);
     $('clock').textContent = fmtTime(g.time);
     const sig = g.players.map((pl) => pl.alive).join(',');
@@ -539,7 +640,9 @@ class UI {
     $('enddialog').className = 'dialog panel ' + (win ? 'result-victory' : 'result-defeat');
     $('enddialog').innerHTML = `
       <h2>${win ? 'Victoria' : 'Derrota'}</h2>
-      <p>${win ? 'Todos los Núcleos rivales han caído. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido. Prueba otra estrategia: más torretas, más economía o ataca antes.'}</p>
+      <p>${g.kingWinner !== undefined
+    ? (win ? `Tu equipo mantuvo el Faro ${fmtTime(KING_TIME)}. El archipiélago es tuyo.` : 'Otro imperio mantuvo el Faro el tiempo necesario. Ataca su guarnición antes.')
+    : (win ? 'Todos los Núcleos rivales han caído. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido. Prueba otra estrategia: más torretas, más economía o ataca antes.')}</p>
       <div class="stats">
         <div><b>${fmtTime(g.time)}</b><span>Duración</span></div>
         <div><b>${fmt(s.earned)}</b><span>Monedas ganadas</span></div>
@@ -567,7 +670,7 @@ class Sound {
     this.on = true;
     this.last = {};
     try {
-      this.on = localStorage.getItem('hexbox-sound') !== 'off';
+      this.on = localStorage.getItem('faro-sound') !== 'off';
     } catch (err) { /* sin almacenamiento */ }
   }
 
@@ -595,7 +698,7 @@ class Sound {
   toggle() {
     this.on = !this.on;
     try {
-      localStorage.setItem('hexbox-sound', this.on ? 'on' : 'off');
+      localStorage.setItem('faro-sound', this.on ? 'on' : 'off');
     } catch (err) { /* sin almacenamiento */ }
     if (this.on) this.unlock();
   }

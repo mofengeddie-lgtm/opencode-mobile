@@ -1,5 +1,5 @@
 // Une la plantilla HTML y los scripts de src/js en un único archivo jugable.
-// Uso: node hexbox/build.mjs [ruta-extra-sin-envoltorio.html]
+// Uso: node faro/build.mjs [ruta-extra-sin-envoltorio.html]
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -25,11 +25,11 @@ const full = [
   '',
 ].join('\n');
 
-writeFileSync(join(ROOT, 'hexbox.html'), full);
-console.log(`[HEXBOX] hexbox.html listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts)`);
+writeFileSync(join(ROOT, 'faro.html'), full);
+console.log(`[Faro] faro.html listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts)`);
 
 const extra = process.argv[2];
 if (extra) {
   writeFileSync(extra, body);
-  console.log(`[HEXBOX] Versión sin envoltorio: ${extra}`);
+  console.log(`[Faro] Versión sin envoltorio: ${extra}`);
 }

@@ -1,4 +1,4 @@
-<title>HEXBOX</title>
+<title>Faro de Ámbar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap">
@@ -14,8 +14,9 @@
   --line: rgba(205, 226, 240, 0.13);
   --text: #edf3f7;
   --muted: #9aaebd;
-  --gold: #f5bb3c;
-  --gold-ink: #2a1d02;
+  --gold: #f2ab38;
+  --gold-ink: #2a1902;
+  --energy: #7fd4ff;
   --sea: #3aa6c2;
   --good: #5ee07a;
   --bad: #f0585a;
@@ -73,6 +74,11 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .stat + .stat { border-left: 1px solid var(--line); }
 .stat svg { grid-row: span 2; width: 22px; height: 22px; color: var(--muted); }
 .stat.coins svg { color: var(--gold); }
+.stat.energy svg { color: var(--energy); }
+.stat.energy small { color: var(--energy); }
+#king { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); z-index: 4; display: flex; gap: 8px; align-items: center; padding: 6px 10px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+#king .bar { width: 90px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.12); overflow: hidden; }
+#king .bar i { display: block; height: 100%; }
 .stat b { font-family: var(--font-display); font-size: 21px; line-height: 1.1; font-weight: 600; font-variant-numeric: tabular-nums; }
 .stat .lbl { line-height: 1.2; }
 .stat small { font-family: var(--font-display); color: var(--good); font-size: 12px; margin-left: 4px; font-weight: 500; }
@@ -127,7 +133,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .bitem.active { border-color: var(--gold); }
 
 /* ---------- dock izquierdo ---------- */
-#leftdock { position: fixed; left: var(--left); bottom: var(--bottom); display: flex; gap: 8px; align-items: flex-end; z-index: 4; }
+#leftdock { position: fixed; left: var(--left); bottom: var(--bottom); display: flex; gap: 8px; align-items: flex-end; z-index: 4; pointer-events: none; }
+#leftdock > * { pointer-events: auto; }
 #minimap { width: 172px; height: 172px; border-radius: var(--r); border: 1px solid var(--line); display: block; background: #16405a; cursor: pointer; touch-action: none; }
 .quick { display: grid; gap: 6px; }
 .qbtn { width: 50px; min-height: 50px; display: grid; justify-items: center; align-content: center; gap: 2px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-size: 10.5px; font-weight: 600; color: var(--muted); padding: 4px 0; }
@@ -160,7 +167,20 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { display: flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px; border-radius: 7px; background: var(--raise); font-size: 13px; font-weight: 600; }
 .chip img { width: 30px; height: 30px; }
-#placebar { padding: 8px 8px 8px 14px; display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+#placebar { padding: 8px 8px 8px 14px; display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+#placebar p { flex: 1 1 240px; min-width: 0; }
+#placebar .err { color: #ffb4b5; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.ecost { font-family: var(--font-display); font-weight: 600; color: var(--energy); font-size: 13px; white-space: nowrap; }
+.costs { display: flex; gap: 6px; align-items: baseline; }
+.bitem.poorE .ecost { color: var(--bad); }
+.levels { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+.levels i { width: 8px; height: 8px; border-radius: 2px; background: rgba(255,255,255,0.15); display: block; }
+.levels i.on { background: var(--gold); }
+.minimap-wrap { position: relative; }
+#btn-mini { position: absolute; top: 4px; right: 4px; width: 30px; min-height: 30px; padding: 0; background: rgba(12,21,29,0.8); }
+.minimap-wrap.min #minimap { width: 40px; height: 40px; opacity: 0; pointer-events: none; }
+.minimap-wrap.min #btn-mini { position: static; width: 44px; min-height: 44px; }
 #placebar p { margin: 0; font-size: 14px; line-height: 1.3; }
 #boxsel { position: fixed; border: 1.5px dashed #fff; background: rgba(255, 255, 255, 0.08); pointer-events: none; z-index: 8; border-radius: 3px; }
 #btn-build { display: none; }
@@ -171,7 +191,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .menu-hero { max-width: 520px; padding-left: clamp(0px, 3vw, 40px); }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand svg { width: 64px; height: 64px; flex: none; }
-.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 9vw, 92px); letter-spacing: 0.04em; line-height: 0.9; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 6.6vw, 76px); letter-spacing: 0.01em; line-height: 0.95; text-wrap: balance; }
+.version { display: inline-block; margin-top: 10px; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
 .brand h1 span { color: var(--gold); }
 .tagline { font-size: clamp(16px, 2vw, 19px); line-height: 1.5; color: #d3e0e8; max-width: 44ch; margin: 18px 0 20px; text-wrap: pretty; }
 .facts { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; }
@@ -252,6 +273,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 }
 @media (max-width: 420px) {
   .stat.clock { display: none; }
+  .players { display: none; }
+  #king { left: auto; right: var(--right); transform: none; top: calc(var(--top) + 56px); }
+  #king .bar { width: 48px; }
 }
 /* Pantallas bajas: celular en horizontal. */
 @media (max-height: 520px) {
@@ -311,6 +335,11 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
         <span class="lbl">Tropas</span>
         <b id="pop">0/0</b>
       </div>
+      <div class="stat energy" title="Energía">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+        <span class="lbl">Energía</span>
+        <div><b id="energy">0</b><small id="energyRate">+0/10 s</small></div>
+      </div>
       <div class="stat clock" title="Tiempo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>
         <span class="lbl">Tiempo</span>
@@ -332,6 +361,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </aside>
 
   <div id="toasts" aria-live="polite"></div>
+  <div id="king" class="panel" hidden></div>
 
   <section id="buildpanel" class="panel" aria-label="Construir">
     <header>
@@ -349,8 +379,13 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </button>
 
   <div id="leftdock">
-    <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
-    <div class="quick">
+    <div class="minimap-wrap" id="miniwrap">
+      <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
+      <button class="btn icon" id="btn-mini" type="button" aria-label="Plegar minimapa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
+      </button>
+    </div>
+    <div class="quick" id="quick">
       <button class="qbtn" type="button" data-quick="army" title="Seleccionar ejército (T)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="3"/><path d="M6 21v-5a6 6 0 0 1 12 0v5M12 13v8"/></svg>Ejército</button>
       <button class="qbtn" type="button" data-quick="sea" title="Seleccionar barcos">
@@ -367,7 +402,12 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   <section id="selpanel" class="panel" hidden></section>
   <div id="placebar" class="panel" hidden>
     <p id="placetext"></p>
-    <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
+    <div class="actions">
+      <button class="btn" id="btn-place-rot" type="button" title="Girar (R)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg>Girar</button>
+      <button class="btn gold" id="btn-place-ok" type="button" title="Construir (Enter)">Construir</button>
+      <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
+    </div>
   </div>
   <div id="boxsel" hidden></div>
 </div>
@@ -375,14 +415,16 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 <div id="menu" class="screen menu">
   <div class="menu-hero">
     <div class="brand">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f5bb3c" stroke-width="3"/><rect x="21" y="21" width="22" height="22" rx="2" fill="#f5bb3c" transform="rotate(45 32 32)"/></svg>
-      <h1>HEX<span>BOX</span></h1>
+      <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
+      <h1>Faro de <span>Ámbar</span></h1>
     </div>
-    <p class="tagline">Construye tu base sobre un archipiélago de hexágonos, expande tu territorio con ingenieros y derriba los Núcleos rivales por tierra, mar y aire.</p>
+    <span class="version">Prototipo web v0.3</span>
+    <p class="tagline">Construye tu base en un archipiélago de hexágonos, conquista las islas y defiende el Faro: quien lo controla gana un 50 % más de monedas.</p>
     <ul class="facts">
-      <li><b>15</b>edificios</li>
+      <li><b>16</b>edificios</li>
       <li><b>14</b>unidades</li>
-      <li><b>Bots</b>que construyen y atacan</li>
+      <li><b>6</b>modos</li>
+      <li><b>Bots</b>que capturan y atacan</li>
     </ul>
     <p class="hint">Un dedo mueve el mapa · Dos dedos: zoom y giro · Toca una tropa y luego un destino</p>
   </div>
@@ -425,9 +467,13 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
+      <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa, «Girar» si quieres y «Construir».</li>
+      <li><b>Capturar:</b> lleva infantería junto a una Bandera o al Faro y despeja la zona de enemigos durante 12 s.</li>
+      <li><b>Energía:</b> los Molinos la producen; la gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.</li>
+      <li><b>Reparar:</b> selecciona un Ingeniero y toca un edificio tuyo dañado.</li>
       <li><b>Expandirte:</b> selecciona un Ingeniero y toca «Fundar puesto».</li>
-      <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Transporte y luego «Desembarcar» junto a otra isla.</li>
-      <li><b>Mejorar:</b> toca una Granja terminada y elige «Mejorar a Pozo petrolero».</li>
+      <li><b>Cruzar el mar:</b> selecciona tropas, toca tu Barcaza y luego «Desembarcar» junto a otra isla.</li>
+      <li><b>Mejorar:</b> toca una Granja o una Casa terminada. Toca tu Núcleo para comprar la Cúpula.</li>
       <li><b>Ganar:</b> destruye todos los Núcleos enemigos.</li>
     </ul>
     <div class="row">
