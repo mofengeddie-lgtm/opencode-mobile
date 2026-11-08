@@ -405,9 +405,15 @@ class Lobby {
     const pct = st.games ? Math.round((st.wins / st.games) * 100) : 0;
     const cover = Thumbs.cover();
     return `${resume}
-      <section class="cover panel"${cover ? ` style="background-image:url('${cover}')"` : ''}>
-        <div class="cover-text"><small>Versión ${GAME_VERSION}</small><h2>Faro de <span>Ámbar</span></h2>
-          <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p></div>
+      <section class="cover panel"${cover ? ` style="--cover:url('${cover}')"` : ''}>
+        <div class="cover-img" aria-hidden="true"></div>
+        <div class="cover-text">
+          <div class="cover-brand"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
+            <small>Versión ${GAME_VERSION}</small></div>
+          <h2>Faro de <span>Ámbar</span></h2>
+          <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
+          <ul class="cover-news" aria-label="Novedades">${['Comunidad 240', 'Lanzar los 3', 'Radiación', 'Mejorar todo', 'Difícil de verdad'].map((t) => `<li>${t}</li>`).join('')}</ul>
+        </div>
       </section>
       <section class="lcard panel">
         <div class="mode-now"><small>Modo</small><b>${esc(m.name)}</b><span>${esc(m.desc)}</span>

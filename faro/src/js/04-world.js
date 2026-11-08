@@ -1040,6 +1040,8 @@ class Game {
     // Fuego concentrado (bots desde Normal, v0.8): entre lo que tienen a tiro, primero la tropa
     // armada con menos vida; así la eliminan antes en vez de repartir el daño.
     const focus = extraTiles === 0 && this.players[a.owner].focusFire;
+    // Difícil (v1.0): entre lo que tiene a tiro, primero los Constructores y la economía.
+    const snipe = extraTiles === 0 && this.players[a.owner].snipe;
     let best = null;
     let bs = Infinity;
     const check = (t) => {
@@ -1057,7 +1059,12 @@ class Game {
         : focus
           ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
           : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
-      if (s < bs) { bs = s; best = t; }
+      let sc = s;
+      if (snipe && !(a.def && (a.def.prefersBld || a.def.prefersAir))) {
+        if (t.kind === 'unit' && t.def.builds) sc -= focus ? 6000 : 6;
+        else if (t.kind === 'bld' && t.def.income) sc -= focus ? 5e5 : 1;
+      }
+      if (sc < bs) { bs = sc; best = t; }
     };
     for (const t of this.units) check(t);
     for (const t of this.buildings) check(t);

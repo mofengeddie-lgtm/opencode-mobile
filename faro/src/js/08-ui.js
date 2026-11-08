@@ -458,6 +458,59 @@ class UI {
       <tbody>${rows}</tbody></table></div>`;
   }
 
+  // ---------- Aviones y Aeropuerto (v1.0) ----------
+  planeState(u) {
+    if (u.repairing) return 'Vuelve a repararse';
+    if (u.autoTarget && u.autoTarget.alive) return 'En combate';
+    if (u.moving) return 'En vuelo';
+    return 'Patrulla en círculo';
+  }
+
+  planeHtml(planes) {
+    const g = this.app.game;
+    const rows = [];
+    for (const type of ['fighter', 'bomber']) {
+      const list = planes.filter((u) => u.type === type);
+      if (!list.length) continue;
+      const d = UNITS[type];
+      const w = d.weapon;
+      const u = list[0];
+      const hp = Math.round((list.reduce((a, x) => a + x.hp / x.maxHp, 0) / list.length) * 100);
+      const cells = [`<span>Estado</span><b>${esc(this.planeState(u))}</b>`, `<span>Vida</span><b>${hp} %</b>`];
+      if (type === 'fighter') {
+        cells.push(`<span>Misiles aire-aire</span><b>${w.dmg} · ×${w.mult.air} a aviones</b>`, `<span>Alcance</span><b>${w.range} casillas</b>`);
+      } else {
+        const cd = Math.max(0, u.cd || 0);
+        const seen = g.time - (u.lastShot || -99) < 3;
+        cells.push(`<span>Bombas</span><b class="${cd > 0.2 ? 'radar-track' : 'radar-idle'}">${cd > 0.2 ? `Recargando ${Math.ceil(cd)} s` : 'Listas'}</b>`,
+          `<span>Furtivo</span><b class="${seen ? 'radar-lock' : ''}">${seen ? 'Visible (acaba de soltar bombas)' : 'Oculto: solo se ve a 3 casillas'}</b>`);
+      }
+      rows.push(`<div class="planecard"><img src="${Thumbs.get(type, PLAYER_COLORS[0])}" alt="">
+        <div><div class="radar-status"><b>${esc(d.name)}</b>${list.length > 1 ? ` ×${list.length}` : ''}</div><div class="numbers">${cells.join('')}</div></div></div>`);
+    }
+    const tip = planes.some((u) => u.type === 'bomber')
+      ? '«Bombardear zona»: toca un lugar y los Bombarderos van atacando los edificios que encuentren.'
+      : 'Los Cazas buscan solos aviones y helicópteros enemigos; con poca vida vuelven al Aeropuerto o al Helipuerto.';
+    return rows.join('') + `<div class="queue">${tip}</div>`;
+  }
+
+  airportHtml(b) {
+    const g = this.app.game;
+    const heal = g.healOf(b);
+    const R = heal.range * SQ3 + 0.6;
+    const near = g.units.filter((u) => u.alive && !u.inside && u.owner === b.owner && u.cls === 'air' && Math.hypot(u.x - b.x, u.z - b.z) <= R);
+    const mine = g.units.filter((u) => u.alive && u.owner === b.owner && u.def.plane);
+    const nF = mine.filter((u) => u.type === 'fighter').length;
+    const nB = mine.filter((u) => u.type === 'bomber').length;
+    const pads = near.length
+      ? near.map((u) => `<span class="padslot"><img src="${Thumbs.get(u.type, PLAYER_COLORS[u.owner])}" alt=""><b>${Math.round((u.hp / u.maxHp) * 100)} %</b></span>`).join('')
+      : '<span class="queue">Ningún avión en la pista ahora.</span>';
+    return `<div class="radar airport"><div class="radar-scope" aria-hidden="true"><i></i></div><div class="radar-body">
+      <div class="radar-status">Torre de control · <b>${nF} ${nF === 1 ? 'Caza' : 'Cazas'} · ${nB} ${nB === 1 ? 'Bombardero' : 'Bombarderos'}</b></div>
+      <div class="pads">${pads}</div>
+      <div class="queue">Repara ${Math.round(heal.rate)} de vida por segundo a los aviones y helicópteros cercanos; los dañados vuelven solos aquí.</div></div></div>`;
+  }
+
   // ---------- AIR DEFENSE y Torreta (v0.9): alcance, recarga, contra qué sirve y qué sigue el radar ----------
   radarHtml(b) {
     const g = this.app.game;
@@ -549,6 +602,8 @@ class UI {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+    } else if (p.kind === 'bombzone') {
+      text = `Toca la <b>zona a bombardear</b>: ${p.units.length} ${p.units.length === 1 ? 'Bombardero va' : 'Bombarderos van'} atacando los edificios que encuentren`;
     } else if (p.kind === 'nuke3') {
       text = `Toca el blanco de los <b>3 misiles nucleares</b> · <span class="cost">${fmt(NUKE.cost * 3)}</span> · llegan en ${NUKE.flight} s`;
     }
@@ -634,6 +689,7 @@ class UI {
       }
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'airport') sig += '|p' + g.units.filter((u) => u.alive && u.owner === 0 && u.cls === 'air' && Math.hypot(u.x - first.x, u.z - first.z) < 4.5).map((u) => u.id + ':' + Math.floor((u.hp / u.maxHp) * 10)).join(',') + g.units.filter((u) => u.def.plane && u.owner === 0).length;
       if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
       if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}${first.type === 'aadef' && first.level >= 4 ? g.salvoInvalid(0) : ''}`;
       if (first.type === 'core' && first.owner === 0) {
@@ -647,6 +703,8 @@ class UI {
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
         sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}`;
+      // Aviones (v1.0): estado, bombas y si el bombardero está oculto.
+      for (const u of sel) if (u.def.plane) sig += `|${this.planeState(u)}${u.type === 'bomber' ? Math.ceil(Math.max(0, u.cd || 0)) + (g.time - (u.lastShot || -99) < 3 ? 'v' : 'o') : ''}`;
     }
     if (force || sig !== this.selSig) {
       this.selSig = sig;
@@ -780,6 +838,7 @@ class UI {
     } else if (b.type === 'aadef' && b.built) {
       html += `<div class="queue">Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.</div>`;
     }
+    if (b.type === 'airport' && b.built) html += this.airportHtml(b);
     if (b.type === 'antinuke' && b.built) {
       const ready = g.time >= (b.chargeAt || 0);
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
@@ -828,6 +887,13 @@ class UI {
           : ' · ' + how) + '</div>';
       const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' ? 'Desembarcar' : 'Bajar soldados';
       if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}${label}</button>`);
+    }
+    const planes = sel.filter((u) => u.def.plane);
+    if (planes.length) {
+      html += this.planeHtml(planes);
+      if (planes.some((u) => u.type === 'bomber')) {
+        acts.push(`<button class="btn gold" type="button" data-act="bombzone" id="btn-bombzone">${bi('amove')}Bombardear zona</button>`);
+      }
     }
     if (sel.some((u) => u.def.builds)) {
       html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
@@ -1027,6 +1093,9 @@ class UI {
       } else {
         app.input.startPlacement({ kind: 'nuke', building: b });
       }
+    } else if (act === 'bombzone') {
+      const bombers = sel.filter((x) => x.kind === 'unit' && x.type === 'bomber');
+      if (bombers.length) app.input.startPlacement({ kind: 'bombzone', units: bombers });
     } else if (act === 'nuke3') {
       const err = g.salvoInvalid(0);
       if (err) {

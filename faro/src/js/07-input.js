@@ -455,7 +455,7 @@ class Input {
       const comp = g.cells[u.cell].comp;
       cells = g.cells.filter((c) => !g.foundInvalid(0, c.i, u.def.founds) &&
         (u.mover !== 'land' || c.comp === comp)).map((c) => c.i);
-    } else if (p.kind === 'rally') {
+    } else if (p.kind === 'rally' || p.kind === 'bombzone') {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
@@ -516,6 +516,15 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
+      this.cancelPlacement();
+    } else if (p.kind === 'bombzone') {
+      const bombers = p.units.filter((u) => u.alive);
+      if (bombers.length) {
+        g.orderMove(bombers, cell.i, true);
+        this.r.addMoveMarker(cell.i, 0xff4040);
+        this.app.ui.toast(`${bombers.length === 1 ? 'El Bombardero va' : 'Los Bombarderos van'} a bombardear la zona`, 'info');
+        this.app.sound.play('order');
+      }
       this.cancelPlacement();
     } else if (p.kind === 'nuke3') {
       const res = g.launchSalvo(0, cell.i);

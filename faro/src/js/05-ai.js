@@ -33,6 +33,7 @@ class Bot {
     this.ferryTrips = 0;
     // v0.8: fuego concentrado, hostigamiento, Torreta de defensa y ayuda a aliados.
     p.focusFire = !!this.tac.focus;
+    p.snipe = !!this.tac.snipe;
     this.nextHarassAt = 200 + Math.random() * 60;
     this.wantFast = -99;
     this.turretAt = -99;
@@ -117,9 +118,18 @@ class Bot {
   // Misil nuclear (v0.9, desde Normal): solo pasados 20 min, contra el Núcleo enemigo más cercano.
   useNuke(mine) {
     const g = this.g;
-    if (g.time < 1200) return;
+    if (g.time < (this.tac.earlyNuke ? 900 : 1200)) return;
     const target = this.chooseEnemyCore();
     if (!target) return;
+    // Difícil (v1.0): con los 3 listos y dinero, la salva de 3 (un Escudo antimisiles solo derriba uno).
+    if (this.tac.earlyNuke && this.p.coins >= NUKE.cost * 3 + 3000 && !g.salvoInvalid(this.pid, target.cell)) {
+      const n = g.launchSalvo(this.pid, target.cell);
+      if (typeof n === 'number') {
+        this.nukes = (this.nukes || 0) + n;
+        this.ecoBank = Math.max(0, this.ecoBank - NUKE.cost * n);
+        return;
+      }
+    }
     for (const b of mine) {
       if (b.type !== 'aadef' || b.level < 4) continue;
       if (this.p.coins < NUKE.cost + 3000) return;
@@ -190,9 +200,15 @@ class Bot {
     if (n('harbor') < 1 && coast && T > (plan.sea >= 3 ? 90 : 240)) want.push('harbor');
     const enemyAir = g.units.some((u) => u.cls === 'air' && g.isEnemy(u.owner, this.pid));
     if (enemyAir && n('aadef') < 2 && T > 180) want.push('aadef');
+    // Difícil (v1.0): en cuanto ve aviones enemigos, hasta 3 AIR DEFENSE y las mejora.
+    if (enemyAir && this.tac.earlyAA) {
+      if (n('aadef') < 3) want.unshift('aadef');
+      else want.push('up:aadef');
+    }
     // Mejoras: Núcleo primero (nivel 3 abre la Cúpula), luego economía y defensas.
-    if (T > 260 && core.level < 2) want.push('up:core');
-    if (T > 520 && core.level < 3) want.push('up:core');
+    const fast = this.tac.fastUp;
+    if (T > (fast ? 200 : 260) && core.level < 2) want.push('up:core');
+    if (T > (fast ? 400 : 520) && core.level < 3) want.push('up:core');
     if (T > 300) want.push('up:farm', 'up:mine', 'up:pump', 'up:barracks');
     if (T > 420) want.push('up:turret', 'up:barracks');
     const turretCap = Math.round(4 * this.persona.turrets);
@@ -208,8 +224,9 @@ class Bot {
     if (n('harbor') < 2 && coast && T > (plan.sea >= 3 ? 300 : 420)) want.push('harbor');
     // v0.9: Aeropuerto, AIR DEFENSE de nivel 4 (misil nuclear) y Escudo antimisiles si el rival tiene misiles.
     if (!easy && plan.air >= 1 && n('airport') < 1 && T > (plan.air >= 2 ? 540 : 720)) want.push('airport');
-    if (this.tac.focus && T > 1000 && n('aadef') >= 1) want.push('up:aadef');
-    if (this.tac.focus && T > 1000 && n('aadef') < 1) want.push('aadef');
+    const nukeT = this.tac.earlyNuke ? 800 : 1000;
+    if (this.tac.focus && T > nukeT && n('aadef') >= 1) want.push('up:aadef');
+    if (this.tac.focus && T > nukeT && n('aadef') < 1) want.push('aadef');
     const enemyNuke = g.buildings.some((b) => b.alive && b.type === 'aadef' && b.level >= 4 && g.isEnemy(b.owner, this.pid));
     // v0.9: con más de 15 000 monedas guardadas (pasados 15 min) invierte en aire y defensa antiaérea:
     // Aeropuerto, un segundo Helipuerto y AIR DEFENSE hasta el nivel 4 (misil nuclear).
@@ -228,7 +245,7 @@ class Bot {
     if (enemyNuke && n('antinuke') < 1) want.unshift('antinuke');
 
     // Una mejora barata cada ~minuto (Granja, Mina, Bomba o Casa) aunque haya otras compras esperando.
-    if (T > 300 && T - (this.cheapUpAt || 0) > 60 && !tooBusy) {
+    if (T > 300 && T - (this.cheapUpAt || 0) > (fast ? 35 : 60) && !tooBusy) {
       const cand = mine.filter((x) => ['farm', 'mine', 'pump', 'house'].includes(x.type) && x.built && !x.upgrading && x.level < x.def.maxLevel)
         .sort((x, y) => g.upgradeCost(x) - g.upgradeCost(y))[0];
       if (cand && this.ecoBank >= g.upgradeCost(cand)) {
@@ -629,7 +646,8 @@ class Bot {
         }
         continue;
       }
-      if (u.hp >= u.maxHp * 0.3) continue;
+      // Difícil (v1.0): retira a los heridos antes (45 % de vida) para curarlos.
+      if (u.hp >= u.maxHp * (this.tac.medevac ? 0.45 : 0.3)) continue;
       const comp = g.cells[u.cell].comp;
       let spot = null;
       let sd = Infinity;

@@ -754,7 +754,7 @@ const Thumbs = {
 
   // Portada (v0.9): una escena con los modelos del juego, dibujada una sola vez como imagen.
   coverUrl: '',
-  cover(w = 1200, h = 330) {
+  cover(w = 1400, h = 440) {
     if (this.coverUrl || !this.renderer) return this.coverUrl;
     try {
       const r = this.renderer;
@@ -811,8 +811,8 @@ const Thumbs = {
       };
       const faro = createPointVisual('faro');
       faro.own.color.set(0xf2ab38);
-      faro.group.position.set(9.6, 0.33, -2.8);
-      faro.group.scale.setScalar(1.1);
+      faro.group.position.set(9.9, 0.33, -3.4);
+      faro.group.scale.setScalar(0.85);
       scene.add(faro.group);
       put('core_3', 0.8, 0.15, -2.4, 0.3);
       put('aadef_4', 3.0, 0.15, -3.2, 0.8);
@@ -823,21 +823,41 @@ const Thumbs = {
       put('launcher', 7.6, 0.33, -2.2, 1.3, 1.1);
       ['rifle', 'rocket', 'rifle', 'medic', 'sniper', 'rifle'].forEach((k, i) =>
         put(k, 4.6 + i * 0.6, 0.15, 2.2 - (i % 2) * 0.4, 1.4, 1.5));
-      const heli = put('heli', 3.4, 2.0, 0.6, 1.3, 1.2);
+      const heli = put('heli', 3.6, 1.8, 0.8, 1.3, 1.2);
       if (heli.rotor) heli.rotor.rotation.y = 0.5;
-      const apache = put('apache', 6.8, 2.5, -0.6, 1.25, 1.2);
+      const apache = put('apache', 6.8, 2.2, -0.6, 1.25, 1.2);
       if (apache.rotor) apache.rotor.rotation.y = 1.1;
-      const jet = put('fighter', 9.2, 3.3, 0.6, 1.9, 1.3);
+      const jet = put('fighter', 8.6, 2.85, 0.8, 1.9, 1.3);
       jet.group.rotation.z = -0.35;
       put('frigate', 11.2, -0.1, 2.6, -0.4, 1.2, red);
+      // v1.0: Bombardero y segundo Caza en vuelo con estela, y el Portaaviones en el mar.
+      const bomb = put('bomber', 4.6, 3.35, -2.2, 1.75, 1.3);
+      bomb.group.rotation.z = 0.12;
+      const jet2 = put('fighter', 1.8, 2.9, -0.2, 1.95, 1.1);
+      jet2.group.rotation.z = 0.3;
+      put('carrier', 13.6, -0.1, -0.4, 1.2, 1.25);
+      const trailMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55, depthWrite: false });
+      const trailGeo = new THREE.BoxGeometry(0.05, 0.05, 1);
+      const trail = (v, len) => {
+        const yaw = v.group.rotation.y;
+        const m = new THREE.Mesh(trailGeo, trailMat);
+        m.scale.z = len;
+        m.rotation.y = yaw;
+        m.position.set(v.group.position.x - Math.sin(yaw) * (len / 2 + 0.4), v.group.position.y + 0.18, v.group.position.z - Math.cos(yaw) * (len / 2 + 0.4));
+        scene.add(m);
+      };
+      trail(jet, 4);
+      trail(jet2, 3);
+      trail(bomb, 3.5);
       const cam = new THREE.PerspectiveCamera(30, w / h, 0.1, 80);
-      cam.position.set(4.6, 3.1, 9.6);
-      cam.lookAt(5.0, 0.8, 0);
+      cam.position.set(5.2, 3.4, 10.4);
+      cam.lookAt(5.6, 1.3, 0);
       r.setSize(w, h);
       r.render(scene, cam);
       this.coverUrl = r.domElement.toDataURL('image/jpeg', 0.86);
       hexGeo.dispose();
-      [grass, sand, rock, water.material].forEach((m) => m.dispose());
+      [grass, sand, rock, water.material, trailMat].forEach((m) => m.dispose());
+      trailGeo.dispose();
       water.geometry.dispose();
       scene.background.dispose();
       r.setSize(112, 112);

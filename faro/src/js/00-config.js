@@ -4,7 +4,7 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.9';
+const GAME_VERSION = '1.0';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -410,12 +410,15 @@ const PALETTES = {
 const DIFFICULTY = {
   // v0.8: focus = fuego concentrado, harass = hostigar la economía, turret = Torreta del lado del
   // ataque, teamwork = aliados atacan juntos y se ayudan.
+  // v1.0, solo Difícil: snipe = busca primero Constructores y economía; medevac = retira antes a los
+  // heridos; earlyAA = defensa antiaérea en cuanto ve aviones; fastUp = mejora antes; earlyNuke = misil antes.
   easy: { name: 'Fácil', income: 0.75, think: 3.0, firstWave: 230, wave: 8,
     tactics: { group: false, retreat: false, counter: false, focusDefense: false, focus: false, harass: false, turret: false, teamwork: true } },
   normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 150, wave: 7,
     tactics: { group: true, retreat: true, counter: true, focusDefense: false, focus: true, harass: true, turret: true, teamwork: true } },
-  hard: { name: 'Difícil', income: 1.3, think: 1.1, firstWave: 95, wave: 6,
-    tactics: { group: true, retreat: true, counter: true, focusDefense: true, focus: true, harass: true, turret: true, teamwork: true } },
+  hard: { name: 'Difícil', income: 1.55, think: 0.8, firstWave: 80, wave: 6,
+    tactics: { group: true, retreat: true, counter: true, focusDefense: true, focus: true, harass: true, turret: true, teamwork: true,
+      snipe: true, medevac: true, earlyAA: true, fastUp: true, earlyNuke: true } },
 };
 
 // Personalidades de los bots. plan = peso de cada tipo de tropa en su ejército.

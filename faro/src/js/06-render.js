@@ -793,9 +793,13 @@ class Renderer {
       let y = u.y;
       if (u.mover === 'sea') y += Math.sin(time * 2.2 + u.id) * 0.025;
       if (u.mover === 'air') y += Math.sin(time * 1.7 + u.id) * 0.06;
-      v.group.position.set(u.x, y, u.z);
-      v.group.rotation.y = u.yaw;
-      if (u.mover === 'air') v.group.rotation.x = u.moving ? 0.12 : 0;
+      if (u.def.plane) {
+        this.updatePlane(u, v, dt, time, y);
+      } else {
+        v.group.position.set(u.x, y, u.z);
+        v.group.rotation.y = u.yaw;
+        if (u.mover === 'air') v.group.rotation.x = u.moving ? 0.12 : 0;
+      }
       if (v.turret) {
         const aiming = u.autoTarget && u.autoTarget.alive;
         const want = aiming ? u.aimYaw - u.yaw : 0;
@@ -812,6 +816,36 @@ class Renderer {
     this.soldiersSeen = soldiers;
     this.updateUnitShields(time);
     this.updateSkyBeams(time);
+  }
+
+  // Aviones (v1.0): quietos no flotan en el aire, dan vueltas sobre su punto; se inclinan al girar
+  // y dejan estela. Es solo la vista: la posición del juego sigue siendo el centro de la vuelta.
+  updatePlane(u, v, dt, time, y) {
+    const k = Math.min(1, dt * 1.5);
+    v.orbitA = (v.orbitA || 0) + ((u.moving ? 0 : 1) - (v.orbitA || 0)) * k;
+    const R = 0.75 * v.orbitA;
+    const a = time * 0.8 + u.id * 1.7;
+    const x = u.x + Math.cos(a) * R;
+    const z = u.z + Math.sin(a) * R;
+    // Rumbo: el de la vuelta cuando está quieto, el de su marcha cuando vuela a un destino.
+    const orbitYaw = Math.atan2(-Math.sin(a), Math.cos(a));
+    const yaw = v.orbitA > 0.5 ? orbitYaw : u.yaw;
+    const prev = v.lastYaw === undefined ? yaw : v.lastYaw;
+    let turn = yaw - prev;
+    while (turn > Math.PI) turn -= Math.PI * 2;
+    while (turn < -Math.PI) turn += Math.PI * 2;
+    v.lastYaw = yaw;
+    const wantBank = clamp(-(turn / Math.max(dt, 1e-3)) * 0.35, -0.6, 0.6);
+    v.bank = (v.bank || 0) + (wantBank - (v.bank || 0)) * Math.min(1, dt * 4);
+    v.group.position.set(x, y + 0.15, z);
+    v.group.rotation.set(u.moving ? 0.06 : 0, yaw, v.bank);
+    // Estela detrás de las toberas.
+    v.trailT = (v.trailT || 0) - dt;
+    if (v.trailT <= 0) {
+      v.trailT = this.quality === 'high' ? 0.05 : 0.15;
+      const s = v.group.scale.x || 1;
+      this.fxs.trail(x - Math.sin(yaw) * 0.55 * s, y + 0.3 * s, z - Math.cos(yaw) * 0.55 * s);
+    }
   }
 
   // Piernas de los soldados. Alta calidad: ciclo de caminar o correr de CMU (cadera, rodilla,

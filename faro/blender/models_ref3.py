@@ -221,43 +221,61 @@ def carrier():
 # Aviones
 # ---------------------------------------------------------------------
 def fighter():
-    """Caza furtivo: fuselaje facetado, alas en flecha, dos derivas inclinadas y toberas planas."""
+    """Caza furtivo (v1.0): fuselaje facetado con quillas, alas en diamante, colas horizontales,
+    dos derivas inclinadas con el color del imperio, tomas de aire laterales y toberas planas."""
     m = Model('fighter')
-    m.hull('gris', [(0.42, 0.11, 0.07, 0.02, 0.1), (0.15, 0.14, 0.09, 0.0, 0.11), (-0.2, 0.09, 0.05, 0.02, 0.11),
-                    (-0.42, 0.03, 0.02, 0.05, 0.08), (-0.52, 0.005, 0.005, 0.06, 0.065)], loc=(0, 0, 0.1))
-    m.sphere('oro', 0.06, (0, -0.22, 0.215), scale=(0.7, 1.6, 0.6))
+    # Fuselaje: nariz en punta hacia -Y.
+    m.hull('gris', [(0.5, 0.06, 0.05, 0.03, 0.09), (0.38, 0.17, 0.14, 0.0, 0.12), (0.05, 0.21, 0.17, 0.0, 0.13),
+                    (-0.2, 0.15, 0.1, 0.02, 0.13), (-0.42, 0.07, 0.04, 0.04, 0.11), (-0.6, 0.008, 0.006, 0.065, 0.075)],
+           loc=(0, 0, 0.1))
+    # Alas en diamante (un solo casco ancho y fino) y colas horizontales.
+    m.hull('gris', [(-0.12, 0.2, 0.2, 0.0, 0.02), (0.2, 0.86, 0.86, 0.0, 0.016), (0.24, 0.84, 0.84, 0.0, 0.014),
+                    (0.3, 0.34, 0.34, 0.0, 0.016)], loc=(0, 0, 0.15))
+    m.hull('gris', [(0.32, 0.22, 0.22, 0.0, 0.014), (0.46, 0.56, 0.56, 0.0, 0.012), (0.5, 0.5, 0.5, 0.0, 0.012),
+                    (0.53, 0.26, 0.26, 0.0, 0.012)], loc=(0, 0, 0.16))
+    # Cabina dorada y quillas de la nariz.
+    m.sphere('oro', 0.055, (0, -0.24, 0.235), scale=(0.75, 1.9, 0.62))
+    m.box('oscuro', (0.1, 0.012, 0.02), (0, -0.15, 0.24), bevel=0.0)
     for sx in (-1, 1):
-        # Ala principal en flecha (trapecio aproximado con dos placas).
-        m.box('gris', (0.36, 0.22, 0.02), (sx * 0.24, 0.12, 0.15), rot=(0, 0, sx * 0.5), bevel=0.0)
-        m.box('gris', (0.18, 0.16, 0.018), (sx * 0.4, 0.24, 0.15), rot=(0, 0, sx * 0.5), bevel=0.0)
-        # Estabilizador trasero.
-        m.box('gris', (0.16, 0.1, 0.014), (sx * 0.15, 0.42, 0.16), rot=(0, 0, sx * 0.4), bevel=0.0)
-        # Derivas inclinadas hacia afuera, con el color del imperio.
-        m.box('EQUIPO', (0.012, 0.16, 0.13), (sx * 0.09, 0.32, 0.25), rot=(0, sx * 0.45, 0), bevel=0.0)
-        # Toma de aire lateral y tobera.
-        m.box('oscuro', (0.05, 0.12, 0.06), (sx * 0.1, -0.02, 0.15), rot=(0, 0, sx * 0.1), bevel=0.01)
-        m.box('oscuro', (0.06, 0.05, 0.04), (sx * 0.04, 0.45, 0.17), bevel=0.008)
-    m.box('luz', (0.05, 0.02, 0.025), (0, 0.48, 0.17), bevel=0.0)
+        m.box('gris', (0.012, 0.3, 0.02), (sx * 0.075, -0.36, 0.15), rot=(0, 0, -sx * 0.14), bevel=0.0)
+        # Tomas de aire trapezoidales.
+        m.box('gris', (0.07, 0.16, 0.08), (sx * 0.12, -0.04, 0.16), rot=(0, sx * 0.25, sx * 0.08), bevel=0.01)
+        m.box('negro', (0.05, 0.01, 0.06), (sx * 0.125, -0.12, 0.16), rot=(0, sx * 0.25, 0), bevel=0.0)
+        # Derivas inclinadas hacia afuera, en dos piezas, con el color del imperio.
+        m.box('EQUIPO', (0.012, 0.17, 0.12), (sx * 0.11, 0.38, 0.26), rot=(0.2, sx * 0.48, 0), bevel=0.0)
+        m.box('EQUIPO', (0.012, 0.09, 0.06), (sx * 0.135, 0.42, 0.33), rot=(0.35, sx * 0.48, 0), bevel=0.0)
+        # Franja del imperio en la punta del ala y luces de posición.
+        m.box('EQUIPO', (0.08, 0.05, 0.004), (sx * 0.36, 0.2, 0.168), rot=(0, 0, sx * 0.5), bevel=0.0)
+        m.box('rojo' if sx < 0 else 'cultivo', (0.016, 0.016, 0.01), (sx * 0.43, 0.22, 0.17), bevel=0.0)
+        # Toberas planas con el brillo del motor.
+        m.box('oscuro', (0.075, 0.06, 0.045), (sx * 0.05, 0.52, 0.17), bevel=0.008)
+        m.box('luz', (0.055, 0.01, 0.025), (sx * 0.05, 0.553, 0.17), bevel=0.0)
     return m
 
 
 def bomber():
-    """Bombardero furtivo de ala volante: ala ancha en flecha, borde trasero en dientes y joroba central."""
+    """Bombardero furtivo de ala volante (v1.0): ala en flecha con borde trasero en dientes, joroba
+    central con cabina y cuatro tomas de motor arriba."""
     m = Model('bomber')
+    # Ala: casco ancho y fino; la forma en planta sale de los anchos de cada sección.
+    m.hull('oscuro', [(-0.46, 0.06, 0.06, 0.0, 0.03), (-0.26, 0.62, 0.62, 0.0, 0.03), (-0.04, 1.28, 1.28, 0.0, 0.026),
+                      (0.1, 1.62, 1.62, 0.0, 0.02), (0.16, 1.5, 1.5, 0.0, 0.02), (0.22, 1.02, 1.02, 0.0, 0.022),
+                      (0.3, 0.86, 0.86, 0.0, 0.024), (0.36, 0.44, 0.44, 0.0, 0.026), (0.44, 0.3, 0.3, 0.0, 0.026),
+                      (0.48, 0.06, 0.06, 0.0, 0.026)], loc=(0, 0, 0.15))
+    # Joroba central (cabina y motores).
+    m.hull('oscuro', [(-0.42, 0.04, 0.04, 0.0, 0.02), (-0.26, 0.24, 0.3, 0.0, 0.1), (-0.05, 0.36, 0.42, 0.0, 0.12),
+                      (0.2, 0.3, 0.36, 0.0, 0.09), (0.38, 0.12, 0.16, 0.0, 0.04)], loc=(0, 0, 0.16))
     for sx in (-1, 1):
-        # Borde de ataque en flecha.
-        m.box('oscuro', (0.78, 0.3, 0.03), (sx * 0.34, 0.08, 0.16), rot=(0, 0, sx * 0.56), bevel=0.0)
-        m.box('oscuro', (0.4, 0.26, 0.028), (sx * 0.62, 0.3, 0.16), rot=(0, 0, sx * 0.56), bevel=0.0)
-        # Dientes del borde trasero.
-        m.box('oscuro', (0.22, 0.12, 0.025), (sx * 0.22, 0.36, 0.158), rot=(0, 0, -sx * 0.56), bevel=0.0)
-        m.box('oscuro', (0.2, 0.12, 0.025), (sx * 0.5, 0.48, 0.158), rot=(0, 0, -sx * 0.56), bevel=0.0)
-        # Tomas de aire arriba.
-        m.box('negro', (0.08, 0.1, 0.03), (sx * 0.14, 0.06, 0.2), bevel=0.01)
-        m.box('EQUIPO', (0.2, 0.05, 0.008), (sx * 0.48, 0.2, 0.182), rot=(0, 0, sx * 0.56), bevel=0.0)
-    m.hull('oscuro', [(0.3, 0.1, 0.12, 0.0, 0.07), (0.0, 0.16, 0.18, 0.0, 0.1), (-0.25, 0.1, 0.12, 0.0, 0.08),
-                      (-0.4, 0.02, 0.03, 0.01, 0.04)], loc=(0, 0, 0.14))
-    m.box('vidrio', (0.1, 0.06, 0.03), (0, -0.18, 0.24), rot=(0.3, 0, 0), bevel=0.01)
-    m.box('EQUIPO', (0.04, 0.3, 0.01), (0, 0.06, 0.245), bevel=0.0)
+        m.box('vidrio', (0.05, 0.05, 0.02), (sx * 0.035, -0.27, 0.252), rot=(0.45, 0, sx * 0.25), bevel=0.004)
+        for k, x in enumerate((0.1, 0.2)):
+            m.box('camo2', (0.07, 0.14, 0.04), (sx * x, -0.02 + k * 0.01, 0.27), bevel=0.012)
+            m.box('negro', (0.05, 0.012, 0.022), (sx * x, -0.09 + k * 0.01, 0.28), bevel=0.0)
+            m.box('camo2', (0.05, 0.03, 0.01), (sx * x, 0.18, 0.2), bevel=0.0)
+        # Franja del imperio en el borde de ataque y en la punta.
+        m.box('EQUIPO', (0.42, 0.02, 0.006), (sx * 0.5, -0.02, 0.18), rot=(0, 0, sx * 0.62), bevel=0.0)
+        m.box('EQUIPO', (0.12, 0.06, 0.006), (sx * 0.76, 0.13, 0.172), bevel=0.0)
+        m.box('rojo' if sx < 0 else 'cultivo', (0.02, 0.02, 0.01), (sx * 0.8, 0.12, 0.175), bevel=0.0)
+    m.box('EQUIPO', (0.04, 0.32, 0.008), (0, 0.02, 0.285), bevel=0.0)
     return m
 
 
@@ -295,30 +313,60 @@ def apartment():
 
 
 def airport():
-    """Aeropuerto militar: pista con marcas, hangar en arco, torre de control con radar y un caza."""
+    """Aeropuerto militar (v1.0): pista con cabeceras y luces, calle de rodaje, dos hangares en arco,
+    torre de control con radar que gira, tanques de combustible, manga de viento y un caza en la plataforma."""
     m = Model('airport')
     m.hexprism('concreto', 0.95, 0.05)
-    # Pista en diagonal con línea central y bordes.
-    m.box('oscuro', (0.34, 1.6, 0.012), (-0.18, 0.0, 0.05), rot=(0, 0, 0.35), bevel=0.0)
-    for k in range(6):
-        y = -0.6 + k * 0.24
-        m.box('blanco', (0.02, 0.1, 0.004), (-0.18 - math.tan(0.35) * y, y, 0.063), rot=(0, 0, 0.35), bevel=0.0)
-    m.box('amarillo', (0.012, 1.5, 0.004), (-0.03, 0.0, 0.063), rot=(0, 0, 0.35), bevel=0.0)
-    m.box('amarillo', (0.012, 1.5, 0.004), (-0.33, 0.0, 0.063), rot=(0, 0, 0.35), bevel=0.0)
-    # Hangar en arco con portón.
-    m.cyl('EQUIPO_OSC', 0.2, 0.46, (0.36, 0.1, 0.05), rot=(H, 0, 0), seg=14, smooth=False)
-    m.box('concreto', (0.42, 0.46, 0.02), (0.36, 0.1, 0.04), bevel=0.0)
-    m.box('oscuro', (0.28, 0.012, 0.16), (0.36, -0.13, 0.05), bevel=0.0)
-    m.box('EQUIPO', (0.4, 0.04, 0.03), (0.36, -0.13, 0.24), bevel=0.0)
-    # Torre de control.
-    m.box('blanco', (0.12, 0.12, 0.4), (0.4, -0.42, 0.05), bevel=0.01)
-    m.box('vidrio', (0.2, 0.2, 0.08), (0.4, -0.42, 0.45), bevel=0.02)
-    m.box('oscuro', (0.22, 0.22, 0.02), (0.4, -0.42, 0.53), bevel=0.0)
-    m.pivot('rotor', 0.4, -0.42, 0.6)
-    m.box('oscuro', (0.2, 0.03, 0.06), (0.4, -0.42, 0.6), bevel=0.0, part='rotor')
-    # Caza estacionado.
-    m.box('metal_claro', (0.05, 0.26, 0.03), (-0.45, 0.42, 0.07), rot=(0, 0, 0.35), bevel=0.006)
-    m.box('metal_claro', (0.22, 0.08, 0.01), (-0.45, 0.45, 0.075), rot=(0, 0, 0.35), bevel=0.0)
+    ang = 0.35
+    ca, sa = math.cos(ang), math.sin(ang)
+
+    def on_runway(u, v):
+        # u: a lo ancho de la pista, v: a lo largo (girado).
+        return (-0.2 + u * ca - v * sa, u * sa + v * ca)
+
+    m.box('oscuro', (0.36, 1.66, 0.012), (-0.2, 0.0, 0.05), rot=(0, 0, ang), bevel=0.0)
+    for k in range(7):
+        v = -0.6 + k * 0.2
+        x, y = on_runway(0, v)
+        m.box('blanco', (0.018, 0.09, 0.004), (x, y, 0.063), rot=(0, 0, ang), bevel=0.0)
+    for end in (-0.76, 0.76):
+        for j in range(5):
+            x, y = on_runway(-0.12 + j * 0.06, end)
+            m.box('blanco', (0.03, 0.08, 0.004), (x, y, 0.063), rot=(0, 0, ang), bevel=0.0)
+    for side in (-0.17, 0.17):
+        for k in range(8):
+            x, y = on_runway(side, -0.7 + k * 0.2)
+            m.box('luz', (0.016, 0.016, 0.012), (x, y, 0.066), bevel=0.0)
+    # Calle de rodaje hasta la plataforma.
+    m.box('gris', (0.12, 0.5, 0.01), (0.12, 0.3, 0.05), rot=(0, 0, -0.7), bevel=0.0)
+    m.box('amarillo', (0.008, 0.48, 0.004), (0.12, 0.3, 0.061), rot=(0, 0, -0.7), bevel=0.0)
+    # Dos hangares en arco con portón del color del imperio.
+    for hx, hy in ((0.42, 0.22), (0.5, -0.12)):
+        m.cyl('metal', 0.15, 0.32, (hx, hy, 0.05), rot=(0, H, 0), seg=14, smooth=True)
+        m.box('concreto', (0.34, 0.32, 0.02), (hx, hy, 0.04), bevel=0.0)
+        m.box('EQUIPO', (0.012, 0.22, 0.12), (hx - 0.165, hy, 0.05), bevel=0.0)
+        m.box('oscuro', (0.014, 0.01, 0.12), (hx - 0.166, hy, 0.05), bevel=0.0)
+    # Torre de control con cabina de vidrio, antena y radar que gira.
+    m.cyl('blanco', 0.06, 0.48, (0.18, -0.52, 0.05), seg=10)
+    m.cyl('vidrio', 0.11, 0.08, (0.18, -0.52, 0.53), seg=8, smooth=False, r2=0.13)
+    m.cyl('oscuro', 0.135, 0.02, (0.18, -0.52, 0.61), seg=8, smooth=False)
+    m.cyl('metal', 0.006, 0.14, (0.22, -0.5, 0.63), seg=6, base=False)
+    m.box('rojo', (0.014, 0.014, 0.014), (0.22, -0.5, 0.775), bevel=0.0)
+    m.cyl('metal', 0.012, 0.12, (0.46, -0.48, 0.05), seg=6, base=False)
+    m.pivot('rotor', 0.46, -0.48, 0.2)
+    m.box('metal_claro', (0.18, 0.02, 0.07), (0.46, -0.48, 0.2), rot=(0.3, 0, 0), bevel=0.0, part='rotor')
+    # Tanques de combustible y manga de viento.
+    for k in range(2):
+        m.cyl('blanco', 0.05, 0.1, (-0.62 + k * 0.12, -0.42, 0.05), seg=12)
+        m.cyl('EQUIPO', 0.051, 0.015, (-0.62 + k * 0.12, -0.42, 0.12), seg=12)
+    m.cyl('metal', 0.005, 0.18, (-0.62, 0.46, 0.05), seg=6, base=False)
+    m.cone('naranja', 0.025, 0.08, (-0.58, 0.46, 0.21), rot=(0, -H, 0), seg=8)
+    # Caza estacionado en la plataforma (copia pequeña del Caza furtivo).
+    px, py = 0.08, 0.6
+    m.box('gris', (0.05, 0.26, 0.03), (px, py, 0.07), rot=(0, 0, -0.7), bevel=0.006)
+    m.box('gris', (0.24, 0.08, 0.01), (px + 0.01, py + 0.01, 0.075), rot=(0, 0, -0.7), bevel=0.0)
+    m.box('EQUIPO', (0.008, 0.05, 0.04), (px + 0.05, py + 0.06, 0.1), rot=(0, 0.4, -0.7), bevel=0.0)
+    m.box('oro', (0.024, 0.05, 0.016), (px - 0.03, py - 0.04, 0.09), rot=(0, 0, -0.7), bevel=0.004)
     return m
 
 
