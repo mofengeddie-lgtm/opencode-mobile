@@ -700,6 +700,20 @@ class Game {
     return out;
   }
 
+  // v0.9: qué daría la próxima mejora (se muestra antes de pagar).
+  upgradePreview(b) {
+    if (b.level >= (b.def.maxLevel || 1)) return [];
+    const before = this.snapshot(b);
+    const keep = { level: b.level, maxHp: b.maxHp, shieldMax: b.shieldMax };
+    b.level++;
+    b.maxHp = this.bMaxHp(b.def, b.level);
+    b.shieldMax = Math.round(b.maxHp * BLD_SHIELD.pct);
+    const after = this.snapshot(b);
+    const lines = this.upgradeLines(b, before, after);
+    Object.assign(b, keep);
+    return lines;
+  }
+
   finishUpgrade(b) {
     const lv = b.upgrading.level;
     const before = this.snapshot(b);

@@ -387,6 +387,17 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.coretiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; }
+.ctile { padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); min-width: 0; }
+.ctile small { display: block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ctile b { font-family: var(--font-display); font-size: 14px; font-variant-numeric: tabular-nums; }
+.ctile.good b { color: var(--good, #5ee07a); }
+.ctile.gold b { color: var(--gold, #f2ab38); }
+.ctile.bad b { color: #ef5350; }
+.ctile.muted b { color: var(--muted); }
+.nextup { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; padding: 6px 8px; border-radius: 8px; border: 1px dashed rgba(242,171,56,0.5); background: rgba(242,171,56,0.06); }
+.nextup small { width: 100%; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold, #f2ab38); font-weight: 700; }
+.nextup span { font-size: 12px; padding: 2px 7px; border-radius: 999px; background: rgba(8,15,21,0.4); }
 .radar { display: flex; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8,15,21,0.35); }
 .radar-scope { flex: 0 0 52px; height: 52px; border-radius: 50%; position: relative; overflow: hidden;
   background: radial-gradient(circle, rgba(94,224,122,0.18) 0 30%, transparent 31% 32%, rgba(94,224,122,0.12) 33% 62%, transparent 63% 64%, rgba(94,224,122,0.08) 65%);
@@ -3526,6 +3537,20 @@ class Game {
     if (b.type === 'aadef' && b.level === 4) out.push('Puede lanzar el misil nuclear');
     if (b.def.levelNames) out.unshift(`Ahora es ${b.def.levelNames[b.level]}`);
     return out;
+  }
+
+  // v0.9: qué daría la próxima mejora (se muestra antes de pagar).
+  upgradePreview(b) {
+    if (b.level >= (b.def.maxLevel || 1)) return [];
+    const before = this.snapshot(b);
+    const keep = { level: b.level, maxHp: b.maxHp, shieldMax: b.shieldMax };
+    b.level++;
+    b.maxHp = this.bMaxHp(b.def, b.level);
+    b.shieldMax = Math.round(b.maxHp * BLD_SHIELD.pct);
+    const after = this.snapshot(b);
+    const lines = this.upgradeLines(b, before, after);
+    Object.assign(b, keep);
+    return lines;
   }
 
   finishUpgrade(b) {
@@ -9458,17 +9483,21 @@ class UI {
     if (b.type === 'core') {
       const p = g.players[0];
       const dome = p.dome;
-      const lines = [];
-      lines.push(p.emergencyUsed
-        ? (b.shieldUntil > g.time ? '<b style="color:var(--gold)">Escudo de emergencia activo</b>' : 'Escudo de emergencia: ya usado en esta partida')
-        : `Escudo de emergencia: listo (se activa solo al ${Math.round(EMERGENCY.at * 100)} % de vida)`);
+      // v0.9: el estado del Núcleo en casillas claras.
       const L = d.levels[b.level];
-      lines.push(`Láser: ${L.laser.beams > 1 ? 'doble, ' : ''}${L.laser.dmg} de daño, alcance ${L.laser.range}`);
-      if (dome) {
-        lines.push(dome.hp > 0 ? `Cúpula nivel ${dome.level}: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}${dome.level >= 3 ? ' · escudo para tus tropas' : ''}`
-          : `Cúpula rota: vuelve en ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`);
-      }
-      html += `<div class="queue">${lines.join(' · ')}</div>`;
+      const emer = p.emergencyUsed
+        ? (b.shieldUntil > g.time ? ['Activo', 'gold'] : ['Usado', 'muted']) : ['Listo', 'good'];
+      const tiles = [
+        ['Monedas', `+${fmt(g.bIncome(b) * g.incomeMult(p))}/min`, ''],
+        ['Comunidad', `+${g.bPop(b)}`, ''],
+        ['Láser', `${L.laser.beams > 1 ? '2 × ' : ''}${L.laser.dmg} · ${L.laser.range} cas.`, ''],
+        ['Emergencia', emer[0], emer[1]],
+        ['Cúpula', dome ? (dome.hp > 0 ? `Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
+          : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? 'Núcleo nivel 3' : 'Disponible'),
+        dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
+      ];
+      html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
@@ -9519,6 +9548,11 @@ class UI {
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
     }
     const acts = [];
+    if (own && b.built && !b.upgrading && b.level < maxLv) {
+      // v0.9: antes de pagar, qué vas a ganar con la mejora.
+      const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
+      if (prev.length) html += `<div class="nextup"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+    }
     if (b.built && !b.upgrading && b.level < maxLv) {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
       acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}</button>`);

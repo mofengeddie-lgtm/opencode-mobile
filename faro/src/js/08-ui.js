@@ -691,17 +691,21 @@ class UI {
     if (b.type === 'core') {
       const p = g.players[0];
       const dome = p.dome;
-      const lines = [];
-      lines.push(p.emergencyUsed
-        ? (b.shieldUntil > g.time ? '<b style="color:var(--gold)">Escudo de emergencia activo</b>' : 'Escudo de emergencia: ya usado en esta partida')
-        : `Escudo de emergencia: listo (se activa solo al ${Math.round(EMERGENCY.at * 100)} % de vida)`);
+      // v0.9: el estado del Núcleo en casillas claras.
       const L = d.levels[b.level];
-      lines.push(`Láser: ${L.laser.beams > 1 ? 'doble, ' : ''}${L.laser.dmg} de daño, alcance ${L.laser.range}`);
-      if (dome) {
-        lines.push(dome.hp > 0 ? `Cúpula nivel ${dome.level}: ${fmt(dome.hp)} / ${fmt(dome.maxHp)}${dome.level >= 3 ? ' · escudo para tus tropas' : ''}`
-          : `Cúpula rota: vuelve en ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`);
-      }
-      html += `<div class="queue">${lines.join(' · ')}</div>`;
+      const emer = p.emergencyUsed
+        ? (b.shieldUntil > g.time ? ['Activo', 'gold'] : ['Usado', 'muted']) : ['Listo', 'good'];
+      const tiles = [
+        ['Monedas', `+${fmt(g.bIncome(b) * g.incomeMult(p))}/min`, ''],
+        ['Comunidad', `+${g.bPop(b)}`, ''],
+        ['Láser', `${L.laser.beams > 1 ? '2 × ' : ''}${L.laser.dmg} · ${L.laser.range} cas.`, ''],
+        ['Emergencia', emer[0], emer[1]],
+        ['Cúpula', dome ? (dome.hp > 0 ? `Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
+          : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? 'Núcleo nivel 3' : 'Disponible'),
+        dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
+      ];
+      html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
@@ -752,6 +756,11 @@ class UI {
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
     }
     const acts = [];
+    if (own && b.built && !b.upgrading && b.level < maxLv) {
+      // v0.9: antes de pagar, qué vas a ganar con la mejora.
+      const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
+      if (prev.length) html += `<div class="nextup"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+    }
     if (b.built && !b.upgrading && b.level < maxLv) {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
       acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}</button>`);

@@ -382,6 +382,17 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.coretiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; }
+.ctile { padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); min-width: 0; }
+.ctile small { display: block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ctile b { font-family: var(--font-display); font-size: 14px; font-variant-numeric: tabular-nums; }
+.ctile.good b { color: var(--good, #5ee07a); }
+.ctile.gold b { color: var(--gold, #f2ab38); }
+.ctile.bad b { color: #ef5350; }
+.ctile.muted b { color: var(--muted); }
+.nextup { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; padding: 6px 8px; border-radius: 8px; border: 1px dashed rgba(242,171,56,0.5); background: rgba(242,171,56,0.06); }
+.nextup small { width: 100%; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold, #f2ab38); font-weight: 700; }
+.nextup span { font-size: 12px; padding: 2px 7px; border-radius: 999px; background: rgba(8,15,21,0.4); }
 .radar { display: flex; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8,15,21,0.35); }
 .radar-scope { flex: 0 0 52px; height: 52px; border-radius: 50%; position: relative; overflow: hidden;
   background: radial-gradient(circle, rgba(94,224,122,0.18) 0 30%, transparent 31% 32%, rgba(94,224,122,0.12) 33% 62%, transparent 63% 64%, rgba(94,224,122,0.08) 65%);
