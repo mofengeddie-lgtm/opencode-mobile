@@ -168,6 +168,18 @@ class Bot {
     if (n('factory') < 2 && T > 480 && !open) want.push('factory');
     if (n('harbor') < 2 && coast && T > (plan.sea >= 3 ? 300 : 420)) want.push('harbor');
 
+    // Una mejora barata cada ~minuto (Granja, Mina, Bomba o Casa) aunque haya otras compras esperando.
+    if (T > 300 && T - (this.cheapUpAt || 0) > 60 && !tooBusy) {
+      const cand = mine.filter((x) => ['farm', 'mine', 'pump', 'house'].includes(x.type) && x.built && !x.upgrading && x.level < x.def.maxLevel)
+        .sort((x, y) => g.upgradeCost(x) - g.upgradeCost(y))[0];
+      if (cand && this.ecoBank >= g.upgradeCost(cand)) {
+        const uc = g.upgradeCost(cand);
+        if (typeof g.upgrade(cand) !== 'string') {
+          this.ecoBank -= uc;
+          this.cheapUpAt = T;
+        }
+      }
+    }
     if (!want.length) {
       this.milBank += this.ecoBank * 0.5;
       this.ecoBank *= 0.5;
