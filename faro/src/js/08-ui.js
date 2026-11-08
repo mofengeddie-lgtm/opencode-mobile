@@ -54,6 +54,8 @@ class UI {
     $('btn-resume').addEventListener('click', () => app.togglePause(false));
     $('btn-restart').addEventListener('click', () => app.startGame());
     $('btn-quit').addEventListener('click', () => app.toMenu());
+    $('btn-fps').addEventListener('click', () => app.toggleFps());
+    app.toggleFps(app.showFps);
     document.querySelectorAll('[data-quality]').forEach((b) => {
       b.addEventListener('click', () => app.setQuality(b.dataset.quality));
     });
@@ -886,6 +888,16 @@ class Sound {
     if (this.on) this.unlock();
   }
 
+  // Límite de voces: si ya suenan muchas, los sonidos nuevos menos importantes se saltan.
+  voice(dur) {
+    const now = this.ctx.currentTime;
+    this.ends = (this.ends || []).filter((t) => t > now);
+    if (this.ends.length >= 24) return false;
+    this.ends.push(now + dur);
+    this.voices = (this.voices || 0) + 1;
+    return true;
+  }
+
   tone(freq, dur, type = 'sine', vol = 0.08, slide = 0, delay = 0) {
     const c = this.ctx;
     const t0 = c.currentTime + delay;
@@ -902,16 +914,20 @@ class Sound {
     o.stop(t0 + dur + 0.02);
   }
 
-  burst(dur, filterType, freq, vol) {
+  // Ruido filtrado; sweep cambia la frecuencia del filtro durante el sonido (zumbido de misil).
+  burst(dur, filterType, freq, vol, delay = 0, sweep = 0, q = 0.8) {
     const c = this.ctx;
-    const t0 = c.currentTime;
+    const t0 = c.currentTime + delay;
     const src = c.createBufferSource();
     src.buffer = this.noise;
     const f = c.createBiquadFilter();
     f.type = filterType;
-    f.frequency.value = freq;
+    f.frequency.setValueAtTime(freq, t0);
+    if (sweep) f.frequency.exponentialRampToValueAtTime(Math.max(40, freq + sweep), t0 + dur);
+    f.Q.value = q;
     const g = c.createGain();
-    g.gain.setValueAtTime(vol, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + Math.min(0.012, dur * 0.2));
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     src.connect(f);
     f.connect(g);
@@ -923,22 +939,53 @@ class Sound {
   play(name, vol = 1) {
     if (!this.on || !this.ctx || this.ctx.state !== 'running') return;
     const now = this.ctx.currentTime;
-    const gap = { bullet: 0.07, flak: 0.08, bolt: 0.12, hit: 0.08, boom: 0.09, rocket: 0.1, shell: 0.12, torpedo: 0.2 }[name] || 0.04;
+    const gap = { bullet: 0.07, minigun: 0.05, flak: 0.08, bolt: 0.12, laser: 0.14, hit: 0.08, boom: 0.09, bigboom: 0.25,
+      rocket: 0.1, missile: 0.2, shell: 0.12, torpedo: 0.2, build: 0.22, heal: 0.4 }[name] || 0.04;
     if (this.last[name] && now - this.last[name] < gap) return;
+    const ui = ['click', 'order', 'place', 'done', 'ready', 'error', 'alarm', 'capture'].includes(name);
+    if (!ui && !this.voice(0.4)) return;
     this.last[name] = now;
     const v = vol;
     switch (name) {
-      case 'bullet': this.burst(0.05, 'highpass', 2200, 0.05 * v); break;
-      case 'flak': this.burst(0.09, 'bandpass', 1400, 0.07 * v); break;
+      case 'bullet': this.burst(0.06, 'highpass', 2400, 0.06 * v); this.tone(180, 0.04, 'square', 0.02 * v, -80); break;
+      case 'minigun':
+        for (let i = 0; i < 4; i++) this.burst(0.03, 'bandpass', 2600 + i * 120, 0.045 * v, i * 0.028, 0, 2);
+        break;
+      case 'flak': this.burst(0.09, 'bandpass', 1400, 0.07 * v); this.tone(240, 0.08, 'triangle', 0.03 * v, -120); break;
       case 'bolt': this.tone(520, 0.12, 'sawtooth', 0.04 * v, -300); break;
-      case 'rocket': this.burst(0.18, 'bandpass', 800, 0.07 * v); break;
-      case 'shell': this.tone(110, 0.2, 'sine', 0.14 * v, -70); this.burst(0.08, 'lowpass', 900, 0.06 * v); break;
-      case 'torpedo': this.burst(0.3, 'lowpass', 400, 0.06 * v); break;
+      case 'laser':
+        this.tone(1500, 0.16, 'sawtooth', 0.025 * v, -1100);
+        this.tone(760, 0.18, 'square', 0.018 * v, -500);
+        this.burst(0.1, 'highpass', 5000, 0.02 * v);
+        break;
+      case 'rocket': this.burst(0.22, 'bandpass', 700, 0.07 * v, 0, 900, 1.2); this.tone(130, 0.12, 'sine', 0.05 * v, -50); break;
+      case 'missile': this.burst(0.5, 'bandpass', 500, 0.07 * v, 0, 1400, 1.5); this.tone(90, 0.25, 'sine', 0.06 * v, -40); break;
+      case 'shell':
+        this.tone(110, 0.22, 'sine', 0.15 * v, -70);
+        this.burst(0.1, 'lowpass', 1100, 0.07 * v);
+        this.burst(0.35, 'lowpass', 300, 0.04 * v, 0.05);
+        break;
+      case 'torpedo': this.burst(0.35, 'lowpass', 420, 0.06 * v, 0, -200); break;
       case 'hit': this.burst(0.08, 'bandpass', 600, 0.05 * v); break;
-      case 'boom': this.burst(0.55, 'lowpass', 520, 0.26 * v); this.tone(70, 0.4, 'sine', 0.12 * v, -40); break;
+      case 'boom':
+        this.burst(0.55, 'lowpass', 520, 0.24 * v);
+        this.tone(70, 0.4, 'sine', 0.12 * v, -40);
+        this.burst(0.25, 'bandpass', 1800, 0.03 * v, 0.08, 0, 1.5);
+        break;
+      case 'bigboom':
+        this.burst(1.1, 'lowpass', 380, 0.3 * v);
+        this.tone(52, 0.9, 'sine', 0.18 * v, -22);
+        this.burst(0.6, 'bandpass', 1500, 0.04 * v, 0.12, -900, 1.2);
+        this.burst(0.4, 'lowpass', 900, 0.08 * v, 0.3);
+        break;
+      case 'build': this.tone(900 + Math.random() * 140, 0.05, 'triangle', 0.035 * v, -300); this.burst(0.04, 'highpass', 3000, 0.02 * v); break;
+      case 'heal': this.tone(660, 0.2, 'sine', 0.025 * v); this.tone(990, 0.25, 'sine', 0.02 * v, 0, 0.08); break;
+      case 'capture':
+        [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.18, 'triangle', 0.05, 0, i * 0.09));
+        break;
       case 'click': this.tone(880, 0.04, 'triangle', 0.04); break;
       case 'order': this.tone(520, 0.08, 'triangle', 0.05, 180); break;
-      case 'place': this.tone(300, 0.12, 'triangle', 0.07, 140); break;
+      case 'place': this.tone(300, 0.12, 'triangle', 0.07, 140); this.burst(0.06, 'lowpass', 900, 0.04); break;
       case 'done': this.tone(660, 0.12, 'triangle', 0.06); this.tone(990, 0.16, 'triangle', 0.06, 0, 0.1); break;
       case 'ready': this.tone(740, 0.08, 'triangle', 0.045); break;
       case 'error': this.tone(200, 0.14, 'square', 0.04, -40); break;

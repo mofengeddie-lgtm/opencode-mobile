@@ -58,12 +58,16 @@ class Renderer {
     this.resize();
   }
 
+  // «Alta calidad» o «Más fluido» (la «Automática» elige entre las dos según los cuadros por segundo).
   applyQuality(q) {
     this.quality = q;
     const dpr = window.devicePixelRatio || 1;
     this.renderer.setPixelRatio(q === 'high' ? Math.min(dpr, 1.75) : 1);
     this.renderer.shadowMap.enabled = q === 'high';
     this.renderer.shadowMap.needsUpdate = true;
+    // Más fluido: sin la luz de ambiente del cielo y la mitad de partículas.
+    if (this.scene) this.scene.environment = q === 'high' && ENV_MAP ? ENV_MAP : null;
+    if (this.fxs) this.fxs.scale = q === 'high' ? 1 : 0.5;
     if (this.scene) {
       this.scene.traverse((o) => {
         if (o.material) o.material.needsUpdate = true;
@@ -87,6 +91,11 @@ class Renderer {
     this.overlay.width = Math.round(w * dpr);
     this.overlay.height = Math.round(h * dpr);
     this.octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (this.fxs && this.camera) {
+      // Tamaño de las partículas en píxeles reales del dibujo.
+      const hpx = h * this.renderer.getPixelRatio();
+      this.fxs.setScale(hpx / (2 * Math.tan((this.camera.fov * Math.PI) / 360)));
+    }
   }
 
   // ---------- terreno ----------
@@ -295,14 +304,9 @@ class Renderer {
     this.tracers = [];
     this.MAXT = MAXT;
 
-    this.booms = [];
-    const sphere = new THREE.SphereGeometry(1, 10, 8);
-    for (let i = 0; i < 70; i++) {
-      const mesh = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffa040, transparent: true, depthWrite: false }));
-      mesh.visible = false;
-      this.scene.add(mesh);
-      this.booms.push({ mesh, t: 1, dur: 1, s: 1, kind: 'fire', vy: 0 });
-    }
+    // Partículas (v0.6): fuego, humo, restos, chispas, fogonazos, estelas y agua.
+    this.fxs = new FxSystem(this.scene);
+    this.fxs.scale = this.quality === 'high' ? 1 : 0.5;
 
     this.projMeshes = { rocket: [], shell: [], torpedo: [], missile: [] };
     this.projGeo = {
@@ -349,29 +353,20 @@ class Renderer {
     this.scene.add(this.rallyFlag);
   }
 
-  spawnBoom(x, y, z, s, small) {
-    const pick = () => this.booms.find((b) => b.t >= b.dur) || this.booms[Math.floor(Math.random() * this.booms.length)];
-    const fire = pick();
-    fire.t = 0;
-    fire.dur = small ? 0.28 : 0.45;
-    fire.s = s;
-    fire.kind = 'fire';
-    fire.x = x; fire.y = y; fire.z = z;
-    fire.mesh.material.color.set(small ? 0xffc260 : 0xff8a30);
-    fire.mesh.visible = true;
-    if (!small) {
-      for (let i = 0; i < 2; i++) {
-        const sm = pick();
-        sm.t = 0;
-        sm.dur = 1.1 + Math.random() * 0.4;
-        sm.s = s * (0.7 + Math.random() * 0.4);
-        sm.kind = 'smoke';
-        sm.x = x + (Math.random() - 0.5) * s * 0.6;
-        sm.y = y + 0.1;
-        sm.z = z + (Math.random() - 0.5) * s * 0.6;
-        sm.mesh.material.color.set(0x55595f);
-        sm.mesh.visible = true;
-      }
+  // ¿Cae en el agua? Entonces salpica.
+  overWater(x, z) {
+    const h = worldToHex(x, z);
+    const c = this.game.map.get(h.q, h.r);
+    return !!(c && TERRAIN[c.t].water && !c.bld);
+  }
+
+  spawnBoom(x, y, z, s, small, bld) {
+    if (small) {
+      if (this.overWater(x, z)) this.fxs.splash(x, z, s);
+      else this.fxs.impact(x, y, z, s);
+    } else {
+      this.fxs.explosion(x, y, z, s, bld);
+      if (this.overWater(x, z)) this.fxs.splash(x, z, s * 1.2);
     }
   }
 
@@ -417,15 +412,7 @@ class Renderer {
   }
 
   spawnHeal(x, y, z) {
-    const b = this.booms.find((bb) => bb.t >= bb.dur);
-    if (!b) return;
-    b.t = 0;
-    b.dur = 0.8;
-    b.s = 0.08;
-    b.kind = 'heal';
-    b.x = x; b.y = y; b.z = z;
-    b.mesh.material.color.set(0x6dff8a);
-    b.mesh.visible = true;
+    this.fxs.heal(x, y, z);
   }
 
   consumeFx() {
@@ -434,8 +421,11 @@ class Renderer {
       if (f.k === 'laser') this.spawnLaser(f);
       else if (f.k === 'tracer') {
         if (this.tracers.length < this.MAXT) this.tracers.push({ ...f, t: 0, dur: f.heavy ? 0.12 : 0.07 });
-      } else if (f.k === 'boom') this.spawnBoom(f.x, f.y, f.z, f.s, f.small);
-      else if (f.k === 'spark') this.spawnBoom(f.x, f.y, f.z, f.s, true);
+        // Fogonazo en el cañón y chispa donde pega.
+        if (f.heavy || Math.random() < 0.6) this.fxs.flash(f.x1, f.y1, f.z1, f.heavy ? 0.36 : 0.24);
+        if (Math.random() < 0.35) this.fxs.sparks(f.x2, f.y2, f.z2, 0.4, 1);
+      } else if (f.k === 'boom') this.spawnBoom(f.x, f.y, f.z, f.s, f.small, f.bld);
+      else if (f.k === 'spark') this.fxs.sparks(f.x, f.y, f.z, f.s, 2);
       else if (f.k === 'heal') this.spawnHeal(f.x, f.y, f.z);
     }
     g.fx.length = 0;
@@ -462,27 +452,7 @@ class Renderer {
     this.tracerLines.geometry.attributes.position.needsUpdate = true;
     this.tracerLines.geometry.attributes.color.needsUpdate = true;
 
-    for (const b of this.booms) {
-      if (b.t >= b.dur) {
-        b.mesh.visible = false;
-        continue;
-      }
-      b.t += dt;
-      const k = Math.min(1, b.t / b.dur);
-      if (b.kind === 'fire') {
-        b.mesh.scale.setScalar(b.s * (0.25 + 0.75 * Math.sqrt(k)) * 0.6);
-        b.mesh.material.opacity = 1 - k;
-        b.mesh.position.set(b.x, b.y, b.z);
-      } else if (b.kind === 'smoke') {
-        b.mesh.scale.setScalar(b.s * (0.25 + 0.55 * k));
-        b.mesh.material.opacity = 0.55 * (1 - k);
-        b.mesh.position.set(b.x, b.y + k * 1.2, b.z);
-      } else {
-        b.mesh.scale.setScalar(b.s);
-        b.mesh.material.opacity = 1 - k;
-        b.mesh.position.set(b.x, b.y + k * 0.6, b.z);
-      }
-    }
+    this.fxs.update(dt);
 
     // Proyectiles
     const used = { rocket: 0, shell: 0, torpedo: 0, missile: 0 };
@@ -503,6 +473,10 @@ class Renderer {
       mesh.position.set(p.sx + (p.tx - p.sx) * k, y, p.sz + (p.tz - p.sz) * k);
       mesh.lookAt(p.tx, p.kind === 'torpedo' ? -0.02 : p.ty, p.tz);
       mesh.visible = true;
+      // Estela de humo detrás de cohetes y misiles.
+      if ((p.kind === 'rocket' || p.kind === 'missile') && Math.random() < dt * 45 * this.fxs.scale) {
+        this.fxs.trail(mesh.position.x, mesh.position.y, mesh.position.z);
+      }
     }
     for (const kind of Object.keys(this.projMeshes)) {
       const list = this.projMeshes[kind];
@@ -656,6 +630,7 @@ class Renderer {
   // ---------- entidades ----------
   syncEntities(dt, time) {
     const g = this.game;
+    let smoking = 0;
     for (const e of g.removed) {
       const v = this.vis.get(e.id);
       if (v) {
@@ -684,6 +659,15 @@ class Renderer {
         this.vis.set(b.id, v);
       }
       if (b.type === 'wall') this.updateWall(b, v);
+      // Humo de daño: un edificio con menos del 40 % de vida echa humo hasta que lo reparan.
+      if (b.built && b.hp < b.maxHp * 0.4) {
+        smoking++;
+        v.smokeT = (v.smokeT || 0) - dt;
+        if (v.smokeT <= 0) {
+          v.smokeT = this.quality === 'high' ? 0.32 : 0.65;
+          this.fxs.smoke(b.x, b.y + (b.type === 'core' ? 1.1 : 0.6), b.z, b.type === 'core' ? 0.8 : 0.55);
+        }
+      }
       const k = b.built ? 1 : 0.2 + 0.8 * b.progress;
       v.main.scale.y = k;
       // Andamio mientras se construye o se mejora.
@@ -713,6 +697,7 @@ class Renderer {
         v.crystal.position.y = (v.crystalBaseY || 1.35) + Math.sin(time * 1.6) * 0.08;
       }
     }
+    this.smokingCount = smoking;
     for (const u of g.units) {
       let v = this.vis.get(u.id);
       if (!v) {
@@ -1246,6 +1231,7 @@ class Renderer {
   }
 
   dispose() {
+    if (this.fxs) this.fxs.dispose();
     this.scene.traverse((o) => {
       if (o.isInstancedMesh || o === this.borderMesh || o === this.tracerLines) {
         if (o.geometry) o.geometry.dispose();
@@ -1278,6 +1264,9 @@ class Renderer {
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
-    this.drawOverlay(selection);
+    // Con muchas tropas, las barras de vida y los iconos se dibujan un cuadro sí y otro no.
+    this.ovFrame = (this.ovFrame || 0) + 1;
+    this.overlayHalf = g.units.length > 120;
+    if (!this.overlayHalf || this.ovFrame % 2 === 0) this.drawOverlay(selection);
   }
 }

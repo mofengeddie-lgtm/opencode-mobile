@@ -4,11 +4,11 @@ Juego de estrategia en tiempo real sobre un mapa de hexágonos, hecho para el na
 Funciona en iPad, celular y computadora (Safari o Chrome), sin instalar nada. Es el banco de
 pruebas de las reglas del PRD 1.5 antes de llevarlas a Roblox Studio.
 
-Empiezas solo con tu Núcleo y una Granja: entrena Constructores, levanta tu base, conquista
+Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu base, conquista
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.5 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.6 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -29,6 +29,17 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v0.6
+
+- **Ritmo más rápido:** cada imperio empieza con 1 Constructor y los bots atacan antes (primera
+  oleada hacia el minuto 4-5 en Normal).
+- **Modo fluido para iPad:** gráficos «Automática» (baja la calidad sola si el iPad no llega a 40
+  cuadros por segundo), «Alta calidad» y «Más fluido», y un contador de cuadros por segundo.
+- **15 modelos más con Blender:** Cuartel, Fábrica, Puerto, Casa, las cinco energías, Submarino,
+  Apache Guardián, Camión antiaéreo, Torreta chica, Puesto avanzado y Enfermería 1-3.
+- **Efectos y sonidos:** explosiones con fuego, humo y restos, fogonazos, estelas, chispas,
+  salpicaduras, humo en edificios dañados y sonidos sintetizados nuevos.
 
 ## Contenido de la v0.5
 
@@ -69,7 +80,8 @@ python faro/blender/generate_models.py faro/assets/models  # modelos 3D (requier
 | `src/js/04-world.js` | Reglas: obras, mejoras, economía, combate, captura, victoria |
 | `src/js/045-save.js` | Guardar y cargar la partida |
 | `src/js/05-ai.js` | Comportamiento de los bots |
-| `src/js/06-render.js` | Gráficos, efectos, Cúpulas, minimapa y cámara |
+| `src/js/06-render.js` | Gráficos, Cúpulas, minimapa, cámara y calidad |
+| `src/js/061-fx.js` | Partículas: explosiones, humo, chispas, estelas y agua |
 | `src/js/07-input.js` | Controles táctiles, ratón y teclado |
 | `src/js/08-ui.js` | Barra superior, paneles, avisos y sonido |
 | `src/js/085-meta.js` | Vestíbulo, progresión, tienda, final de partida y modo creador |

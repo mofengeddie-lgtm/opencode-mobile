@@ -16,6 +16,8 @@ const { chromium } = require('playwright');
     const page = await browser.newPage();
     await page.goto('file://' + input);
     const title = await page.title();
+    // Fecha del pie: <meta name="fecha" content="8 NOV 2026"> en el PRD (las versiones viejas no la tienen).
+    const fecha = await page.evaluate(() => (document.querySelector('meta[name="fecha"]') || {}).content || '7 NOV 2026');
     const small = 'font-family: DejaVu Sans, Arial, sans-serif; font-size: 7.5pt; color: #5d6b70; width: 100%; padding: 0 18mm;';
     await page.pdf({
       path: output,
@@ -25,7 +27,7 @@ const { chromium } = require('playwright');
       headerTemplate: `<div style="${small} display:flex; justify-content:space-between; border-top: 3mm solid #d99a2b; padding-top: 4mm;">
         <span style="color:#1b6b63; font-weight:700;">FARO DE ÁMBAR</span><span>${title.split('·').slice(1).join('·').trim().toUpperCase()}</span></div>`,
       footerTemplate: `<div style="${small} display:flex; justify-content:space-between;">
-        <span>7 NOV 2026 · Prototipo web</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`,
+        <span>${fecha} · Prototipo web</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`,
       margin: { top: '24mm', bottom: '18mm', left: '18mm', right: '18mm' },
     });
     console.log(`[PDF] ✅ ${output}`);

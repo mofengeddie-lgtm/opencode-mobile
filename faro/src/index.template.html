@@ -268,6 +268,10 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .help b { color: var(--text); }
 .help li { color: var(--muted); }
 .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.seg3 .btn { padding: 0 8px; white-space: normal; line-height: 1.15; }
+.small-note { margin: 6px 0 0 !important; font-size: 12.5px; color: var(--muted); min-height: 1em; }
+.fpschip { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 7px; background: rgba(255, 255, 255, 0.06); font-size: 13px; font-weight: 600; color: var(--good); white-space: nowrap; }
 
 /* ---------- pantallas estrechas (iPad vertical, celular) ---------- */
 @media (max-width: 860px) {
@@ -518,6 +522,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     </div>
     <div id="players" class="players panel" role="button" tabindex="0" title="Toca para ver el marcador"></div>
     <div class="sys panel">
+      <span class="fpschip num" id="fps" hidden>-- fps</span>
       <button class="btn icon" id="btn-sound" type="button" aria-label="Sonido"></button>
       <button class="btn icon" id="btn-pause" type="button" aria-label="Pausa">
         <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
@@ -592,7 +597,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v0.5</span>
+      <span class="version">v0.6</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -620,16 +625,19 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     </div>
     <div>
       <div class="lbl" style="margin-bottom:6px">Gráficos</div>
-      <div class="seg2">
+      <div class="seg3">
+        <button class="btn" type="button" data-quality="auto">Automática</button>
         <button class="btn" type="button" data-quality="high">Alta calidad</button>
         <button class="btn" type="button" data-quality="low">Más fluido</button>
       </div>
+      <p class="small-note" id="quality-note"></p>
     </div>
     <ul class="help">
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
-      <li><b>Constructores:</b> entrénalos en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.</li>
+      <li><b>Constructores:</b> empiezas con uno; entrena más en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.</li>
+      <li><b>Gráficos:</b> «Automática» baja la calidad sola si el juego va lento. «Contador de cuadros» muestra cuántos cuadros por segundo da tu iPad.</li>
       <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa y «Construir». El constructor libre más cercano va solo; también puedes tocar la obra con él seleccionado.</li>
       <li><b>Lugares:</b> Granjas en tierra fértil, Minas en vetas de oro, Bombas en petróleo de tierra y Plataformas en petróleo del mar.</li>
       <li><b>Energía:</b> Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.</li>
@@ -642,6 +650,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     </ul>
     <div class="row">
       <button class="btn" id="btn-sound2" type="button">Sonido: sí</button>
+      <button class="btn" id="btn-fps" type="button">Contador de cuadros: no</button>
       <button class="btn danger" id="btn-quit" type="button">Salir al menú</button>
     </div>
   </div>

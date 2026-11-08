@@ -70,12 +70,14 @@ class Game {
     this._alertT = {};
     this.fights = [];
     this._fightCell = new Map();
-    // Inicio (documento pág. 4 y punto 10): Núcleo, 1 Granja y 2.000 monedas. Sin tropas.
+    // Inicio: Núcleo, 1 Granja, 2.000 monedas y (desde la v0.6) 1 Constructor para arrancar rápido.
     for (const p of this.players) {
       const home = this.cells[this.map.homes[p.id]];
       p.core = this.addBuilding(p.id, 'core', home.i, true);
       const sf = this.map.startFarms[p.id];
       if (sf >= 0 && !this.cells[sf].bld) this.addBuilding(p.id, 'farm', sf, true);
+      const spawn = this.freeCellsNear(home.i, 'land', p.id, START_UNITS.length + 1);
+      START_UNITS.forEach((t, k) => { if (spawn[k] !== undefined) this.addUnit(p.id, t, spawn[k]); });
       if (this.mode.tutorial && p.id !== 0) {
         // Tutorial: un bot lento con un Núcleo débil para practicar.
         p.core.maxHp = 3000;
@@ -544,6 +546,8 @@ class Game {
     b.workAcc += (u.def.buildRate || 1) * dt;
     b.lastWork = this.time;
     u.aimYaw = Math.atan2(b.x - u.x, b.z - u.z);
+    // Martilleo de obra (solo tus constructores suenan).
+    if (u.owner === 0 && Math.random() < dt * 1.3) this.emit('sound', { name: 'build', x: b.x, z: b.z });
     if (Math.random() < dt * 1.5) this.fx.push({ k: 'spark', x: b.x + (Math.random() - 0.5) * 0.7, y: b.y + 0.4 + Math.random() * 0.4, z: b.z + (Math.random() - 0.5) * 0.7, s: 0.18 });
   }
 
@@ -902,7 +906,8 @@ class Game {
         time: 0, dur: Math.max(0.12, d / speed), color,
       });
     }
-    this.emit('sound', { name: w.proj, x: sx, z: sz });
+    // Sonido: la minigun de la Torreta suena distinto al cañón.
+    this.emit('sound', { name: gun && a.type === 'turret' ? 'minigun' : w.proj, x: sx, z: sz });
   }
 
   domeCovers(owner, t) {
@@ -998,8 +1003,8 @@ class Game {
     if (!e.alive) return;
     e.alive = false;
     const big = e.kind === 'bld' ? 1.5 : e.cls === 'inf' ? 0.45 : 0.95;
-    this.fx.push({ k: 'boom', x: e.x, y: e.y + 0.3, z: e.z, s: big });
-    this.emit('sound', { name: e.kind === 'bld' || e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
+    this.fx.push({ k: 'boom', x: e.x, y: e.y + 0.3, z: e.z, s: big, death: true, bld: e.kind === 'bld' });
+    this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
     if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
@@ -1250,6 +1255,7 @@ class Game {
             }
             if (this.players[pid].team === this.players[0].team) {
               this.emit('toast', { text: pid === 0 ? `¡Capturaste ${what}!` : `${this.players[pid].name} capturó ${what}`, kind: 'good' });
+              if (pid === 0) this.emit('sound', { name: 'capture' });
               this.emit('sound', { name: 'done' });
             } else if (pt.type === 'faro') {
               this.emit('toast', { text: `${this.players[pid].name} capturó el Faro`, kind: 'bad', x: pt.x, z: pt.z });

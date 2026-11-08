@@ -4,9 +4,11 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.5';
+const GAME_VERSION = '0.6';
 const START_COINS = 2000;
 const START_ENERGY = 60;
+// Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
+const START_UNITS = ['builder'];
 const MAX_POP = 80;
 
 // Puntos de captura (PRD 1.5 RF-07 y RF-12).
@@ -307,11 +309,11 @@ const PALETTES = {
 
 // Tácticas por dificultad: agrupar oleadas, retirarse, contrarrestar y atacar defensas primero.
 const DIFFICULTY = {
-  easy: { name: 'Fácil', income: 0.75, think: 3.0, firstWave: 260, wave: 8,
+  easy: { name: 'Fácil', income: 0.75, think: 3.0, firstWave: 230, wave: 8,
     tactics: { group: false, retreat: false, counter: false, focusDefense: false } },
-  normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 200, wave: 7,
+  normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 150, wave: 7,
     tactics: { group: true, retreat: true, counter: true, focusDefense: false } },
-  hard: { name: 'Difícil', income: 1.3, think: 1.1, firstWave: 120, wave: 6,
+  hard: { name: 'Difícil', income: 1.3, think: 1.1, firstWave: 95, wave: 6,
     tactics: { group: true, retreat: true, counter: true, focusDefense: true } },
 };
 

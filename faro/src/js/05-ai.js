@@ -120,6 +120,10 @@ class Bot {
     if (core.level >= 3 && (!p.dome || (p.dome.level < 3 && T > 700)) && (shelled || core.hp < core.maxHp * 0.8 || T > 650)) want.push('dome');
     if (n('farm') < 2) want.push('farm');
     if (n('barracks') < 1 && T > 10) want.push('barracks');
+    // Sin camino por tierra a ningún Núcleo enemigo: el Puerto (y la Barcaza) van primero.
+    const landReach = g.players.some((q) => q.alive && g.isEnemy(q.id, this.pid) && q.core.alive &&
+      g.cells[q.core.cell].comp === this.coreCell().comp);
+    if (!landReach && coast && n('harbor') < 1 && T > 45) want.push('harbor');
     if (this.persona.harborFirst && coast && n('harbor') < 1 && T > 60) want.push('harbor');
     if (this.milBank > 2500) {
       if (!open && n('factory') < 2 && T > 240) want.push('factory');
@@ -649,7 +653,10 @@ class Bot {
         t.botTarget = target;
         t.loadT = 0;
         this.ferryTrips++;
-        if (target.kind === 'bld') this.coreRaids = (this.coreRaids || 0) + 1;
+        if (target.kind === 'bld') {
+          this.coreRaids = (this.coreRaids || 0) + 1;
+          if (this.firstRaidAt === undefined) this.firstRaidAt = g.time;
+        }
         g.orderMove([t], wc);
       }
     } else if (t.botMode === 'sail') {
@@ -696,11 +703,14 @@ class Bot {
   chooseEnemyCore() {
     const g = this.g;
     const core = this.coreCell();
-    const cores = g.players
+    let cores = g.players
       .filter((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive)
       .map((p) => ({ p, d: g.map.dist(g.cells[p.core.cell], core) }))
       .sort((a, b) => a.d - b.d);
     if (!cores.length) return null;
+    // Primero los Núcleos a los que el ejército llega a pie.
+    const byLand = cores.filter((c) => g.cells[c.p.core.cell].comp === core.comp);
+    if (byLand.length) cores = byLand;
     const pickI = cores.length > 1 && Math.random() < 0.3 ? 1 : 0;
     return cores[pickI].p.core;
   }
@@ -915,7 +925,8 @@ class Bot {
     // v0.5 empieza sin tropas: la primera oleada pide menos y crece con el tiempo.
     // Si se atrasa más de 1 min, también salen los guardias de las Banderas.
     const late = g.time > this.nextWaveAt + 60;
-    const need = Math.min(this.wave, Math.max(5, Math.floor(this.p.popCap * 0.5)), 4 + Math.floor(g.time / 150));
+    let need = Math.min(this.wave, Math.max(5, Math.floor(this.p.popCap * 0.5)), 3 + Math.floor(g.time / 150));
+    if (late) need = Math.max(3, need - 2);
     if (army.length < need) return;
     const target = this.chooseEnemyCore();
     if (!target) return;

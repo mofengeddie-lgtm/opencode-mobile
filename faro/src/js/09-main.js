@@ -11,7 +11,13 @@ const App = {
   sound: null,
   selection: [],
   paused: false,
-  quality: 'high',
+  quality: 'high', // calidad que se usa ahora: 'high' o 'low'
+  qualityPref: 'auto', // la elegida en la pausa: 'auto', 'high' o 'low'
+  showFps: false,
+  fps: 0,
+  fpsFrames: 0,
+  fpsT: 0,
+  lowFpsSecs: 0,
   opts: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', seed: 0 },
   suspended: null,
   lobby: null,
@@ -27,9 +33,11 @@ const App = {
     this.overlay = $('overlay');
     try {
       const q = localStorage.getItem('faro-quality');
-      if (q === 'high' || q === 'low') this.quality = q;
+      if (q === 'high' || q === 'low' || q === 'auto') this.qualityPref = q;
+      this.showFps = localStorage.getItem('faro-fps') === 'on';
     } catch (err) { /* sin almacenamiento */ }
     Profile.load();
+    this.quality = this.qualityPref === 'low' ? 'low' : 'high';
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
     this.opts.seed = (Math.random() * 1e9) | 0;
     // Al republicar la página, conserva las opciones elegidas en el menú.
@@ -200,14 +208,51 @@ const App = {
     if (this.state !== 'play') return;
     this.paused = on;
     $('pause').hidden = !on;
-    document.querySelectorAll('[data-quality]').forEach((b) => b.classList.toggle('gold', b.dataset.quality === this.quality));
+    this.markQuality();
   },
 
+  markQuality() {
+    document.querySelectorAll('[data-quality]').forEach((b) => b.classList.toggle('gold', b.dataset.quality === this.qualityPref));
+    const note = $('quality-note');
+    if (note) {
+      note.textContent = this.qualityPref === 'auto'
+        ? `Ahora: ${this.quality === 'high' ? 'alta calidad' : 'más fluido'}${this.fps ? ` · ${this.fps} cuadros por segundo` : ''}`
+        : '';
+    }
+  },
+
+  // Gráficos: «Automática» empieza en alta calidad y baja sola si el iPad no llega a 40 cuadros por segundo.
   setQuality(q) {
-    this.quality = q;
+    this.qualityPref = q;
     try { localStorage.setItem('faro-quality', q); } catch (err) { /* sin almacenamiento */ }
-    if (this.renderer) this.renderer.applyQuality(q);
-    document.querySelectorAll('[data-quality]').forEach((b) => b.classList.toggle('gold', b.dataset.quality === q));
+    this.quality = q === 'low' ? 'low' : 'high';
+    this.lowFpsSecs = 0;
+    if (this.renderer) this.renderer.applyQuality(this.quality);
+    this.markQuality();
+  },
+
+  toggleFps(on = !this.showFps) {
+    this.showFps = on;
+    try { localStorage.setItem('faro-fps', on ? 'on' : 'off'); } catch (err) { /* sin almacenamiento */ }
+    $('fps').hidden = !on;
+    $('btn-fps').textContent = `Contador de cuadros: ${on ? 'sí' : 'no'}`;
+  },
+
+  // Se llama una vez por segundo con los cuadros por segundo medidos.
+  autoQuality(fps) {
+    this.fps = fps;
+    if (this.showFps) $('fps').textContent = `${fps} fps`;
+    if (this.qualityPref !== 'auto' || this.quality !== 'high' || this.state !== 'play' || this.paused) {
+      this.lowFpsSecs = 0;
+      return false;
+    }
+    this.lowFpsSecs = fps < 40 ? this.lowFpsSecs + 1 : 0;
+    if (this.lowFpsSecs < 4) return false;
+    this.quality = 'low';
+    this.lowFpsSecs = 0;
+    if (this.renderer) this.renderer.applyQuality('low');
+    this.ui.toast(`Gráficos: más fluido (automático, ${fps} cuadros por segundo)`, 'info');
+    return true;
   },
 
   setSelection(list) {
@@ -284,8 +329,17 @@ const App = {
       requestAnimationFrame((t) => this.loop(t));
       return;
     }
-    const dt = Math.min(0.1, Math.max(0, (now - this.last) / 1000));
+    const raw = Math.max(0, (now - this.last) / 1000);
+    const dt = Math.min(0.1, raw);
     this.last = now;
+    // Cuadros por segundo reales (para el contador y la calidad automática).
+    this.fpsFrames++;
+    this.fpsT += raw;
+    if (this.fpsT >= 1) {
+      this.autoQuality(Math.round(this.fpsFrames / this.fpsT));
+      this.fpsFrames = 0;
+      this.fpsT = 0;
+    }
     this.time += dt;
     try {
       if (this.state === 'play' && this.game) {
