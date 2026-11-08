@@ -404,14 +404,20 @@ class Input {
     this.app.sound.play('click');
   }
 
-  // «Listo» (v0.9): cada toque ya construye; este botón termina de poner obras.
+  // «Construir» (v1.0): tocar una casilla solo muestra la obra fantasma; este botón la pone.
+  // Después se puede elegir otra casilla y volver a construir; «Terminar» sale.
   confirmPlacement() {
     const p = this.placement;
     if (!p || p.kind !== 'build') return;
-    this.cancelPlacement();
+    if (p.cell < 0) {
+      this.app.ui.toast('Toca primero una casilla dorada', 'bad');
+      this.app.sound.play('error');
+      return;
+    }
+    this.buildAt(p.cell);
   }
 
-  // Construir de un toque (v0.9): pone la obra al instante y sigue para poner más.
+  // Pone la obra en la casilla elegida y sigue en modo construir para poner más.
   buildAt(ci) {
     const g = this.game;
     const p = this.placement;
@@ -453,6 +459,9 @@ class Input {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
+    } else if (p.kind === 'nuke3') {
+      const silos = g.readySilos(0).slice(0, 3);
+      cells = silos.length < 3 || g.salvoInvalid(0) ? [] : g.cells.filter((c) => silos.every((b) => !g.nukeInvalid(b, c.i))).map((c) => c.i);
     }
     p.valid = new Set(cells);
     this.r.setPlacement(cells);
@@ -483,7 +492,8 @@ class Input {
     const cell = this.r.pickCell(x, y);
     if (!cell) return;
     if (p.kind === 'build') {
-      this.buildAt(cell.i);
+      this.previewAt(cell.i);
+      this.app.sound.play('click');
     } else if (p.kind === 'found') {
       if (!p.unit.alive) {
         this.cancelPlacement();
@@ -506,6 +516,16 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
+      this.cancelPlacement();
+    } else if (p.kind === 'nuke3') {
+      const res = g.launchSalvo(0, cell.i);
+      if (typeof res === 'string') {
+        this.app.ui.toast(res, 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      this.r.addMoveMarker(cell.i, 0xff4040);
+      this.app.ui.toast(`¡${res} misiles nucleares lanzados a la vez!`, 'info');
       this.cancelPlacement();
     } else if (p.kind === 'rally') {
       p.building.rally = cell.i;

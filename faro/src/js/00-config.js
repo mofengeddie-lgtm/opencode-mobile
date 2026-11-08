@@ -9,8 +9,12 @@ const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
 const START_UNITS = ['builder'];
-// Comunidad (población) máxima: 180 desde la v0.9.
-const MAX_POP = 180;
+// Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
+const MAX_POP = 240;
+// v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.
+const BUILD_REACH = 1.2;
+// v1.0: «Mejoras automáticas» (Núcleo nivel 3): revisa cada 2 s y guarda una reserva de monedas para tropas.
+const AUTO_UP = { every: 2, reserve: 1500, coreLevel: 3 };
 
 // Puntos de captura (PRD 1.5 RF-07 y RF-12).
 const CAPTURE = { time: 12, near: 1, clear: 2 };
@@ -24,12 +28,14 @@ const KING_TIME = 180;
 const EMERGENCY = { at: 0.25, time: 20 };
 const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
-const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9 };
+const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9,
+  // v1.0: 1 minuto de radiación donde cae; quema por segundo esta parte de la vida máxima de los enemigos.
+  rad: { time: 60, unit: 0.04, bld: 0.008 } };
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
 const REPAIR = { rate: 25, pause: 4 };
-const HOUSE_LIMIT = 6;
+const HOUSE_LIMIT = 8;
 
 // h = altura de la cara superior de la casilla.
 const TERRAIN = {

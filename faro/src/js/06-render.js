@@ -438,6 +438,52 @@ class Renderer {
     this.nukeFlashT = 1.2;
   }
 
+  // Radiación (v1.0): fuego y humo sueltos dentro de la zona mientras dura.
+  spawnRadBurn(f) {
+    const n = this.quality === 'high' ? 3 : 1;
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const d = Math.sqrt(Math.random()) * f.r * 0.85;
+      const x = f.x + Math.cos(a) * d;
+      const z = f.z + Math.sin(a) * d;
+      if (Math.random() < 0.45) this.fxs.explosion(x, f.y + 0.15, z, 0.45, false);
+      this.fxs.smoke(x, f.y + 0.4, z, 1.2);
+    }
+  }
+
+  // Disco verde de la zona de radiación, que late y se apaga al final.
+  updateRadZones(time) {
+    const g = this.game;
+    const zones = g.radZones || [];
+    if (!this.radMeshes) this.radMeshes = new Map();
+    for (const [z, m] of this.radMeshes) {
+      if (!zones.includes(z)) {
+        this.scene.remove(m);
+        m.material.dispose();
+        this.radMeshes.delete(z);
+      }
+    }
+    const R = NUKE.radius * SQ3 + 0.6;
+    for (const z of zones) {
+      let m = this.radMeshes.get(z);
+      if (!m) {
+        if (!this.radGeo) {
+          this.radGeo = new THREE.CircleGeometry(1, 40);
+          this.radGeo.rotateX(-Math.PI / 2);
+        }
+        m = new THREE.Mesh(this.radGeo, new THREE.MeshBasicMaterial({ color: 0x7cff4a, transparent: true, opacity: 0.3, depthWrite: false, blending: THREE.AdditiveBlending }));
+        m.scale.setScalar(R);
+        m.position.set(z.x, z.y + 0.08, z.z);
+        m.renderOrder = 3;
+        this.scene.add(m);
+        this.radMeshes.set(z, m);
+      }
+      const left = Math.max(0, z.until - g.time);
+      const fade = Math.min(1, left / 8);
+      m.material.opacity = (0.16 + 0.1 * Math.sin(time * 3)) * fade;
+    }
+  }
+
   consumeFx() {
     const g = this.game;
     for (const f of g.fx) {
@@ -455,6 +501,7 @@ class Renderer {
         for (let i = 0; i < 3; i++) this.fxs.sparks(f.x, f.y, f.z, 1.2, 4);
         this.fxs.flash(f.x, f.y, f.z, 0.6);
       } else if (f.k === 'nuke') this.spawnNuke(f.x, f.y, f.z);
+      else if (f.k === 'rad') this.spawnRadBurn(f);
     }
     g.fx.length = 0;
   }
@@ -758,6 +805,8 @@ class Renderer {
       if (v.legl) {
         soldiers++;
         this.animateLegs(u, v, dt, time, gaitFull);
+        // v1.0: el constructor martilla mientras trabaja en la obra.
+        if (u.workingAt !== undefined && g.time - u.workingAt < 0.25) v.main.rotation.x = 0.08 + Math.sin(time * 11 + u.id) * 0.12;
       }
     }
     this.soldiersSeen = soldiers;
@@ -1122,6 +1171,22 @@ class Renderer {
       ctx.stroke();
     }
     ctx.setLineDash([]);
+    // Radiación (v1.0): cartel con la cuenta regresiva sobre cada zona.
+    for (const z of g.radZones || []) {
+      const s = this.project(z.x, z.y + 0.9, z.z);
+      if (!s.ok || s.x < -60 || s.y < -30 || s.x > this.width + 60 || s.y > this.height + 30) continue;
+      const left = Math.max(0, Math.ceil(z.until - g.time));
+      const text = `☢ Radiación · ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+      ctx.font = '700 12px system-ui, sans-serif';
+      const w = ctx.measureText(text).width + 16;
+      ctx.fillStyle = 'rgba(12,22,10,0.85)';
+      ctx.fillRect(s.x - w / 2, s.y - 20, w, 20);
+      ctx.fillStyle = '#7cff4a';
+      ctx.fillRect(s.x - w / 2, s.y - 3, w * clamp(left / NUKE.rad.time, 0, 1), 3);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#c9ffb0';
+      ctx.fillText(text, s.x, s.y - 7);
+    }
     // AIR DEFENSE (v0.9): el radar marca la aeronave que sigue (amarillo) y la que ya fijó (rojo).
     // Si un radar enemigo fija una aeronave tuya, aparece un aro rojo de alerta sobre ella.
     for (const bl of g.buildings) {
@@ -1429,6 +1494,7 @@ class Renderer {
     this.updateLasers(dt);
     this.updatePoints(time);
     this.updateShields(time);
+    this.updateRadZones(time);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);

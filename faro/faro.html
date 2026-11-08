@@ -387,6 +387,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.upall { display: grid; gap: 6px; padding: 8px; border-radius: 10px; border: 1px solid rgba(242,171,56,0.35); background: rgba(242,171,56,0.05); }
+.upall .actions { margin: 0; }
+.btn.good { border-color: rgba(94,224,122,0.7); color: #8ff0a4; background: rgba(94,224,122,0.12); }
 .coretiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; }
 .ctile { padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); min-width: 0; }
 .ctile small { display: block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -743,7 +746,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="actions">
       <button class="btn" id="btn-place-rot" type="button" title="Girar (R)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg>Girar</button>
-      <button class="btn gold" id="btn-place-ok" type="button" title="Terminar (Enter)">Listo</button>
+      <button class="btn gold" id="btn-place-ok" type="button" title="Construir aquí (Enter)">Construir</button>
       <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
     </div>
   </div>
@@ -844,8 +847,12 @@ const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
 const START_UNITS = ['builder'];
-// Comunidad (población) máxima: 180 desde la v0.9.
-const MAX_POP = 180;
+// Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
+const MAX_POP = 240;
+// v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.
+const BUILD_REACH = 1.2;
+// v1.0: «Mejoras automáticas» (Núcleo nivel 3): revisa cada 2 s y guarda una reserva de monedas para tropas.
+const AUTO_UP = { every: 2, reserve: 1500, coreLevel: 3 };
 
 // Puntos de captura (PRD 1.5 RF-07 y RF-12).
 const CAPTURE = { time: 12, near: 1, clear: 2 };
@@ -859,12 +866,14 @@ const KING_TIME = 180;
 const EMERGENCY = { at: 0.25, time: 20 };
 const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
-const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9 };
+const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9,
+  // v1.0: 1 minuto de radiación donde cae; quema por segundo esta parte de la vida máxima de los enemigos.
+  rad: { time: 60, unit: 0.04, bld: 0.008 } };
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
 const REPAIR = { rate: 25, pause: 4 };
-const HOUSE_LIMIT = 6;
+const HOUSE_LIMIT = 8;
 
 // h = altura de la cara superior de la casilla.
 const TERRAIN = {
@@ -2841,6 +2850,8 @@ class Game {
     this.units = [];
     this.buildings = [];
     this.projectiles = [];
+    // Zonas de radiación del misil nuclear (v1.0).
+    this.radZones = [];
     this.removed = [];
     this.fx = [];
     this.events = [];
@@ -3371,6 +3382,7 @@ class Game {
   workOn(u, b, dt) {
     b.workAcc += (u.def.buildRate || 1) * dt;
     b.lastWork = this.time;
+    u.workingAt = this.time;
     u.aimYaw = Math.atan2(b.x - u.x, b.z - u.z);
     // Martilleo de obra (solo tus constructores suenan).
     if (u.owner === 0 && Math.random() < dt * 1.3) this.emit('sound', { name: 'build', x: b.x, z: b.z });
@@ -3460,6 +3472,61 @@ class Game {
       if (this.players[b.owner].coins < this.upgradeCost(b)) return 'Monedas insuficientes';
     }
     return null;
+  }
+
+  // v1.0: «Mejorar todo» y «Mejoras automáticas», solo con el Núcleo en nivel 3.
+  massUpgradeInvalid(pid) {
+    const p = this.players[pid];
+    if (!p.core || !p.core.alive || p.core.level < AUTO_UP.coreLevel) return `Necesita el Núcleo en nivel ${AUTO_UP.coreLevel}`;
+    return null;
+  }
+
+  // Edificios que todavía se pueden mejorar (sin contar el dinero), del más barato al más caro.
+  upgradeCandidates(pid) {
+    const out = [];
+    for (const b of this.buildings) {
+      if (!b.alive || b.owner !== pid || !b.built || b.upgrading || b.level >= (b.def.maxLevel || 1)) continue;
+      const why = this.upgradeInvalid(b);
+      if (why && why !== 'Monedas insuficientes') continue;
+      out.push(b);
+    }
+    return out.sort((a, c) => this.upgradeCost(a) - this.upgradeCost(c));
+  }
+
+  // Un clic: pone a mejorar todo lo que alcanza el dinero (del más barato al más caro).
+  upgradeAll(pid, reserve = 0) {
+    const why = this.massUpgradeInvalid(pid);
+    if (why) return why;
+    const p = this.players[pid];
+    let n = 0;
+    let spent = 0;
+    for (const b of this.upgradeCandidates(pid)) {
+      const cost = this.upgradeCost(b);
+      if (p.coins - cost < reserve) continue;
+      if (typeof this.upgrade(b) === 'string') continue;
+      n++;
+      spent += cost;
+    }
+    return { n, spent };
+  }
+
+  // Mejoras automáticas: siguen mejorando hasta dejar todo al máximo, como mucho tantos edificios
+  // a la vez como Constructores tenga el imperio, y sin bajar de la reserva.
+  updateAutoUpgrade(dt) {
+    this._autoUpT = (this._autoUpT || 0) - dt;
+    if (this._autoUpT > 0) return;
+    this._autoUpT = AUTO_UP.every;
+    for (const p of this.players) {
+      if (!p.alive || !p.autoUpgrade || this.massUpgradeInvalid(p.id)) continue;
+      const busy = this.buildings.filter((b) => b.alive && b.owner === p.id && b.upgrading).length;
+      const builders = this.units.filter((u) => u.alive && u.owner === p.id && u.def.builds).length;
+      if (busy >= Math.max(1, builders)) continue;
+      const b = this.upgradeCandidates(p.id).find((x) => p.coins - this.upgradeCost(x) >= AUTO_UP.reserve);
+      if (b && typeof this.upgrade(b) !== 'string') {
+        p.autoUps = (p.autoUps || 0) + 1;
+        if (p.id === 0) this.emit('toast', { text: `Mejora automática: ${b.def.name} a nivel ${b.level + 1}`, kind: 'info', x: b.x, z: b.z });
+      }
+    }
   }
 
   upgrade(b) {
@@ -4093,6 +4160,8 @@ class Game {
       if (u.alive) this.updateUnit(u, dt);
     }
     this.updateProjectiles(dt);
+    this.updateRadiation(dt);
+    this.updateAutoUpgrade(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
     if (this.camp) Campaign.update(this, dt);
 
@@ -4590,7 +4659,20 @@ class Game {
         const bc = this.cells[b.cell];
         const uc = this.cells[u.cell];
         if (hexDist(uc.q, uc.r, bc.q, bc.r) <= 1) {
+          // v1.0: la obra solo avanza con el constructor quieto y pegado a ella. En la casilla de al
+          // lado, primero termina de acercarse (sin salir de su casilla); mientras camina, no avanza.
           u.path = [];
+          const dx = b.x - u.x;
+          const dz = b.z - u.z;
+          const d = Math.hypot(dx, dz);
+          if (d > BUILD_REACH) {
+            const step = Math.min(d - BUILD_REACH + 0.01, u.def.speed * SQ3 * dt);
+            u.x += (dx / d) * step;
+            u.z += (dz / d) * step;
+            u.moveYaw = Math.atan2(dx, dz);
+            u.moving = true;
+            break;
+          }
           this.workOn(u, b, dt);
           break;
         }
@@ -4800,6 +4882,35 @@ class Game {
     return null;
   }
 
+  // v1.0: salva de 3 misiles (los 3 AIR DEFENSE de nivel 4 a la vez).
+  readySilos(pid) {
+    return this.buildings.filter((b) => b.alive && b.owner === pid && b.type === 'aadef' && b.built && b.level >= 4 &&
+      !b.upgrading && this.time >= (b.nukeReadyAt || 0));
+  }
+
+  salvoInvalid(pid, ci) {
+    const silos = this.readySilos(pid);
+    if (silos.length < 3) return `Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes ${silos.length})`;
+    const p = this.players[pid];
+    if (!(this.creator && pid === 0) && p.coins < NUKE.cost * 3) return `Monedas insuficientes (${fmt(NUKE.cost * 3)})`;
+    if (ci !== undefined) {
+      for (const b of silos.slice(0, 3)) {
+        const why = this.nukeInvalid(b, ci);
+        if (why) return why;
+      }
+    }
+    return null;
+  }
+
+  launchSalvo(pid, ci) {
+    const why = this.salvoInvalid(pid, ci);
+    if (why) return why;
+    const silos = this.readySilos(pid).slice(0, 3);
+    for (const b of silos) this.launchNuke(b, ci);
+    this.salvos = (this.salvos || 0) + 1;
+    return silos.length;
+  }
+
   launchNuke(b, ci) {
     const why = this.nukeInvalid(b, ci);
     if (why) return why;
@@ -4863,6 +4974,35 @@ class Game {
       if (d > R) continue;
       this.damage(t, p.dmg * (1 - (d / R) * 0.6), p.owner, null);
     }
+    // v1.0: queda 1 minuto de radiación que sigue quemando a los enemigos de quien lo lanzó.
+    if (!this.radZones) this.radZones = [];
+    this.radZones.push({ x: p.tx, y: p.ty, z: p.tz, cell: p.cell, owner: p.owner, start: this.time, until: this.time + NUKE.rad.time, tick: 0 });
+    const zc = this.cells[p.cell];
+    const near0 = this.buildings.some((b) => b.alive && b.owner === 0 && this.map.dist(this.cells[b.cell], zc) <= NUKE.radius + 2);
+    if (p.owner === 0 || near0) {
+      this.emit('toast', { text: `Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
+    }
+  }
+
+  // Radiación (v1.0): cada medio segundo quema a tropas y edificios enemigos dentro de la zona.
+  updateRadiation(dt) {
+    if (!this.radZones || !this.radZones.length) return;
+    const R = NUKE.radius * SQ3 + 0.6;
+    for (const z of this.radZones) {
+      z.tick += dt;
+      if (z.tick < 0.5) continue;
+      const step = z.tick;
+      z.tick = 0;
+      const burn = (t, pct) => {
+        if (!t.alive || t.inside || !this.isEnemy(z.owner, t.owner)) return;
+        if (Math.hypot(t.x - z.x, t.z - z.z) > R) return;
+        this.damage(t, t.maxHp * pct * step, z.owner, null);
+      };
+      for (const u of this.units) burn(u, NUKE.rad.unit);
+      for (const b of this.buildings) burn(b, NUKE.rad.bld);
+      this.fx.push({ k: 'rad', x: z.x, y: z.y, z: z.z, r: R });
+    }
+    this.radZones = this.radZones.filter((z) => this.time < z.until);
   }
 }
 
@@ -6986,6 +7126,52 @@ class Renderer {
     this.nukeFlashT = 1.2;
   }
 
+  // Radiación (v1.0): fuego y humo sueltos dentro de la zona mientras dura.
+  spawnRadBurn(f) {
+    const n = this.quality === 'high' ? 3 : 1;
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const d = Math.sqrt(Math.random()) * f.r * 0.85;
+      const x = f.x + Math.cos(a) * d;
+      const z = f.z + Math.sin(a) * d;
+      if (Math.random() < 0.45) this.fxs.explosion(x, f.y + 0.15, z, 0.45, false);
+      this.fxs.smoke(x, f.y + 0.4, z, 1.2);
+    }
+  }
+
+  // Disco verde de la zona de radiación, que late y se apaga al final.
+  updateRadZones(time) {
+    const g = this.game;
+    const zones = g.radZones || [];
+    if (!this.radMeshes) this.radMeshes = new Map();
+    for (const [z, m] of this.radMeshes) {
+      if (!zones.includes(z)) {
+        this.scene.remove(m);
+        m.material.dispose();
+        this.radMeshes.delete(z);
+      }
+    }
+    const R = NUKE.radius * SQ3 + 0.6;
+    for (const z of zones) {
+      let m = this.radMeshes.get(z);
+      if (!m) {
+        if (!this.radGeo) {
+          this.radGeo = new THREE.CircleGeometry(1, 40);
+          this.radGeo.rotateX(-Math.PI / 2);
+        }
+        m = new THREE.Mesh(this.radGeo, new THREE.MeshBasicMaterial({ color: 0x7cff4a, transparent: true, opacity: 0.3, depthWrite: false, blending: THREE.AdditiveBlending }));
+        m.scale.setScalar(R);
+        m.position.set(z.x, z.y + 0.08, z.z);
+        m.renderOrder = 3;
+        this.scene.add(m);
+        this.radMeshes.set(z, m);
+      }
+      const left = Math.max(0, z.until - g.time);
+      const fade = Math.min(1, left / 8);
+      m.material.opacity = (0.16 + 0.1 * Math.sin(time * 3)) * fade;
+    }
+  }
+
   consumeFx() {
     const g = this.game;
     for (const f of g.fx) {
@@ -7003,6 +7189,7 @@ class Renderer {
         for (let i = 0; i < 3; i++) this.fxs.sparks(f.x, f.y, f.z, 1.2, 4);
         this.fxs.flash(f.x, f.y, f.z, 0.6);
       } else if (f.k === 'nuke') this.spawnNuke(f.x, f.y, f.z);
+      else if (f.k === 'rad') this.spawnRadBurn(f);
     }
     g.fx.length = 0;
   }
@@ -7306,6 +7493,8 @@ class Renderer {
       if (v.legl) {
         soldiers++;
         this.animateLegs(u, v, dt, time, gaitFull);
+        // v1.0: el constructor martilla mientras trabaja en la obra.
+        if (u.workingAt !== undefined && g.time - u.workingAt < 0.25) v.main.rotation.x = 0.08 + Math.sin(time * 11 + u.id) * 0.12;
       }
     }
     this.soldiersSeen = soldiers;
@@ -7670,6 +7859,22 @@ class Renderer {
       ctx.stroke();
     }
     ctx.setLineDash([]);
+    // Radiación (v1.0): cartel con la cuenta regresiva sobre cada zona.
+    for (const z of g.radZones || []) {
+      const s = this.project(z.x, z.y + 0.9, z.z);
+      if (!s.ok || s.x < -60 || s.y < -30 || s.x > this.width + 60 || s.y > this.height + 30) continue;
+      const left = Math.max(0, Math.ceil(z.until - g.time));
+      const text = `☢ Radiación · ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+      ctx.font = '700 12px system-ui, sans-serif';
+      const w = ctx.measureText(text).width + 16;
+      ctx.fillStyle = 'rgba(12,22,10,0.85)';
+      ctx.fillRect(s.x - w / 2, s.y - 20, w, 20);
+      ctx.fillStyle = '#7cff4a';
+      ctx.fillRect(s.x - w / 2, s.y - 3, w * clamp(left / NUKE.rad.time, 0, 1), 3);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#c9ffb0';
+      ctx.fillText(text, s.x, s.y - 7);
+    }
     // AIR DEFENSE (v0.9): el radar marca la aeronave que sigue (amarillo) y la que ya fijó (rojo).
     // Si un radar enemigo fija una aeronave tuya, aparece un aro rojo de alerta sobre ella.
     for (const bl of g.buildings) {
@@ -7977,6 +8182,7 @@ class Renderer {
     this.updateLasers(dt);
     this.updatePoints(time);
     this.updateShields(time);
+    this.updateRadZones(time);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
@@ -8629,14 +8835,20 @@ class Input {
     this.app.sound.play('click');
   }
 
-  // «Listo» (v0.9): cada toque ya construye; este botón termina de poner obras.
+  // «Construir» (v1.0): tocar una casilla solo muestra la obra fantasma; este botón la pone.
+  // Después se puede elegir otra casilla y volver a construir; «Terminar» sale.
   confirmPlacement() {
     const p = this.placement;
     if (!p || p.kind !== 'build') return;
-    this.cancelPlacement();
+    if (p.cell < 0) {
+      this.app.ui.toast('Toca primero una casilla dorada', 'bad');
+      this.app.sound.play('error');
+      return;
+    }
+    this.buildAt(p.cell);
   }
 
-  // Construir de un toque (v0.9): pone la obra al instante y sigue para poner más.
+  // Pone la obra en la casilla elegida y sigue en modo construir para poner más.
   buildAt(ci) {
     const g = this.game;
     const p = this.placement;
@@ -8678,6 +8890,9 @@ class Input {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
+    } else if (p.kind === 'nuke3') {
+      const silos = g.readySilos(0).slice(0, 3);
+      cells = silos.length < 3 || g.salvoInvalid(0) ? [] : g.cells.filter((c) => silos.every((b) => !g.nukeInvalid(b, c.i))).map((c) => c.i);
     }
     p.valid = new Set(cells);
     this.r.setPlacement(cells);
@@ -8708,7 +8923,8 @@ class Input {
     const cell = this.r.pickCell(x, y);
     if (!cell) return;
     if (p.kind === 'build') {
-      this.buildAt(cell.i);
+      this.previewAt(cell.i);
+      this.app.sound.play('click');
     } else if (p.kind === 'found') {
       if (!p.unit.alive) {
         this.cancelPlacement();
@@ -8731,6 +8947,16 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
+      this.cancelPlacement();
+    } else if (p.kind === 'nuke3') {
+      const res = g.launchSalvo(0, cell.i);
+      if (typeof res === 'string') {
+        this.app.ui.toast(res, 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      this.r.addMoveMarker(cell.i, 0xff4040);
+      this.app.ui.toast(`¡${res} misiles nucleares lanzados a la vez!`, 'info');
       this.cancelPlacement();
     } else if (p.kind === 'rally') {
       p.building.rally = cell.i;
@@ -9272,16 +9498,18 @@ class UI {
     const isBuild = p.kind === 'build';
     $('btn-place-rot').hidden = !isBuild;
     $('btn-place-ok').hidden = !isBuild;
-    $('btn-place-cancel').hidden = isBuild;
+    $('btn-place-cancel').hidden = false;
+    $('btn-place-cancel').textContent = isBuild && p.placed ? 'Terminar' : 'Cancelar';
     if (isBuild) {
-      // v0.9: cada toque en una casilla dorada construye al instante; «Listo» termina.
+      // v1.0: tocar una casilla muestra la obra; «Construir» la pone; «Terminar» sale.
       const d = BUILDINGS[p.btype];
       const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
       const placed = p.placed ? ` · <b>${p.placed}</b> ${p.placed === 1 ? 'puesta' : 'puestas'}` : '';
-      if (p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
-      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca casillas doradas: se construye al instante${placed}`;
+      if (p.err && p.cell >= 0) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
+      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Toca «Construir» para poner la obra aquí${placed}`;
+      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca una casilla dorada y luego «Construir»${placed}`;
       else text = `No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
-      $('btn-place-ok').disabled = false;
+      $('btn-place-ok').disabled = p.cell < 0 || !!p.err;
       $('btn-place-rot').disabled = false;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
@@ -9291,6 +9519,8 @@ class UI {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+    } else if (p.kind === 'nuke3') {
+      text = `Toca el blanco de los <b>3 misiles nucleares</b> · <span class="cost">${fmt(NUKE.cost * 3)}</span> · llegan en ${NUKE.flight} s`;
     }
     $('placetext').innerHTML = text;
     $('placebar').hidden = false;
@@ -9375,10 +9605,14 @@ class UI {
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
       if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
-      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}`;
+      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}${first.type === 'aadef' && first.level >= 4 ? g.salvoInvalid(0) : ''}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
         sig += `|d${d ? d.level + ':' + (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : ''}${p.coins >= g.domeCost(0)}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
+        if (first.level >= AUTO_UP.coreLevel) {
+          const cand = g.upgradeCandidates(0);
+          sig += `|a${p.autoUpgrade ? 1 : 0}:${cand.length}:${cand.filter((x) => g.upgradeCost(x) <= p.coins).length}`;
+        }
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
@@ -9451,6 +9685,23 @@ class UI {
       html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
       if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
+      // v1.0: con el Núcleo en nivel 3, mejorar todo de un clic o dejar las mejoras automáticas.
+      if (b.level >= AUTO_UP.coreLevel) {
+        const cand = g.upgradeCandidates(0);
+        let total = 0;
+        let can = 0;
+        let left = p.coins;
+        for (const x of cand) {
+          const c = g.upgradeCost(x);
+          total += c;
+          if (c <= left) { left -= c; can++; }
+        }
+        const auto = !!p.autoUpgrade;
+        html += `<div class="upall"><div class="actions">
+          <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}</button>
+          <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${bi('repeat')}Mejoras automáticas: ${auto ? 'sí' : 'no'}</button></div>
+          <span class="queue">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
+      }
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
         const label = dome ? `Mejorar Cúpula a nivel ${next}` : 'Comprar Cúpula';
@@ -9491,7 +9742,11 @@ class UI {
       const why = g.nukeInvalid(b);
       const wait = g.time < (b.nukeReadyAt || 0);
       html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>☢ Misil nuclear · ${fmt(NUKE.cost)}</button>
-        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas y deja ${NUKE.rad.time} s de radiación; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+      // v1.0: los 3 a la vez (un Escudo antimisiles solo derriba uno por carga).
+      const why3 = g.salvoInvalid(0);
+      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke3" id="btn-nuke3" ${why3 ? 'disabled' : ''}>☢☢☢ Lanzar los 3 · ${fmt(NUKE.cost * 3)}</button>
+        <span class="queue" style="flex:1 1 200px">${why3 || 'Tus 3 AIR DEFENSE de nivel 4 disparan juntos al mismo blanco: un Escudo antimisiles solo puede derribar uno.'}</span></div>`;
     } else if (b.type === 'aadef' && b.built) {
       html += `<div class="queue">Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.</div>`;
     }
@@ -9698,6 +9953,23 @@ class UI {
         app.setSelection([res]);
         this.toast(`Mejora de ${res.def.name} pagada: un constructor la hará`, 'good');
       }
+    } else if (act === 'upall') {
+      const res = g.upgradeAll(0);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else if (!res.n) {
+        this.toast('No alcanza el dinero para ninguna mejora', 'bad');
+        app.sound.play('error');
+      } else {
+        this.toast(`Mejorando ${res.n} ${res.n === 1 ? 'edificio' : 'edificios'} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
+      }
+      this.renderSel(true);
+    } else if (act === 'autoup') {
+      const pl = g.players[0];
+      pl.autoUpgrade = !pl.autoUpgrade;
+      this.toast(pl.autoUpgrade ? 'Mejoras automáticas encendidas: se mejora solo hasta el máximo' : 'Mejoras automáticas apagadas', pl.autoUpgrade ? 'good' : 'info');
+      this.renderSel(true);
     } else if (act === 'dome') {
       const err = g.buyDome(0);
       if (err) {
@@ -9724,6 +9996,14 @@ class UI {
         app.sound.play('error');
       } else {
         app.input.startPlacement({ kind: 'nuke', building: b });
+      }
+    } else if (act === 'nuke3') {
+      const err = g.salvoInvalid(0);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        app.input.startPlacement({ kind: 'nuke3', building: b });
       }
     } else if (act === 'repeat') {
       const n = Number(btn.dataset.n) || 1;

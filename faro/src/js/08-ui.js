@@ -528,16 +528,18 @@ class UI {
     const isBuild = p.kind === 'build';
     $('btn-place-rot').hidden = !isBuild;
     $('btn-place-ok').hidden = !isBuild;
-    $('btn-place-cancel').hidden = isBuild;
+    $('btn-place-cancel').hidden = false;
+    $('btn-place-cancel').textContent = isBuild && p.placed ? 'Terminar' : 'Cancelar';
     if (isBuild) {
-      // v0.9: cada toque en una casilla dorada construye al instante; «Listo» termina.
+      // v1.0: tocar una casilla muestra la obra; «Construir» la pone; «Terminar» sale.
       const d = BUILDINGS[p.btype];
       const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
       const placed = p.placed ? ` · <b>${p.placed}</b> ${p.placed === 1 ? 'puesta' : 'puestas'}` : '';
-      if (p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
-      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca casillas doradas: se construye al instante${placed}`;
+      if (p.err && p.cell >= 0) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
+      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Toca «Construir» para poner la obra aquí${placed}`;
+      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca una casilla dorada y luego «Construir»${placed}`;
       else text = `No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
-      $('btn-place-ok').disabled = false;
+      $('btn-place-ok').disabled = p.cell < 0 || !!p.err;
       $('btn-place-rot').disabled = false;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
@@ -547,6 +549,8 @@ class UI {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+    } else if (p.kind === 'nuke3') {
+      text = `Toca el blanco de los <b>3 misiles nucleares</b> · <span class="cost">${fmt(NUKE.cost * 3)}</span> · llegan en ${NUKE.flight} s`;
     }
     $('placetext').innerHTML = text;
     $('placebar').hidden = false;
@@ -631,10 +635,14 @@ class UI {
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
       if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
-      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}`;
+      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}${first.type === 'aadef' && first.level >= 4 ? g.salvoInvalid(0) : ''}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
         sig += `|d${d ? d.level + ':' + (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : ''}${p.coins >= g.domeCost(0)}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
+        if (first.level >= AUTO_UP.coreLevel) {
+          const cand = g.upgradeCandidates(0);
+          sig += `|a${p.autoUpgrade ? 1 : 0}:${cand.length}:${cand.filter((x) => g.upgradeCost(x) <= p.coins).length}`;
+        }
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
@@ -707,6 +715,23 @@ class UI {
       html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
       if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
+      // v1.0: con el Núcleo en nivel 3, mejorar todo de un clic o dejar las mejoras automáticas.
+      if (b.level >= AUTO_UP.coreLevel) {
+        const cand = g.upgradeCandidates(0);
+        let total = 0;
+        let can = 0;
+        let left = p.coins;
+        for (const x of cand) {
+          const c = g.upgradeCost(x);
+          total += c;
+          if (c <= left) { left -= c; can++; }
+        }
+        const auto = !!p.autoUpgrade;
+        html += `<div class="upall"><div class="actions">
+          <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}</button>
+          <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${bi('repeat')}Mejoras automáticas: ${auto ? 'sí' : 'no'}</button></div>
+          <span class="queue">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
+      }
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
         const label = dome ? `Mejorar Cúpula a nivel ${next}` : 'Comprar Cúpula';
@@ -747,7 +772,11 @@ class UI {
       const why = g.nukeInvalid(b);
       const wait = g.time < (b.nukeReadyAt || 0);
       html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>☢ Misil nuclear · ${fmt(NUKE.cost)}</button>
-        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas y deja ${NUKE.rad.time} s de radiación; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+      // v1.0: los 3 a la vez (un Escudo antimisiles solo derriba uno por carga).
+      const why3 = g.salvoInvalid(0);
+      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke3" id="btn-nuke3" ${why3 ? 'disabled' : ''}>☢☢☢ Lanzar los 3 · ${fmt(NUKE.cost * 3)}</button>
+        <span class="queue" style="flex:1 1 200px">${why3 || 'Tus 3 AIR DEFENSE de nivel 4 disparan juntos al mismo blanco: un Escudo antimisiles solo puede derribar uno.'}</span></div>`;
     } else if (b.type === 'aadef' && b.built) {
       html += `<div class="queue">Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.</div>`;
     }
@@ -954,6 +983,23 @@ class UI {
         app.setSelection([res]);
         this.toast(`Mejora de ${res.def.name} pagada: un constructor la hará`, 'good');
       }
+    } else if (act === 'upall') {
+      const res = g.upgradeAll(0);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else if (!res.n) {
+        this.toast('No alcanza el dinero para ninguna mejora', 'bad');
+        app.sound.play('error');
+      } else {
+        this.toast(`Mejorando ${res.n} ${res.n === 1 ? 'edificio' : 'edificios'} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
+      }
+      this.renderSel(true);
+    } else if (act === 'autoup') {
+      const pl = g.players[0];
+      pl.autoUpgrade = !pl.autoUpgrade;
+      this.toast(pl.autoUpgrade ? 'Mejoras automáticas encendidas: se mejora solo hasta el máximo' : 'Mejoras automáticas apagadas', pl.autoUpgrade ? 'good' : 'info');
+      this.renderSel(true);
     } else if (act === 'dome') {
       const err = g.buyDome(0);
       if (err) {
@@ -980,6 +1026,14 @@ class UI {
         app.sound.play('error');
       } else {
         app.input.startPlacement({ kind: 'nuke', building: b });
+      }
+    } else if (act === 'nuke3') {
+      const err = g.salvoInvalid(0);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        app.input.startPlacement({ kind: 'nuke3', building: b });
       }
     } else if (act === 'repeat') {
       const n = Number(btn.dataset.n) || 1;

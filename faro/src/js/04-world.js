@@ -34,6 +34,8 @@ class Game {
     this.units = [];
     this.buildings = [];
     this.projectiles = [];
+    // Zonas de radiación del misil nuclear (v1.0).
+    this.radZones = [];
     this.removed = [];
     this.fx = [];
     this.events = [];
@@ -564,6 +566,7 @@ class Game {
   workOn(u, b, dt) {
     b.workAcc += (u.def.buildRate || 1) * dt;
     b.lastWork = this.time;
+    u.workingAt = this.time;
     u.aimYaw = Math.atan2(b.x - u.x, b.z - u.z);
     // Martilleo de obra (solo tus constructores suenan).
     if (u.owner === 0 && Math.random() < dt * 1.3) this.emit('sound', { name: 'build', x: b.x, z: b.z });
@@ -653,6 +656,61 @@ class Game {
       if (this.players[b.owner].coins < this.upgradeCost(b)) return 'Monedas insuficientes';
     }
     return null;
+  }
+
+  // v1.0: «Mejorar todo» y «Mejoras automáticas», solo con el Núcleo en nivel 3.
+  massUpgradeInvalid(pid) {
+    const p = this.players[pid];
+    if (!p.core || !p.core.alive || p.core.level < AUTO_UP.coreLevel) return `Necesita el Núcleo en nivel ${AUTO_UP.coreLevel}`;
+    return null;
+  }
+
+  // Edificios que todavía se pueden mejorar (sin contar el dinero), del más barato al más caro.
+  upgradeCandidates(pid) {
+    const out = [];
+    for (const b of this.buildings) {
+      if (!b.alive || b.owner !== pid || !b.built || b.upgrading || b.level >= (b.def.maxLevel || 1)) continue;
+      const why = this.upgradeInvalid(b);
+      if (why && why !== 'Monedas insuficientes') continue;
+      out.push(b);
+    }
+    return out.sort((a, c) => this.upgradeCost(a) - this.upgradeCost(c));
+  }
+
+  // Un clic: pone a mejorar todo lo que alcanza el dinero (del más barato al más caro).
+  upgradeAll(pid, reserve = 0) {
+    const why = this.massUpgradeInvalid(pid);
+    if (why) return why;
+    const p = this.players[pid];
+    let n = 0;
+    let spent = 0;
+    for (const b of this.upgradeCandidates(pid)) {
+      const cost = this.upgradeCost(b);
+      if (p.coins - cost < reserve) continue;
+      if (typeof this.upgrade(b) === 'string') continue;
+      n++;
+      spent += cost;
+    }
+    return { n, spent };
+  }
+
+  // Mejoras automáticas: siguen mejorando hasta dejar todo al máximo, como mucho tantos edificios
+  // a la vez como Constructores tenga el imperio, y sin bajar de la reserva.
+  updateAutoUpgrade(dt) {
+    this._autoUpT = (this._autoUpT || 0) - dt;
+    if (this._autoUpT > 0) return;
+    this._autoUpT = AUTO_UP.every;
+    for (const p of this.players) {
+      if (!p.alive || !p.autoUpgrade || this.massUpgradeInvalid(p.id)) continue;
+      const busy = this.buildings.filter((b) => b.alive && b.owner === p.id && b.upgrading).length;
+      const builders = this.units.filter((u) => u.alive && u.owner === p.id && u.def.builds).length;
+      if (busy >= Math.max(1, builders)) continue;
+      const b = this.upgradeCandidates(p.id).find((x) => p.coins - this.upgradeCost(x) >= AUTO_UP.reserve);
+      if (b && typeof this.upgrade(b) !== 'string') {
+        p.autoUps = (p.autoUps || 0) + 1;
+        if (p.id === 0) this.emit('toast', { text: `Mejora automática: ${b.def.name} a nivel ${b.level + 1}`, kind: 'info', x: b.x, z: b.z });
+      }
+    }
   }
 
   upgrade(b) {
@@ -1286,6 +1344,8 @@ class Game {
       if (u.alive) this.updateUnit(u, dt);
     }
     this.updateProjectiles(dt);
+    this.updateRadiation(dt);
+    this.updateAutoUpgrade(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
     if (this.camp) Campaign.update(this, dt);
 
@@ -1783,7 +1843,20 @@ class Game {
         const bc = this.cells[b.cell];
         const uc = this.cells[u.cell];
         if (hexDist(uc.q, uc.r, bc.q, bc.r) <= 1) {
+          // v1.0: la obra solo avanza con el constructor quieto y pegado a ella. En la casilla de al
+          // lado, primero termina de acercarse (sin salir de su casilla); mientras camina, no avanza.
           u.path = [];
+          const dx = b.x - u.x;
+          const dz = b.z - u.z;
+          const d = Math.hypot(dx, dz);
+          if (d > BUILD_REACH) {
+            const step = Math.min(d - BUILD_REACH + 0.01, u.def.speed * SQ3 * dt);
+            u.x += (dx / d) * step;
+            u.z += (dz / d) * step;
+            u.moveYaw = Math.atan2(dx, dz);
+            u.moving = true;
+            break;
+          }
           this.workOn(u, b, dt);
           break;
         }
@@ -1993,6 +2066,35 @@ class Game {
     return null;
   }
 
+  // v1.0: salva de 3 misiles (los 3 AIR DEFENSE de nivel 4 a la vez).
+  readySilos(pid) {
+    return this.buildings.filter((b) => b.alive && b.owner === pid && b.type === 'aadef' && b.built && b.level >= 4 &&
+      !b.upgrading && this.time >= (b.nukeReadyAt || 0));
+  }
+
+  salvoInvalid(pid, ci) {
+    const silos = this.readySilos(pid);
+    if (silos.length < 3) return `Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes ${silos.length})`;
+    const p = this.players[pid];
+    if (!(this.creator && pid === 0) && p.coins < NUKE.cost * 3) return `Monedas insuficientes (${fmt(NUKE.cost * 3)})`;
+    if (ci !== undefined) {
+      for (const b of silos.slice(0, 3)) {
+        const why = this.nukeInvalid(b, ci);
+        if (why) return why;
+      }
+    }
+    return null;
+  }
+
+  launchSalvo(pid, ci) {
+    const why = this.salvoInvalid(pid, ci);
+    if (why) return why;
+    const silos = this.readySilos(pid).slice(0, 3);
+    for (const b of silos) this.launchNuke(b, ci);
+    this.salvos = (this.salvos || 0) + 1;
+    return silos.length;
+  }
+
   launchNuke(b, ci) {
     const why = this.nukeInvalid(b, ci);
     if (why) return why;
@@ -2056,5 +2158,34 @@ class Game {
       if (d > R) continue;
       this.damage(t, p.dmg * (1 - (d / R) * 0.6), p.owner, null);
     }
+    // v1.0: queda 1 minuto de radiación que sigue quemando a los enemigos de quien lo lanzó.
+    if (!this.radZones) this.radZones = [];
+    this.radZones.push({ x: p.tx, y: p.ty, z: p.tz, cell: p.cell, owner: p.owner, start: this.time, until: this.time + NUKE.rad.time, tick: 0 });
+    const zc = this.cells[p.cell];
+    const near0 = this.buildings.some((b) => b.alive && b.owner === 0 && this.map.dist(this.cells[b.cell], zc) <= NUKE.radius + 2);
+    if (p.owner === 0 || near0) {
+      this.emit('toast', { text: `Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
+    }
+  }
+
+  // Radiación (v1.0): cada medio segundo quema a tropas y edificios enemigos dentro de la zona.
+  updateRadiation(dt) {
+    if (!this.radZones || !this.radZones.length) return;
+    const R = NUKE.radius * SQ3 + 0.6;
+    for (const z of this.radZones) {
+      z.tick += dt;
+      if (z.tick < 0.5) continue;
+      const step = z.tick;
+      z.tick = 0;
+      const burn = (t, pct) => {
+        if (!t.alive || t.inside || !this.isEnemy(z.owner, t.owner)) return;
+        if (Math.hypot(t.x - z.x, t.z - z.z) > R) return;
+        this.damage(t, t.maxHp * pct * step, z.owner, null);
+      };
+      for (const u of this.units) burn(u, NUKE.rad.unit);
+      for (const b of this.buildings) burn(b, NUKE.rad.bld);
+      this.fx.push({ k: 'rad', x: z.x, y: z.y, z: z.z, r: R });
+    }
+    this.radZones = this.radZones.filter((z) => this.time < z.until);
   }
 }

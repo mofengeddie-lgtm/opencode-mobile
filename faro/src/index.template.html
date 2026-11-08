@@ -382,6 +382,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.upall { display: grid; gap: 6px; padding: 8px; border-radius: 10px; border: 1px solid rgba(242,171,56,0.35); background: rgba(242,171,56,0.05); }
+.upall .actions { margin: 0; }
+.btn.good { border-color: rgba(94,224,122,0.7); color: #8ff0a4; background: rgba(94,224,122,0.12); }
 .coretiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; }
 .ctile { padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); min-width: 0; }
 .ctile small { display: block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -738,7 +741,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="actions">
       <button class="btn" id="btn-place-rot" type="button" title="Girar (R)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg>Girar</button>
-      <button class="btn gold" id="btn-place-ok" type="button" title="Terminar (Enter)">Listo</button>
+      <button class="btn gold" id="btn-place-ok" type="button" title="Construir aquí (Enter)">Construir</button>
       <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
     </div>
   </div>
