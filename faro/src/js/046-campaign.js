@@ -147,7 +147,10 @@ const Campaign = {
       g.finishUpgrade(b);
     };
     level(core, 2);
-    for (const c of ring(3)) if (off(c) < 1.3) g.addBuilding(pid, 'wall', c.i, true);
+    // Muralla en arco (v0.9: también sobre tierra fértil, que ahora ocupa más casillas).
+    const wallRing = g.cells.filter((c) => g.map.dist(c, cc) === 3 && !c.bld && !c.point && TERRAIN[c.t].land && !['gold', 'oilland'].includes(c.t));
+    // Los 5 tramos más de frente, como en la v0.7.
+    wallRing.filter((c) => off(c) < 1.3).sort((a, b) => off(a) - off(b)).slice(0, 5).forEach((c) => g.addBuilding(pid, 'wall', c.i, true));
     const r2 = ring(2);
     const picks = [];
     const take = (ok) => {

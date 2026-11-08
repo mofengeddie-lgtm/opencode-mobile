@@ -296,6 +296,10 @@ class GameMap {
       spot(h, 2, 4, 3, 'fertile');
       patch(h, 3, 4);
       patch(h, 3, 5);
+      // Al menos 8 casillas fértiles a 4 de cada Núcleo (si el agua tapó una mancha, se completa al lado).
+      const fert = () => this.cells.filter((c) => c.t === 'fertile' && this.dist(c, h) <= 4).length;
+      for (let tries = 0; tries < 3 && fert() < 8; tries++) patch(h, 2, 4);
+      if (fert() < 8) spot(h, 2, 4, 8 - fert(), 'fertile', true);
       if (!spot(h, 3, 4, 1, 'oilland').length) spot(h, 2, 4, 1, 'oilland', true);
     }
     const hubCells = small.filter((s) => s.hub).map((s) => this.cells[s.i]);

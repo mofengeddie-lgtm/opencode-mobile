@@ -497,9 +497,9 @@ const CAMPAIGN = [
     id: 6, name: 'La gran batalla', mapKind: 'archipelago', seed: 7606, players: 4, difficulty: 'normal',
     personas: [null, 'builder', 'aggro', 'admiral'], coins: 4000, crystals: 250,
     story: 'Tres imperios quieren la luz del Faro de Ámbar. Solo uno quedará en pie. Que sea el tuyo.',
-    tip: 'Empiezas con 4.000 monedas. Los rivales también pelean entre ellos: defiende tu Núcleo (la estrella pide que nunca baje del 50 %) y ataca al más débil.',
+    tip: 'Empiezas con 4.000 monedas. Los rivales también pelean entre ellos: defiende tu Núcleo (la estrella pide que nunca baje del 50 %) y ataca al más débil. Ahora tienen aviones y misiles: ten AIR DEFENSE.',
     goal: { kind: 'destroy' },
-    stars: [{ kind: 'time', max: 1080 }, { kind: 'coreMin', min: 0.5 }],
+    stars: [{ kind: 'time', max: 1500 }, { kind: 'coreMin', min: 0.5 }],
   },
 ];
 const CAMPAIGN_STAR_CRYSTALS = 20;

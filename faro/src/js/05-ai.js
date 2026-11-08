@@ -211,6 +211,20 @@ class Bot {
     if (this.tac.focus && T > 1000 && n('aadef') >= 1) want.push('up:aadef');
     if (this.tac.focus && T > 1000 && n('aadef') < 1) want.push('aadef');
     const enemyNuke = g.buildings.some((b) => b.alive && b.type === 'aadef' && b.level >= 4 && g.isEnemy(b.owner, this.pid));
+    // v0.9: con más de 15 000 monedas guardadas (pasados 15 min) invierte en aire y defensa antiaérea:
+    // Aeropuerto, un segundo Helipuerto y AIR DEFENSE hasta el nivel 4 (misil nuclear).
+    if (!easy && T > 900 && p.coins > 15000) {
+      if (this.milBank > 8000) {
+        this.ecoBank += this.milBank * 0.5;
+        this.milBank *= 0.5;
+      }
+      const rich = [];
+      if (n('airport') < 1) rich.push('airport');
+      if (n('aadef') < 2) rich.push('aadef');
+      if (n('aadef') >= 1) rich.push('up:aadef');
+      if (n('helipad') < 2) rich.push('helipad');
+      want.unshift(...rich);
+    }
     if (enemyNuke && n('antinuke') < 1) want.unshift('antinuke');
 
     // Una mejora barata cada ~minuto (Granja, Mina, Bomba o Casa) aunque haya otras compras esperando.
@@ -384,7 +398,7 @@ class Bot {
     if (g.units.some((u) => u.owner === this.pid && u.type === utype)) return false;
     if (g.enqueue(builders[0], utype)) return false;
     // Barcaza: gasto militar. Ingenieros: gasto de expansión.
-    if (utype === 'barge') this.milBank = Math.max(0, this.milBank - UNITS[utype].cost);
+    if (utype === 'barge' || utype === 'lander') this.milBank = Math.max(0, this.milBank - UNITS[utype].cost);
     else this.ecoBank = Math.max(0, this.ecoBank - UNITS[utype].cost);
     return true;
   }
@@ -446,6 +460,8 @@ class Bot {
       plan.sea += 2;
       plan.inf = Math.max(1, plan.inf - 1);
     }
+    // v0.9: con mucho dinero guardado, más aviones (Cazas y Bombarderos).
+    if (T > 900 && this.p.coins > 15000) plan.plane += 2;
     // Energía acumulada: prioriza tropas que la usan.
     if (this.p.energy > 120) {
       plan.veh += 2;
@@ -504,16 +520,19 @@ class Bot {
       if (counter && mix.inf >= 0.6) return r < 0.55 ? 'jeep' : 'tank';
       if (mix.air > 0 && aaHave < 1) return 'aa';
       if (T < 300) return r < 0.5 ? 'jeep' : 'lighttank';
-      return r < 0.18 ? 'lighttank' : r < 0.38 ? 'tank' : r < 0.55 ? 'heavytank' : r < 0.68 ? 'jeep' : r < 0.8 ? 'arty'
-        : r < 0.92 ? 'missiletruck' : 'launcher';
+      return r < 0.16 ? 'lighttank' : r < 0.34 ? 'tank' : r < 0.5 ? 'heavytank' : r < 0.6 ? 'jeep' : r < 0.7 ? 'arty'
+        : r < 0.8 ? 'missiletruck' : r < 0.9 ? 'launcher' : 'apc';
     }
     if (cat === 'sea') {
       if (counter && mix.air >= 0.15 && r < 0.4) return 'frigate';
       if (counter && mix.sea >= 0.25) return r < 0.5 ? 'destroyer' : 'sub';
-      if (T > 900 && this.p.coins > UNITS.carrier.cost * 1.3 && !units.some((u) => u.type === 'carrier') && r < 0.3) return 'carrier';
+      if (T > 900 && this.p.coins > UNITS.carrier.cost * 1.2 && !units.some((u) => u.type === 'carrier') && r < 0.5) return 'carrier';
       return r < 0.45 ? 'destroyer' : r < 0.7 ? 'speedboat' : r < 0.85 ? 'frigate' : 'sub';
     }
-    return !units.some((u) => u.type === 'apache') && this.p.coins > UNITS.apache.cost * 1.5 ? 'apache' : 'heli';
+    // El Apache no tiene límite (v0.9): con dinero de sobra, el bot lleva tantos Apaches como Helicópteros.
+    const nApache = units.filter((u) => u.type === 'apache').length;
+    const nHeli = units.filter((u) => u.type === 'heli').length;
+    return nApache <= nHeli && this.p.coins > UNITS.apache.cost * 1.2 ? 'apache' : 'heli';
   }
 
   produce(mine, units) {
@@ -703,9 +722,10 @@ class Bot {
     const flagsWanted = this.farFlags().length > 0 &&
       (!landReach || this.pkey === 'admiral' || this.pkey === 'keeper' || g.time > 420);
     if (landReach && faroByLand && !flagsWanted) return;
-    const t = units.find((u) => u.type === 'barge');
+    // v0.9: pasados 10 minutos y con dinero, usa la Lancha de desembarco (más rápida, 10 lugares).
+    const t = units.find((u) => u.type === 'barge' || u.type === 'lander');
     if (!t) {
-      this.queueOnce(mine, 'harbor', 'barge');
+      this.queueOnce(mine, 'harbor', g.time > 600 && this.p.coins > 4000 ? 'lander' : 'barge');
       return;
     }
     t.botMode = t.botMode || 'load';
