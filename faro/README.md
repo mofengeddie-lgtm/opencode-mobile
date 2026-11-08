@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.7 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.8 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -32,6 +32,17 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v0.8
+
+- **Interfaz:** suelo con texturas escaneadas de Poly Haven, flechas en el borde cuando atacan algo
+  tuyo fuera de la pantalla, barra de producción (con los edificios parados en amarillo), iconos en
+  los botones y ficha del enemigo (vida, nivel y qué usar contra él).
+- **Bots más listos:** defensa en equipo con una Torreta del lado del ataque, se forman en línea antes
+  de atacar, fuego concentrado en el enemigo más débil, hostigamiento a Granjas y Minas, aliados que
+  atacan al mismo rival y se ayudan, y oleadas con todo el ejército pasados 15 minutos.
+- **Soldados con movimiento real:** caminar y correr de la base de datos de captura de movimiento de
+  CMU, procesados en Blender y aplicados a piernas con rodilla.
 
 ## Novedades de la v0.7
 
@@ -82,6 +93,7 @@ El código está en `src/` y se une en un solo archivo:
 node faro/build.mjs                                   # genera faro/faro.html
 node faro/docs/pdf.cjs faro/docs/prd/PRD_web_v0.7.html  # PDF del PRD (requiere Playwright)
 python faro/blender/generate_models.py faro/assets/models  # modelos 3D (requiere el módulo bpy)
+python faro/blender/cmu_gait.py <carpeta_bvh> faro/assets/anim/cmu_gait.json  # caminar y correr de CMU
 ```
 
 | Archivo | Qué contiene |
@@ -98,9 +110,18 @@ python faro/blender/generate_models.py faro/assets/models  # modelos 3D (requier
 | `src/js/07-input.js` | Controles táctiles, ratón y teclado |
 | `src/js/08-ui.js` | Barra superior, paneles, avisos y sonido |
 | `src/js/085-meta.js` | Vestíbulo, progresión, tienda, final de partida y modo creador |
-| `blender/` | Generador de modelos 3D en Python para Blender |
+| `blender/` | Generador de modelos 3D y ciclos de paso de CMU (`cmu_gait.py`) para Blender |
+| `assets/textures/` | Texturas del suelo (Poly Haven, CC0) |
+| `assets/anim/` | Ciclos de caminar y correr sacados de CMU |
 | `src/index.template.html` | Estructura y estilos de la interfaz |
 
 Cada versión empieza con su PRD y termina con su PDF (ver `AGENTS.md`).
 
 Usa [three.js](https://threejs.org) r128 desde cdnjs y su cargador GLTF desde jsDelivr.
+
+## Créditos
+
+- Texturas del suelo y cielo de ambiente: [Poly Haven](https://polyhaven.com) (CC0). Detalle en
+  `assets/textures/CREDITOS.txt`.
+- Captura de movimiento: CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), conversión
+  BVH de B. Hahne (archivos 02_01 y 35_17), de uso libre.
