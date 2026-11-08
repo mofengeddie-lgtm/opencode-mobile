@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 0.7</p>
-  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu elección para la v0.7 (campaña y controles)</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu elección para la v0.7 (campaña y controles)</p>
   <div class="tiles">
     <div class="tile"><b>Campaña</b><span>6 misiones con historia, objetivos distintos, estrellas y premios.</span></div>
     <div class="tile"><b>Controles</b><span>Grupos 1-2-3, avanzar atacando, formaciones y repetir tropas.</span></div>
@@ -68,7 +68,7 @@ li { margin-bottom: 3px; }
     <tbody>
       <tr><td>0.1-0.5</td><td>6-7 nov 2026</td><td>Juego base, Faro, energía, bots, constructores, niveles, vestíbulo, guardado y modelos de Blender.</td></tr>
       <tr><td>0.6</td><td>8 nov 2026</td><td>Ritmo más rápido, modo fluido, 15 modelos más, efectos y sonidos.</td></tr>
-      <tr><td>0.7</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>0.7</td><td>8 nov 2026</td><td>Campaña «La ruta del Faro» (6 misiones con estrellas y premios), grupos 1-2-3, avanzar atacando, formación en línea, repetir tropa y botón Constructores.</td></tr>
     </tbody>
   </table>
 </section>
@@ -81,11 +81,11 @@ li { margin-bottom: 3px; }
     <thead><tr><th style="width:4%">#</th><th style="width:18%">Misión</th><th style="width:40%">Objetivo</th><th>Estrellas (1 por terminarla)</th></tr></thead>
     <tbody>
       <tr><td>1</td><td>Primera luz</td><td>Isla tranquila: llega a 1.600 monedas por minuto y ten 5 tropas de combate.</td><td>En menos de 6 min · sin perder edificios</td></tr>
-      <tr><td>2</td><td>Defender la costa</td><td>Un Almirante ataca con barcos y tropas: aguanta 6 minutos.</td><td>Núcleo sobre el 50 % · pierdes 3 edificios o menos</td></tr>
-      <tr><td>3</td><td>El Faro</td><td>Toma el Faro y mantenlo 60 s en total contra un Guardián del Faro.</td><td>En menos de 8 min · pierdes 6 tropas o menos</td></tr>
-      <tr><td>4</td><td>Cruzar el mar</td><td>Mar abierto: captura 2 Banderas de otras islas (Puerto y Barcaza ya listos).</td><td>En menos de 10 min · pierdes 8 tropas o menos</td></tr>
-      <tr><td>5</td><td>Asedio</td><td>El rival tiene murallas, Torretas de nivel 2 y 3 y AIR DEFENSE: destruye su Núcleo. Empiezas con 8.000 monedas.</td><td>En menos de 12 min · pierdes 15 tropas o menos</td></tr>
-      <tr><td>6</td><td>La gran batalla</td><td>Tres imperios: sé el último Núcleo en pie.</td><td>En menos de 18 min · tu Núcleo nunca baja del 50 %</td></tr>
+      <tr><td>2</td><td>Defender la costa</td><td>Un Almirante con Puerto, 2 Lanchas y 3 soldados ataca hacia el minuto 2: aguanta 6 minutos. Empiezas con 4.000 monedas y una Torreta.</td><td>Núcleo sobre el 50 % · pierdes 3 edificios o menos</td></tr>
+      <tr><td>3</td><td>El Faro</td><td>El Guardián del Faro empieza con el Faro y 4 guardias. Con tus 3 Artilleros y más tropas, quítaselo y mantenlo 60 s en total.</td><td>En menos de 8 min · pierdes 6 tropas o menos</td></tr>
+      <tr><td>4</td><td>Cruzar el mar</td><td>Mar abierto: captura 2 Banderas de otras islas. Puerto y Barcaza listos; las 2 Banderas más cercanas tienen guardias del rival.</td><td>En menos de 10 min · pierdes 8 tropas o menos</td></tr>
+      <tr><td>5</td><td>Asedio</td><td>El rival tiene Núcleo de nivel 2, murallas, Torretas de nivel 2 y 3 y AIR DEFENSE: destruye su Núcleo. Empiezas con 8.000 monedas.</td><td>En menos de 12 min · pierdes 15 tropas o menos</td></tr>
+      <tr><td>6</td><td>La gran batalla</td><td>Tres imperios (Constructor, Agresivo y Almirante): sé el último Núcleo en pie. Empiezas con 4.000 monedas.</td><td>En menos de 18 min · tu Núcleo nunca baja del 50 %</td></tr>
     </tbody>
   </table>
   <ul>
@@ -118,32 +118,40 @@ li { margin-bottom: 3px; }
   <table style="table-layout: fixed">
     <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>D01</td><td>El vestíbulo muestra la Campaña con 6 misiones; solo la primera abierta al principio (todas en modo creador).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D02</td><td>Cada misión arranca con su mapa, rivales y preparación (por ejemplo, las defensas del Asedio).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D03</td><td>Los objetivos se ven en el panel con su progreso y la misión se gana al cumplirlos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D04</td><td>Las 6 misiones se pueden ganar (comprobado con órdenes automáticas) y se pierden si cae tu Núcleo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D05</td><td>Estrellas: se dan según cada condición y la pantalla final explica las que faltaron.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D06</td><td>Premio de primera vez y por estrella nueva, una sola vez; la siguiente misión se abre y el progreso se guarda.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D07</td><td>Grupos 1-2-3: guardar, elegir y doble toque para ir con la cámara (también con teclado).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D08</td><td>Avanzar atacando: las tropas pelean con lo que encuentran en el camino y siguen hasta el destino.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D09</td><td>Formación en línea: las tropas quedan de frente al destino, una al lado de otra.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D10</td><td>Repetir y ×5 ponen la última tropa en la cola (si alcanza el dinero).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D11</td><td>Botón Constructores elige primero a los que no trabajan.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D12</td><td>Las pruebas de la v0.6 siguen pasando.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>D13</td><td>Nada tapado ni fuera de pantalla en 5 tamaños con los botones nuevos y la pantalla de misión.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>D01</td><td>El vestíbulo muestra la Campaña con 6 misiones; solo la primera abierta al principio (todas en modo creador).</td><td><span class="chip ok">Aprobada</span></td><td>menú «Campaña 0 de 18 ★»; 6 misiones; abiertas: 1; cerradas con aviso: 5 («Termina la misión 1»); modo creador: 1,2,3,4,5,6</td></tr>
+<tr><td>D02</td><td>Cada misión arranca con su mapa, rivales y preparación (por ejemplo, las defensas del Asedio).</td><td><span class="chip ok">Aprobada</span></td><td>M1 continent, 2 imperios (builder), vecino tranquilo · M2 archipelago, 2 imperios (admiral), 4.000 monedas y Torreta; Almirante con Puerto, 2 Lanchas y 2 Artilleros; primera oleada ~106 s · M3 archipelago, 2 imperios (keeper), tus 3 Artilleros; el Guardián del Faro empieza con el Faro y 4 guardias · M4 open, 2 imperios (keeper), tu Puerto y Barcaza listos; 2 Banderas con guardias · M5 continent, 2 imperios (builder), 8.000 monedas; rival: Núcleo nivel 2, 5 muros, Torreta nivel 3, 2 de nivel 2 y AIR DEFENSE · M6 archipelago, 4 imperios (builder,aggro,admiral), 4.000 monedas</td></tr>
+<tr><td>D03</td><td>Los objetivos se ven en el panel con su progreso y la misión se gana al cumplirlos.</td><td><span class="chip ok">Aprobada</span></td><td>al empezar: «Ingresos: 1140 / 1600 por min | Tropas de combate: 0 / 5 | En menos de 6 min | quedan 06:00 | Sin perder edificios | llevas 0»; con 2 Granjas y 5 Artilleros: «Ingresos: 1620 / 1600 por min | Tropas de combate: 5 / 5 | En menos de 6 min | quedan 05:59 | Sin perder edificios | llevas 0» → ¡Misión cumplida!</td></tr>
+<tr><td>D04</td><td>Las 6 misiones se pueden ganar (comprobado con órdenes automáticas) y se pierden si cae tu Núcleo.</td><td><span class="chip ok">Aprobada</span></td><td>M1 piloto bot: ganó 3 de 3 (5:05, 5:25, 6:10; estrellas 2,3,3); M2 piloto bot: ganó 3 de 3 (6:00, 6:00, 6:00; estrellas 2,3,2); M3 órdenes de jugador (junta 8 y avanza atacando): ganó 4 de 5 (3:07, 3:11, 3:41, 7:06; estrellas 2,2,2,3); M4 órdenes de jugador (Cuartel, Barcaza, desembarcar, capturar): ganó 3 de 3 (2:53, 2:53, 2:53; estrellas 3,3,3); M5 piloto bot: ganó 3 de 3 (10:02, 10:22, 11:19; estrellas 2,2,2); M6 piloto bot atento: ganó 6 de 6 (12:04, 12:23, 17:45, 18:52, 19:21, 19:25; estrellas 2,2,3,2,3,3). Si cae tu Núcleo (M4): «Misión fallida», 0 estrellas, sin «Siguiente misión», con «Repetir», y la misión no se marca terminada.</td></tr>
+<tr><td>D05</td><td>Estrellas: se dan según cada condición y la pantalla final explica las que faltaron.</td><td><span class="chip ok">Aprobada</span></td><td>M1 perfecta: 3★ · M2 «Termina la misión Conseguida Núcleo sobre el 50 % al terminar Tu Núcleo terminó al 40 % Pierdes 3 edificios o menos Perdiste 4 edificios» → 1★ · M3 «Termina la misión Conseguida En menos de 8 min Tardaste 08:20 Pierdes 6 tropas o menos Perdiste 7 tropas» → 1★</td></tr>
+<tr><td>D06</td><td>Premio de primera vez y por estrella nueva, una sola vez; la siguiente misión se abre y el progreso se guarda.</td><td><span class="chip ok">Aprobada</span></td><td>M1 primera vez: +50 y 3 estrellas nuevas (+60); M1 repetida: primera vez +0, estrellas nuevas 0 (solo los cristales normales: +30); M3 de 1★ a 3★: +40; abiertas: 1,2,3,4; guardado: {&quot;done&quot;:{&quot;1&quot;:true,&quot;2&quot;:true,&quot;3&quot;:true},&quot;stars&quot;:{&quot;1&quot;:3,&quot;2&quot;:1,&quot;3&quot;:3}}</td></tr>
+<tr><td>D07</td><td>Grupos 1-2-3: guardar, elegir y doble toque para ir con la cámara (también con teclado).</td><td><span class="chip ok">Aprobada</span></td><td>«Guardar en 1» con 4 tropas → grupo 1 = 4 (botón muestra 4); tocar 1 elige 4; dos toques: cámara a 0.00 del grupo; Mayús+2 guarda 2, Ctrl+3 guarda 1; tecla 2 elige el grupo 2: true</td></tr>
+<tr><td>D08</td><td>Avanzar atacando: las tropas pelean con lo que encuentran en el camino y siguen hasta el destino.</td><td><span class="chip ok">Aprobada</span></td><td>botón «Toca el destino…»; tras tocar el mapa: estado amove; pelearon: true; enemigos vivos: 0; 4 de 4 tropas llegaron a 2 casillas del destino</td></tr>
+<tr><td>D09</td><td>Formación en línea: las tropas quedan de frente al destino, una al lado de otra.</td><td><span class="chip ok">Aprobada</span></td><td>botón «Formación: línea»; 6 tropas: ancho de la fila 8.73 (en bloque 2.73), fondo 1.29; desvío de la mirada respecto al destino 0.00 rad</td></tr>
+<tr><td>D10</td><td>Repetir y ×5 ponen la última tropa en la cola (si alcanza el dinero).</td><td><span class="chip ok">Aprobada</span></td><td>entrenar 1 Artillero + «Repetir» → cola 2; «×5» → cola 5 («3 en cola · Cola llena (5)»); cola vacía + «×5» → 5; con 150 monedas «Repetir · 400» → cola 0 y aviso «Monedas insuficientes»</td></tr>
+<tr><td>D11</td><td>Botón Constructores elige primero a los que no trabajan.</td><td><span class="chip ok">Aprobada</span></td><td>1 constructor reparando y 2 libres (botón muestra 2/3): 1.er toque elige los 2 libres; 2.º toque los 3; tecla C vuelve a los libres: true</td></tr>
+<tr><td>D12</td><td>Las pruebas de la v0.6 siguen pasando.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas de la v0.6 en la v0.7: ritmo C01-C03 3/3 y navegador C05-C08 y C10-C14 10/10 (C09 era tu medición en el iPad), sin errores de consola. Anteriores: reglas v0.5 17/17, vestíbulo 20/20, referencias 5/5, modelos/muro/efectos 4/4, mapas 75/75 y bots en 5 mapas, 5 tamaños de la v0.5 sin problemas, controles v0.1 18/18, v0.2 10/10, v0.3 43/43, interfaz v0.4 13/13, bots v0.4 15/15, diseño, pausa en celular y combate sin errores. La prueba W11 de la v0.3 encontró que la caja del minimapa tocaba el panel en celular horizontal (la fila de grupos la estiraba); se corrigió y volvió a pasar.</td></tr>
+<tr><td>D13</td><td>Nada tapado ni fuera de pantalla en 5 tamaños con los botones nuevos y la pantalla de misión.</td><td><span class="chip ok">Aprobada</span></td><td>5/5 tamaños sin problemas (iPad horizontal y vertical, 16:9, celular horizontal y vertical): vestíbulo de la Campaña, historia de la misión, panel de tropas con los botones nuevos, panel de la misión plegado y abierto, Cuartel con «Repetir» y «×5», y pantalla final. Ningún panel tapa a otro ni se sale; botones de 36 px o más; el botón de plegar va sobre el minimapa.</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">09 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Dificultad de la campaña:</b> fija por misión (Normal en casi todas; la 2 y la 5 un poco más duras). Si alguna se siente difícil, se ajusta en un número.</li>
+    <li><b>Misión 2:</b> el Almirante empezaba con un Destructor y en las pruebas ganaba siempre (dispara más lejos que la Torreta y el Núcleo). Se quitó el Destructor; el Almirante lo fabrica más tarde. Tú empiezas con 4.000 monedas y una Torreta. Dificultad Normal.</li>
+    <li><b>Misión 3:</b> con el Faro libre se ganaba en 82 s. Ahora el Guardián empieza con el Faro y 4 guardias, y tú con 3 Artilleros: hay que juntar tropas y atacar en grupo.</li>
+    <li><b>Misión 4:</b> con tropas listas se ganaba en 53 s. Ahora entrenas tu infantería y las 2 Banderas más cercanas tienen guardias.</li>
+    <li><b>Misión 6:</b> con 3 rivales iguales a ti el piloto perdía casi siempre. Ahora empiezas con 4.000 monedas y tu vecino más cercano es el Constructor (ataca más tarde).</li>
+    <li><b>Misión 5</b> es la única en Difícil; la 1 en Fácil (vecino tranquilo que no ataca); el resto en Normal.</li>
+    <li><b>Panel de la misión en pantallas chicas:</b> plegado arriba a la derecha (en celular vertical, debajo del minimapa). Se abre con «Mostrar».</li>
+    <li><b>Teclado:</b> además de Ctrl + número, guarda un grupo con Cmd o Mayús + número, porque Chrome usa Ctrl + número para cambiar de pestaña.</li>
+    <li><b>Constructores:</b> el primer toque elige a los que no trabajan; el segundo, a todos.</li>
+    <li><b>Minimapa:</b> la fila de grupos estiraba la caja del minimapa y en pantallas chicas corría el botón de plegar; se arregló (lo encontró una prueba de la v0.3).</li>
     <li><b>Historia:</b> textos cortos propios sobre el Faro de Ámbar; se pueden cambiar cuando quieras.</li>
   </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v0.7, completar las pruebas con evidencia y entregar el PDF final.</p>
+  <p>Jugar la campaña en tu iPad y decirme qué misión se siente muy fácil o muy difícil: cada una se ajusta cambiando un número.</p>
 </section>
 
 </body>
