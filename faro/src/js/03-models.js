@@ -522,41 +522,6 @@ function loadEnvMap(gl) {
   });
 }
 
-// Texturas del suelo (Poly Haven, CC0, v0.8): aportan el detalle escaneado; el color lo pone cada
-// terreno (brillo medio 0,5, por eso el material las multiplica por 2).
-const TERRAIN_TEX = {};
-function loadTerrainTextures(gl) {
-  if (typeof FARO_TEX === 'undefined' || !FARO_TEX) return Promise.resolve(0);
-  const loader = new THREE.TextureLoader();
-  const aniso = gl && gl.capabilities ? Math.min(4, gl.capabilities.getMaxAnisotropy()) : 1;
-  return Promise.all(Object.entries(FARO_TEX).map(([k, uri]) => new Promise((resolve) => {
-    loader.load(uri, (tex) => {
-      tex.wrapS = THREE.RepeatWrapping;
-      tex.wrapT = THREE.RepeatWrapping;
-      tex.anisotropy = aniso;
-      TERRAIN_TEX[k] = { full: tex, small: null };
-      resolve(1);
-    }, undefined, () => resolve(0));
-  }))).then((r) => r.reduce((a, b) => a + b, 0));
-}
-
-// «Más fluido»: la misma textura a 256 px (se hace una vez y se reutiliza).
-function terrainTex(k, quality) {
-  const t = TERRAIN_TEX[k];
-  if (!t) return null;
-  if (quality === 'high') return t.full;
-  if (!t.small) {
-    const c = document.createElement('canvas');
-    c.width = 256;
-    c.height = 256;
-    c.getContext('2d').drawImage(t.full.image, 0, 0, 256, 256);
-    t.small = new THREE.CanvasTexture(c);
-    t.small.wrapS = THREE.RepeatWrapping;
-    t.small.wrapT = THREE.RepeatWrapping;
-  }
-  return t.small;
-}
-
 function glbKey(type) {
   if (GLB[type]) return type;
   if (GLB[type + '_1']) return type + '_1';

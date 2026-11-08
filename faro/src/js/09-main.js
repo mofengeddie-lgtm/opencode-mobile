@@ -60,9 +60,7 @@ const App = {
     Thumbs.init();
     this.sound = new Sound();
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
-    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null),
-      loadTerrainTextures(this.gl).catch(() => 0)]).then(([n, , nTex]) => {
-      this.texCount = nTex;
+    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
       this.modelCount = n;
       this.ui = new UI(this);
       this.input = new Input(this);

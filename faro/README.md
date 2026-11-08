@@ -52,6 +52,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
   Núcleo con banderas, Apartamento, aviones, barcos y vehículos nuevos hechos en Blender, y una portada
   con una escena 3D del juego.
 - **Calidad:** «Más fluido» usa materiales más livianos y «Alta» se ve más nítida en pantallas Retina.
+- **Suelo de la v0.6:** vuelven los colores lisos por terreno; se quitaron las texturas de la v0.8.
 
 ## Novedades de la v0.8
 
@@ -131,7 +132,6 @@ python faro/blender/cmu_gait.py <carpeta_bvh> faro/assets/anim/cmu_gait.json  # 
 | `src/js/08-ui.js` | Barra superior, paneles, avisos y sonido |
 | `src/js/085-meta.js` | Vestíbulo, progresión, tienda, final de partida y modo creador |
 | `blender/` | Generador de modelos 3D y ciclos de paso de CMU (`cmu_gait.py`) para Blender |
-| `assets/textures/` | Texturas del suelo (Poly Haven, CC0) |
 | `assets/anim/` | Ciclos de caminar y correr sacados de CMU |
 | `src/index.template.html` | Estructura y estilos de la interfaz |
 
@@ -141,7 +141,6 @@ Usa [three.js](https://threejs.org) r128 desde cdnjs y su cargador GLTF desde js
 
 ## Créditos
 
-- Texturas del suelo y cielo de ambiente: [Poly Haven](https://polyhaven.com) (CC0). Detalle en
-  `assets/textures/CREDITOS.txt`.
+- Cielo de ambiente: [Poly Haven](https://polyhaven.com) (CC0).
 - Captura de movimiento: CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), conversión
   BVH de B. Hahne (archivos 02_01 y 35_17), de uso libre.

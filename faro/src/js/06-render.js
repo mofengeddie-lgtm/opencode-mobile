@@ -69,10 +69,6 @@ class Renderer {
     // Más fluido: sin la luz de ambiente del cielo y la mitad de partículas.
     if (this.scene) this.scene.environment = q === 'high' && ENV_MAP ? ENV_MAP : null;
     if (this.fxs) this.fxs.scale = q === 'high' ? 1 : 0.5;
-    // Suelo: texturas de 512 px en Alta y de 256 px en Más fluido.
-    for (const part of this.terrainParts || []) {
-      if (part.key !== 'plain') part.mesh.material.map = terrainTex(part.key, q);
-    }
     // v0.9: Más fluido usa materiales Lambert (más livianos) y Alta un reflejo del cielo algo más fuerte.
     FAST_MATS = q !== 'high';
     GLB_MAT.envMapIntensity = 0.68;
@@ -109,65 +105,31 @@ class Renderer {
   }
 
   // ---------- terreno ----------
-  // Material del suelo. Con textura (v0.8), las coordenadas salen de la posición en el mundo,
-  // así la textura sigue de una casilla a la otra sin cortes.
-  terrainMaterial(key) {
-    const mat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.95, metalness: 0 });
-    const tex = key === 'plain' ? null : terrainTex(key, this.quality);
-    if (tex) {
-      mat.map = tex;
-      mat.color.setScalar(2);
-      mat.onBeforeCompile = (sh) => {
-        sh.vertexShader = sh.vertexShader.replace('#include <uv_vertex>', [
-          '#ifdef USE_UV',
-          '  vec4 terrW = vec4(position, 1.0);',
-          '  #ifdef USE_INSTANCING',
-          '    terrW = instanceMatrix * terrW;',
-          '  #endif',
-          '  terrW = modelMatrix * terrW;',
-          '  vUv = terrW.xz * 0.22 + vec2(terrW.y * 0.3, 0.0);',
-          '#endif',
-        ].join('\n'));
-      };
-    }
-    return mat;
-  }
-
+  // v0.9: vuelve el suelo de la v0.6 (colores lisos por terreno, sin texturas).
   buildTerrain() {
     const cells = this.game.cells;
     const geo = new THREE.CylinderGeometry(0.985, 0.985, 1, 6, 1, false, Math.PI / 6);
     geo.translate(0, -0.5, 0);
+    const mat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.95, metalness: 0 });
+    const mesh = new THREE.InstancedMesh(geo, mat, cells.length);
+    mesh.receiveShadow = true;
+    const m = new THREE.Matrix4();
     const rng = mulberry32(this.game.opts.seed + 5);
     this.baseColors = [];
-    // Un grupo de hexágonos por terreno con textura (pasto, arena, bosque, roca...); el agua, lisa.
-    const groups = new Map();
     for (const c of cells) {
+      const h = c.h;
+      m.makeScale(1, h + 1.4, 1);
+      m.setPosition(c.x, h, c.z);
+      mesh.setMatrixAt(c.i, m);
       const col = new THREE.Color(TERRAIN[c.t].color);
       const v = (rng() - 0.5) * (TERRAIN[c.t].water ? 0.04 : 0.09);
       col.offsetHSL(0, 0, v);
       this.baseColors.push(col);
-      const key = TERRAIN_TEX[c.t] ? c.t : 'plain';
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(c);
+      mesh.setColorAt(c.i, col);
     }
-    const m = new THREE.Matrix4();
-    this.terrainParts = [];
-    this.cellPart = new Array(cells.length);
-    for (const [key, list] of groups) {
-      const mesh = new THREE.InstancedMesh(geo, this.terrainMaterial(key), list.length);
-      mesh.receiveShadow = true;
-      list.forEach((c, k) => {
-        m.makeScale(1, c.h + 1.4, 1);
-        m.setPosition(c.x, c.h, c.z);
-        mesh.setMatrixAt(k, m);
-        mesh.setColorAt(k, this.baseColors[c.i]);
-        this.cellPart[c.i] = { mesh, k };
-      });
-      mesh.instanceMatrix.needsUpdate = true;
-      this.scene.add(mesh);
-      this.terrainParts.push({ key, mesh });
-    }
-    this.terrain = this.terrainParts[0].mesh;
+    mesh.instanceMatrix.needsUpdate = true;
+    this.terrain = mesh;
+    this.scene.add(mesh);
 
     const ocean = new THREE.Mesh(
       new THREE.PlaneGeometry(600, 600),
@@ -185,10 +147,9 @@ class Renderer {
     for (const c of g.cells) {
       tmp.copy(this.baseColors[c.i]);
       if (c.owner >= 0) tmp.lerp(new THREE.Color(PLAYER_COLORS[c.owner]), TERRAIN[c.t].water ? 0.1 : 0.16);
-      const part = this.cellPart[c.i];
-      part.mesh.setColorAt(part.k, tmp);
+      this.terrain.setColorAt(c.i, tmp);
     }
-    for (const part of this.terrainParts) part.mesh.instanceColor.needsUpdate = true;
+    this.terrain.instanceColor.needsUpdate = true;
   }
 
   buildDecor() {

@@ -26,15 +26,6 @@ try {
 } catch (err) {
   console.warn('[Faro] Sin cielo de ambiente:', err.message);
 }
-// Texturas del suelo de Poly Haven (CC0), 512 px (assets/textures, ver CREDITOS.txt).
-const textures = {};
-try {
-  for (const f of readdirSync(join(ROOT, 'assets', 'textures')).filter((x) => x.endsWith('.jpg')).sort()) {
-    textures[f.replace(/\.jpg$/, '')] = 'data:image/jpeg;base64,' + readFileSync(join(ROOT, 'assets', 'textures', f)).toString('base64');
-  }
-} catch (err) {
-  console.warn('[Faro] Sin texturas del suelo:', err.message);
-}
 // Ciclos de caminar y correr sacados de la captura de movimiento de CMU (blender/cmu_gait.py).
 let anim = null;
 try {
@@ -43,7 +34,7 @@ try {
   console.warn('[Faro] Sin animaciones de CMU:', err.message);
 }
 const modelJs = `// ---- modelos GLB (Blender) ----\nconst FARO_GLB = ${JSON.stringify(models)};\nconst FARO_ENV = ${JSON.stringify(envUri)};\n` +
-  `const FARO_TEX = ${JSON.stringify(textures)};\nconst FARO_ANIM = ${JSON.stringify(anim)};\n`;
+  `const FARO_ANIM = ${JSON.stringify(anim)};\n`;
 const js = modelJs + files.map((f) => `// ---- ${f} ----\n${readFileSync(join(JS_DIR, f), 'utf8')}`).join('\n');
 const template = readFileSync(join(ROOT, 'src', 'index.template.html'), 'utf8');
 if (!template.includes('/*__SCRIPTS__*/')) throw new Error('Falta el marcador /*__SCRIPTS__*/ en la plantilla');
@@ -62,7 +53,7 @@ const full = [
 ].join('\n');
 
 writeFileSync(join(ROOT, 'faro.html'), full);
-console.log(`[Faro] faro.html listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos, ${Object.keys(textures).length} texturas)`);
+console.log(`[Faro] faro.html listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos)`);
 
 const extra = process.argv[2];
 if (extra) {
