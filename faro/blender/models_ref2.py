@@ -287,10 +287,20 @@ def apache():
     m.cyl('oscuro', 0.03, 0.06, (0, -0.42, 0.02), seg=10)
     m.tube('metal', (0, -0.44, 0.03), (0, -0.62, 0.03), r=0.012, seg=8)
     m.box('luz', (0.03, 0.02, 0.02), (0, -0.505, 0.15), bevel=0.0)
+    # v0.9: motores a los lados, bola de sensores en la nariz, más misiles y radar sobre el rotor.
+    for sx in (-1, 1):
+        m.cyl('EQUIPO_OSC', 0.045, 0.2, (sx * 0.12, 0.12, 0.27), rot=(H, 0, 0), seg=12, base=False)
+        m.cyl('negro', 0.035, 0.02, (sx * 0.12, 0.225, 0.27), rot=(H, 0, 0), seg=12, base=False)
+        for k in range(2):
+            m.tube('metal_claro', (sx * (0.15 + k * 0.05), 0.05, 0.12), (sx * (0.15 + k * 0.05), -0.1, 0.12), r=0.014, seg=8)
+            m.cone('rojo', 0.014, 0.03, (sx * (0.15 + k * 0.05), -0.115, 0.12), rot=(H, 0, 0), seg=8)
+    m.sphere('oscuro', 0.045, (0, -0.55, 0.1), scale=(1, 1, 1))
+    m.cyl('vidrio', 0.02, 0.01, (0, -0.592, 0.1), rot=(H, 0, 0), seg=10, base=False)
     m.cyl('oscuro', 0.04, 0.1, (0, 0.0, 0.32), seg=10)
     m.pivot('rotor', 0, 0.0, 0.44)
     m.cyl('oscuro', 0.045, 0.04, (0, 0, 0.43), seg=12, part='rotor')
-    m.sphere('oscuro', 0.06, (0, 0, 0.5), scale=(1, 1, 0.7), part='rotor')
+    m.cyl('oscuro', 0.018, 0.06, (0, 0, 0.45), seg=8, part='rotor')
+    m.sphere('EQUIPO_OSC', 0.075, (0, 0, 0.53), scale=(1, 1, 0.55), part='rotor')
     m.box('oscuro', (1.36, 0.07, 0.012), (0, 0, 0.44), bevel=0.004, part='rotor')
     m.box('oscuro', (0.07, 1.36, 0.012), (0, 0, 0.44), bevel=0.004, part='rotor')
     return m

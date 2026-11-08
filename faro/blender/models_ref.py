@@ -16,6 +16,8 @@ H = PI / 2
 # Soldados (piernas como partes 'legl' y 'legr' para animarlas al caminar)
 # ---------------------------------------------------------------------
 def soldier(kind, look=None):
+    """Soldado (v0.9, más realista): cabeza chica con cuello, uniforme oliva, chaleco táctico con el color
+    del imperio, bolsillos, cinturón, mochila, rodilleras y brazos que sostienen el arma."""
     m = Model(kind if not look else f'{kind}@{look}')
     tox = look == 'toxico'
     pant = 'camo' if tox else 'oliva_osc'
@@ -23,110 +25,143 @@ def soldier(kind, look=None):
     # movimiento de caminar y correr de CMU (blender/cmu_gait.py).
     for part, sx in (('legl', -1), ('legr', 1)):
         shin = 'shin' + part[-1]
-        m.pivot(part, sx * 0.055, 0, 0.19)
-        m.pivot(shin, sx * 0.055, 0, 0.105)
-        m.box(pant, (0.085, 0.1, 0.095), (sx * 0.055, 0, 0.098), bevel=0.012, part=part)
-        m.box(pant, (0.08, 0.095, 0.08), (sx * 0.055, 0, 0.03), bevel=0.012, part=shin)
-        m.box('negro', (0.09, 0.12, 0.04), (sx * 0.055, -0.01, 0), bevel=0.01, part=shin)
-        if tox:
-            m.box('camo2', (0.088, 0.04, 0.05), (sx * 0.055, -0.035, 0.06), bevel=0.004, part=shin)
+        m.pivot(part, sx * 0.05, 0, 0.19)
+        m.pivot(shin, sx * 0.05, 0, 0.105)
+        m.box(pant, (0.075, 0.09, 0.095), (sx * 0.05, 0, 0.098), bevel=0.012, part=part)
+        m.box(pant, (0.07, 0.085, 0.08), (sx * 0.05, 0, 0.03), bevel=0.012, part=shin)
+        m.box('negro', (0.08, 0.115, 0.04), (sx * 0.05, -0.012, 0), bevel=0.01, part=shin)
+        m.box('oscuro' if not tox else 'camo2', (0.076, 0.03, 0.035), (sx * 0.05, -0.043, 0.085), bevel=0.006, part=shin)
+    hx, hy, hz = 0.09, -0.13, 0.27
+    head_z = 0.425
+    armed = kind not in ('builder', 'engineer', 'medic')
+    sleeve = 'camo' if tox else 'oliva'
+
+    def arm(shoulder, elbow, hand, glove='piel'):
+        m.beam(sleeve, shoulder, elbow, t=0.052)
+        m.beam(sleeve, elbow, hand, t=0.046)
+        m.box(glove, (0.038, 0.04, 0.038), hand, bevel=0.01)
+
     if tox:
-        m.box('camo', (0.24, 0.15, 0.22), (0, 0, 0.18), bevel=0.025)
-        for (x, z) in [(-0.07, 0.3), (0.05, 0.22), (0.08, 0.33), (-0.03, 0.2)]:
-            m.box('camo2', (0.06, 0.154, 0.05), (x, 0, z), bevel=0.004)
-        m.box('EQUIPO', (0.25, 0.16, 0.035), (0, 0, 0.185), bevel=0.008)
-        for sx in (-1, 1):
-            m.box('camo', (0.07, 0.085, 0.19), (sx * 0.158, -0.01, 0.2), bevel=0.02)
-            m.box('EQUIPO', (0.075, 0.09, 0.04), (sx * 0.158, -0.01, 0.32), bevel=0.006)
-            m.box('negro', (0.062, 0.07, 0.05), (sx * 0.158, -0.04, 0.165), bevel=0.012)
-        m.box('piel', (0.15, 0.14, 0.15), (0, 0, 0.405), bevel=0.035)
+        m.box('camo', (0.21, 0.14, 0.21), (0, 0, 0.19), bevel=0.025)
+        for (x, z) in [(-0.06, 0.3), (0.05, 0.22), (0.07, 0.33), (-0.03, 0.21)]:
+            m.box('camo2', (0.05, 0.144, 0.05), (x, 0, z), bevel=0.004)
+        m.box('EQUIPO', (0.22, 0.15, 0.03), (0, 0, 0.19), bevel=0.008)
+        m.box('EQUIPO', (0.2, 0.15, 0.03), (0, 0, 0.36), bevel=0.006)
+        m.box('piel', (0.1, 0.105, 0.11), (0, 0, head_z), bevel=0.035)
         # Capucha oscura y máscara de gas amarilla con dos visores y filtro.
-        m.sphere('negro', 0.105, (0, 0.014, 0.482), scale=(1.06, 1.06, 1.1))
-        m.box('negro', (0.21, 0.09, 0.12), (0, 0.06, 0.37), bevel=0.035)
-        m.box('mascara', (0.136, 0.036, 0.1), (0, -0.075, 0.425), bevel=0.02)
+        m.sphere('negro', 0.068, (0, 0.012, 0.47), scale=(1.06, 1.08, 1.12))
+        m.box('negro', (0.15, 0.07, 0.08), (0, 0.04, 0.39), bevel=0.025)
+        m.box('mascara', (0.1, 0.03, 0.08), (0, -0.06, 0.44), bevel=0.018)
         for sx in (-1, 1):
-            m.cyl('negro', 0.027, 0.012, (sx * 0.035, -0.094, 0.468), rot=(H, 0, 0), seg=12, base=False)
-            m.cyl('vidrio', 0.019, 0.014, (sx * 0.035, -0.098, 0.468), rot=(H, 0, 0), seg=12, base=False)
-        m.cyl('negro', 0.032, 0.05, (0, -0.115, 0.415), rot=(H, 0, 0), seg=12, base=False)
-        m.cyl('mascara', 0.035, 0.012, (0, -0.143, 0.415), rot=(H, 0, 0), seg=12, base=False)
-        m.cyl('negro', 0.022, 0.04, (0.072, -0.07, 0.41), rot=(0, H, 0), seg=10, base=False)
+            m.cyl('negro', 0.021, 0.012, (sx * 0.026, -0.075, 0.48), rot=(H, 0, 0), seg=12, base=False)
+            m.cyl('vidrio', 0.015, 0.014, (sx * 0.026, -0.079, 0.48), rot=(H, 0, 0), seg=12, base=False)
+        m.cyl('negro', 0.026, 0.045, (0, -0.095, 0.435), rot=(H, 0, 0), seg=12, base=False)
+        m.cyl('mascara', 0.029, 0.012, (0, -0.12, 0.435), rot=(H, 0, 0), seg=12, base=False)
     else:
-        m.box('EQUIPO', (0.24, 0.15, 0.22), (0, 0, 0.18), bevel=0.025)
-        m.box('oscuro', (0.25, 0.16, 0.035), (0, 0, 0.185), bevel=0.008)
+        # Uniforme, chaleco con bolsillos, cinturón y mochila.
+        m.box('oliva', (0.2, 0.13, 0.2), (0, 0, 0.19), bevel=0.025)
+        m.box('EQUIPO', (0.212, 0.148, 0.15), (0, 0, 0.235), bevel=0.02)
+        for x in (-0.06, 0.0, 0.06):
+            m.box('oliva_osc', (0.045, 0.024, 0.05), (x, -0.08, 0.245), bevel=0.006)
+        m.box('oscuro', (0.212, 0.142, 0.03), (0, 0, 0.19), bevel=0.006)
+        m.box('oliva_osc', (0.15, 0.07, 0.16), (0, 0.1, 0.22), bevel=0.02)
+        m.box('oliva_osc', (0.13, 0.04, 0.03), (0, 0.1, 0.38), bevel=0.008)
+        m.box('piel', (0.055, 0.055, 0.03), (0, 0, 0.398), bevel=0.008)
+        m.box('piel', (0.1, 0.105, 0.11), (0, 0, head_z), bevel=0.035)
+        m.box('negro', (0.016, 0.008, 0.016), (-0.025, -0.054, 0.48), bevel=0.003)
+        m.box('negro', (0.016, 0.008, 0.016), (0.025, -0.054, 0.48), bevel=0.003)
+    # Brazos: con arma, las dos manos la sostienen; sin arma, cuelgan junto al cuerpo.
+    if kind == 'rocket':
+        arm((0.11, 0, 0.37), (0.15, -0.05, 0.3), (0.12, -0.1, 0.36))
+        arm((-0.11, 0, 0.37), (-0.04, -0.12, 0.31), (0.11, -0.19, 0.36))
+    elif armed:
+        arm((0.11, 0, 0.37), (0.14, -0.02, 0.27), (hx, hy + 0.06, hz - 0.01))
+        arm((-0.11, 0, 0.37), (-0.05, -0.13, 0.29), (hx - 0.01, hy - 0.08, hz + 0.005))
+    else:
         for sx in (-1, 1):
-            m.box('EQUIPO_OSC', (0.07, 0.085, 0.19), (sx * 0.158, -0.01, 0.2), bevel=0.02)
-            m.box('piel', (0.062, 0.07, 0.05), (sx * 0.158, -0.04, 0.165), bevel=0.012)
-        m.box('piel', (0.15, 0.14, 0.15), (0, 0, 0.405), bevel=0.035)
-        m.box('negro', (0.022, 0.01, 0.022), (-0.035, -0.072, 0.47), bevel=0.004)
-        m.box('negro', (0.022, 0.01, 0.022), (0.035, -0.072, 0.47), bevel=0.004)
-    hx, hy, hz = 0.1, -0.11, 0.27
+            arm((sx * 0.11, 0, 0.37), (sx * 0.13, -0.01, 0.28), (sx * 0.13, -0.04, 0.2))
 
     def helmet(color, brim=False):
         if tox:
             return
-        m.sphere(color, 0.098, (0, 0, 0.525), scale=(1, 1.05, 0.62))
-        m.cyl(color, 0.1, 0.03, (0, 0, 0.49), seg=18)
+        m.sphere(color, 0.074, (0, 0.004, 0.52), scale=(1.06, 1.1, 0.72))
+        m.cyl(color, 0.077, 0.024, (0, 0.004, 0.495), seg=18)
+        m.box('oscuro', (0.11, 0.012, 0.018), (0, -0.07, 0.535), bevel=0.003)
         if brim:
-            m.cyl(color, 0.12, 0.012, (0, -0.01, 0.49), seg=18)
+            m.cyl(color, 0.09, 0.01, (0, -0.005, 0.495), seg=18)
 
     def rifle(length, color='negro', scope=False, stock='madera', barrel_r=0.012):
         m.box(color, (0.045, length * 0.55, 0.055), (hx, hy - length * 0.1, hz), bevel=0.008)
         m.box(stock, (0.04, length * 0.25, 0.05), (hx, hy + length * 0.28, hz - 0.01), bevel=0.008)
         m.cyl('metal', barrel_r, length * 0.45, (hx, hy - length * 0.38, hz + 0.028), rot=(H, 0, 0), seg=8, base=False)
+        m.box('negro', (0.02, 0.04, 0.05), (hx, hy - length * 0.02, hz - 0.045), rot=(0.3, 0, 0), bevel=0.004)
         if scope:
             m.cyl('oscuro', 0.018, length * 0.22, (hx, hy - length * 0.08, hz + 0.075), rot=(H, 0, 0), seg=10, base=False)
 
     if kind == 'builder':
         if not tox:
-            m.cyl('naranja', 0.092, 0.06, (0, 0, 0.48), seg=18)
-            m.cyl('naranja', 0.12, 0.014, (0, -0.01, 0.48), seg=18)
-            m.box('naranja', (0.022, 0.12, 0.03), (0, 0, 0.535), bevel=0.006)
-        # Chaleco reflectivo, viga de acero al hombro y taladro en la mano.
-        m.box('naranja', (0.252, 0.162, 0.16), (0, 0, 0.215), bevel=0.02)
-        for z in (0.25, 0.32):
-            m.box('luz', (0.256, 0.166, 0.018), (0, 0, z), bevel=0.003)
-        bx, bz = 0.15, 0.4
+            m.cyl('naranja', 0.07, 0.05, (0, 0, 0.505), seg=18)
+            m.cyl('naranja', 0.092, 0.012, (0, -0.01, 0.505), seg=18)
+            m.box('naranja', (0.018, 0.1, 0.026), (0, 0, 0.552), bevel=0.006)
+        # Chaleco reflectivo, viga de acero al hombro y taladro.
+        m.box('naranja', (0.22, 0.152, 0.15), (0, 0, 0.225), bevel=0.02)
+        for z in (0.26, 0.32):
+            m.box('luz', (0.224, 0.156, 0.016), (0, 0, z), bevel=0.003)
+        bx, bz = 0.13, 0.42
         m.box('metal_claro', (0.012, 0.56, 0.05), (bx, 0.02, bz), bevel=0.0)
         m.box('metal_claro', (0.05, 0.56, 0.01), (bx, 0.02, bz), bevel=0.0)
         m.box('metal_claro', (0.05, 0.56, 0.01), (bx, 0.02, bz + 0.05), bevel=0.0)
-        m.box('naranja', (0.04, 0.09, 0.055), (-0.13, -0.1, 0.24), bevel=0.01)
-        m.box('negro', (0.03, 0.03, 0.06), (-0.13, -0.07, 0.19), bevel=0.006)
-        m.cyl('metal', 0.008, 0.06, (-0.13, -0.17, 0.265), rot=(H, 0, 0), seg=8, base=False)
+        m.box('naranja', (0.04, 0.09, 0.055), (-0.13, -0.08, 0.2), bevel=0.01)
+        m.cyl('metal', 0.008, 0.06, (-0.13, -0.15, 0.225), rot=(H, 0, 0), seg=8, base=False)
     elif kind == 'engineer':
         if not tox:
-            m.cyl('amarillo', 0.092, 0.06, (0, 0, 0.48), seg=18)
-            m.cyl('amarillo', 0.12, 0.014, (0, -0.01, 0.48), seg=18)
-            m.box('oscuro', (0.13, 0.03, 0.035), (0, -0.07, 0.5), bevel=0.008)
-            m.box('vidrio', (0.1, 0.01, 0.022), (0, -0.087, 0.505), bevel=0.003)
-        m.box('metal', (0.18, 0.09, 0.2), (0, 0.11, 0.2), bevel=0.02)
-        m.box('naranja', (0.05, 0.1, 0.05), (0.06, 0.12, 0.38), bevel=0.008)
-        m.box('metal_claro', (0.025, 0.16, 0.025), (hx, hy, hz), bevel=0.006)
-        m.cyl('metal_claro', 0.03, 0.03, (hx, hy - 0.09, hz), rot=(0, H, 0), seg=10, base=False)
+            m.cyl('amarillo', 0.07, 0.05, (0, 0, 0.505), seg=18)
+            m.cyl('amarillo', 0.092, 0.012, (0, -0.01, 0.505), seg=18)
+            m.box('oscuro', (0.1, 0.026, 0.03), (0, -0.056, 0.52), bevel=0.008)
+            m.box('vidrio', (0.08, 0.01, 0.018), (0, -0.07, 0.522), bevel=0.003)
+        m.box('metal', (0.16, 0.08, 0.18), (0, 0.11, 0.21), bevel=0.02)
+        m.box('naranja', (0.045, 0.09, 0.045), (0.05, 0.12, 0.38), bevel=0.008)
+        m.box('metal_claro', (0.025, 0.16, 0.025), (0.13, -0.08, 0.2), bevel=0.006)
+        m.cyl('metal_claro', 0.03, 0.03, (0.13, -0.17, 0.2), rot=(0, H, 0), seg=10, base=False)
+    elif kind == 'medic':
+        # Casco blanco con cruz roja, brazalete, botiquín en la mano y mochila médica.
+        if not tox:
+            m.sphere('blanco', 0.074, (0, 0.004, 0.52), scale=(1.06, 1.1, 0.72))
+            m.cyl('blanco', 0.077, 0.024, (0, 0.004, 0.495), seg=18)
+            m.box('rojo', (0.04, 0.01, 0.012), (0, -0.07, 0.53), bevel=0.0)
+            m.box('rojo', (0.012, 0.01, 0.04), (0, -0.07, 0.53), bevel=0.0)
+        m.box('blanco', (0.15, 0.075, 0.16), (0, 0.105, 0.22), bevel=0.02)
+        m.box('rojo', (0.06, 0.006, 0.018), (0, 0.145, 0.26), bevel=0.0)
+        m.box('rojo', (0.018, 0.006, 0.06), (0, 0.145, 0.26), bevel=0.0)
+        m.box('blanco', (0.056, 0.06, 0.03), (-0.13, -0.01, 0.33), bevel=0.004)
+        m.box('rojo', (0.03, 0.062, 0.01), (-0.13, -0.01, 0.335), bevel=0.0)
+        m.box('blanco', (0.1, 0.05, 0.07), (0.13, -0.05, 0.14), bevel=0.012)
+        m.box('rojo', (0.04, 0.052, 0.012), (0.13, -0.05, 0.17), bevel=0.0)
     elif kind == 'rifle':
         helmet('oliva')
         rifle(0.34)
-        m.box('oliva_osc', (0.06, 0.06, 0.05), (hx, hy - 0.02, hz - 0.06), bevel=0.01)
+        m.box('oliva_osc', (0.05, 0.05, 0.045), (hx, hy - 0.02, hz - 0.06), bevel=0.01)
     elif kind == 'shotgun':
         if not tox:
-            m.cyl('oliva_osc', 0.09, 0.05, (0, 0, 0.49), seg=16)
-            m.box('oliva_osc', (0.12, 0.08, 0.012), (0, -0.09, 0.49), bevel=0.004)
+            m.cyl('oliva_osc', 0.068, 0.045, (0, 0, 0.5), seg=16)
+            m.box('oliva_osc', (0.09, 0.07, 0.01), (0, -0.07, 0.5), bevel=0.004)
         m.box('madera', (0.05, 0.16, 0.065), (hx, hy + 0.02, hz), bevel=0.01)
         m.cyl('metal', 0.02, 0.18, (hx, hy - 0.13, hz + 0.02), rot=(H, 0, 0), seg=10, base=False)
         m.cyl('metal', 0.014, 0.16, (hx, hy - 0.12, hz - 0.012), rot=(H, 0, 0), seg=8, base=False)
         for k in range(4):
-            m.box('rojo', (0.012, 0.02, 0.03), (0.05 + k * 0.025, -0.08, 0.3), rot=(0, 0.5, 0), bevel=0.0)
+            m.box('rojo', (0.01, 0.018, 0.028), (-0.04 + k * 0.022, -0.082, 0.31), rot=(0, 0.5, 0), bevel=0.0)
     elif kind == 'ranger':
         helmet('oliva')
         if not tox:
-            m.box('negro', (0.2, 0.02, 0.03), (0, -0.095, 0.53), bevel=0.006)
-        m.box('arena', (0.26, 0.17, 0.15), (0, 0, 0.22), bevel=0.02)
+            m.box('negro', (0.15, 0.016, 0.026), (0, -0.075, 0.535), bevel=0.006)
+        m.box('arena', (0.222, 0.155, 0.14), (0, 0, 0.235), bevel=0.02)
         for sx in (-1, 0, 1):
-            m.box('oliva_osc', (0.05, 0.02, 0.06), (sx * 0.07, -0.09, 0.24), bevel=0.006)
+            m.box('oliva_osc', (0.045, 0.02, 0.055), (sx * 0.065, -0.082, 0.25), bevel=0.006)
         rifle(0.38, scope=True)
     elif kind == 'sniper':
         if not tox:
-            m.cyl('oliva', 0.14, 0.012, (0, 0, 0.5), seg=18)
-            m.cyl('oliva', 0.085, 0.06, (0, 0, 0.5), seg=16, r2=0.075)
+            m.cyl('oliva', 0.11, 0.01, (0, 0, 0.51), seg=18)
+            m.cyl('oliva', 0.066, 0.05, (0, 0, 0.51), seg=16, r2=0.058)
         rifle(0.62, scope=True, barrel_r=0.01)
         for sx in (-1, 1):
             m.beam('metal', (hx, hy - 0.3, hz), (hx + sx * 0.03, hy - 0.32, hz - 0.1), t=0.008)
@@ -137,18 +172,17 @@ def soldier(kind, look=None):
         m.cyl('metal', 0.018, 0.14, (hx, hy - 0.15, hz + 0.02), rot=(H, 0, 0), seg=10, base=False)
     elif kind == 'hunter':
         if not tox:
-            m.sphere('oscuro', 0.095, (0.01, 0, 0.5), scale=(1.1, 1.1, 0.35))
+            m.sphere('oscuro', 0.074, (0.008, 0, 0.51), scale=(1.1, 1.1, 0.4))
         rifle(0.64, color='oscuro', scope=True, stock='oscuro', barrel_r=0.014)
         m.cyl('oscuro', 0.026, 0.12, (hx, hy - 0.08, hz + 0.09), rot=(H, 0, 0), seg=12, base=False)
         for sx in (-1, 1):
             m.box('metal', (0.008, 0.008, 0.1), (hx + sx * 0.02, hy - 0.3, hz - 0.05), rot=(0, sx * 0.4, 0), bevel=0.0)
     elif kind == 'rocket':
         helmet('oliva')
-        m.cyl('oliva', 0.048, 0.5, (0.13, -0.02, 0.4), rot=(H, 0, 0), seg=14, base=False)
-        m.cyl('oscuro', 0.054, 0.05, (0.13, -0.27, 0.4), rot=(H, 0, 0), seg=14, base=False)
-        m.cone('rojo', 0.042, 0.09, (0.13, -0.31, 0.4), rot=(H, 0, 0), seg=12)
-        m.box('oscuro', (0.03, 0.06, 0.05), (0.13, -0.08, 0.35), bevel=0.006)
-        m.box('oliva_osc', (0.12, 0.08, 0.16), (-0.02, 0.1, 0.2), bevel=0.015)
+        m.cyl('oliva', 0.044, 0.5, (0.11, -0.02, 0.41), rot=(H, 0, 0), seg=14, base=False)
+        m.cyl('oscuro', 0.05, 0.05, (0.11, -0.27, 0.41), rot=(H, 0, 0), seg=14, base=False)
+        m.cone('rojo', 0.038, 0.09, (0.11, -0.31, 0.41), rot=(H, 0, 0), seg=12)
+        m.box('oscuro', (0.03, 0.06, 0.05), (0.11, -0.08, 0.36), bevel=0.006)
     return m
 
 
@@ -437,6 +471,18 @@ def helicopter():
             m.tube('negro', (x + math.cos(a) * 0.018, y - 0.03, z + math.sin(a) * 0.018),
                    (x + math.cos(a) * 0.018, y - 0.22, z + math.sin(a) * 0.018), r=0.006, seg=6)
         m.cyl('metal', 0.03, 0.015, (x, y - 0.2, z), rot=(H, 0, 0), seg=10, base=False)
+        # v0.9: lleva el equipo del Apache viejo: cohetes bajo el ala y un artillero en cada puerta.
+        m.cyl('oliva_osc', 0.034, 0.17, (sx * 0.2, 0.06, 0.135), rot=(H, 0, 0), seg=10, base=False)
+        for k in range(3):
+            a = k * 2 * PI / 3 + PI / 6
+            m.cyl('blanco', 0.01, 0.01, (sx * 0.2 + math.cos(a) * 0.017, -0.03, 0.135 + math.sin(a) * 0.017),
+                  rot=(H, 0, 0), seg=6, base=False)
+        m.box('negro', (0.012, 0.16, 0.13), (sx * 0.136, 0.08, 0.13), bevel=0.0)
+        m.box('oliva', (0.06, 0.06, 0.08), (sx * 0.1, 0.08, 0.14), bevel=0.015)
+        m.sphere('oliva', 0.032, (sx * 0.1, 0.08, 0.21), scale=(1, 1, 0.85))
+        m.box('piel', (0.03, 0.02, 0.025), (sx * 0.112, 0.06, 0.19), bevel=0.005)
+        m.tube('negro', (sx * 0.11, 0.06, 0.16), (sx * 0.22, 0.0, 0.13), r=0.008, seg=6)
+        m.box('oscuro', (0.03, 0.05, 0.03), (sx * 0.13, 0.06, 0.155), bevel=0.005)
     m.box('luz', (0.03, 0.02, 0.02), (0, -0.36, 0.08), bevel=0.004)
     m.cyl('oscuro', 0.035, 0.06, (0, 0.05, 0.41), seg=10)
     m.pivot('rotor', 0, 0.05, 0.48)
@@ -509,6 +555,16 @@ def core(level):
     if level == 3:
         m.cyl('oro', 0.18, 0.04, (0, 0, z0 + ped * 0.55), seg=6, smooth=False)
         m.cyl('oro', 0.16, 0.04, (0, 0, z0 + ped + 0.06), seg=6, smooth=False)
+    # v0.9: banderas del imperio en las torres y portón en la entrada.
+    for k in towers:
+        x, y = cs[k]
+        zt = z0 + th + (0.24 if level == 3 else 0.09)
+        m.beam('metal', (x, y, zt - 0.06), (x, y, zt + 0.16), t=0.012)
+        m.box('EQUIPO', (0.01, 0.11, 0.065), (x, y + 0.058, zt + 0.12), bevel=0.0)
+    (gx1, gy1), (gx2, gy2) = cs[3], cs[4]
+    gang = math.atan2(gy2 - gy1, gx2 - gx1)
+    m.box('madera', (0.2, 0.03, wall_h * 0.85), ((gx1 + gx2) / 2, (gy1 + gy2) / 2, z0), rot=(0, 0, gang), bevel=0.006)
+    m.box('metal', (0.21, 0.035, 0.018), ((gx1 + gx2) / 2, (gy1 + gy2) / 2, z0 + wall_h * 0.6), rot=(0, 0, gang), bevel=0.0)
     size = (0.2, 0.24, 0.28)[level - 1]
     crystal(m, z0 + ped + 0.11 + size * 1.35, size)
     return m
@@ -672,7 +728,20 @@ def turret(level):
     m.box('metal_claro', (0.13, 0.11, 0.1), (0, 0.12, top + 0.26), bevel=0.02, part='turret')
     m.box('vidrio', (0.08, 0.01, 0.06), (0, 0.064, top + 0.28), bevel=0.003, part='turret')
     m.tube('oscuro', (0.05, 0.16, top + 0.36), (0.05, 0.16, top + 0.48), r=0.005, seg=6, part='turret')
-    sides = [1] if level == 2 else [1, -1] if level == 3 else []
+    sides = [1] if level == 2 else [1, -1] if level >= 3 else []
+    if level >= 4:
+        # Nivel 4: tercera minigun arriba y radar antiaéreo que gira.
+        x, z = 0.0, top + 0.38
+        m.box('metal', (0.12, 0.16, 0.06), (x, -0.04, top + 0.3), bevel=0.015, part='turret')
+        m.cyl('oscuro', 0.042, 0.08, (x, 0.02, z), rot=(H, 0, 0), seg=12, base=False, part='turret')
+        for k in range(6):
+            a = k * PI / 3
+            m.tube('negro', (x + math.cos(a) * 0.024, -0.06, z + math.sin(a) * 0.024),
+                   (x + math.cos(a) * 0.024, -0.4, z + math.sin(a) * 0.024), r=0.008, seg=6, part='turret')
+        m.cyl('metal', 0.04, 0.02, (x, -0.36, z), rot=(H, 0, 0), seg=12, base=False, part='turret')
+        m.pivot('rotor', 0.14, 0.22, top + 0.44)
+        m.box('oscuro', (0.2, 0.025, 0.1), (0.14, 0.22, top + 0.44), bevel=0.006, part='rotor')
+        m.box('EQUIPO', (0.18, 0.01, 0.08), (0.14, 0.208, top + 0.445), bevel=0.0, part='rotor')
     for sx in sides:
         x = sx * 0.3
         m.box('metal', (0.1, 0.18, 0.1), (x, -0.02, top + 0.04), bevel=0.02, part='turret')

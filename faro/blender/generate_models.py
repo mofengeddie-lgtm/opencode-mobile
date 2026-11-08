@@ -14,11 +14,14 @@ import bpy
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import Model  # noqa: E402
 # Modelos rehechos según tus referencias del 7 de noviembre.
-from models_ref import (aadef, arty, barge, boat_engineer, core, destroyer, farm, helicopter, helipad,  # noqa: E402
+from models_ref import (arty, barge, boat_engineer, core, destroyer, farm, helicopter, helipad,  # noqa: E402
                         jeep, mine, rig, soldier, speedboat, tank, turret, wheels)
 # Modelos de la v0.6.
 from models_ref2 import (aa_truck, apache, barracks, factory, harbor, hospital, house, hydro, miniturret,  # noqa: E402
                          outpost, solar, submarine, tidal, wave, wind)
+# Modelos nuevos de la v0.9 (vehículos, barcos, aviones, Aeropuerto, Antinuclear y Defensa aérea nivel 4).
+from models_ref3 import (aadef, airport, antinuke, apartment, apc, bomber, carrier, fighter, frigate, heavy_tank,  # noqa: E402
+                         lander, launcher, light_tank, missile_truck)
 
 PI = math.pi
 H = PI / 2
@@ -117,16 +120,19 @@ def scaffold():
 
 def all_models():
     out = []
-    infantry = ['builder', 'engineer', 'rifle', 'shotgun', 'ranger', 'sniper', 'breaker', 'hunter', 'rocket']
+    infantry = ['builder', 'engineer', 'medic', 'rifle', 'shotgun', 'ranger', 'sniper', 'breaker', 'hunter', 'rocket']
     for k in infantry:
         out.append(soldier(k))
     # Skin Brigada Tóxica: los mismos soldados con capucha y máscara de gas.
     for k in infantry:
         out.append(soldier(k, 'toxico'))
     out += [jeep(), tank(), aa_truck(), arty(), speedboat(), boat_engineer(), barge(), destroyer(), submarine(),
-            helicopter(), apache()]
-    out += [core(1), core(2), core(3), farm(), pump(), mine(), rig(), house(), solar(), wind(), hydro(), tidal(), wave(),
-            barracks(), factory(), harbor(), helipad(), turret(1), turret(2), turret(3), miniturret(), aadef(),
+            helicopter(), apache(), light_tank(), heavy_tank(), missile_truck(), apc(), launcher(), frigate(),
+            lander(), carrier(), fighter(), bomber()]
+    out += [core(1), core(2), core(3), farm(), pump(), mine(), rig(), house(), apartment(), solar(), wind(), hydro(),
+            tidal(), wave(),
+            barracks(), factory(), harbor(), helipad(), turret(1), turret(2), turret(3), turret(4), miniturret(), aadef(1),
+            aadef(4), airport(), antinuke(),
             wall_post(), wall_segment(), hospital(1), hospital(2), hospital(3), outpost(), scaffold()]
     return out
 
