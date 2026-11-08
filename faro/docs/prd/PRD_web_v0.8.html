@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v0.8</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.8</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: «Sigue mejorando la interfaz del juego y los NPC; también puedes usar Poly Haven, Pixabay, CMU y Blender»</p>
+  <div class="tiles">
+    <div class="tile"><b>Interfaz</b><span>Suelo con texturas reales, avisos en el borde, barra de producción, iconos y ficha del enemigo.</span></div>
+    <div class="tile"><b>Bots (NPC)</b><span>Defienden juntos, atacan en línea, concentran el fuego, hostigan tu economía y se coordinan entre aliados.</span></div>
+    <div class="tile"><b>Recursos</b><span>Texturas de Poly Haven, caminar y correr de CMU pasados a los soldados en Blender.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Que el juego se vea y se maneje mejor durante la partida, y que los bots den más pelea: que se defiendan como un equipo, ataquen de forma ordenada y busquen tus puntos débiles. Todo usando recursos reales y libres (Poly Haven y CMU) preparados en Blender.</p>
+
+  <h3>2. Lo que pediste</h3>
+  <ul>
+    <li><b>Seguir mejorando la interfaz del juego</b> y los <b>NPC</b> (los bots rivales y aliados).</li>
+    <li><b>Usar Poly Haven</b> (materiales escaneados), <b>Pixabay</b> (sonidos), <b>CMU</b> (captura de movimiento) y <b>Blender</b>.</li>
+  </ul>
+
+  <h3>3. Lo que ya se revisó de cada recurso</h3>
+  <table>
+    <thead><tr><th style="width:18%">Recurso</th><th style="width:16%">¿Se puede usar?</th><th>Cómo se usa en la v0.8</th></tr></thead>
+    <tbody>
+      <tr><td>Poly Haven</td><td><span class="chip ok">Sí</span></td><td>Texturas escaneadas para el suelo (pasto, arena, roca, bosque, tierra fértil y petróleo). Licencia CC0.</td></tr>
+      <tr><td>CMU</td><td><span class="chip ok">Sí</span></td><td>La página de CMU tiene un certificado incompleto y no abre desde aquí, pero la misma base de datos convertida a BVH (Bruce Hahne) está en GitHub y sí se descarga. Blender ya la leyó: caminar 02_01 con 31 huesos. Uso libre según su READMEFIRST.</td></tr>
+      <tr><td>Blender</td><td><span class="chip ok">Sí</span></td><td>Esqueleto simple para los soldados, pasar el movimiento de CMU a ese esqueleto y exportarlo con el modelo.</td></tr>
+      <tr><td>Pixabay</td><td><span class="chip np">No desde aquí</span></td><td>Pixabay bloquea las descargas que no vienen de un navegador de verdad, y su API no tiene sonidos. <b>Si quieres sonidos reales:</b> descarga en tu iPad 6 a 10 efectos (explosión, disparo, cañón, láser, clic, alarma, construir) y mándamelos aquí; los pongo en el juego. Mientras tanto se quedan los sonidos sintetizados.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.5</td><td>6-7 nov 2026</td><td>Juego base, Faro, energía, bots, constructores, niveles, vestíbulo, guardado y modelos de Blender.</td></tr>
+      <tr><td>0.6</td><td>8 nov 2026</td><td>Ritmo más rápido, modo fluido, 15 modelos más, efectos y sonidos.</td></tr>
+      <tr><td>0.7</td><td>8 nov 2026</td><td>Campaña de 6 misiones, grupos 1-2-3, avanzar atacando, formación en línea, repetir tropa y botón Constructores.</td></tr>
+      <tr><td>0.8</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Interfaz del juego</div>
+  <h2>Interfaz durante la partida</h2>
+  <table>
+    <thead><tr><th style="width:24%">Mejora</th><th>Cómo funciona</th></tr></thead>
+    <tbody>
+      <tr><td>Suelo con texturas reales</td><td>Pasto, arena, roca de montaña, bosque, tierra fértil y petróleo con su textura escaneada de Poly Haven, teñida con el color de cada terreno para que se sigan distinguiendo de un vistazo. En «Más fluido», texturas más chicas.</td></tr>
+      <tr><td>Avisos en el borde</td><td>Si atacan algo tuyo fuera de la pantalla, aparece una flecha roja en el borde que apunta hacia allá (con el nombre de lo atacado). Tocarla lleva la cámara.</td></tr>
+      <tr><td>Barra de producción</td><td>Una fila con tus edificios que entrenan (Núcleo, Cuartel, Fábrica, Puerto, Helipuerto) con su cola y su progreso. Los que están parados se marcan en amarillo. Tocar uno lo elige.</td></tr>
+      <tr><td>Iconos en los botones</td><td>Avanzar atacando, Formación, Detener, Mejorar, Demoler, Punto de reunión, Repetir y Guardar grupo llevan icono además del texto.</td></tr>
+      <tr><td>Ficha del enemigo</td><td>Al tocar una tropa o un edificio enemigo: su vida, su nivel, contra qué es fuerte y qué conviene usar contra él.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Bots (NPC)</div>
+  <h2>Bots más listos</h2>
+  <p>Los bots ya entrenan constructores, mejoran edificios, eligen tropas contra las tuyas, reúnen sus oleadas, se retiran a curarse, reparan, cruzan el mar y avisan antes de atacar. La v0.8 agrega:</p>
+  <table>
+    <thead><tr><th style="width:24%">Comportamiento</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>Defensa en equipo</td><td>Si atacan su base, mandan a defender a todas sus tropas cercanas y a las que salen de la producción, y levantan una Torreta del lado de donde vino el ataque.</td></tr>
+      <tr><td>Ataque ordenado</td><td>Sus oleadas usan «avanzar atacando» y formación en línea, igual que tus controles nuevos.</td></tr>
+      <tr><td>Fuego concentrado</td><td>Sus tropas disparan primero al enemigo más débil que tienen a tiro, para eliminarlo antes (desde Normal).</td></tr>
+      <tr><td>Hostigamiento</td><td>Grupos chicos y rápidos (Jeeps, Lanchas, Helicópteros) atacan Granjas y Minas alejadas de tus defensas (desde Normal).</td></tr>
+      <tr><td>Aliados coordinados</td><td>En Liga 3 vs 3 y Equipos: atacan juntos al mismo rival y van a ayudar al aliado que está siendo atacado.</td></tr>
+    </tbody>
+  </table>
+  <p><b>Medida:</b> en duelos Normal en los 5 mapas, el bot nuevo le gana al bot de la v0.7 en el 60 % de las partidas o más. Las misiones de la campaña se vuelven a comprobar para que sigan siendo posibles.</p>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Animaciones</div>
+  <h2>Soldados con movimiento real (CMU + Blender)</h2>
+  <ul>
+    <li>Los soldados reciben un esqueleto simple en Blender (cadera, piernas, rodillas, torso, brazos y cabeza).</li>
+    <li>El movimiento de caminar y correr de la base de datos de CMU se pasa a ese esqueleto y se exporta con cada soldado (Constructor, Ingeniero, los 7 de combate y la Brigada Tóxica).</li>
+    <li>En «Alta calidad» caminan y corren con ese movimiento; quietos respiran. En «Más fluido», o si hay muchísimas tropas, vuelven al balanceo simple de piernas para no bajar los cuadros por segundo.</li>
+    <li>Los vehículos, barcos y aeronaves no cambian.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas entre bots y el juego publicado sin errores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:42%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>E01</td><td>El suelo usa las texturas de Poly Haven en los 6 terrenos; cargan sin errores y en «Más fluido» son más chicas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E02</td><td>Al atacar algo tuyo fuera de la pantalla aparece la flecha en el borde, apunta bien y tocarla lleva la cámara.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E03</td><td>La barra de producción muestra todos tus edificios que entrenan, su cola y progreso, marca los parados y tocar uno lo elige.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E04</td><td>Los botones de acción tienen icono y tamaño cómodo para el dedo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E05</td><td>La ficha del enemigo muestra vida, nivel y qué usar contra él.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E06</td><td>Defensa en equipo: al atacar la base de un bot, acuden 7 de cada 10 de sus tropas cercanas y levanta una Torreta de ese lado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E07</td><td>Las oleadas usan avanzar atacando y formación en línea.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E08</td><td>Fuego concentrado: con varios enemigos a tiro, disparan primero al más débil.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E09</td><td>Hostigamiento: en Normal y Difícil hay ataques chicos a Granjas o Minas alejadas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E10</td><td>Aliados coordinados en Liga 3 vs 3: atacan al mismo rival y ayudan al aliado atacado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E11</td><td>El bot nuevo le gana al de la v0.7 en el 60 % de los duelos o más, y las 6 misiones siguen siendo posibles.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E12</td><td>Los soldados caminan y corren con el movimiento de CMU en «Alta calidad»; en «Más fluido» usan el balanceo simple.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E13</td><td>Las pruebas de la v0.7 siguen pasando y nada queda tapado en 5 tamaños de pantalla.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">09 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Sonidos:</b> como Pixabay no deja descargar desde aquí, los sonidos reales entran solo si me mandas los archivos. Si no, se quedan los sintetizados.</li>
+    <li><b>Tamaño del juego:</b> texturas de 512 px y animaciones cortas, para que el archivo siga cargando rápido (meta: menos de 2,6 MB).</li>
+    <li><b>Rendimiento:</b> la meta sigue siendo más de 50 cuadros por segundo en tu iPad; si las texturas o las animaciones lo bajan, «Automática» pasa sola a «Más fluido».</li>
+    <li><b>Créditos:</b> Poly Haven (CC0) y la base de datos de captura de movimiento de CMU (mocap.cs.cmu.edu, conversión BVH de B. Hahne) quedan citados en el README.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Programar la v0.8, completar las pruebas con evidencia y entregar el PDF final.</p>
+</section>
+
+</body>
+</html>
