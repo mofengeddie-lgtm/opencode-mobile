@@ -348,14 +348,18 @@ class Renderer {
     this.fxs = new FxSystem(this.scene);
     this.fxs.scale = this.quality === 'high' ? 1 : 0.5;
 
-    this.projMeshes = { rocket: [], shell: [], torpedo: [], missile: [] };
+    this.projMeshes = { rocket: [], shell: [], torpedo: [], missile: [], bomb: [], nuke: [] };
     this.projGeo = {
+      bomb: new THREE.CylinderGeometry(0.06, 0.045, 0.3, 8).rotateX(Math.PI / 2),
+      nuke: new THREE.CylinderGeometry(0.1, 0.13, 0.95, 10).rotateX(Math.PI / 2),
       rocket: new THREE.CylinderGeometry(0.035, 0.035, 0.28, 6).rotateX(Math.PI / 2),
       missile: new THREE.CylinderGeometry(0.05, 0.05, 0.42, 6).rotateX(Math.PI / 2),
       shell: new THREE.SphereGeometry(0.07, 6, 5),
       torpedo: new THREE.CylinderGeometry(0.05, 0.05, 0.35, 6).rotateX(Math.PI / 2),
     };
     this.projMat = {
+      bomb: new THREE.MeshBasicMaterial({ color: 0x3a3f36 }),
+      nuke: new THREE.MeshBasicMaterial({ color: 0xf4f4f0 }),
       rocket: new THREE.MeshBasicMaterial({ color: 0xffe08a }),
       missile: new THREE.MeshBasicMaterial({ color: 0xfff6e6 }),
       shell: new THREE.MeshBasicMaterial({ color: 0x2b2b2b }),
@@ -455,6 +459,18 @@ class Renderer {
     this.fxs.heal(x, y, z);
   }
 
+  // Explosión del misil nuclear: destello enorme, bola de fuego y columna de humo (sin nada violento).
+  spawnNuke(x, y, z) {
+    this.fxs.flash(x, y + 1, z, 9);
+    this.fxs.explosion(x, y + 0.3, z, 4, true);
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2;
+      this.fxs.explosion(x + Math.cos(a) * 3.5, y + 0.2, z + Math.sin(a) * 3.5, 1.6, true);
+    }
+    for (let i = 0; i < 26; i++) this.fxs.smoke(x + (Math.random() - 0.5) * 1.5, y + i * 0.35, z + (Math.random() - 0.5) * 1.5, 2.6);
+    this.nukeFlashT = 1.2;
+  }
+
   consumeFx() {
     const g = this.game;
     for (const f of g.fx) {
@@ -467,6 +483,11 @@ class Renderer {
       } else if (f.k === 'boom') this.spawnBoom(f.x, f.y, f.z, f.s, f.small, f.bld);
       else if (f.k === 'spark') this.fxs.sparks(f.x, f.y, f.z, f.s, 2);
       else if (f.k === 'heal') this.spawnHeal(f.x, f.y, f.z);
+      else if (f.k === 'flare') {
+        // Bengalas del Apache: chispas brillantes hacia los lados.
+        for (let i = 0; i < 3; i++) this.fxs.sparks(f.x, f.y, f.z, 1.2, 4);
+        this.fxs.flash(f.x, f.y, f.z, 0.6);
+      } else if (f.k === 'nuke') this.spawnNuke(f.x, f.y, f.z);
     }
     g.fx.length = 0;
   }
@@ -495,7 +516,7 @@ class Renderer {
     this.fxs.update(dt);
 
     // Proyectiles
-    const used = { rocket: 0, shell: 0, torpedo: 0, missile: 0 };
+    const used = { rocket: 0, shell: 0, torpedo: 0, missile: 0, bomb: 0, nuke: 0 };
     for (const p of this.game.projectiles) {
       const list = this.projMeshes[p.kind];
       if (!list) continue;
@@ -508,14 +529,18 @@ class Renderer {
       used[p.kind]++;
       const k = Math.min(1, p.time / p.dur);
       const arc = p.kind === 'shell' ? Math.sin(Math.PI * k) * 1.1 : p.kind === 'rocket' ? Math.sin(Math.PI * k) * 0.35
-        : p.kind === 'missile' ? Math.sin(Math.PI * k) * 2.6 : 0;
+        : p.kind === 'missile' ? Math.sin(Math.PI * k) * 2.6 : p.kind === 'nuke' ? Math.sin(Math.PI * k) * 14 : 0;
       const y = p.kind === 'torpedo' ? -0.02 : p.sy + (p.ty - p.sy) * k + arc;
       mesh.position.set(p.sx + (p.tx - p.sx) * k, y, p.sz + (p.tz - p.sz) * k);
       mesh.lookAt(p.tx, p.kind === 'torpedo' ? -0.02 : p.ty, p.tz);
       mesh.visible = true;
-      // Estela de humo detrás de cohetes y misiles.
+      // Estela de humo detrás de cohetes y misiles (más gruesa en el misil nuclear).
       if ((p.kind === 'rocket' || p.kind === 'missile') && Math.random() < dt * 45 * this.fxs.scale) {
         this.fxs.trail(mesh.position.x, mesh.position.y, mesh.position.z);
+      }
+      if (p.kind === 'nuke') {
+        for (let i = 0; i < 3; i++) this.fxs.trail(mesh.position.x, mesh.position.y, mesh.position.z);
+        this.fxs.flash(mesh.position.x, mesh.position.y, mesh.position.z, 0.5);
       }
     }
     for (const kind of Object.keys(this.projMeshes)) {
@@ -856,8 +881,9 @@ class Renderer {
     const g = this.game;
     if (!this.shieldMesh) {
       const geo = new THREE.IcosahedronGeometry(1, 1);
-      const mat = new THREE.MeshBasicMaterial({ color: 0x6fd3ff, transparent: true, opacity: 0.22, wireframe: true, depthWrite: false });
+      const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.26, wireframe: true, depthWrite: false });
       this.shieldMesh = new THREE.InstancedMesh(geo, mat, 200);
+      this._shCol = new THREE.Color();
       this.shieldMesh.count = 0;
       this.shieldMesh.renderOrder = 6;
       this.shieldMesh.frustumCulled = false;
@@ -872,10 +898,12 @@ class Renderer {
       if (!u.visible && g.players[u.owner].team !== myTeam) continue;
       const s = (u.cls === 'inf' ? 0.42 : u.cls === 'ship' || u.cls === 'sub' ? 0.85 : 0.6) * (0.96 + Math.sin(time * 3 + u.id) * 0.04);
       m.makeScale(s, s, s).setPosition(u.x, u.y + s * 0.6, u.z);
+      this.shieldMesh.setColorAt(n, this._shCol.set(SHIELD_HEX(u.shield / u.shieldMax)));
       this.shieldMesh.setMatrixAt(n++, m);
     }
     this.shieldMesh.count = n;
     this.shieldMesh.instanceMatrix.needsUpdate = true;
+    if (this.shieldMesh.instanceColor) this.shieldMesh.instanceColor.needsUpdate = true;
     this.shieldCount = n;
   }
 
@@ -1075,6 +1103,14 @@ class Renderer {
       ctx.fillRect(x, y, w * k, 4);
       ctx.fillStyle = hexColor(PLAYER_COLORS[e.owner]);
       ctx.fillRect(x - 1, y - 1, 3, 6);
+      // Escudo (v0.9): barra encima en azul (bien), amarillo (a medias) o rojo (débil).
+      if (e.shieldMax > 0) {
+        const ks = clamp(e.shield / e.shieldMax, 0, 1);
+        ctx.fillStyle = 'rgba(12,16,22,0.75)';
+        ctx.fillRect(x - 1, y - 5, w + 2, 4);
+        ctx.fillStyle = SHIELD_CSS(ks);
+        ctx.fillRect(x, y - 4, w * ks, 2);
+      }
     };
     // Progreso de captura sobre el Faro y las Banderas.
     for (const pt of g.points) {
@@ -1101,6 +1137,24 @@ class Renderer {
         ctx.fillText('En disputa', s.x, s.y + R + 14);
       }
     }
+    // Constructor en camino (v0.9): línea punteada desde él hasta su obra.
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(245,197,66,0.85)';
+    for (const u of g.units) {
+      const b = u.buildTarget;
+      if (!u.alive || u.owner !== 0 || u.state !== 'build' || !b || !b.alive) continue;
+      const near = Math.hypot(u.x - b.x, u.z - b.z) < 2.2;
+      if (near) continue;
+      const a = this.project(u.x, u.y + 0.3, u.z);
+      const c = this.project(b.x, b.y + 0.3, b.z);
+      if (!a.ok || !c.ok) continue;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(c.x, c.y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
     // Obras: «En construcción» o «Mejorando», con progreso y aviso si no hay constructor.
     for (const bl of g.buildings) {
       if (!bl.alive || g.players[bl.owner].team !== myTeam) continue;
@@ -1111,9 +1165,13 @@ class Renderer {
       if (working) {
         const k = bl.upgrading ? bl.upgrading.progress : bl.progress;
         const idle = g.time - bl.lastWork > 1.5 && bl.type !== 'outpost';
-        const text = (bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : 'En construcción') + ` · ${Math.floor(k * 100)} %`;
+        // v0.9: «Esperando constructor» mientras nadie trabaja; «Construyendo» cuando llega.
+        const coming = idle && g.units.some((u) => u.alive && u.buildTarget === bl && u.state === 'build');
+        const verb = bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : idle ? 'Esperando constructor' : 'Construyendo';
+        const text = `${verb} · ${Math.floor(k * 100)} %`;
+        const note = coming ? 'Constructor en camino' : 'Sin constructor';
         ctx.font = '600 11px system-ui, sans-serif';
-        const w = Math.max(ctx.measureText(text).width, idle ? ctx.measureText('Sin constructor').width : 0) + 14;
+        const w = Math.max(ctx.measureText(text).width, idle ? ctx.measureText(note).width : 0) + 14;
         const h = idle ? 32 : 20;
         ctx.fillStyle = 'rgba(12,16,22,0.85)';
         ctx.fillRect(s.x - w / 2, s.y - h, w, h);
@@ -1123,8 +1181,8 @@ class Renderer {
         ctx.fillStyle = '#edf3f7';
         ctx.fillText(text, s.x, s.y - h + 13);
         if (idle) {
-          ctx.fillStyle = '#ff9a9b';
-          ctx.fillText('Sin constructor', s.x, s.y - h + 26);
+          ctx.fillStyle = coming ? '#f5c542' : '#ff9a9b';
+          ctx.fillText(note, s.x, s.y - h + 26);
         }
       } else if (bl.owner === 0) {
         // Nivel 2 o 3: marcas doradas.
@@ -1194,12 +1252,37 @@ class Renderer {
     const recent = g.time - 4;
     for (const b of g.buildings) {
       if (!b.alive) continue;
-      if (b.hp < b.maxHp || !b.built || sel.has(b) || b.lastHit > recent) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 2.0 : 1.15);
+      if (b.hp < b.maxHp || !b.built || sel.has(b) || b.lastHit > recent || b.shield < b.shieldMax) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 2.0 : 1.15);
     }
     for (const u of g.units) {
       if (!u.alive || u.inside) continue;
       if (!u.visible && g.players[u.owner].team !== myTeam) continue;
-      if (u.hp < u.maxHp || sel.has(u)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
+      if (u.hp < u.maxHp || sel.has(u) || (u.shieldMax > 0 && u.shield < u.shieldMax)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
+      // Helicópteros y aviones (v0.9): icono mientras disparan o lanzan misiles.
+      if (u.mover === 'air' && g.time - (u.lastShot || -99) < 0.6) {
+        const s = this.project(u.x, u.y + 1.15, u.z);
+        if (!s.ok) continue;
+        const missile = u.lastShotKind === 'missile' || u.lastShotKind === 'rocket' || u.lastShotKind === 'bomb';
+        ctx.fillStyle = 'rgba(12,16,22,0.8)';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = missile ? '#ffb63a' : '#ff6b6b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (missile) {
+          ctx.moveTo(s.x - 5, s.y + 4); ctx.lineTo(s.x + 5, s.y - 4); ctx.moveTo(s.x + 1, s.y - 5); ctx.lineTo(s.x + 5, s.y - 4); ctx.lineTo(s.x + 4, s.y);
+        } else {
+          ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
+          ctx.moveTo(s.x - 8, s.y); ctx.lineTo(s.x + 8, s.y); ctx.moveTo(s.x, s.y - 8); ctx.lineTo(s.x, s.y + 8);
+        }
+        ctx.stroke();
+        this.airShotIcons = (this.airShotIcons || 0) + 1;
+      }
+    }
+    if (this.nukeFlashT > 0) {
+      ctx.fillStyle = `rgba(255,248,225,${Math.min(0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
+      ctx.fillRect(0, 0, this.width, this.height);
     }
   }
 
@@ -1329,6 +1412,7 @@ class Renderer {
   // ---------- cuadro ----------
   frame(dt, time, selection) {
     const g = this.game;
+    if (this.nukeFlashT > 0) this.nukeFlashT -= dt;
     if (g.territoryVersion !== this.lastTerritory) {
       this.lastTerritory = g.territoryVersion;
       this.tintTerritory();

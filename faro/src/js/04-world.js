@@ -251,15 +251,31 @@ class Game {
   bPop(b) {
     const d = b.def;
     if (d.levels) return d.levels[b.level].pop;
+    if (d.popLevels) return d.popLevels[b.level] || 0;
     return (d.pop || 0) * b.level;
   }
 
+  // Comunidad extra por pelear (v0.9): por tropas enemigas eliminadas y Núcleos destruidos.
+  popBonus(p) {
+    return Math.floor(p.stats.kills / POP_BONUS.perKills) * POP_BONUS.killPop + p.coresKilled * POP_BONUS.corePop;
+  }
+
   // Arma según el nivel: láser del Núcleo, Air Defense más fuerte, etc.
+  // Escudo propio de cada edificio (v0.9): 20 % de su vida máxima.
+  resetShield(b) {
+    b.shieldMax = Math.round(b.maxHp * BLD_SHIELD.pct);
+    b.shield = b.shieldMax;
+  }
+
   weaponOf(b) {
     const d = b.def;
     if (!d.weapon) return null;
     if (b._wLv === b.level && b._w) return b._w;
     let w = d.weapon;
+    if (d.aaLevel && b.level >= d.aaLevel) {
+      // Torreta nivel 4: también es antiaérea.
+      w = { ...w, mult: { ...w.mult, ...d.aaMult } };
+    }
     if (d.levels && d.levels[b.level].laser) {
       const L = d.levels[b.level].laser;
       w = { ...w, dmg: L.dmg, range: L.range, beams: L.beams };
@@ -279,8 +295,9 @@ class Game {
     return d.heal;
   }
 
+  // v0.9: cada nivel entrena un 40 % más rápido.
   prodRate(b) {
-    return 1 / (1 - 0.2 * (b.level - 1));
+    return 1 + 0.4 * (b.level - 1);
   }
 
   // ---------- creación de entidades ----------
@@ -292,12 +309,14 @@ class Game {
     const b = {
       id: _nextId++, kind: 'bld', type, def, owner, cell: ci, x: cell.x, z: cell.z, y: cell.h, level: 1, upgrading: null,
       hp: built ? hp0 : hp0 * 0.1, maxHp: hp0, built, progress: built ? 1 : 0, workAcc: 0, lastWork: -99,
-      miniCd: [0, 0],
+      miniCd: [0, 0, 0], shield: 0, shieldMax: 0,
+      coastal: !!TERRAIN[cell.t].water || cell.nb.some((ni) => TERRAIN[this.cells[ni].t].water),
       queue: [], rally: -1, alive: true, cd: 0, scanT: Math.random() * 0.3, autoTarget: null,
       onWater: !!TERRAIN[cell.t].water, healT: 0, aimYaw: 0, lastHit: -99, visible: true,
       rot: Math.floor(Math.random() * 6) * (Math.PI / 3),
     };
     if (type === 'core' || type === 'harbor') b.rot = 0;
+    if (built) this.resetShield(b);
     cell.bld = b;
     this.buildings.push(b);
     if (def.claim) this.territoryDirty = true;
@@ -325,13 +344,9 @@ class Game {
       alive: true, state: 'idle', path: [], pathI: 0, dest: -1, target: null, autoTarget: null,
       aggroTarget: null, cd: Math.random() * 0.5, scanT: Math.random() * 0.3, yaw: Math.random() * 6,
       aimYaw: 0, moveYaw: 0, moving: false, repathT: 0, resume: -1, foundCell: -1, role: 'home',
-      lastHit: -99, visible: true, inside: null, cargo: def.capacity ? [] : null, boardTarget: null,
+      lastHit: -99, visible: true, inside: null, cargo: def.capacity || def.hangar ? [] : null, boardTarget: null,
       buildTarget: null, shield: 0, shieldMax: 0,
     };
-    if (this.unitShieldActive(owner)) {
-      u.shieldMax = u.maxHp * DOME_LEVELS[3].unitShield;
-      u.shield = u.shieldMax;
-    }
     u.x = cell.x + u.offX;
     u.z = cell.z + u.offZ;
     u.y = this.groundY(u, cell);
@@ -395,6 +410,7 @@ class Game {
     }
     for (const u of this.units) if (u.alive) this.players[u.owner].popUsed += u.def.pop;
     for (const p of this.players) {
+      p.popCap += this.popBonus(p);
       if (this.creator && p.id === 0) p.popCap = MAX_POP;
       p.popCap = Math.min(MAX_POP, p.popCap);
       p.baseIncome = p.income;
@@ -629,6 +645,10 @@ class Game {
     if (!b.built) return 'Aún en construcción';
     if (b.upgrading) return 'Ya se está mejorando';
     if (b.level >= b.def.maxLevel) return b.def.maxLevel === 1 ? 'Este edificio no se mejora' : `${b.def.name}: nivel máximo`;
+    if (b.def.l4Limit && b.level === 3) {
+      const n = this.buildings.filter((x) => x.alive && x.owner === b.owner && x.type === b.type && (x.level >= 4 || (x.upgrading && x.upgrading.level >= 4))).length;
+      if (n >= b.def.l4Limit) return `Solo ${b.def.l4Limit} ${b.def.name} pueden llegar a nivel 4`;
+    }
     if (!this.creator || b.owner !== 0) {
       if (this.players[b.owner].coins < this.upgradeCost(b)) return 'Monedas insuficientes';
     }
@@ -647,16 +667,53 @@ class Game {
     return b;
   }
 
+  // Lo que da un edificio en su nivel actual (para la tarjeta «Qué mejoró»).
+  snapshot(b) {
+    const w = this.weaponOf(b);
+    const heal = this.healOf(b);
+    return {
+      hp: b.maxHp, income: this.bIncome(b), pop: this.bPop(b), energy: this.bEnergy(b), prod: b.def.produces ? this.prodRate(b) : 0,
+      dmg: w ? Math.round(w.dmg) : 0, range: w ? w.range : 0, beams: w && w.beams ? w.beams : 1,
+      guns: b.def.minigun ? Math.max(0, b.level - 1) : 0, aa: !!(b.def.aaLevel && b.level >= b.def.aaLevel),
+      heal: heal ? Math.round((heal.pct || 0) * 100) : 0, shield: b.shieldMax,
+    };
+  }
+
+  upgradeLines(b, before, after) {
+    const out = [];
+    const n = (v) => fmt(Math.round(v));
+    if (after.hp > before.hp) out.push(`Vida ${n(before.hp)} → ${n(after.hp)}`);
+    if (after.shield > before.shield) out.push(`Escudo ${n(before.shield)} → ${n(after.shield)}`);
+    if (after.income > before.income) out.push(`Monedas ${n(before.income)} → ${n(after.income)} por min`);
+    if (after.pop > before.pop) out.push(`Comunidad +${after.pop - before.pop}`);
+    if (after.energy > before.energy) out.push(`Energía ${before.energy} → ${after.energy} cada 10 s`);
+    if (after.prod > before.prod) out.push(`Entrena ${Math.round((after.prod / before.prod - 1) * 100)} % más rápido`);
+    if (after.dmg > before.dmg) out.push(`Daño ${before.dmg} → ${after.dmg}`);
+    if (after.range > before.range) out.push(`Alcance ${before.range} → ${after.range}`);
+    if (after.beams > before.beams) out.push('Doble láser');
+    if (after.guns > before.guns) out.push(`${after.guns} minigun${after.guns > 1 ? 's' : ''}`);
+    if (after.aa && !before.aa) out.push('Ahora dispara a aeronaves');
+    if (after.heal > before.heal) out.push(`Cura ${after.heal} % por segundo`);
+    if (b.type === 'core' && b.level === 3) out.push('Ya puedes comprar la Cúpula');
+    if (b.type === 'aadef' && b.level === 4) out.push('Puede lanzar el misil nuclear');
+    if (b.def.levelNames) out.unshift(`Ahora es ${b.def.levelNames[b.level]}`);
+    return out;
+  }
+
   finishUpgrade(b) {
     const lv = b.upgrading.level;
+    const before = this.snapshot(b);
     b.upgrading = null;
     const ratio = b.hp / b.maxHp;
     b.level = lv;
     b.maxHp = this.bMaxHp(b.def, lv);
     b.hp = Math.min(b.maxHp, Math.max(b.hp, b.maxHp * ratio));
+    this.resetShield(b);
     this.refreshEconomy();
     this.emit('built', { b, upgraded: true });
     if (b.owner === 0) {
+      const lines = this.upgradeLines(b, before, this.snapshot(b));
+      this.emit('upgraded', { b, level: lv, lines });
       this.emit('toast', { text: `${b.def.name}: nivel ${lv}`, kind: 'good' });
       this.emit('sound', { name: 'done' });
     }
@@ -699,9 +756,20 @@ class Game {
     }
   }
 
+  // ¿Puede esta tropa subir a ese transporte? Jeep y Transporte blindado: solo soldados.
+  // Portaaviones: solo Cazas (en su hangar).
+  canBoard(u, t) {
+    if (!u.alive || u.inside || u === t || !t.alive || this.isEnemy(u.owner, t.owner)) return false;
+    if (t.def.hangar) return !!u.def.plane && u.type === 'fighter';
+    if (!t.def.capacity || u.mover !== 'land') return false;
+    if (t.def.carries === 'inf' && u.cls !== 'inf') return false;
+    if (u.def.capacity) return false;
+    return true;
+  }
+
   orderBoard(units, t) {
     for (const u of units) {
-      if (!u.alive || u.mover !== 'land' || u.inside) continue;
+      if (!this.canBoard(u, t)) continue;
       u.state = 'board';
       u.boardTarget = t;
       u.target = null;
@@ -711,8 +779,8 @@ class Game {
 
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
-    if (this.cargoSlots(t) + need > t.def.capacity) {
-      this.toast(u.owner, 'La Barcaza está llena', 'bad');
+    if (this.cargoSlots(t) + need > (t.def.capacity || t.def.hangar)) {
+      this.toast(u.owner, `${t.def.name}: no queda lugar`, 'bad');
       u.state = 'idle';
       return false;
     }
@@ -728,15 +796,16 @@ class Game {
   }
 
   unload(t) {
-    if (!t.cargo || !t.cargo.length) return 'La Barcaza va vacía';
+    if (!t.cargo || !t.cargo.length) return `${t.def.name} va vacío`;
     const c0 = this.cells[t.cell];
     const spots = [];
+    const mover = t.def.hangar ? 'air' : 'land';
     for (const off of SPIRAL) {
       if (off.d > 2) break;
       const c = this.map.get(c0.q + off.q, c0.r + off.r);
-      if (c && this.passable(c, 'land', t.owner)) spots.push(c.i);
+      if (c && this.passable(c, mover, t.owner)) spots.push(c.i);
     }
-    if (!spots.length) return 'Acerca la Barcaza a la orilla para desembarcar';
+    if (!spots.length) return t.mover === 'sea' ? 'Acércate a la orilla para desembarcar' : 'No hay lugar para bajar';
     t.cargo.forEach((u, i) => {
       const ci = spots[i % spots.length];
       const c = this.cells[ci];
@@ -866,7 +935,7 @@ class Game {
   canAttack(a, w, t) {
     if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
     if (t.def.stealth && !(t.seenBy & (1 << this.players[a.owner].team))) return false;
-    if (t.kind === 'bld') return w.waterOnly ? t.onWater : (w.mult.bld || 0) > 0;
+    if (t.kind === 'bld') return w.waterOnly ? !!(t.onWater || t.coastal) : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
   }
@@ -909,9 +978,11 @@ class Game {
       if (!this.canAttack(a, w, t)) return;
       const d = Math.hypot(dx, dz);
       if (d > maxD || !this.inRange(a, w, t, extraTiles)) return;
-      const s = focus
-        ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
-        : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
+      const s = a.def && a.def.prefersBld
+        ? d + (t.kind === 'bld' ? 0 : 8)
+        : focus
+          ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
+          : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
       if (s < bs) { bs = s; best = t; }
     };
     for (const t of this.units) check(t);
@@ -950,11 +1021,19 @@ class Game {
       this.damage(t, dmg, a.owner, a);
       if (w.proj === 'flak' || w.proj === 'bolt') this.fx.push({ k: 'spark', x: t.x, y: ty, z: t.z, s: 0.35 });
     } else {
-      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : 5;
+      const speed = w.proj === 'rocket' ? 10 : w.proj === 'shell' ? 12 : w.proj === 'missile' ? 7 : w.proj === 'bomb' ? 3 : 5;
       const d = Math.hypot(t.x - sx, t.z - sz);
+      // Bengalas del Apache: esquiva un misil cada 20 s.
+      let miss = false;
+      if (w.proj === 'missile' && t.def.flares && this.time >= (t.flareAt || 0)) {
+        miss = true;
+        t.flareAt = this.time + t.def.flares;
+        this.fx.push({ k: 'flare', x: t.x, y: t.y + 0.4, z: t.z });
+        if (t.owner === 0) this.emit('toast', { text: `${t.def.name}: bengalas, esquivó un misil`, kind: 'good' });
+      }
       this.projectiles.push({
         kind: w.proj, t, dmg, owner: a.owner, src: a, sx, sy, sz, tx: t.x, ty, tz: t.z,
-        time: 0, dur: Math.max(0.12, d / speed), color,
+        time: 0, dur: Math.max(w.proj === 'bomb' ? 0.6 : 0.12, d / speed), color, miss,
       });
     }
     // Sonido: la minigun de la Torreta suena distinto al cañón.
@@ -970,6 +1049,11 @@ class Game {
   unitShieldActive(pid) {
     const p = this.players[pid];
     return !!(p && p.dome && p.dome.level >= 3 && p.dome.hp > 0 && p.core && p.core.alive);
+  }
+
+  // v0.9: el escudo personal (Cúpula nivel 3) solo funciona dentro de la Cúpula.
+  unitShielded(u) {
+    return this.unitShieldActive(u.owner) && this.domeCovers(u.owner, u);
   }
 
   // Lugares con pelea reciente: la interfaz dibuja un icono de combate (documento pág. 13).
@@ -1011,6 +1095,14 @@ class Game {
         for (const u of this.units) if (u.owner === t.owner) u.shield = 0;
       }
       return;
+    }
+    // Escudo propio del edificio (v0.9).
+    if (t.kind === 'bld' && t.shield > 0) {
+      const a = Math.min(t.shield, dmg);
+      t.shield -= a;
+      dmg -= a;
+      t.lastHit = this.time;
+      if (dmg <= 0) return;
     }
     if (t.type === 'core') {
       if (t.shieldUntil > this.time) return;
@@ -1346,7 +1438,12 @@ class Game {
         if (dx * dx + dz * dz <= detR) mask |= 1 << this.players[e.owner].team;
       };
       for (const u of this.units) if (u.def.detects) check(u);
-      for (const b of this.buildings) if (b.type === 'harbor' && b.built) check(b);
+      for (const b of this.buildings) {
+        if (!b.built) continue;
+        // Puertos ven submarinos; AIR DEFENSE y Torretas de nivel 4 ven al bombardero furtivo de cerca.
+        if (b.type === 'harbor' && s.mover === 'sea') check(b);
+        else if (s.mover === 'air' && (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel))) check(b);
+      }
       s.seenBy = mask;
     }
   }
@@ -1399,6 +1496,7 @@ class Game {
       if (b.progress >= 1) {
         b.progress = 1;
         b.built = true;
+        this.resetShield(b);
         this.emit('built', { b });
         if (b.owner === 0) {
           this.emit('toast', { text: `${def.name} ${def.fem ? 'terminada' : 'terminado'}`, kind: 'good' });
@@ -1406,6 +1504,10 @@ class Game {
         }
       }
       return;
+    }
+    // Escudo propio: se recarga si nadie lo ataca durante 8 s.
+    if (b.shield < b.shieldMax && this.time - b.lastHit > BLD_SHIELD.delay) {
+      b.shield = Math.min(b.shieldMax, b.shield + b.shieldMax * BLD_SHIELD.regen * dt);
     }
     if (b.queue.length) {
       const q = b.queue[0];
@@ -1438,14 +1540,15 @@ class Game {
         }
       }
     }
-    // Torreta nivel 2: 1 minigun; nivel 3: 2 miniguns.
+    // Torreta nivel 2: 1 minigun; nivel 3: 2; nivel 4: 3 con más daño y tiro antiaéreo.
     const mg = def.minigun;
     if (mg && b.level > 1) {
       const guns = b.level - 1;
+      const aa = def.aaLevel && b.level >= def.aaLevel;
+      const mw = aa ? { ...mg, dmg: mg.dmg * 1.5, mult: { ...mg.mult, ...def.aaMiniMult }, proj: 'bullet' } : { ...mg, proj: 'bullet' };
       for (let gi = 0; gi < guns; gi++) {
-        b.miniCd[gi] -= dt;
+        b.miniCd[gi] = (b.miniCd[gi] || 0) - dt;
         if (b.miniCd[gi] > 0) continue;
-        const mw = { ...mg, proj: 'bullet' };
         const mt = b.autoTarget && b.autoTarget.alive && this.canAttack(b, mw, b.autoTarget) && this.inRange(b, mw, b.autoTarget)
           ? b.autoTarget : this.acquire(b, mw, 0);
         if (!mt) continue;
@@ -1517,12 +1620,17 @@ class Game {
   }
 
   updateUnit(u, dt) {
-    if (u.shieldMax > 0) {
-      if (!this.unitShieldActive(u.owner)) u.shield = 0;
-      else if (this.time - u.lastHit > UNIT_SHIELD.regenDelay) u.shield = Math.min(u.shieldMax, u.shield + u.shieldMax * UNIT_SHIELD.regen * dt);
-    } else if (this.unitShieldActive(u.owner)) {
-      u.shieldMax = u.maxHp * DOME_LEVELS[3].unitShield;
-      u.shield = u.shieldMax;
+    // Escudo personal: dentro de la Cúpula se recarga; al salir se pierde.
+    if (this.unitShielded(u)) {
+      if (!u.shieldMax) {
+        u.shieldMax = u.maxHp * DOME_LEVELS[3].unitShield;
+        u.shield = u.shieldMax;
+      } else if (this.time - u.lastHit > UNIT_SHIELD.regenDelay) {
+        u.shield = Math.min(u.shieldMax, u.shield + u.shieldMax * UNIT_SHIELD.regen * dt);
+      }
+    } else if (u.shield > 0 || u.shieldMax > 0) {
+      u.shield = 0;
+      u.shieldMax = 0;
     }
     if (u.inside) {
       u.x = u.inside.x;
@@ -1531,6 +1639,7 @@ class Game {
       return;
     }
     u.moving = false;
+    if (u.mover === 'air' && u.owner === 0) this.airAutoRepair(u, dt);
     const w = u.def.weapon;
     let ft = null;
     if (w) {
@@ -1548,9 +1657,18 @@ class Game {
         if (u.cd <= 0) {
           this.fire(u, w, ft);
           u.cd = w.cd;
+          u.lastShot = this.time;
+          u.lastShotKind = w.proj;
         }
       }
     }
+
+    // Armas extra (v0.9): minigun de puerta del Helicóptero y del Apache, y misiles guiados del Apache.
+    if (u.def.gun) this.fireExtra(u, u.def.gun, 'gunCd', dt, 'bullet');
+    if (u.def.missile) this.fireExtra(u, u.def.missile, 'missileCd', dt, 'missile');
+    // Médico y Portaaviones: curan a los suyos cerca (el Portaaviones también a los Cazas del hangar).
+    const aura = u.def.healAura || (u.def.heal && u.kind === 'unit' ? u.def.heal : null);
+    if (aura) this.healAround(u, aura, dt);
 
     switch (u.state) {
       case 'idle':
@@ -1710,6 +1828,68 @@ class Game {
     u.yaw = lerpAngle(u.yaw, want, Math.min(1, dt * 8));
   }
 
+  fireExtra(u, w, key, dt, proj) {
+    u[key] = (u[key] || 0) - dt;
+    if (u[key] > 0) return;
+    const ww = { ...w, proj: w.proj || proj };
+    const t = u.autoTarget && u.autoTarget.alive && this.canAttack(u, ww, u.autoTarget) && this.inRange(u, ww, u.autoTarget)
+      ? u.autoTarget : this.acquire(u, ww, 0);
+    if (!t) { u[key] = 0.25; return; }
+    this.fire(u, ww, t, 1);
+    u.lastShot = this.time;
+    u.lastShotKind = proj;
+    u[key] = w.cd;
+  }
+
+  healAround(u, aura, dt) {
+    u.healT = (u.healT || 0) - dt;
+    if (u.healT > 0) return;
+    u.healT = 0.5;
+    const rr = (aura.range * SQ3 + 0.4) ** 2;
+    const heal = (t) => {
+      const add = aura.rate ? aura.rate * 0.5 : aura.pct * t.maxHp * 0.5;
+      t.hp = Math.min(t.maxHp, t.hp + add);
+      if (Math.random() < 0.2) this.fx.push({ k: 'heal', x: t.x, y: t.y + 0.5, z: t.z });
+    };
+    for (const t of this.units) {
+      if (t === u || !t.alive || t.inside || this.isEnemy(t.owner, u.owner) || !aura.cls.includes(t.cls) || t.hp >= t.maxHp) continue;
+      const dx = t.x - u.x;
+      const dz = t.z - u.z;
+      if (dx * dx + dz * dz <= rr) heal(t);
+    }
+    if (u.cargo) for (const t of u.cargo) if (t.alive && t.hp < t.maxHp && aura.cls.includes(t.cls)) heal(t);
+  }
+
+  // Tus aeronaves con menos del 30 % de vida vuelven solas a repararse (Helipuerto o Aeropuerto).
+  airAutoRepair(u, dt) {
+    u.repT = (u.repT || 0) - dt;
+    if (u.repT > 0) return;
+    u.repT = 1;
+    if (u.repairing) {
+      if (u.hp >= u.maxHp * 0.95) u.repairing = false;
+      return;
+    }
+    if (u.hp >= u.maxHp * AIR_RETREAT) return;
+    const pad = this.repairPadFor(u);
+    if (!pad) return;
+    u.repairing = true;
+    this.orderMove([u], pad.cell);
+    this.emit('toast', { text: `${u.def.name} vuelve a repararse`, kind: 'info', x: pad.x, z: pad.z });
+  }
+
+  repairPadFor(u) {
+    let best = null;
+    let bd = Infinity;
+    for (const b of this.buildings) {
+      if (!b.alive || !b.built || b.owner !== u.owner) continue;
+      const h = b.def.heal;
+      if (!h || !h.cls.includes(u.cls)) continue;
+      const d = Math.hypot(b.x - u.x, b.z - u.z);
+      if (d < bd) { bd = d; best = b; }
+    }
+    return best;
+  }
+
   tryFound(u) {
     const why = this.foundInvalid(u.owner, u.foundCell, u.def.founds);
     const p = this.players[u.owner];
@@ -1741,16 +1921,101 @@ class Game {
     if (!this.projectiles.length) return;
     for (const p of this.projectiles) {
       p.time += dt;
-      if (p.t.alive) {
+      if (p.kind === 'nuke') {
+        this.updateNuke(p);
+        continue;
+      }
+      if (p.t.alive && !p.miss) {
         p.tx = p.t.x;
         p.tz = p.t.z;
       }
       if (p.time >= p.dur) {
         p.done = true;
-        if (p.t.alive) this.damage(p.t, p.dmg, p.owner, p.src);
-        this.fx.push({ k: 'boom', x: p.tx, y: p.ty, z: p.tz, s: p.kind === 'torpedo' ? 0.7 : 0.5, small: true });
+        if (p.t.alive && !p.miss) this.damage(p.t, p.dmg, p.owner, p.src);
+        this.fx.push({ k: 'boom', x: p.tx, y: p.ty, z: p.tz, s: p.kind === 'torpedo' ? 0.7 : p.kind === 'bomb' ? 1.1 : 0.5, small: p.kind !== 'bomb' });
       }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
+  }
+
+  // ---------- misil nuclear (v0.9) ----------
+  nukeInvalid(b, ci) {
+    if (!b || !b.alive || b.type !== 'aadef' || b.level < 4 || !b.built) return 'Necesita un AIR DEFENSE de nivel 4';
+    if (b.upgrading) return 'Termina primero la mejora';
+    if (this.time < (b.nukeReadyAt || 0)) return `Recargando: faltan ${Math.ceil(b.nukeReadyAt - this.time)} s`;
+    const p = this.players[b.owner];
+    if (!(this.creator && b.owner === 0) && p.coins < NUKE.cost) return `Monedas insuficientes (${fmt(NUKE.cost)})`;
+    if (ci !== undefined) {
+      const c = this.cells[ci];
+      if (!c) return 'Casilla no válida';
+      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return 'Demasiado lejos';
+      if (this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return 'Muy cerca de tu Núcleo';
+    }
+    return null;
+  }
+
+  launchNuke(b, ci) {
+    const why = this.nukeInvalid(b, ci);
+    if (why) return why;
+    const p = this.players[b.owner];
+    if (!(this.creator && b.owner === 0)) p.coins -= NUKE.cost;
+    b.nukeReadyAt = this.time + NUKE.cooldown;
+    const c = this.cells[ci];
+    this.projectiles.push({
+      kind: 'nuke', t: null, dmg: NUKE.dmg, owner: b.owner, src: b, sx: b.x, sy: b.y + 1, sz: b.z, tx: c.x, ty: c.h, tz: c.z,
+      time: 0, dur: NUKE.flight, color: PLAYER_COLORS[b.owner], cell: ci, checked: false,
+    });
+    this.nukesLaunched = (this.nukesLaunched || 0) + 1;
+    this.emit('sound', { name: 'alarm' });
+    // Aviso a quien tenga algo cerca del blanco (y siempre a quien lo lanza).
+    const R = NUKE.radius + 2;
+    for (const q of this.players) {
+      if (!q.alive) continue;
+      const mine = q.id === b.owner;
+      const near = this.buildings.some((x) => x.alive && x.owner === q.id && this.map.dist(this.cells[x.cell], c) <= R) ||
+        this.units.some((u) => u.alive && u.owner === q.id && this.map.dist(this.cells[u.cell], c) <= R);
+      if (q.id === 0 && (mine || near)) {
+        this.emit('toast', { text: mine ? `Misil nuclear lanzado: llega en ${NUKE.flight} s` : `¡Misil nuclear en camino! Llega en ${NUKE.flight} s`, kind: mine ? 'info' : 'bad', x: c.x, z: c.z });
+        this.emit('ping', { x: c.x, z: c.z, kind: 'bad' });
+      }
+      if (!q.human && near && !mine && q.persona) {
+        this.say(q.id, '¡Un misil nuclear! ¡Todos a cubierto!', { force: true, public: true });
+      }
+    }
+    return null;
+  }
+
+  updateNuke(p) {
+    const k = p.time / p.dur;
+    // Escudo antimisiles enemigo cerca del blanco: lo derriba a mitad de camino.
+    if (!p.checked && k >= 0.6) {
+      p.checked = true;
+      const tc = this.cells[p.cell];
+      const shield = this.buildings.find((b) => b.alive && b.built && b.def.intercept && this.isEnemy(b.owner, p.owner) &&
+        this.time >= (b.chargeAt || 0) && this.map.dist(this.cells[b.cell], tc) <= b.def.intercept.range);
+      if (shield) {
+        shield.chargeAt = this.time + shield.def.intercept.recharge;
+        p.done = true;
+        const x = p.sx + (p.tx - p.sx) * k;
+        const z = p.sz + (p.tz - p.sz) * k;
+        this.fx.push({ k: 'boom', x, y: 4, z, s: 1.4 });
+        this.nukesIntercepted = (this.nukesIntercepted || 0) + 1;
+        if (shield.owner === 0 || p.owner === 0) {
+          this.emit('toast', { text: shield.owner === 0 ? '¡Tu Escudo antimisiles derribó el misil nuclear!' : 'El Escudo antimisiles enemigo derribó tu misil', kind: shield.owner === 0 ? 'good' : 'bad' });
+        }
+        return;
+      }
+    }
+    if (p.time < p.dur) return;
+    p.done = true;
+    const R = NUKE.radius * SQ3 + 0.6;
+    this.fx.push({ k: 'nuke', x: p.tx, y: p.ty, z: p.tz });
+    this.emit('sound', { name: 'bigboom', x: p.tx, z: p.tz });
+    const hits = [...this.units.filter((u) => u.alive && !u.inside), ...this.buildings.filter((b) => b.alive)];
+    for (const t of hits) {
+      const d = Math.hypot(t.x - p.tx, t.z - p.tz);
+      if (d > R) continue;
+      this.damage(t, p.dmg * (1 - (d / R) * 0.6), p.owner, null);
+    }
   }
 }

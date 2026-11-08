@@ -4,6 +4,7 @@
 
 const $ = (id) => document.getElementById(id);
 
+const ICON_UP = '⬆';
 const ICON = {
   soundOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
   soundOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
@@ -305,6 +306,20 @@ class UI {
     if (all) setTimeout(() => { $('objectives').hidden = true; }, 4000);
   }
 
+  // Tarjeta «Qué mejoró» (v0.9): sale al terminar cada mejora de un edificio tuyo.
+  upgradeCard(b, level, lines) {
+    const box = $('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast upcard good';
+    const name = b.def.levelNames ? b.def.levelNames[level] : `${b.def.name} · nivel ${level}`;
+    el.innerHTML = `<b>${ICON_UP} ${esc(name)}: qué mejoró</b><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
+    el.style.pointerEvents = 'auto';
+    el.addEventListener('click', () => el.remove());
+    box.appendChild(el);
+    while (box.children.length > 3) box.removeChild(box.firstChild);
+    setTimeout(() => el.remove(), 7000);
+  }
+
   toast(text, kind = 'info', at = null) {
     const now = performance.now();
     if (this.lastToast[text] && now - this.lastToast[text] < 1200) return;
@@ -493,21 +508,25 @@ class UI {
     const isBuild = p.kind === 'build';
     $('btn-place-rot').hidden = !isBuild;
     $('btn-place-ok').hidden = !isBuild;
+    $('btn-place-cancel').hidden = isBuild;
     if (isBuild) {
+      // v0.9: cada toque en una casilla dorada construye al instante; «Listo» termina.
       const d = BUILDINGS[p.btype];
       const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
-      if (p.cell >= 0 && p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>`;
-      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Gira si quieres y toca «Construir».`;
-      else if (p.valid && p.valid.size) text = `Toca una casilla dorada para ver <b>${esc(d.name)}</b> · ${price}`;
-      else text = `No hay casillas válidas para ${esc(d.name)} en tu territorio. ${esc(d.desc)}`;
-      $('btn-place-ok').disabled = !(p.cell >= 0 && !p.err);
-      $('btn-place-rot').disabled = p.cell < 0;
+      const placed = p.placed ? ` · <b>${p.placed}</b> ${p.placed === 1 ? 'puesta' : 'puestas'}` : '';
+      if (p.err) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
+      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca casillas doradas: se construye al instante${placed}`;
+      else text = `No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
+      $('btn-place-ok').disabled = false;
+      $('btn-place-rot').disabled = false;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
         ? 'Toca dónde fundar el <b>Puesto avanzado</b> · <span class="cost">800</span> al llegar'
         : 'No hay sitio alcanzable para fundar un puesto';
     } else if (p.kind === 'rally') {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
+    } else if (p.kind === 'nuke') {
+      text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
     }
     $('placetext').innerHTML = text;
     $('placebar').hidden = false;
@@ -591,6 +610,7 @@ class UI {
       }
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
         sig += `|d${d ? d.level + ':' + (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : ''}${p.coins >= g.domeCost(0)}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
@@ -637,7 +657,7 @@ class UI {
     const lv = maxLv > 1
       ? ` <span class="lvtag">Nivel ${b.level}</span><span class="levels" title="Nivel ${b.level} de ${maxLv}">${Array.from({ length: maxLv }, (_, i) => `<i class="${i < b.level ? 'on' : ''}"></i>`).join('')}</span>` : '';
     const mkey = GLB[b.type + '_' + b.level] ? b.type + '_' + b.level : b.type;
-    let html = this.head(mkey, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
+    let html = this.head(mkey, PLAYER_COLORS[b.owner], esc(d.levelNames ? d.levelNames[b.level] : d.name) + lv, sub);
     if (!own) return html + (g.isEnemy(b.owner, 0) ? this.counterHtml(b) : '');
     // Obra o mejora en curso.
     if (!b.built || b.upgrading) {
@@ -696,9 +716,23 @@ class UI {
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
     }
+    if (b.type === 'aadef' && b.built && b.level >= 4) {
+      // Misil nuclear (v0.9): muy caro, recarga de 3 min.
+      const why = g.nukeInvalid(b);
+      const wait = g.time < (b.nukeReadyAt || 0);
+      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>☢ Misil nuclear · ${fmt(NUKE.cost)}</button>
+        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+    } else if (b.type === 'aadef' && b.built) {
+      html += `<div class="queue">Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.</div>`;
+    }
+    if (b.type === 'antinuke' && b.built) {
+      const ready = g.time >= (b.chargeAt || 0);
+      html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
+    }
     const acts = [];
     if (b.built && !b.upgrading && b.level < maxLv) {
-      acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a nivel ${b.level + 1} · ${fmt(g.upgradeCost(b))}</button>`);
+      const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}</button>`);
     }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${bi('rally')}${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
@@ -720,13 +754,20 @@ class UI {
         `<span class="chip"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</span>`).join('') + '</div>';
     }
     const acts = [];
-    const ship = sel.length === 1 && first.def.capacity ? first : null;
+    // Transportes (Barcaza, Lancha, Jeep, Transporte blindado) y hangar del Portaaviones.
+    const ship = sel.length === 1 && (first.def.capacity || first.def.hangar) ? first : null;
     if (ship) {
       const g = this.app.game;
-      html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
+      const hangar = !!ship.def.hangar;
+      const cap = ship.def.capacity || ship.def.hangar;
+      const how = hangar ? 'Selecciona Cazas y toca el Portaaviones para guardarlos.'
+        : ship.def.carries === 'inf' ? `Selecciona soldados y toca el ${ship.def.name} para subirlos.`
+          : `Selecciona tropas de tierra y toca la ${ship.def.name} para subirlas.`;
+      html += `<div class="queue">${hangar ? 'Hangar' : 'Carga'}: ${g.cargoSlots(ship)}/${cap}` +
         (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
-          : ' · Selecciona tropas de tierra y toca la Barcaza para subirlas.') + '</div>';
-      if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}Desembarcar</button>`);
+          : ' · ' + how) + '</div>';
+      const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' ? 'Desembarcar' : 'Bajar soldados';
+      if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}${label}</button>`);
     }
     if (sel.some((u) => u.def.builds)) {
       html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
@@ -901,6 +942,14 @@ class UI {
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
+    } else if (act === 'nuke') {
+      const err = g.nukeInvalid(b);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        app.input.startPlacement({ kind: 'nuke', building: b });
+      }
     } else if (act === 'repeat') {
       const n = Number(btn.dataset.n) || 1;
       let added = 0;

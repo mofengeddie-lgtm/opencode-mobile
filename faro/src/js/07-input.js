@@ -333,13 +333,13 @@ class Input {
       }
       return;
     }
-    // Tropas de tierra seleccionadas + toque en tu Barcaza = subir a bordo.
-    if (target && target.owner === 0 && target.def.capacity) {
-      const landers = mine.filter((u) => u.mover === 'land');
+    // Tropas seleccionadas + toque en tu transporte (Barcaza, Lancha, Jeep, Transporte, Portaaviones) = subir.
+    if (target && target.owner === 0 && (target.def.capacity || target.def.hangar)) {
+      const landers = mine.filter((u) => g.canBoard(u, target));
       if (landers.length) {
         g.orderBoard(landers, target);
         this.r.addMoveMarker(target.cell, 0x7dd3ff);
-        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} a la Barcaza`);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} a ${target.def.name}`);
         app.sound.play('order');
         return;
       }
@@ -380,6 +380,7 @@ class Input {
       p.rot = this.lastRot[p.btype] || 0;
       p.cell = -1;
       p.err = null;
+      p.placed = 0;
     }
     this.placement = p;
     this.refreshPlacement();
@@ -403,14 +404,18 @@ class Input {
     this.app.sound.play('click');
   }
 
+  // «Listo» (v0.9): cada toque ya construye; este botón termina de poner obras.
   confirmPlacement() {
-    const g = this.game;
     const p = this.placement;
     if (!p || p.kind !== 'build') return;
-    if (p.cell < 0) {
-      this.app.ui.toast('Primero toca una casilla para ver la vista previa', 'bad');
-      return;
-    }
+    this.cancelPlacement();
+  }
+
+  // Construir de un toque (v0.9): pone la obra al instante y sigue para poner más.
+  buildAt(ci) {
+    const g = this.game;
+    const p = this.placement;
+    p.cell = ci;
     const err = g.place(0, p.btype, p.cell, p.rot);
     if (err) {
       p.err = err;
@@ -423,16 +428,13 @@ class Input {
     this.lastRot[p.btype] = p.rot;
     this.r.addMoveMarker(p.cell, 0xf5c542);
     this.app.ui.refreshBuild(true);
-    if (['wall', 'farm', 'solar', 'wind', 'house'].includes(p.btype)) {
-      p.cell = -1;
-      p.err = null;
-      this.r.setGhost(null, -1);
-      this.r.setHover(-1);
-      this.refreshPlacement();
-      this.app.ui.showPlaceBar(p);
-    } else {
-      this.cancelPlacement();
-    }
+    p.placed++;
+    p.cell = -1;
+    p.err = null;
+    this.r.setGhost(null, -1);
+    this.r.setHover(-1);
+    this.refreshPlacement();
+    this.app.ui.showPlaceBar(p);
   }
 
   refreshPlacement() {
@@ -449,6 +451,8 @@ class Input {
         (u.mover !== 'land' || c.comp === comp)).map((c) => c.i);
     } else if (p.kind === 'rally') {
       cells = [];
+    } else if (p.kind === 'nuke') {
+      cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
     }
     p.valid = new Set(cells);
     this.r.setPlacement(cells);
@@ -479,9 +483,7 @@ class Input {
     const cell = this.r.pickCell(x, y);
     if (!cell) return;
     if (p.kind === 'build') {
-      this.previewAt(cell.i);
-      if (p.err) this.app.sound.play('error');
-      else this.app.sound.play('click');
+      this.buildAt(cell.i);
     } else if (p.kind === 'found') {
       if (!p.unit.alive) {
         this.cancelPlacement();
@@ -495,6 +497,15 @@ class Input {
       }
       this.r.addMoveMarker(cell.i, 0xf5c542);
       this.app.ui.toast('El ingeniero va en camino (cuesta 800 al llegar)');
+      this.cancelPlacement();
+    } else if (p.kind === 'nuke') {
+      const err = g.launchNuke(p.building, cell.i);
+      if (err) {
+        this.app.ui.toast(err, 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      this.r.addMoveMarker(cell.i, 0xff4040);
       this.cancelPlacement();
     } else if (p.kind === 'rally') {
       p.building.rally = cell.i;

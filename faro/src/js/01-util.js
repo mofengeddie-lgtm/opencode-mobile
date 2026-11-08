@@ -163,3 +163,11 @@ function fmtTime(s) {
 function hexColor(n) {
   return '#' + n.toString(16).padStart(6, '0');
 }
+
+// Escudos en 3 etapas (v0.9): azul = bien, amarillo = a medias, rojo = débil.
+function SHIELD_CSS(k) {
+  return k > 0.66 ? '#4aa8ff' : k > 0.33 ? '#f2c94c' : '#ef5350';
+}
+function SHIELD_HEX(k) {
+  return k > 0.66 ? 0x4aa8ff : k > 0.33 ? 0xf2c94c : 0xef5350;
+}

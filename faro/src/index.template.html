@@ -593,6 +593,9 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
   #prodbar { display: none !important; }
   body.has-prod #toasts { top: calc(var(--top) + 64px); }
 }
+/* ---------- v0.9: tarjeta «Qué mejoró» ---------- */
+.toast.upcard { flex-direction: column; align-items: stretch; text-align: left; gap: 4px; border-color: rgba(94,224,122,0.6); cursor: pointer; }
+.toast.upcard ul { margin: 0; padding-left: 18px; font-weight: 500; font-size: 13px; display: grid; gap: 2px; }
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
@@ -701,7 +704,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="actions">
       <button class="btn" id="btn-place-rot" type="button" title="Girar (R)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg>Girar</button>
-      <button class="btn gold" id="btn-place-ok" type="button" title="Construir (Enter)">Construir</button>
+      <button class="btn gold" id="btn-place-ok" type="button" title="Terminar (Enter)">Listo</button>
       <button class="btn" id="btn-place-cancel" type="button">Cancelar</button>
     </div>
   </div>

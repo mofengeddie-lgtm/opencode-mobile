@@ -280,11 +280,22 @@ class GameMap {
       for (const c of got) c.t = type;
       return got;
     };
+    // Tierra fértil en zonas grandes (v0.9): dos manchas de hasta 4 casillas juntas por base.
+    const patch = (center, dmin, dmax) => {
+      const seeds = spot(center, dmin, dmax, 1, 'fertile');
+      for (const sc of seeds) {
+        const nb = sc.nb.map((ni) => this.cells[ni]).filter((c) => c.t === 'grass' && !c.bridge && c.i !== center.i &&
+          !this.points.some((pt) => pt.cell === c.i) && !this.homes.includes(c.i));
+        for (const c of nb.slice(0, 3)) c.t = 'fertile';
+      }
+    };
     for (const hi of this.homes) {
       const h = this.cells[hi];
       const first = spot(h, 2, 2, 1, 'fertile');
       this.startFarms.push(first.length ? first[0].i : -1);
-      spot(h, 2, 4, 5, 'fertile');
+      spot(h, 2, 4, 3, 'fertile');
+      patch(h, 3, 4);
+      patch(h, 3, 5);
       if (!spot(h, 3, 4, 1, 'oilland').length) spot(h, 2, 4, 1, 'oilland', true);
     }
     const hubCells = small.filter((s) => s.hub).map((s) => this.cells[s.i]);

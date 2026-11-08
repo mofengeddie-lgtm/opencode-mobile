@@ -111,6 +111,25 @@ class Bot {
     this.ferry(mine, units);
     if (this.tac.harass) this.harass(units);
     if (this.tac.teamwork) this.helpAllies(units);
+    if (this.tac.focus) this.useNuke(mine);
+  }
+
+  // Misil nuclear (v0.9, desde Normal): solo pasados 20 min, contra el Núcleo enemigo más cercano.
+  useNuke(mine) {
+    const g = this.g;
+    if (g.time < 1200) return;
+    const target = this.chooseEnemyCore();
+    if (!target) return;
+    for (const b of mine) {
+      if (b.type !== 'aadef' || b.level < 4) continue;
+      if (this.p.coins < NUKE.cost + 3000) return;
+      if (g.nukeInvalid(b, target.cell)) continue;
+      if (!g.launchNuke(b, target.cell)) {
+        this.nukes = (this.nukes || 0) + 1;
+        this.ecoBank = Math.max(0, this.ecoBank - NUKE.cost);
+        return;
+      }
+    }
   }
 
   coreCell() {
@@ -187,6 +206,12 @@ class Bot {
     if (n('hospital') < 1 && T > (this.tac.retreat ? 300 : 420)) want.push('hospital');
     if (n('factory') < 2 && T > 480 && !open) want.push('factory');
     if (n('harbor') < 2 && coast && T > (plan.sea >= 3 ? 300 : 420)) want.push('harbor');
+    // v0.9: Aeropuerto, AIR DEFENSE de nivel 4 (misil nuclear) y Escudo antimisiles si el rival tiene misiles.
+    if (!easy && plan.air >= 1 && n('airport') < 1 && T > (plan.air >= 2 ? 540 : 720)) want.push('airport');
+    if (this.tac.focus && T > 1000 && n('aadef') >= 1) want.push('up:aadef');
+    if (this.tac.focus && T > 1000 && n('aadef') < 1) want.push('aadef');
+    const enemyNuke = g.buildings.some((b) => b.alive && b.type === 'aadef' && b.level >= 4 && g.isEnemy(b.owner, this.pid));
+    if (enemyNuke && n('antinuke') < 1) want.unshift('antinuke');
 
     // Una mejora barata cada ~minuto (Granja, Mina, Bomba o Casa) aunque haya otras compras esperando.
     if (T > 300 && T - (this.cheapUpAt || 0) > 60 && !tooBusy) {
@@ -408,13 +433,15 @@ class Bot {
       else if (b.type === 'factory') cats.veh = 'factory';
       else if (b.type === 'harbor') cats.sea = 'harbor';
       else if (b.type === 'helipad') cats.air = 'helipad';
+      else if (b.type === 'airport') cats.plane = 'airport';
     }
-    const have = { inf: 0, veh: 0, sea: 0, air: 0 };
-    for (const u of units) if (u.def.weapon) have[unitCat(u)]++;
+    const have = { inf: 0, veh: 0, sea: 0, air: 0, plane: 0 };
+    const catOf = (d) => (d.plane ? 'plane' : unitCat(d));
+    for (const u of units) if (u.def.weapon) have[catOf(u.def.cls ? { ...u.def, cls: u.cls } : u.def)]++;
     for (const b of producers) {
-      for (const q of b.queue) if (UNITS[q.type].weapon) have[unitCat(UNITS[q.type])]++;
+      for (const q of b.queue) if (UNITS[q.type].weapon) have[catOf(UNITS[q.type])]++;
     }
-    const plan = { ...this.persona.plan };
+    const plan = { ...this.persona.plan, plane: Math.max(1, this.persona.plan.air) };
     if (open) {
       plan.sea += 2;
       plan.inf = Math.max(1, plan.inf - 1);
@@ -458,8 +485,14 @@ class Bot {
     const T = this.g.time;
     const r = Math.random();
     const counter = this.tac.counter && mix.total >= 3;
+    if (cat === 'plane') {
+      // Aeropuerto: Cazas si el rival tiene aire; si no, sobre todo Bombarderos.
+      return (mix.air >= 0.1 && r < 0.75) || r < 0.35 ? 'fighter' : 'bomber';
+    }
     if (cat === 'inf') {
       if (T < 90) return r < 0.7 ? 'rifle' : 'shotgun';
+      const infN = units.filter((u) => u.cls === 'inf' && u.def.weapon).length;
+      if (infN >= 6 && !units.some((u) => u.type === 'medic') && r < 0.25) return 'medic';
       if (counter && mix.veh >= 0.3) return r < 0.65 ? 'rocket' : 'rifle';
       if (counter && mix.inf >= 0.6) return r < 0.3 ? 'sniper' : r < 0.55 ? 'breaker' : r < 0.75 ? 'hunter' : 'rifle';
       return r < 0.3 ? 'rifle' : r < 0.45 ? 'ranger' : r < 0.58 ? 'shotgun' : r < 0.78 ? 'rocket' : r < 0.88 ? 'sniper' : r < 0.95 ? 'breaker' : 'hunter';
@@ -470,11 +503,15 @@ class Bot {
       if (counter && mix.veh >= 0.3) return r < 0.7 ? 'tank' : 'jeep';
       if (counter && mix.inf >= 0.6) return r < 0.55 ? 'jeep' : 'tank';
       if (mix.air > 0 && aaHave < 1) return 'aa';
-      return r < 0.45 ? 'tank' : r < 0.8 || T < 300 ? 'jeep' : 'arty';
+      if (T < 300) return r < 0.5 ? 'jeep' : 'lighttank';
+      return r < 0.18 ? 'lighttank' : r < 0.38 ? 'tank' : r < 0.55 ? 'heavytank' : r < 0.68 ? 'jeep' : r < 0.8 ? 'arty'
+        : r < 0.92 ? 'missiletruck' : 'launcher';
     }
     if (cat === 'sea') {
+      if (counter && mix.air >= 0.15 && r < 0.4) return 'frigate';
       if (counter && mix.sea >= 0.25) return r < 0.5 ? 'destroyer' : 'sub';
-      return r < 0.55 ? 'destroyer' : r < 0.85 ? 'speedboat' : 'sub';
+      if (T > 900 && this.p.coins > UNITS.carrier.cost * 1.3 && !units.some((u) => u.type === 'carrier') && r < 0.3) return 'carrier';
+      return r < 0.45 ? 'destroyer' : r < 0.7 ? 'speedboat' : r < 0.85 ? 'frigate' : 'sub';
     }
     return !units.some((u) => u.type === 'apache') && this.p.coins > UNITS.apache.cost * 1.5 ? 'apache' : 'heli';
   }
@@ -587,6 +624,8 @@ class Bot {
       };
       if (u.mover === 'sea') {
         for (const b of mine) if (b.type === 'harbor') consider(b);
+      } else if (u.mover === 'air' && g.repairPadFor(u)) {
+        consider(g.repairPadFor(u));
       } else {
         if (u.mover === 'land') for (const b of mine) if (b.type === 'hospital') consider(b);
         if (!spot || sd > 8) consider(core);

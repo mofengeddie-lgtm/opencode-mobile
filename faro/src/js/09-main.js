@@ -416,6 +416,7 @@ const App = {
         this.sound.play(ev.name, vol);
       } else if (ev.type === 'objective') this.ui.markObjective(ev.id);
       else if (ev.type === 'built' || ev.type === 'spawned') this.ui.selSig = '';
+      else if (ev.type === 'upgraded' && ev.lines && ev.lines.length) this.ui.upgradeCard(ev.b, ev.level, ev.lines);
       else if (ev.type === 'over') {
         Save.clear();
         this.lobby.finish(g);
