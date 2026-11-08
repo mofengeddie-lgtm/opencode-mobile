@@ -575,7 +575,9 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .pitem.idle { border-color: #f2c94c; box-shadow: inset 0 0 0 1px rgba(242,201,76,0.5); }
 body.has-prod #toasts { top: calc(var(--top) + 116px); }
 #edges { position: fixed; inset: 0; pointer-events: none; z-index: 7; }
-.edge { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; align-items: center; gap: 4px; padding: 4px 8px 4px 4px; min-height: 36px; border-radius: 18px; border: 1px solid rgba(240,88,90,0.7); background: rgba(60,12,14,0.85); color: #ffd3d3; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; animation: tin 0.18s ease-out; }
+.edge { position: absolute; left: 0; top: 0; pointer-events: auto; display: flex; align-items: center; gap: 4px; padding: 4px 8px 4px 4px; min-height: 36px; border-radius: 18px; border: 1px solid rgba(240,88,90,0.7); background: rgba(60,12,14,0.85); color: #ffd3d3; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; animation: edgein 0.18s ease-out; }
+/* Solo transparencia: la posición de la flecha va en transform y una animación de transform la taparía. */
+@keyframes edgein { from { opacity: 0; } to { opacity: 1; } }
 .edge i { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--bad); color: #fff; }
 .edge i svg { width: 16px; height: 16px; }
 .btn .bi { display: inline-flex; margin-right: 6px; }
