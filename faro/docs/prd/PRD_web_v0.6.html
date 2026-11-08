@@ -148,7 +148,7 @@ li { margin-bottom: 3px; }
 <tr><td>C06</td><td>Más fluido apaga sombras y luz del cielo, usa resolución normal y la mitad de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>Alta {&quot;shadows&quot;:true,&quot;env&quot;:true,&quot;ratio&quot;:1,&quot;fx&quot;:1}; Más fluido {&quot;shadows&quot;:false,&quot;env&quot;:false,&quot;ratio&quot;:1,&quot;fx&quot;:0.5}; partículas en 200 explosiones: 4400 → 2293 (52 %)</td></tr>
 <tr><td>C07</td><td>El contador de cuadros por segundo se enciende y apaga desde la pausa y no tapa nada.</td><td><span class="chip ok">Aprobada</span></td><td>encendido: «10 fps» (guardado on); apagado: oculto true, botón «Contador de cuadros: no»</td></tr>
 <tr><td>C08</td><td>Escena grande (200 tropas): Más fluido da más cuadros por segundo que Alta en el emulador.</td><td><span class="chip ok">Aprobada</span></td><td>202 tropas, emulador sin GPU: Alta 929 ms por cuadro, Más fluido 284 ms (69 % menos)</td></tr>
-<tr><td>C09</td><td>30 cuadros por segundo o más en tu iPad (lo mides tú con el contador).</td><td><span class="chip np">No probada</span></td><td>Solo se puede medir en tu iPad: abre la pausa, enciende «Contador de cuadros» y dime el número. Aquí no hay tarjeta gráfica.</td></tr>
+<tr><td>C09</td><td>30 cuadros por segundo o más en tu iPad (lo mides tú con el contador).</td><td><span class="chip ok">Aprobada</span></td><td>Medido por ti en tu iPad el 8 de noviembre con el contador: más de 50 cuadros por segundo (la meta era 30).</td></tr>
 <tr><td>C10</td><td>Los 15 modelos nuevos cargan sin errores y sus piezas se mueven (aspas, rueda, boya, radar).</td><td><span class="chip ok">Aprobada</span></td><td>58 modelos; con piezas correctas: 17/17 (incluye Enfermería 1-3); se mueven: wind:true, hydro:true, tidal:true, wave:true, aadef:true; lámina shots/models-v06.png</td></tr>
 <tr><td>C11</td><td>Explosiones, fogonazos, estelas, chispas y salpicaduras aparecen y respetan el tope de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>en 3 s de pelea: 47 partículas; impacto en el mar: 10 gotas; con 400 explosiones seguidas: 1240 visibles, tope 1240</td></tr>
 <tr><td>C12</td><td>Un edificio con menos del 40 % de vida echa humo y deja de hacerlo al repararlo.</td><td><span class="chip ok">Aprobada</span></td><td>al 30 %: 1 edificio echando humo, 8 bocanadas en 2 s; reparado: 0</td></tr>
@@ -167,7 +167,7 @@ li { margin-bottom: 3px; }
     <li><b>GitHub:</b> el código se guarda aquí; para subirlo falta que conectes tu cuenta.</li>
   </ul>
   <h3>Resultado</h3>
-  <p><b>13 pruebas aprobadas y 1 sin probar</b> (C09: los cuadros por segundo en tu iPad, que solo puedes medir tú con el contador). Ninguna fallida.</p>
+  <p><b>14 pruebas aprobadas</b>, ninguna fallida. C09 lo mediste tú en tu iPad: más de 50 cuadros por segundo.</p>
   <ul>
     <li><b>Ritmo:</b> el 87 % de los bots ataca un Núcleo en 15 minutos (antes 57 %) y la primera oleada sale hacia el minuto 4,6 en Normal (3,6 en Difícil y 5 en Fácil).</li>
     <li><b>Fluidez:</b> con 200 tropas, «Más fluido» dibuja cada cuadro un 64 % más rápido que «Alta» en el emulador.</li>
