@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.0</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.0</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tus «Mejoras V1.0» (8 puntos y la portada)</p>
+  <div class="tiles">
+    <div class="tile"><b>Construir y mejorar</b><span>Vuelve el botón «Construir», el constructor tiene que llegar de verdad, botón «Mejorar todo» y mejoras automáticas.</span></div>
+    <div class="tile"><b>Más poder</b><span>Comunidad hasta 240, radiación de 1 minuto después del misil nuclear y lanzar los 3 misiles a la vez.</span></div>
+    <div class="tile"><b>Más reto y se ve mejor</b><span>Difícil de verdad difícil, Aeropuerto, Caza y Bombardero mejorados y portada nueva.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Cerrar la versión 1.0 del prototipo: corregir cómo se construye (botón y constructor que llega), dar herramientas para manejar una base grande (mejoras de un clic, 240 de comunidad, 3 misiles a la vez) y que el nivel Difícil sea un reto real.</p>
+
+  <h3>2. Tus fuentes (Poly Haven, Pixabay y CMU)</h3>
+  <ul>
+    <li><b>Poly Haven:</b> sigue el cielo de ambiente (luz). El suelo se queda como el de la v0.6, como pediste: no vuelven las texturas.</li>
+    <li><b>Pixabay:</b> desde aquí no deja descargar. Si me mandas los archivos de sonido (avión, explosión, alarma), los pongo; si no, sigo con los sonidos hechos por el juego.</li>
+    <li><b>CMU:</b> el caminar y correr de los soldados ya viene de CMU. Para el martilleo del constructor uso una animación propia.</li>
+  </ul>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.6</td><td>6-8 nov 2026</td><td>Juego base, bots, constructores, niveles, vestíbulo, modelos de Blender, ritmo y efectos.</td></tr>
+      <tr><td>0.7-0.8</td><td>8 nov 2026</td><td>Campaña de 6 misiones, mejores controles, movimiento de CMU, bots más listos y avisos en el borde.</td></tr>
+      <tr><td>0.9</td><td>8 nov 2026</td><td>Tus 30 mejoras: ejército de tierra, mar y aire, misil nuclear, escudos, comunidad 180, portada y vuelta al suelo de la v0.6.</td></tr>
+      <tr><td>1.0</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Tus 8 puntos y la portada</div>
+  <h2>Qué se hace con cada punto</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:30%">Pediste</th><th>Plan para la v1.0</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Que al construir salga el botón «Construir», no que se construya con un solo toque</td><td>Vuelve el botón: eliges el edificio, tocas una casilla y ves la obra fantasma; recién con <b>«Construir»</b> se pone la obra. Después puedes elegir otra casilla y volver a tocar «Construir», o salir con «Terminar».</td></tr>
+      <tr><td>2</td><td>Comunidad de 180 a 240</td><td>Comunidad máxima: <b>240</b>. Para poder llegar, el límite de Casas sube de 6 a 8 (8 Apartamentos dan 240).</td></tr>
+      <tr><td>3</td><td>Después de explotar, el misil nuclear deja 1 minuto de radiación que quema más</td><td>Donde cae queda una <b>zona de radiación de 1 minuto</b> (3 casillas): brillo verde, humo y fuego, con cuenta regresiva. Mientras dura, quema a las tropas y edificios enemigos que estén dentro (las tropas pierden vida rápido; los edificios, más despacio).</td></tr>
+      <tr><td>4</td><td>Un clic para mejoras automáticas o mejorar todo al máximo, solo con el Núcleo en nivel 3</td><td>Con el Núcleo en nivel 3 aparecen dos botones: <b>«Mejorar todo»</b> (pone a mejorar todos los edificios que alcance tu dinero, del más barato al más caro) y <b>«Mejoras automáticas»</b> (encendido/apagado: sigue mejorando solo hasta dejar todo al máximo, guardando siempre una reserva de monedas para tropas). Las mejoras igual necesitan que el constructor llegue.</td></tr>
+      <tr><td>5</td><td>Que Difícil sea bien difícil, con bots más avanzados</td><td>Difícil más fuerte: más ingresos, piensa más rápido, ataca antes y más seguido, y tácticas que solo usa en Difícil: retira tropas heridas para curarlas, busca primero tus Constructores y tu economía, levanta defensa antiaérea en cuanto ve tus aviones, mejora más rápido y usa el misil nuclear antes. Medí cómo está hoy: un piloto automático que juega como un jugador medio gana 4 de 12 duelos contra Normal y 0 de 12 contra Difícil (lo derrota en 11,6 min de media). Como tú le ganas al Difícil, la meta es que el nuevo sea claramente más fuerte que el de la v0.9 (G05).</td></tr>
+      <tr><td>6</td><td>Mejorar el Aeropuerto, el Bombardero y el caza tipo F-22</td><td><b>Modelos nuevos en Blender</b>: Aeropuerto con pista, torre, hangares y luces; Caza y Bombardero con más detalle. <b>En vuelo</b>: los aviones no se quedan quietos en el aire, dan vueltas sobre su punto, se inclinan al girar y dejan estela. <b>Paneles</b>: el Aeropuerto muestra los aviones que repara y lo que fabrica; el Caza, sus misiles y su modo de patrulla; el Bombardero, sus bombas, si está oculto (furtivo) y la orden «Bombardear zona».</td></tr>
+      <tr><td>7</td><td>El constructor sigue caminando y la obra igual se construye</td><td>La obra <b>solo avanza cuando el constructor llega y se detiene pegado a ella</b>; mientras camina, no avanza nada. Al llegar se pone de frente y martilla. <i>Así entiendo tu punto: si querías decir otra cosa, dime.</i></td></tr>
+      <tr><td>8</td><td>Un botón para mandar 3 misiles nucleares al mismo tiempo</td><td>Con 3 AIR DEFENSE de nivel 4 listos aparece <b>«☢ Lanzar los 3»</b>: eliges el blanco y salen los tres juntos (60.000 monedas). Un Escudo antimisiles solo derriba uno por carga, así que la salva de 3 puede pasar una defensa.</td></tr>
+      <tr><td>—</td><td>Mejorar la portada</td><td>Portada más grande con una escena nueva (aviones en vuelo, portaaviones, misil en su rampa), el logo del juego, la versión y las novedades de la v1.0, y un movimiento suave de cámara que no gasta batería.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>G01</td><td>Tocar una casilla solo muestra la obra fantasma; la obra se pone con «Construir»; se pueden poner varias seguidas y salir con «Terminar».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G02</td><td>Comunidad máxima 240, 8 Casas y se puede llegar a 240.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G03</td><td>El misil nuclear deja 1 minuto de radiación: quema a los enemigos de dentro, se ve con su cuenta regresiva y se apaga a los 60 s.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G04</td><td>«Mejorar todo» y «Mejoras automáticas» solo aparecen con el Núcleo en nivel 3; funcionan, respetan el dinero y llegan al máximo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G05</td><td>Difícil más fuerte: (1) el bot Difícil nuevo le gana al Difícil de la v0.9 en el 60 % o más de los duelos con ganador; (2) derrota más rápido a un piloto automático de nivel medio (hoy tarda 11,6 min de media; meta: menos de 9 min); (3) usa sus tácticas nuevas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G06</td><td>Aeropuerto, Caza y Bombardero: modelos nuevos sin errores, aviones que giran en vuelo con estela, y paneles con su información y la orden «Bombardear zona».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G07</td><td>La obra solo avanza con el constructor quieto y pegado a ella; mientras camina, no avanza.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G08</td><td>«Lanzar los 3» aparece con 3 AIR DEFENSE nivel 4 listos, lanza los tres a la vez y un Escudo antimisiles solo derriba uno.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G09</td><td>Portada nueva en 5 tamaños de pantalla, sin nada cortado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G10</td><td>Las pruebas anteriores siguen pasando (salvo la de construir de un toque, que cambia por G01), la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Punto 1 y la v0.9:</b> en la v0.9 pediste construir de un toque; ahora vuelve el botón «Construir», pero se mantiene poder poner varias obras seguidas sin volver al menú.</li>
+    <li><b>Radiación:</b> solo quema a los enemigos de quien lanzó el misil, para que puedas entrar después con tus tropas. Es un efecto de juego (brillo, humo y fuego).</li>
+    <li><b>Mejoras automáticas:</b> guardan una reserva de monedas (para no dejarte sin tropas) y mejoran como máximo tantos edificios a la vez como Constructores tengas.</li>
+    <li><b>Difícil:</b> los bots en Difícil reciben más monedas que tú (como en los juegos de estrategia clásicos) y juegan mejor; Fácil y Normal no cambian.</li>
+    <li><b>Nombres:</b> el caza y el bombardero se inspiran en aviones reales, pero en el juego se llaman Caza furtivo y Bombardero furtivo.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Programar la v1.0 por partes (reglas, bots y aviones, portada), probar cada parte y entregarte el PDF con los resultados.</p>
+</section>
+
+</body>
+</html>
