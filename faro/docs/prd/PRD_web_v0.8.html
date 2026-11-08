@@ -30,7 +30,7 @@ tbody tr:nth-child(odd) td { background: var(--soft); }
 ul { margin: 0 0 8px; padding-left: 18px; }
 li { margin-bottom: 3px; }
 #pruebas td { overflow-wrap: anywhere; word-break: break-word; }
-.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
 .pend { background: #e3e7e5; color: #3d4a4f; }
 .ok { background: #d5f0dd; color: #165a2b; }
 .fail { background: #f8d6d6; color: #8a1f1f; }
@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 0.8</p>
-  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: «Sigue mejorando la interfaz del juego y los NPC; también puedes usar Poly Haven, Pixabay, CMU y Blender»</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: «Sigue mejorando la interfaz del juego y los NPC; también puedes usar Poly Haven, Pixabay, CMU y Blender»</p>
   <div class="tiles">
     <div class="tile"><b>Interfaz</b><span>Suelo con texturas reales, avisos en el borde, barra de producción, iconos y ficha del enemigo.</span></div>
     <div class="tile"><b>Bots (NPC)</b><span>Defienden juntos, atacan en línea, concentran el fuego, hostigan tu economía y se coordinan entre aliados.</span></div>
@@ -80,7 +80,7 @@ li { margin-bottom: 3px; }
       <tr><td>0.1-0.5</td><td>6-7 nov 2026</td><td>Juego base, Faro, energía, bots, constructores, niveles, vestíbulo, guardado y modelos de Blender.</td></tr>
       <tr><td>0.6</td><td>8 nov 2026</td><td>Ritmo más rápido, modo fluido, 15 modelos más, efectos y sonidos.</td></tr>
       <tr><td>0.7</td><td>8 nov 2026</td><td>Campaña de 6 misiones, grupos 1-2-3, avanzar atacando, formación en línea, repetir tropa y botón Constructores.</td></tr>
-      <tr><td>0.8</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>0.8</td><td>8 nov 2026</td><td>Suelo con texturas de Poly Haven, avisos en el borde, barra de producción, iconos, ficha del enemigo, bots más listos y soldados con el movimiento de CMU.</td></tr>
     </tbody>
   </table>
 </section>
@@ -108,7 +108,7 @@ li { margin-bottom: 3px; }
     <thead><tr><th style="width:24%">Comportamiento</th><th>Qué hace</th></tr></thead>
     <tbody>
       <tr><td>Defensa en equipo</td><td>Si atacan su base, mandan a defender a todas sus tropas cercanas y a las que salen de la producción, y levantan una Torreta del lado de donde vino el ataque.</td></tr>
-      <tr><td>Ataque ordenado</td><td>Sus oleadas usan «avanzar atacando» y formación en línea, igual que tus controles nuevos.</td></tr>
+      <tr><td>Ataque ordenado</td><td>Se forman en línea mientras se reúnen y avanzan atacando, juntas, para llegar a la vez. Pasados 15 minutos, las oleadas salen con todo el ejército de casa (los guardias se quedan en sus Banderas).</td></tr>
       <tr><td>Fuego concentrado</td><td>Sus tropas disparan primero al enemigo más débil que tienen a tiro, para eliminarlo antes (desde Normal).</td></tr>
       <tr><td>Hostigamiento</td><td>Grupos chicos y rápidos (Jeeps, Lanchas, Helicópteros) atacan Granjas y Minas alejadas de tus defensas (desde Normal).</td></tr>
       <tr><td>Aliados coordinados</td><td>En Liga 3 vs 3 y Equipos: atacan juntos al mismo rival y van a ayudar al aliado que está siendo atacado.</td></tr>
@@ -121,8 +121,8 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">07 · Animaciones</div>
   <h2>Soldados con movimiento real (CMU + Blender)</h2>
   <ul>
-    <li>Los soldados reciben un esqueleto simple en Blender (cadera, piernas, rodillas, torso, brazos y cabeza).</li>
-    <li>El movimiento de caminar y correr de la base de datos de CMU se pasa a ese esqueleto y se exporta con cada soldado (Constructor, Ingeniero, los 7 de combate y la Brigada Tóxica).</li>
+    <li>Los soldados se rehicieron en Blender con piernas de dos piezas: muslo (gira en la cadera) y pierna (gira en la rodilla).</li>
+    <li>Blender lee los archivos de CMU (02_01 caminar y 35_17 correr), mide en cada cuadro la cadera, la rodilla, la inclinación del torso y el rebote, y guarda un ciclo de 24 muestras (2,4 KB). El juego aplica esas curvas a las piernas de todos los soldados (Constructor, Ingeniero, los 7 de combate y la Brigada Tóxica), al ritmo de su velocidad para que los pies no patinen.</li>
     <li>En «Alta calidad» caminan y corren con ese movimiento; quietos respiran. En «Más fluido», o si hay muchísimas tropas, vuelven al balanceo simple de piernas para no bajar los cuadros por segundo.</li>
     <li>Los vehículos, barcos y aeronaves no cambian.</li>
   </ul>
@@ -135,34 +135,38 @@ li { margin-bottom: 3px; }
   <table>
     <thead><tr><th style="width:7%">ID</th><th style="width:42%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>E01</td><td>El suelo usa las texturas de Poly Haven en los 6 terrenos; cargan sin errores y en «Más fluido» son más chicas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E02</td><td>Al atacar algo tuyo fuera de la pantalla aparece la flecha en el borde, apunta bien y tocarla lleva la cámara.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E03</td><td>La barra de producción muestra todos tus edificios que entrenan, su cola y progreso, marca los parados y tocar uno lo elige.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E04</td><td>Los botones de acción tienen icono y tamaño cómodo para el dedo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E05</td><td>La ficha del enemigo muestra vida, nivel y qué usar contra él.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E06</td><td>Defensa en equipo: al atacar la base de un bot, acuden 7 de cada 10 de sus tropas cercanas y levanta una Torreta de ese lado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E07</td><td>Las oleadas usan avanzar atacando y formación en línea.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E08</td><td>Fuego concentrado: con varios enemigos a tiro, disparan primero al más débil.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E09</td><td>Hostigamiento: en Normal y Difícil hay ataques chicos a Granjas o Minas alejadas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E10</td><td>Aliados coordinados en Liga 3 vs 3: atacan al mismo rival y ayudan al aliado atacado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E11</td><td>El bot nuevo le gana al de la v0.7 en el 60 % de los duelos o más, y las 6 misiones siguen siendo posibles.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E12</td><td>Los soldados caminan y corren con el movimiento de CMU en «Alta calidad»; en «Más fluido» usan el balanceo simple.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>E13</td><td>Las pruebas de la v0.7 siguen pasando y nada queda tapado en 5 tamaños de pantalla.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>E01</td><td>El suelo usa las texturas de Poly Haven en los 6 terrenos; cargan sin errores y en «Más fluido» son más chicas.</td><td><span class="chip ok">Aprobada</span></td><td>7 texturas (fertile,forest,gold,grass,mount,oilland,sand); en este mapa 7 grupos con textura: Alta sand:512 grass:512 fertile:512 mount:512 forest:512 gold:512 oilland:512 · Más fluido sand:256 grass:256 fertile:256 mount:256 forest:256 gold:256 oilland:256; cada casilla en su grupo y el agua lisa: true</td></tr>
+<tr><td>E02</td><td>Al atacar algo tuyo fuera de la pantalla aparece la flecha en el borde, apunta bien y tocarla lleva la cámara.</td><td><span class="chip ok">Aprobada</span></td><td>flecha «Muro» en el borde (true), dentro de la pantalla (true), visible (true) [1069,693,1143,729]; error de dirección 0.000 rad; tras tocarla la cámara va a la zona atacada (a 4.72 de la muralla; los avisos a menos de 5 casillas se juntan en una flecha)</td></tr>
+<tr><td>E03</td><td>La barra de producción muestra todos tus edificios que entrenan, su cola y progreso, marca los parados y tocar uno lo elige.</td><td><span class="chip ok">Aprobada</span></td><td>3 edificios (Núcleo: parado · Cuartel: entrenando Artillero (+1) · Fábrica: parado); parado en amarillo: Fábrica: parado; Cuartel con cola 2 y progreso 10.334%; tocarlo lo elige (barracks) y lleva la cámara</td></tr>
+<tr><td>E04</td><td>Los botones de acción tienen icono y tamaño cómodo para el dedo.</td><td><span class="chip ok">Aprobada</span></td><td>tropas: Avanzar atacando · Formación: bloque · Detener; Cuartel: Repetir · 600 · ×5 · 3000 · Mejorar a nivel 2 · Punto de reunión · Demoler; todos con icono: true; alto mínimo 40 px</td></tr>
+<tr><td>E05</td><td>La ficha del enemigo muestra vida, nivel y qué usar contra él.</td><td><span class="chip ok">Aprobada</span></td><td>Tanque: «Vida | 1100 / 2200 (50 %) | Fuerte contra | vehículos, edificios | No ataca a | aeronaves, submarinos | Usa | Cohetero, Tanque, Cazador» · Núcleo enemigo: «Vida | 6000 / 6000 (100 %) | Nivel | 1 de 3 | Fuerte contra | infantería | No ataca a | edificios, submarinos | Usa | Submarino, Tanque, Cohetero»</td></tr>
+<tr><td>E06</td><td>Defensa en equipo: al atacar la base de un bot, acuden 7 de cada 10 de sus tropas cercanas y levanta una Torreta de ese lado.</td><td><span class="chip ok">Aprobada</span></td><td>continent: acuden 8 de 8 tropas cercanas, Torreta a 0° del lado del ataque; a los 4 s pelean 7 · archipelago: acuden 8 de 8 tropas cercanas, Torreta a 0° del lado del ataque; a los 4 s pelean 7 · bay: acuden 8 de 8 tropas cercanas, Torreta a 0° del lado del ataque; a los 4 s pelean 7</td></tr>
+<tr><td>E07</td><td>Las oleadas se forman en línea al reunirse y avanzan atacando.</td><td><span class="chip ok">Aprobada</span></td><td>continent/normal: reunidas en línea 3/3, avanzan atacando 3/3 · archipelago/normal: reunidas en línea 3/3, avanzan atacando 3/3 · continent/hard: reunidas en línea 3/3, avanzan atacando 3/3 · archipelago/hard: reunidas en línea 3/3, avanzan atacando 3/3</td></tr>
+<tr><td>E08</td><td>Fuego concentrado: con varios enemigos a tiro, disparan primero al más débil.</td><td><span class="chip ok">Aprobada</span></td><td>el bot elige al de 120 de vida (había 260, 120 y 200); el jugador sigue eligiendo el más cercano (260); en 10 peleas de 8 Artilleros contra 8, el mismo lado termina con 5.4 tropas vivas sin fuego concentrado y 5.3 con él (en peleas iguales casi no cambia el resultado)</td></tr>
+<tr><td>E09</td><td>Hostigamiento: en Normal y Difícil hay ataques chicos a Granjas o Minas alejadas.</td><td><span class="chip ok">Aprobada</span></td><td>8 de 10 partidas de 15 min con hostigamiento (5 mapas × Normal/Difícil); ejemplos: archipelago/normal 1 (Jeep+Jeep+Jeep→Granja, primero a 644 s); archipelago/hard 5 (Ranger+Jeep→Granja, primero a 389 s); continent/normal 5 (Ranger+Ranger→Granja, primero a 335 s); continent/hard 5 (Ranger+Ranger→Granja, primero a 284 s); en Fácil: 0</td></tr>
+<tr><td>E10</td><td>Aliados coordinados en Liga 3 vs 3: atacan al mismo rival y ayudan al aliado atacado.</td><td><span class="chip ok">Aprobada</span></td><td>oleadas al mismo rival que un aliado: 22 de 22 (100 %); ayuda al aliado atacado: archipelago bot 5 manda 2 tropas a los 1 s · continent bot 5 manda 2 tropas a los 47 s · bay sin ayuda; ayudas en total: 3/3/1</td></tr>
+<tr><td>E11</td><td>El bot nuevo le gana al de la v0.7 en el 60 % de los duelos o más, y las 6 misiones siguen siendo posibles.</td><td><span class="chip fail">Fallida</span></td><td>80 duelos Normal en los 5 mapas (cada bot en los dos lados, 25 min como máximo): el nuevo gana 28, el de la v0.7 gana 21 y 31 terminan sin Núcleo caído (en 19 de ellos el nuevo va adelante, en 12 el viejo). Partidas con ganador: 28 de 49 (57 %): gana más que el viejo, pero no llega a la meta del 60 %. Misiones con los bots nuevos, ganadas con órdenes automáticas: M1 3/3, M2 3/3, M3 4/5, M4 3/3, M5 2/3, M6 4/4 (la 5, Asedio, quedó algo más difícil).</td></tr>
+<tr><td>E12</td><td>Los soldados caminan y corren con el movimiento de CMU en «Alta calidad»; en «Más fluido» usan el balanceo simple.</td><td><span class="chip ok">Aprobada</span></td><td>Artillero: run, Constructor: walk; en 1,2 s la cadera recorre 1.02 rad y la rodilla 1.05 rad (nunca se dobla al revés); piernas no espejadas: true. Más fluido: ciclo null, rodilla 0, balanceo simple true</td></tr>
+<tr><td>E13</td><td>Las pruebas de la v0.7 siguen pasando y nada queda tapado en 5 tamaños de pantalla.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas de la v0.7 sobre la v0.8: D01-D03 y D05-D11 10/10 sin errores de consola. 5 tamaños (iPad horizontal y vertical, 16:9, celular horizontal y vertical): 5/5 sin paneles tapados ni fuera de pantalla, ahora también con la barra de producción (en celular vertical se oculta para no tapar).</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">09 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Sonidos:</b> como Pixabay no deja descargar desde aquí, los sonidos reales entran solo si me mandas los archivos. Si no, se quedan los sintetizados.</li>
-    <li><b>Tamaño del juego:</b> texturas de 512 px y animaciones cortas, para que el archivo siga cargando rápido (meta: menos de 2,6 MB).</li>
-    <li><b>Rendimiento:</b> la meta sigue siendo más de 50 cuadros por segundo en tu iPad; si las texturas o las animaciones lo bajan, «Automática» pasa sola a «Más fluido».</li>
-    <li><b>Créditos:</b> Poly Haven (CC0) y la base de datos de captura de movimiento de CMU (mocap.cs.cmu.edu, conversión BVH de B. Hahne) quedan citados en el README.</li>
+    <li><b>Sonidos:</b> Pixabay no deja descargar desde aquí. Si me mandas los archivos, los pongo; mientras tanto siguen los sintetizados.</li>
+    <li><b>Animaciones:</b> el juego arma sus propias piezas de cada modelo, así que en lugar de un esqueleto con huesos dentro del archivo, el movimiento de CMU se guarda como curvas que se aplican a muslo, pierna y torso. Es más liviano para el iPad y se ve igual.</li>
+    <li><b>Bots, lo que se probó y se quitó:</b> un «asalto decisivo» junto con cambios de economía hizo al bot más débil en 40 duelos (ganaba 10 y perdía 14). Se quitó y se dejó solo la oleada con todo pasados 15 minutos.</li>
+    <li><b>Bots, lo que se midió:</b> la formación en línea en el ataque final lo dispersaba; ahora se forman en línea al reunirse y atacan juntos. El fuego concentrado y la Torreta de defensa sí lo hacen más fuerte (sin ellos perdía más duelos). Los guardias de las Banderas ya no salen a defender ni a atacar, para no perder ingresos.</li>
+    <li><b>Meta del 60 % (E11), no alcanzada:</b> el bot nuevo gana el 57 % de las partidas con ganador. Lo que más pesa es que ninguno de los dos rompe bien las defensas del otro (31 de 80 duelos sin ganador) y que a veces el rival toma el Faro antes y gana un 50 % más de monedas. Disputar el Faro antes y asedios mejores pueden ir en la próxima versión.</li>
+    <li><b>Texturas:</b> se probaron tres niveles de contraste; el más fuerte parecía manchado y costaba leer el mapa. Quedó uno intermedio, con el color de cada terreno mandando.</li>
+    <li><b>Tamaño:</b> el juego pesa 2,5 MB (meta: menos de 2,6 MB).</li>
+    <li><b>Créditos:</b> Poly Haven (CC0) y CMU (conversión BVH de B. Hahne) en el README.</li>
   </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v0.8, completar las pruebas con evidencia y entregar el PDF final.</p>
+  <p>Jugar la v0.8 en tu iPad: mirar si el suelo y el movimiento de los soldados se ven bien, si los cuadros por segundo siguen sobre 50 y si los bots dan más pelea. Si quieres, la próxima versión puede seguir con los bots (disputar el Faro y asediar mejor) para llegar a la meta del 60 %.</p>
 </section>
 
 </body>
