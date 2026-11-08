@@ -4,7 +4,7 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.6';
+const GAME_VERSION = '0.7';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -347,6 +347,67 @@ const PERSONALITIES = {
 const PERSONALITY_ORDER = ['aggro', 'builder', 'admiral', 'keeper'];
 const ALLY_LINES = { attack: 'Voy a atacar a {t}. ¡Cúbreme!', faro: 'Tomé el Faro para el equipo.', flag: 'Tomé una Bandera para el equipo.' };
 const CAT_NAMES = { inf: 'infantería', veh: 'vehículos', ship: 'buques', sub: 'submarinos', air: 'aeronaves', bld: 'edificios' };
+
+// Campaña «La ruta del Faro» (v0.7). goal = lo que hay que lograr para ganar; stars = las 2 estrellas
+// extra (la primera estrella es terminar la misión). personas: personalidad de cada bot por número.
+// Tipos de meta: eco (ingresos y tropas), survive (aguantar), hold (Faro en tu poder), flags (Banderas
+// de otras islas), destroy (todos los Núcleos rivales). Estrellas: time (menos de X s), lostBld y
+// lostUnits (perder X o menos), coreEnd (Núcleo sobre X al final), coreMin (Núcleo nunca bajo X).
+const CAMPAIGN = [
+  {
+    id: 1, name: 'Primera luz', mapKind: 'continent', seed: 7101, players: 2, difficulty: 'easy',
+    personas: [null, 'builder'], passive: true, crystals: 50,
+    story: 'Tu colonia acaba de llegar a una isla tranquila. El Faro de Ámbar lleva años apagado y nadie vigila la costa. Antes de pensar en batallas, pon en marcha la economía y arma una pequeña guardia.',
+    tip: 'Las Granjas van en la tierra fértil. El Cuartel entrena Artilleros y Escopeteros. Tu vecino de esta isla no atacará.',
+    goal: { kind: 'eco', income: 1600, army: 5 },
+    stars: [{ kind: 'time', max: 360 }, { kind: 'lostBld', max: 0 }],
+  },
+  {
+    id: 2, name: 'Defender la costa', mapKind: 'archipelago', seed: 7202, players: 2, difficulty: 'normal',
+    personas: [null, 'admiral'], coins: 4000, crystals: 75, firstWave: 100, waveEvery: 0.9,
+    enemyStart: { buildings: ['harbor'], units: ['speedboat', 'speedboat', 'rifle', 'rifle', 'shotgun'] },
+    myStart: { buildings: ['turret'] },
+    story: 'Un Almirante quiere tu isla para su flota y sus barcos ya zarparon. Levanta defensas en la costa y aguanta hasta que llegue la ayuda.',
+    tip: 'Las Torretas disparan a barcos. Pon algunas entre el agua y tu Núcleo, y repara con Constructores.',
+    goal: { kind: 'survive', time: 360 },
+    stars: [{ kind: 'coreEnd', min: 0.5 }, { kind: 'lostBld', max: 3 }],
+  },
+  {
+    id: 3, name: 'El Faro', mapKind: 'archipelago', seed: 7303, players: 2, difficulty: 'normal',
+    personas: [null, 'keeper'], crystals: 100, myStart: { units: ['rifle', 'rifle', 'rifle'] },
+    guardFaro: { units: ['rifle', 'rifle', 'rifle', 'shotgun'] },
+    story: 'El Faro está en la isla del centro y un Guardián del Faro ya lo tomó con 4 guardias. Tienes 3 Artilleros: junta más tropas, quítale el Faro y mantenlo encendido.',
+    tip: 'Solo la infantería captura: quédate junto al Faro sin enemigos cerca. El tiempo se suma aunque lo pierdas un rato. Usa «Avanzar atacando».',
+    goal: { kind: 'hold', time: 60 },
+    stars: [{ kind: 'time', max: 480 }, { kind: 'lostUnits', max: 6 }],
+  },
+  {
+    id: 4, name: 'Cruzar el mar', mapKind: 'open', seed: 7404, players: 2, difficulty: 'normal',
+    personas: [null, 'keeper'], crystals: 125, myStart: { buildings: ['harbor'], units: ['barge'] },
+    guardFlags: { count: 2, units: ['rifle', 'rifle', 'shotgun'] },
+    story: 'Más allá del mar hay islas con Banderas. Tu Puerto y una Barcaza ya están listos, pero un Guardián del Faro puso guardias en las Banderas más cercanas. Entrena infantería, cruza el mar y quítaselas.',
+    tip: 'Construye un Cuartel y entrena Artilleros o Escopeteros. Selecciónalos y toca la Barcaza para subirlos; muévela junto a otra isla y toca «Desembarcar».',
+    goal: { kind: 'flags', count: 2 },
+    stars: [{ kind: 'time', max: 600 }, { kind: 'lostUnits', max: 8 }],
+  },
+  {
+    id: 5, name: 'Asedio', mapKind: 'continent', seed: 7505, players: 2, difficulty: 'hard',
+    personas: [null, 'builder'], coins: 8000, crystals: 150, fortress: true,
+    story: 'Un imperio se encerró tras murallas, Torretas de nivel 2 y 3 y AIR DEFENSE. Tienes 8.000 monedas para preparar el asedio. Rompe sus defensas y destruye su Núcleo.',
+    tip: 'Los Tanques y los Lanzamisiles pegan fuerte a los edificios. La AIR DEFENSE derriba helicópteros: déjalos para el final.',
+    goal: { kind: 'destroy' },
+    stars: [{ kind: 'time', max: 720 }, { kind: 'lostUnits', max: 15 }],
+  },
+  {
+    id: 6, name: 'La gran batalla', mapKind: 'archipelago', seed: 7606, players: 4, difficulty: 'normal',
+    personas: [null, 'builder', 'aggro', 'admiral'], coins: 4000, crystals: 250,
+    story: 'Tres imperios quieren la luz del Faro de Ámbar. Solo uno quedará en pie. Que sea el tuyo.',
+    tip: 'Empiezas con 4.000 monedas. Los rivales también pelean entre ellos: defiende tu Núcleo (la estrella pide que nunca baje del 50 %) y ataca al más débil.',
+    goal: { kind: 'destroy' },
+    stars: [{ kind: 'time', max: 1080 }, { kind: 'coreMin', min: 0.5 }],
+  },
+];
+const CAMPAIGN_STAR_CRYSTALS = 20;
 
 const OBJECTIVES = [
   { id: 'builder', text: 'Entrena un Constructor en el Núcleo' },

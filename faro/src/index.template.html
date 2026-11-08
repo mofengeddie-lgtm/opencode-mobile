@@ -488,6 +488,77 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .prizes { grid-template-columns: 1fr; }
   .daygrid { grid-template-columns: repeat(4, 1fr); }
 }
+/* ---------- v0.7: grupos, campaña y misión ---------- */
+.mapcol { display: flex; flex-direction: column; gap: 6px; }
+.groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 172px; }
+.groups .qbtn { width: auto; min-height: 40px; padding: 2px 0; gap: 0; }
+.qbtn.grp b { font-family: var(--font-display); font-size: 16px; line-height: 1; color: var(--text); }
+.qbtn.grp small { font-size: 10px; line-height: 1.1; font-family: var(--font-display); }
+.qbtn.grp svg { width: 18px; height: 18px; }
+.qbtn.grp.has small { color: var(--gold); }
+.qbtn.grp.alert small { color: var(--good); }
+.actions.groupsave .btn { min-width: 44px; padding: 0 10px; }
+.actions.repeat .queue { margin-right: auto; }
+#leftcol.camp #objectives li.star::before { content: '★'; border: 0; width: auto; height: auto; margin: 0; color: var(--gold); font-size: 13px; line-height: 1.3; }
+#leftcol.camp #objectives li.star span { display: grid; }
+#leftcol.camp #objectives li.star small { color: var(--muted); font-size: 11.5px; }
+#leftcol.camp #objectives li.star.lost { color: var(--muted); }
+#leftcol.camp #objectives li.star.lost::before { color: var(--muted); }
+#leftcol.camp #objectives { border-color: rgba(242,171,56,0.45); }
+.missions { display: grid; gap: 8px; }
+.mcard { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--raise); border: 1px solid var(--line); }
+.mcard.done { border-color: rgba(242,171,56,0.45); }
+.mcard.locked { opacity: 0.55; }
+.mnum { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; background: rgba(242,171,56,0.14); color: var(--gold); font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.mcard.locked .mnum { background: rgba(255,255,255,0.06); color: var(--muted); }
+.mbody { display: grid; gap: 2px; min-width: 0; }
+.mbody b { font-size: 15px; }
+.mbody span { font-size: 13px; color: var(--text); line-height: 1.35; }
+.mbody small { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.mside { display: grid; gap: 6px; justify-items: end; }
+.mside .btn { min-width: 96px; }
+.mstars i, .bigstars i { font-style: normal; color: rgba(255,255,255,0.18); }
+.mstars i.on, .bigstars i.on { color: var(--gold); }
+.mstars { font-size: 16px; letter-spacing: 2px; }
+.mlock { font-size: 12px; color: var(--muted); text-align: right; max-width: 120px; }
+.bigstars { margin-left: auto; font-size: 44px; letter-spacing: 4px; line-height: 1; white-space: nowrap; }
+.starlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.starlist li { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border-radius: 8px; background: var(--raise); font-size: 14px; }
+.starlist li span { color: var(--muted); font-size: 13px; }
+.starlist li.ok b { color: var(--gold); }
+.starlist li.ok b::before { content: '★ '; }
+.starlist li.no b::before { content: '☆ '; color: var(--muted); }
+.brief .story { color: var(--text) !important; font-size: 15.5px; }
+.brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.brief-grid h3 { margin: 0 0 6px; }
+.brief .tip { padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(111,211,255,0.4); background: rgba(111,211,255,0.07); color: var(--text) !important; font-size: 13.5px; }
+@media (max-width: 860px), (max-height: 520px) {
+  /* En pantallas chicas el panel de la misión se ve (plegado) arriba a la derecha. */
+  #leftcol.camp { display: flex; left: auto; right: var(--right); top: calc(var(--top) + 60px); bottom: auto; width: min(250px, calc(100% - 290px)); min-width: 180px; }
+  #leftcol.camp #feed { display: none; }
+  #leftcol.camp #objectives { display: block; padding: 8px 10px; }
+  #leftcol.camp #objectives ol { font-size: 12.5px; }
+  .groups { width: auto; grid-template-columns: repeat(4, 44px); gap: 6px; }
+  .groups .qbtn { min-height: 44px; }
+  .brief-grid { grid-template-columns: 1fr; }
+  .bigstars { font-size: 34px; }
+}
+@media (max-height: 520px) {
+  .groups { grid-template-columns: repeat(4, 40px); gap: 4px; }
+  .groups .qbtn { min-height: 38px; }
+  #leftcol.camp { top: calc(var(--top) + 52px); }
+}
+@media (max-width: 480px) and (min-height: 521px) {
+  /* Celular vertical: el panel de la misión va debajo del minimapa y los botones rápidos. */
+  #leftcol.camp { right: auto; left: var(--left); top: calc(var(--top) + 282px); width: min(300px, calc(100% - 96px)); }
+}
+@media (max-width: 520px) {
+  .mcard { grid-template-columns: 36px minmax(0, 1fr); }
+  .mnum { width: 36px; height: 36px; font-size: 18px; }
+  .mside { grid-column: 1 / -1; grid-auto-flow: column; justify-content: space-between; align-items: center; }
+  .endhero { flex-wrap: wrap; }
+  .bigstars { margin-left: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
@@ -532,7 +603,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 
   <div id="leftcol">
   <aside id="objectives" class="panel">
-    <header><span class="lbl">Primeros pasos</span><button type="button" id="btn-obj">Ocultar</button></header>
+    <header><span class="lbl" id="objtitle">Primeros pasos</span><button type="button" id="btn-obj">Ocultar</button></header>
     <ol id="objlist"></ol>
   </aside>
   <div id="feed" aria-live="polite"></div>
@@ -559,11 +630,20 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </button>
 
   <div id="leftdock">
+    <div class="mapcol">
+    <div class="groups" id="groups" aria-label="Grupos y constructores">
+      <button class="qbtn grp" type="button" data-group="1" title="Grupo 1 (tecla 1 · dos toques: ir)"><b>1</b><small id="grp1">—</small></button>
+      <button class="qbtn grp" type="button" data-group="2" title="Grupo 2 (tecla 2 · dos toques: ir)"><b>2</b><small id="grp2">—</small></button>
+      <button class="qbtn grp" type="button" data-group="3" title="Grupo 3 (tecla 3 · dos toques: ir)"><b>3</b><small id="grp3">—</small></button>
+      <button class="qbtn grp" type="button" id="btn-builders" title="Constructores: primero los que no trabajan (C)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 5.5l4 4M4 20l8.5-8.5M12 6l6 6-2.5 2.5-6-6z"/><path d="M3 21h6"/></svg><small id="bld-idle">0</small></button>
+    </div>
     <div class="minimap-wrap" id="miniwrap">
       <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
       <button class="btn icon" id="btn-mini" type="button" aria-label="Plegar minimapa">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
       </button>
+    </div>
     </div>
     <div class="quick" id="quick">
       <button class="qbtn" type="button" data-quick="army" title="Seleccionar ejército (T)">
@@ -597,7 +677,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v0.6</span>
+      <span class="version">v0.7</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -636,6 +716,12 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
+      <li><b>Grupos 1, 2 y 3:</b> con tropas elegidas, «Guardar en 1/2/3». Toca 1, 2 o 3 junto al minimapa para elegirlas; dos toques llevan la cámara. Teclado: número elige; Ctrl o Mayús + número guarda.</li>
+      <li><b>Avanzar atacando:</b> en el panel de tropas, y luego toca el destino: pelean con lo que encuentren en el camino (tecla F).</li>
+      <li><b>Formación:</b> «bloque» las junta; «línea» las pone una al lado de otra, de frente al destino.</li>
+      <li><b>Repetir tropa:</b> en el Cuartel, la Fábrica, el Puerto o el Helipuerto, «Repetir» y «×5» ponen otra vez la última tropa.</li>
+      <li><b>Botón Constructores</b> (junto al minimapa o tecla C): elige primero a los que no trabajan.</li>
+      <li><b>Campaña:</b> 6 misiones en el vestíbulo. Cada una da hasta 3 estrellas.</li>
       <li><b>Constructores:</b> empiezas con uno; entrena más en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.</li>
       <li><b>Gráficos:</b> «Automática» baja la calidad sola si el juego va lento. «Contador de cuadros» muestra cuántos cuadros por segundo da tu iPad.</li>
       <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa y «Construir». El constructor libre más cercano va solo; también puedes tocar la obra con él seleccionado.</li>
@@ -656,6 +742,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </div>
 </div>
 
+<div id="brief" class="screen overlay-dim" hidden></div>
 <div id="end" class="screen overlay-dim" hidden>
   <div class="dialog panel" id="enddialog"></div>
 </div>

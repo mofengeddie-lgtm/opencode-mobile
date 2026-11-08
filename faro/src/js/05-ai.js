@@ -89,6 +89,8 @@ class Bot {
     this.produce(mine, units);
     if (this.tac.retreat) this.retreat(units, mine);
     this.repairBase(units, mine);
+    // Campaña: un vecino tranquilo no ataca ni sale a capturar.
+    if (this.passive) return;
     this.attack(units);
     this.ferry(mine, units);
   }
@@ -883,7 +885,7 @@ class Bot {
       this.waveSizes.push(sent.length);
       if (this.firstWaveAt < 0) this.firstWaveAt = g.time;
       this.wave = Math.min(this.wave + 3, 26);
-      this.nextWaveAt = g.time + (50 + Math.random() * 40) * this.persona.waveEvery;
+      this.nextWaveAt = g.time + (50 + Math.random() * 40) * this.persona.waveEvery * (this.waveMult || 1);
     }
     return sent;
   }

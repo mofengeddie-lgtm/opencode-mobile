@@ -136,6 +136,7 @@ const Profile = {
       play: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal' },
       custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
       creator: { on: true, instant: false },
+      campaign: { done: {}, stars: {} },
     };
   },
 
@@ -326,6 +327,7 @@ class Lobby {
       };
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
+    // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
     return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: P.play.difficulty };
   }
 
@@ -367,6 +369,7 @@ class Lobby {
     const off = (label) => `<button type="button" disabled title="Necesita servidores">${label}<small>Roblox</small></button>`;
     return `<nav class="lmenu panel" aria-label="Menú del vestíbulo">
       ${item('main', 'Jugar')}
+      ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${off('Rangos')}${off('Top jugadores')}${off('Servidores')}
@@ -395,6 +398,7 @@ class Lobby {
     const resume = this.resumeHtml();
     if (this.sub === 'custom') return resume + this.customHtml();
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
+    if (this.sub === 'campaign') return resume + this.campaignHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -441,6 +445,39 @@ class Lobby {
         <button class="btn gold" type="button" data-act="play" id="btn-play-custom">Jugar personalizado</button>
         <button class="btn" type="button" disabled>Unirse con código · Disponible en Roblox</button>
       </div>
+    </section>`;
+  }
+
+  campaignStars() {
+    const st = this.P.campaign.stars;
+    return CAMPAIGN.reduce((n, m) => n + (st[m.id] || 0), 0);
+  }
+
+  // Campaña «La ruta del Faro»: 6 misiones; cada una se abre al terminar la anterior.
+  campaignHtml() {
+    const P = this.P;
+    const creator = Creator.active();
+    const cards = CAMPAIGN.map((m) => {
+      const open = Campaign.unlocked(m.id, P, creator);
+      const got = P.campaign.stars[m.id] || 0;
+      const done = !!P.campaign.done[m.id];
+      const stars = [0, 1, 2].map((k) => `<i class="${k < got ? 'on' : ''}" aria-hidden="true">★</i>`).join('');
+      const extra = m.stars.map((s) => Campaign.starText(s)).join(' · ');
+      return `<article class="mcard ${open ? '' : 'locked'} ${done ? 'done' : ''}">
+        <div class="mnum">${m.id}</div>
+        <div class="mbody"><b>${esc(m.name)}</b><span>${esc(Campaign.goalText(m))}</span>
+          <small>★ ${esc(extra)}</small></div>
+        <div class="mside"><span class="mstars" title="${got} de 3 estrellas">${stars}</span>
+          ${open ? `<button class="btn ${done ? '' : 'gold'}" type="button" data-act="mission" data-v="${m.id}" id="btn-mission-${m.id}">${done ? 'Repetir' : 'Jugar'}</button>`
+            : `<span class="mlock">Termina la misión ${m.id - 1}</span>`}</div>
+      </article>`;
+    }).join('');
+    return `<section class="lcard panel">
+      <h2>La ruta del Faro</h2>
+      <p>Seis misiones para volver a encender el Faro de Ámbar. Cada una se abre al terminar la anterior y da hasta 3 estrellas:
+        una por terminarla y dos por las condiciones marcadas con ★.${creator ? ' Modo creador: todas abiertas.' : ''}</p>
+      <div class="missions">${cards}</div>
+      <p class="small-note">Premio la primera vez: cristales (50 a 250) y XP. Cada estrella nueva: +${CAMPAIGN_STAR_CRYSTALS} cristales. Tienes ${this.campaignStars()} de ${CAMPAIGN.length * 3} estrellas.</p>
     </section>`;
   }
 
@@ -636,6 +673,8 @@ class Lobby {
     } else if (act === 'play') {
       this.syncOpts();
       app.startGame();
+    } else if (act === 'mission') {
+      app.startMission(Number(b.dataset.v));
     } else if (act === 'reroll') {
       app.reroll();
     } else if (act === 'diff') {
@@ -865,6 +904,23 @@ class Lobby {
       out.crystals += 150;
       out.tutorial = 'Insignia «Primer Faro», 150 cristales y el aspecto Soldado Dorado';
     }
+    // Campaña: premio la primera vez que terminas la misión y cristales por cada estrella nueva.
+    if (game.camp) {
+      const m = Campaign.def(game.camp.id);
+      const got = Campaign.stars(game).filter((s) => s.ok).length;
+      const prev = P.campaign.stars[m.id] || 0;
+      out.camp = { id: m.id, got, prev, first: 0, newStars: 0 };
+      if (win && !P.campaign.done[m.id]) {
+        P.campaign.done[m.id] = true;
+        out.camp.first = m.crystals;
+        out.crystals += m.crystals;
+      }
+      if (got > prev) {
+        out.camp.newStars = got - prev;
+        out.crystals += out.camp.newStars * CAMPAIGN_STAR_CRYSTALS;
+        P.campaign.stars[m.id] = got;
+      }
+    }
     P.xp += out.xp;
     P.crystals += out.crystals;
     out.level = Profile.level();
@@ -914,7 +970,55 @@ class Lobby {
     return 'Entrena Constructores pronto y construye más Granjas y energía: con más monedas tendrás un ejército más grande.';
   }
 
+  // Final de una misión: estrellas, por qué faltó cada una y «Siguiente misión».
+  missionEndHtml(game) {
+    const r = this.finish(game);
+    const m = Campaign.def(game.camp.id);
+    const me = game.players[0];
+    const win = game.result === 'victory';
+    const stars = Campaign.stars(game);
+    if (!win) stars[0].why = 'Tu Núcleo cayó';
+    const got = stars.filter((s) => s.ok).length;
+    const next = Campaign.def(m.id + 1);
+    const nextOpen = !!next && Campaign.unlocked(next.id, this.P, Creator.active());
+    const c = r.camp;
+    const opened = nextOpen && !!c && c.first > 0;
+    const text = !win ? 'Tu Núcleo cayó. Puedes repetir la misión cuando quieras.'
+      : next ? `Misión cumplida.${opened ? ` Se abrió la misión ${next.id}: ${next.name}.` : ''}`
+        : '¡Terminaste la campaña! El Faro de Ámbar vuelve a brillar.';
+    const why = c ? [c.first ? `Primera vez: ${c.first}` : '', c.newStars ? `${c.newStars === 1 ? '1 estrella nueva' : `${c.newStars} estrellas nuevas`}: ${c.newStars * CAMPAIGN_STAR_CRYSTALS}` : '',
+      r.missions.length ? 'misiones' : ''].filter(Boolean).join(' · ') : '';
+    const prizes = r.creator
+      ? '<div><b>Modo creador</b><span>Sin XP ni cristales</span></div>'
+      : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
+         <div><b>+${fmt(r.crystals)} cristales</b><span>${esc(why || 'Por jugar')}</span></div>
+         <div><b>Nivel ${r.level}</b><span>${r.levelUp ? '¡Subiste de nivel!' : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
+    const core = me.core;
+    return `
+      <div class="endhero"><div><small class="lbl">Campaña · Misión ${m.id} de ${CAMPAIGN.length}</small>
+        <h2>${win ? '¡Misión cumplida!' : 'Misión fallida'}</h2><p>${esc(m.name)} · ${esc(text)}</p></div>
+        <div class="bigstars" role="img" aria-label="${got} de 3 estrellas">${stars.map((s) => `<i class="${s.ok ? 'on' : ''}">★</i>`).join('')}</div></div>
+      <ol class="starlist">${stars.map((s) => `<li class="${s.ok ? 'ok' : 'no'}"><b>${esc(s.text)}</b><span>${s.ok ? 'Conseguida' : esc(s.why)}</span></li>`).join('')}</ol>
+      <div class="endstats">
+        <div><b>${fmtTime(game.time)}</b><span>Tiempo</span></div>
+        <div><b>${me.stats.lost}</b><span>Tropas perdidas</span></div>
+        <div><b>${game.camp.lostBld}</b><span>Edificios perdidos</span></div>
+        <div><b>${core.alive ? Math.round((core.hp / core.maxHp) * 100) : 0} %</b><span>Vida del Núcleo</span></div>
+      </div>
+      <h3 class="lbl">Premios</h3>
+      <div class="prizes">${prizes}</div>
+      ${r.missions.length ? `<div class="advice">Misiones completadas: ${r.missions.map(esc).join(', ')}</div>` : ''}
+      ${win ? '' : `<div class="advice"><b>Consejo:</b> ${esc(m.tip)}</div>`}
+      <div class="row">
+        <button class="btn" type="button" id="btn-watch">Mirar el final</button>
+        ${win && next ? `<button class="btn gold" type="button" id="btn-next" data-v="${next.id}">Siguiente misión</button>` : ''}
+        <button class="btn ${win && next ? '' : 'gold'}" type="button" id="btn-again">Repetir</button>
+        <button class="btn" type="button" id="btn-menu">Vestíbulo</button>
+      </div>`;
+  }
+
   endHtml(game) {
+    if (game.camp) return this.missionEndHtml(game);
     const r = this.finish(game);
     const me = game.players[0];
     const s = me.stats;

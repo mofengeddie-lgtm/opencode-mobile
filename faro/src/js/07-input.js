@@ -10,6 +10,7 @@ class Input {
     this.drag = null;
     this.keys = new Set();
     this.boxMode = false;
+    this.amoveArm = false; // «Avanzar atacando»: el siguiente toque en el mapa da la orden
     this.placement = null;
     this.lastTap = { t: 0, x: 0, y: 0, id: -1 };
     this.lastRot = {};
@@ -166,8 +167,22 @@ class Input {
     if (down) this.keys.add(k);
     else this.keys.delete(k);
     if (!down || !this.active()) return;
+    // Grupos (v0.7): número elige; Ctrl, Cmd o Mayús + número guarda. Se usa e.code para que
+    // Mayús + 1 funcione aunque el teclado escriba «!».
+    const digit = /^Digit([1-3])$/.exec(e.code || '');
+    if (digit) {
+      const n = Number(digit[1]);
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        e.preventDefault();
+        this.app.saveGroup(n);
+      } else {
+        this.app.selectGroup(n);
+      }
+      return;
+    }
     if (k === 'escape') {
-      if (this.placement) this.cancelPlacement();
+      if (this.amoveArm) this.disarmAttackMove();
+      else if (this.placement) this.cancelPlacement();
       else if (this.app.selection.length) this.app.setSelection([]);
       else this.app.togglePause(true);
     } else if (k === 'r' && this.placement && this.placement.kind === 'build') this.rotatePlacement();
@@ -181,6 +196,8 @@ class Input {
       if (s.length === 1 && s[0].kind === 'bld' && s[0].owner === 0) this.app.ui.demolishSelected();
     } else if (k === 't') this.app.quickSelect('army');
     else if (k === 'p') this.app.togglePause(true);
+    else if (k === 'f') this.armAttackMove();
+    else if (k === 'c') this.app.selectBuilders();
   }
 
   update(dt) {
@@ -208,6 +225,25 @@ class Input {
     this.r.setHover(c ? c.i : -1);
   }
 
+  // ---------- avanzar atacando ----------
+  armAttackMove() {
+    const armed = this.app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive && e.def.weapon);
+    if (!armed.length) {
+      this.app.ui.toast('Elige primero tropas que puedan pelear', 'bad');
+      return false;
+    }
+    this.amoveArm = true;
+    this.app.ui.selSig = '';
+    this.app.ui.toast('Toca el destino: avanzarán peleando con todo lo que encuentren');
+    return true;
+  }
+
+  disarmAttackMove() {
+    if (!this.amoveArm) return;
+    this.amoveArm = false;
+    if (this.app.ui) this.app.ui.selSig = '';
+  }
+
   // ---------- toques ----------
   tap(x, y, right) {
     const g = this.game;
@@ -216,6 +252,8 @@ class Input {
       this.placementTap(x, y);
       return;
     }
+    const amove = this.amoveArm;
+    this.disarmAttackMove();
     const mine = app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
     const unit = this.r.pickUnit(x, y);
     const cell = this.r.pickCell(x, y);
@@ -225,6 +263,15 @@ class Input {
     const now = performance.now();
     const dbl = now - this.lastTap.t < 330 && Math.hypot(x - this.lastTap.x, y - this.lastTap.y) < 30;
     this.lastTap = { t: now, x, y, id: target ? target.id : -1 };
+
+    // Avanzar atacando: a ese lugar, peleando en el camino (sobre un enemigo, se ataca directo).
+    if (amove && mine.length && cell && !(target && g.isEnemy(target.owner, 0))) {
+      g.orderMove(mine, cell.i, true, app.formation);
+      this.r.addMoveMarker(cell.i, 0xff6060);
+      app.ui.toast(`${mine.length === 1 ? 'Avanza' : `${mine.length} tropas avanzan`} atacando`);
+      app.sound.play('order');
+      return;
+    }
 
     if (target && g.isEnemy(target.owner, 0)) {
       if (mine.length) {
@@ -321,7 +368,7 @@ class Input {
   moveTo(units, ci) {
     const g = this.game;
     const founders = units.filter((u) => u.state === 'found');
-    g.orderMove(units, ci, false);
+    g.orderMove(units, ci, false, this.app.formation);
     for (const u of founders) u.foundCell = -1;
     this.r.addMoveMarker(ci);
     this.app.sound.play('order');

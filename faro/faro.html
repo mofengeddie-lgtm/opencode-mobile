@@ -493,6 +493,77 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .prizes { grid-template-columns: 1fr; }
   .daygrid { grid-template-columns: repeat(4, 1fr); }
 }
+/* ---------- v0.7: grupos, campaña y misión ---------- */
+.mapcol { display: flex; flex-direction: column; gap: 6px; }
+.groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 172px; }
+.groups .qbtn { width: auto; min-height: 40px; padding: 2px 0; gap: 0; }
+.qbtn.grp b { font-family: var(--font-display); font-size: 16px; line-height: 1; color: var(--text); }
+.qbtn.grp small { font-size: 10px; line-height: 1.1; font-family: var(--font-display); }
+.qbtn.grp svg { width: 18px; height: 18px; }
+.qbtn.grp.has small { color: var(--gold); }
+.qbtn.grp.alert small { color: var(--good); }
+.actions.groupsave .btn { min-width: 44px; padding: 0 10px; }
+.actions.repeat .queue { margin-right: auto; }
+#leftcol.camp #objectives li.star::before { content: '★'; border: 0; width: auto; height: auto; margin: 0; color: var(--gold); font-size: 13px; line-height: 1.3; }
+#leftcol.camp #objectives li.star span { display: grid; }
+#leftcol.camp #objectives li.star small { color: var(--muted); font-size: 11.5px; }
+#leftcol.camp #objectives li.star.lost { color: var(--muted); }
+#leftcol.camp #objectives li.star.lost::before { color: var(--muted); }
+#leftcol.camp #objectives { border-color: rgba(242,171,56,0.45); }
+.missions { display: grid; gap: 8px; }
+.mcard { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--raise); border: 1px solid var(--line); }
+.mcard.done { border-color: rgba(242,171,56,0.45); }
+.mcard.locked { opacity: 0.55; }
+.mnum { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; background: rgba(242,171,56,0.14); color: var(--gold); font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.mcard.locked .mnum { background: rgba(255,255,255,0.06); color: var(--muted); }
+.mbody { display: grid; gap: 2px; min-width: 0; }
+.mbody b { font-size: 15px; }
+.mbody span { font-size: 13px; color: var(--text); line-height: 1.35; }
+.mbody small { font-size: 12px; color: var(--muted); line-height: 1.35; }
+.mside { display: grid; gap: 6px; justify-items: end; }
+.mside .btn { min-width: 96px; }
+.mstars i, .bigstars i { font-style: normal; color: rgba(255,255,255,0.18); }
+.mstars i.on, .bigstars i.on { color: var(--gold); }
+.mstars { font-size: 16px; letter-spacing: 2px; }
+.mlock { font-size: 12px; color: var(--muted); text-align: right; max-width: 120px; }
+.bigstars { margin-left: auto; font-size: 44px; letter-spacing: 4px; line-height: 1; white-space: nowrap; }
+.starlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.starlist li { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 10px; border-radius: 8px; background: var(--raise); font-size: 14px; }
+.starlist li span { color: var(--muted); font-size: 13px; }
+.starlist li.ok b { color: var(--gold); }
+.starlist li.ok b::before { content: '★ '; }
+.starlist li.no b::before { content: '☆ '; color: var(--muted); }
+.brief .story { color: var(--text) !important; font-size: 15.5px; }
+.brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.brief-grid h3 { margin: 0 0 6px; }
+.brief .tip { padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(111,211,255,0.4); background: rgba(111,211,255,0.07); color: var(--text) !important; font-size: 13.5px; }
+@media (max-width: 860px), (max-height: 520px) {
+  /* En pantallas chicas el panel de la misión se ve (plegado) arriba a la derecha. */
+  #leftcol.camp { display: flex; left: auto; right: var(--right); top: calc(var(--top) + 60px); bottom: auto; width: min(250px, calc(100% - 290px)); min-width: 180px; }
+  #leftcol.camp #feed { display: none; }
+  #leftcol.camp #objectives { display: block; padding: 8px 10px; }
+  #leftcol.camp #objectives ol { font-size: 12.5px; }
+  .groups { width: auto; grid-template-columns: repeat(4, 44px); gap: 6px; }
+  .groups .qbtn { min-height: 44px; }
+  .brief-grid { grid-template-columns: 1fr; }
+  .bigstars { font-size: 34px; }
+}
+@media (max-height: 520px) {
+  .groups { grid-template-columns: repeat(4, 40px); gap: 4px; }
+  .groups .qbtn { min-height: 38px; }
+  #leftcol.camp { top: calc(var(--top) + 52px); }
+}
+@media (max-width: 480px) and (min-height: 521px) {
+  /* Celular vertical: el panel de la misión va debajo del minimapa y los botones rápidos. */
+  #leftcol.camp { right: auto; left: var(--left); top: calc(var(--top) + 282px); width: min(300px, calc(100% - 96px)); }
+}
+@media (max-width: 520px) {
+  .mcard { grid-template-columns: 36px minmax(0, 1fr); }
+  .mnum { width: 36px; height: 36px; font-size: 18px; }
+  .mside { grid-column: 1 / -1; grid-auto-flow: column; justify-content: space-between; align-items: center; }
+  .endhero { flex-wrap: wrap; }
+  .bigstars { margin-left: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
@@ -537,7 +608,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 
   <div id="leftcol">
   <aside id="objectives" class="panel">
-    <header><span class="lbl">Primeros pasos</span><button type="button" id="btn-obj">Ocultar</button></header>
+    <header><span class="lbl" id="objtitle">Primeros pasos</span><button type="button" id="btn-obj">Ocultar</button></header>
     <ol id="objlist"></ol>
   </aside>
   <div id="feed" aria-live="polite"></div>
@@ -564,11 +635,20 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </button>
 
   <div id="leftdock">
+    <div class="mapcol">
+    <div class="groups" id="groups" aria-label="Grupos y constructores">
+      <button class="qbtn grp" type="button" data-group="1" title="Grupo 1 (tecla 1 · dos toques: ir)"><b>1</b><small id="grp1">—</small></button>
+      <button class="qbtn grp" type="button" data-group="2" title="Grupo 2 (tecla 2 · dos toques: ir)"><b>2</b><small id="grp2">—</small></button>
+      <button class="qbtn grp" type="button" data-group="3" title="Grupo 3 (tecla 3 · dos toques: ir)"><b>3</b><small id="grp3">—</small></button>
+      <button class="qbtn grp" type="button" id="btn-builders" title="Constructores: primero los que no trabajan (C)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 5.5l4 4M4 20l8.5-8.5M12 6l6 6-2.5 2.5-6-6z"/><path d="M3 21h6"/></svg><small id="bld-idle">0</small></button>
+    </div>
     <div class="minimap-wrap" id="miniwrap">
       <canvas id="minimap" width="344" height="344" aria-label="Minimapa: toca para mover la cámara"></canvas>
       <button class="btn icon" id="btn-mini" type="button" aria-label="Plegar minimapa">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
       </button>
+    </div>
     </div>
     <div class="quick" id="quick">
       <button class="qbtn" type="button" data-quick="army" title="Seleccionar ejército (T)">
@@ -602,7 +682,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v0.6</span>
+      <span class="version">v0.7</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -641,6 +721,12 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
+      <li><b>Grupos 1, 2 y 3:</b> con tropas elegidas, «Guardar en 1/2/3». Toca 1, 2 o 3 junto al minimapa para elegirlas; dos toques llevan la cámara. Teclado: número elige; Ctrl o Mayús + número guarda.</li>
+      <li><b>Avanzar atacando:</b> en el panel de tropas, y luego toca el destino: pelean con lo que encuentren en el camino (tecla F).</li>
+      <li><b>Formación:</b> «bloque» las junta; «línea» las pone una al lado de otra, de frente al destino.</li>
+      <li><b>Repetir tropa:</b> en el Cuartel, la Fábrica, el Puerto o el Helipuerto, «Repetir» y «×5» ponen otra vez la última tropa.</li>
+      <li><b>Botón Constructores</b> (junto al minimapa o tecla C): elige primero a los que no trabajan.</li>
+      <li><b>Campaña:</b> 6 misiones en el vestíbulo. Cada una da hasta 3 estrellas.</li>
       <li><b>Constructores:</b> empiezas con uno; entrena más en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.</li>
       <li><b>Gráficos:</b> «Automática» baja la calidad sola si el juego va lento. «Contador de cuadros» muestra cuántos cuadros por segundo da tu iPad.</li>
       <li><b>Construir:</b> elige un edificio, toca una casilla dorada, revisa la vista previa y «Construir». El constructor libre más cercano va solo; también puedes tocar la obra con él seleccionado.</li>
@@ -661,6 +747,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   </div>
 </div>
 
+<div id="brief" class="screen overlay-dim" hidden></div>
 <div id="end" class="screen overlay-dim" hidden>
   <div class="dialog panel" id="enddialog"></div>
 </div>
@@ -678,7 +765,7 @@ const FARO_ENV = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQ
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.6';
+const GAME_VERSION = '0.7';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -1021,6 +1108,67 @@ const PERSONALITIES = {
 const PERSONALITY_ORDER = ['aggro', 'builder', 'admiral', 'keeper'];
 const ALLY_LINES = { attack: 'Voy a atacar a {t}. ¡Cúbreme!', faro: 'Tomé el Faro para el equipo.', flag: 'Tomé una Bandera para el equipo.' };
 const CAT_NAMES = { inf: 'infantería', veh: 'vehículos', ship: 'buques', sub: 'submarinos', air: 'aeronaves', bld: 'edificios' };
+
+// Campaña «La ruta del Faro» (v0.7). goal = lo que hay que lograr para ganar; stars = las 2 estrellas
+// extra (la primera estrella es terminar la misión). personas: personalidad de cada bot por número.
+// Tipos de meta: eco (ingresos y tropas), survive (aguantar), hold (Faro en tu poder), flags (Banderas
+// de otras islas), destroy (todos los Núcleos rivales). Estrellas: time (menos de X s), lostBld y
+// lostUnits (perder X o menos), coreEnd (Núcleo sobre X al final), coreMin (Núcleo nunca bajo X).
+const CAMPAIGN = [
+  {
+    id: 1, name: 'Primera luz', mapKind: 'continent', seed: 7101, players: 2, difficulty: 'easy',
+    personas: [null, 'builder'], passive: true, crystals: 50,
+    story: 'Tu colonia acaba de llegar a una isla tranquila. El Faro de Ámbar lleva años apagado y nadie vigila la costa. Antes de pensar en batallas, pon en marcha la economía y arma una pequeña guardia.',
+    tip: 'Las Granjas van en la tierra fértil. El Cuartel entrena Artilleros y Escopeteros. Tu vecino de esta isla no atacará.',
+    goal: { kind: 'eco', income: 1600, army: 5 },
+    stars: [{ kind: 'time', max: 360 }, { kind: 'lostBld', max: 0 }],
+  },
+  {
+    id: 2, name: 'Defender la costa', mapKind: 'archipelago', seed: 7202, players: 2, difficulty: 'normal',
+    personas: [null, 'admiral'], coins: 4000, crystals: 75, firstWave: 100, waveEvery: 0.9,
+    enemyStart: { buildings: ['harbor'], units: ['speedboat', 'speedboat', 'rifle', 'rifle', 'shotgun'] },
+    myStart: { buildings: ['turret'] },
+    story: 'Un Almirante quiere tu isla para su flota y sus barcos ya zarparon. Levanta defensas en la costa y aguanta hasta que llegue la ayuda.',
+    tip: 'Las Torretas disparan a barcos. Pon algunas entre el agua y tu Núcleo, y repara con Constructores.',
+    goal: { kind: 'survive', time: 360 },
+    stars: [{ kind: 'coreEnd', min: 0.5 }, { kind: 'lostBld', max: 3 }],
+  },
+  {
+    id: 3, name: 'El Faro', mapKind: 'archipelago', seed: 7303, players: 2, difficulty: 'normal',
+    personas: [null, 'keeper'], crystals: 100, myStart: { units: ['rifle', 'rifle', 'rifle'] },
+    guardFaro: { units: ['rifle', 'rifle', 'rifle', 'shotgun'] },
+    story: 'El Faro está en la isla del centro y un Guardián del Faro ya lo tomó con 4 guardias. Tienes 3 Artilleros: junta más tropas, quítale el Faro y mantenlo encendido.',
+    tip: 'Solo la infantería captura: quédate junto al Faro sin enemigos cerca. El tiempo se suma aunque lo pierdas un rato. Usa «Avanzar atacando».',
+    goal: { kind: 'hold', time: 60 },
+    stars: [{ kind: 'time', max: 480 }, { kind: 'lostUnits', max: 6 }],
+  },
+  {
+    id: 4, name: 'Cruzar el mar', mapKind: 'open', seed: 7404, players: 2, difficulty: 'normal',
+    personas: [null, 'keeper'], crystals: 125, myStart: { buildings: ['harbor'], units: ['barge'] },
+    guardFlags: { count: 2, units: ['rifle', 'rifle', 'shotgun'] },
+    story: 'Más allá del mar hay islas con Banderas. Tu Puerto y una Barcaza ya están listos, pero un Guardián del Faro puso guardias en las Banderas más cercanas. Entrena infantería, cruza el mar y quítaselas.',
+    tip: 'Construye un Cuartel y entrena Artilleros o Escopeteros. Selecciónalos y toca la Barcaza para subirlos; muévela junto a otra isla y toca «Desembarcar».',
+    goal: { kind: 'flags', count: 2 },
+    stars: [{ kind: 'time', max: 600 }, { kind: 'lostUnits', max: 8 }],
+  },
+  {
+    id: 5, name: 'Asedio', mapKind: 'continent', seed: 7505, players: 2, difficulty: 'hard',
+    personas: [null, 'builder'], coins: 8000, crystals: 150, fortress: true,
+    story: 'Un imperio se encerró tras murallas, Torretas de nivel 2 y 3 y AIR DEFENSE. Tienes 8.000 monedas para preparar el asedio. Rompe sus defensas y destruye su Núcleo.',
+    tip: 'Los Tanques y los Lanzamisiles pegan fuerte a los edificios. La AIR DEFENSE derriba helicópteros: déjalos para el final.',
+    goal: { kind: 'destroy' },
+    stars: [{ kind: 'time', max: 720 }, { kind: 'lostUnits', max: 15 }],
+  },
+  {
+    id: 6, name: 'La gran batalla', mapKind: 'archipelago', seed: 7606, players: 4, difficulty: 'normal',
+    personas: [null, 'builder', 'aggro', 'admiral'], coins: 4000, crystals: 250,
+    story: 'Tres imperios quieren la luz del Faro de Ámbar. Solo uno quedará en pie. Que sea el tuyo.',
+    tip: 'Empiezas con 4.000 monedas. Los rivales también pelean entre ellos: defiende tu Núcleo (la estrella pide que nunca baje del 50 %) y ataca al más débil.',
+    goal: { kind: 'destroy' },
+    stars: [{ kind: 'time', max: 1080 }, { kind: 'coreMin', min: 0.5 }],
+  },
+];
+const CAMPAIGN_STAR_CRYSTALS = 20;
 
 const OBJECTIVES = [
   { id: 'builder', text: 'Entrena un Constructor en el Núcleo' },
@@ -2376,7 +2524,7 @@ function customMode(c) {
 class Game {
   constructor(opts) {
     this.opts = opts;
-    const mode = opts.custom ? customMode(opts.custom) : MODES[opts.mode];
+    const mode = opts.mission ? Campaign.mode(opts.mission) : opts.custom ? customMode(opts.custom) : MODES[opts.mode];
     this.mode = mode;
     this.diff = DIFFICULTY[opts.difficulty];
     this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
@@ -2457,6 +2605,9 @@ class Game {
       p.persona = opts.personas && opts.personas[p.id] ? opts.personas[p.id] : order[i % order.length];
       return new Bot(this, p.id);
     });
+    // Campaña (v0.7): preparación de la misión y seguimiento de su meta.
+    this.camp = null;
+    if (opts.mission) Campaign.setup(this);
   }
 
   // ---------- consultas básicas ----------
@@ -2956,6 +3107,7 @@ class Game {
     p.coins -= def.cost;
     p.energy -= def.energy || 0;
     b.queue.push({ type, t: 0 });
+    b.lastType = type;
     p.popUsed += def.pop;
     return null;
   }
@@ -3125,13 +3277,54 @@ class Game {
     return center.i;
   }
 
-  orderMove(units, ci, attackMove = false) {
+  // Formación en línea (v0.7): una fila de frente al destino, perpendicular a la dirección de marcha.
+  // Devuelve una casilla por tropa (ordenadas de izquierda a derecha) y hacia dónde miran.
+  lineSlots(units, center) {
+    let cx = 0;
+    let cz = 0;
+    for (const u of units) { cx += u.x; cz += u.z; }
+    cx /= units.length;
+    cz /= units.length;
+    let dx = center.x - cx;
+    let dz = center.z - cz;
+    const len = Math.hypot(dx, dz);
+    if (len < 0.5) { dx = 0; dz = 1; } else { dx /= len; dz /= len; }
+    const px = -dz;
+    const pz = dx;
+    const perRow = 10;
+    const order = [...units].sort((a, b) => (a.x * px + a.z * pz) - (b.x * px + b.z * pz));
+    const slots = new Map();
+    const used = new Set();
+    order.forEach((u, k) => {
+      const row = Math.floor(k / perRow);
+      const inRow = Math.min(perRow, order.length - row * perRow);
+      const off = (k % perRow) - (inRow - 1) / 2;
+      const x = center.x + px * off * SQ3 - dx * row * SQ3;
+      const z = center.z + pz * off * SQ3 - dz * row * SQ3;
+      const c = this.map.atWorld(x, z) || center;
+      const dest = this.spreadDest(u, c, used);
+      used.add(dest);
+      slots.set(u, dest);
+      // Dentro de su casilla, se para justo sobre la línea (sin salirse de la casilla).
+      const dc = this.cells[dest];
+      let ox = x - dc.x;
+      let oz = z - dc.z;
+      const ol = Math.hypot(ox, oz);
+      if (ol > 0.7) { ox *= 0.7 / ol; oz *= 0.7 / ol; }
+      if (u.mover !== 'air') { u.offX = ox; u.offZ = oz; }
+    });
+    return { slots, face: Math.atan2(dx, dz) };
+  }
+
+  orderMove(units, ci, attackMove = false, formation = 'block') {
     const used = new Set();
     const center = this.cells[ci];
-    for (const u of units) {
-      if (!u.alive) continue;
-      const dest = this.spreadDest(u, center, used);
+    const alive = units.filter((u) => u.alive);
+    const line = formation === 'line' && alive.length > 1 ? this.lineSlots(alive, center) : null;
+    for (const u of alive) {
+      const dest = line ? line.slots.get(u) : this.spreadDest(u, center, used);
       used.add(dest);
+      u.faceYaw = line ? line.face : null;
       u.target = null;
       u.autoTarget = null;
       u.aggroTarget = null;
@@ -3145,6 +3338,7 @@ class Game {
   orderAttack(units, target) {
     for (const u of units) {
       if (!u.alive) continue;
+      u.faceYaw = null;
       const w = u.def.weapon;
       if (!w || !this.canAttack(u, w, target)) continue;
       u.state = 'attack';
@@ -3365,6 +3559,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.kind === 'bld' && e.owner === 0 && this.camp && !this.over) this.camp.lostBld++;
     if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
       const c = this.cells[e.cell];
@@ -3485,6 +3680,7 @@ class Game {
     }
     this.updateProjectiles(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
+    if (this.camp) Campaign.update(this, dt);
 
     if (this.units.some((u) => !u.alive)) {
       for (const u of this.units) if (!u.alive) this.removed.push(u);
@@ -4009,7 +4205,9 @@ class Game {
     const cell = this.cells[u.cell];
     const gy = this.groundY(u, cell);
     u.y += (gy - u.y) * Math.min(1, dt * 10);
-    const want = u.moving ? u.moveYaw : ft && !u.def.turretOnly ? u.aimYaw : u.yaw;
+    // Quieta en formación en línea: mira hacia donde se la mandó.
+    const face = u.faceYaw !== null && u.faceYaw !== undefined && u.state === 'idle' ? u.faceYaw : u.yaw;
+    const want = u.moving ? u.moveYaw : ft && !u.def.turretOnly ? u.aimYaw : face;
     u.yaw = lerpAngle(u.yaw, want, Math.min(1, dt * 8));
   }
 
@@ -4080,7 +4278,7 @@ const Save = {
     const roots = {
       BUILDINGS, UNITS, MODES, MAPS, DIFFICULTY, POINTS, PERSONALITIES, TERRAIN, DOME_LEVELS, UNIT_SHIELD,
       HOUSE_LEVELS, DOME, EMERGENCY, REPAIR, CAPTURE, PALETTES, BUILD_TABS, OBJECTIVES, PLAYER_COLORS,
-      PLAYER_NAMES, LEVEL_UP_COST, PERSONALITY_ORDER, ALLY_LINES, CAT_NAMES,
+      PLAYER_NAMES, LEVEL_UP_COST, PERSONALITY_ORDER, ALLY_LINES, CAT_NAMES, CAMPAIGN,
     };
     const walk = (o, path, depth) => {
       if (!o || typeof o !== 'object' || paths.has(o) || depth > 6) return;
@@ -4227,6 +4425,296 @@ const Save = {
   },
 };
 
+// ---- 046-campaign.js ----
+'use strict';
+// Campaña «La ruta del Faro» (v0.7): prepara cada misión, sigue su meta y calcula las estrellas.
+// El estado de la misión vive en game.camp (solo datos simples, para que se guarde con la partida).
+
+const Campaign = {
+  def(id) {
+    return CAMPAIGN.find((m) => m.id === id) || null;
+  },
+
+  // Modo de juego de una misión: todos contra todos. Las monedas extra son solo para ti.
+  mode(id) {
+    const m = this.def(id);
+    const teams = [];
+    for (let i = 0; i < m.players; i++) teams.push(i);
+    return { name: `Misión ${m.id} · ${m.name}`, players: m.players, teams, campaign: m.id };
+  },
+
+  // Opciones para empezar una misión: mapa y semilla fijos, así siempre es la misma isla.
+  opts(id) {
+    const m = this.def(id);
+    return { mode: 'campaign', mission: id, mapKind: m.mapKind, difficulty: m.difficulty, seed: m.seed, personas: m.personas.slice() };
+  },
+
+  // Una misión está abierta si es la primera, si terminaste la anterior o en modo creador.
+  unlocked(id, P, creator) {
+    if (creator || id === 1) return true;
+    return !!(P && P.campaign && P.campaign.done[id - 1]);
+  },
+
+  goalText(m) {
+    const g = m.goal;
+    if (g.kind === 'eco') return `Llega a ${fmt(g.income)} monedas por minuto y ten ${g.army} tropas de combate.`;
+    if (g.kind === 'survive') return `Aguanta ${Math.round(g.time / 60)} minutos con tu Núcleo en pie.`;
+    if (g.kind === 'hold') return `Toma el Faro y mantenlo ${g.time} s en total.`;
+    if (g.kind === 'flags') return `Captura ${g.count} Banderas de otras islas.`;
+    return m.players > 2 ? 'Sé el último Núcleo en pie.' : 'Destruye el Núcleo enemigo.';
+  },
+
+  starText(s) {
+    if (s.kind === 'time') return `En menos de ${Math.round(s.max / 60)} min`;
+    if (s.kind === 'lostBld') return s.max === 0 ? 'Sin perder edificios' : `Pierdes ${s.max} edificios o menos`;
+    if (s.kind === 'lostUnits') return `Pierdes ${s.max} tropas o menos`;
+    if (s.kind === 'coreEnd') return `Núcleo sobre el ${Math.round(s.min * 100)} % al terminar`;
+    return `Tu Núcleo nunca baja del ${Math.round(s.min * 100)} %`;
+  },
+
+  // ---------- preparación ----------
+  setup(g) {
+    const m = this.def(g.opts.mission);
+    const me = g.players[0];
+    g.camp = {
+      id: m.id, lostBld: 0, minCore: 1, faroHold: 0, flags: [], won: false, checkT: 0,
+      homeComp: g.cells[me.core.cell].comp,
+    };
+    if (m.coins) me.coins = m.coins;
+    for (const bot of g.bots) {
+      if (m.passive) bot.passive = true;
+      if (m.firstWave) bot.nextWaveAt = m.firstWave + Math.random() * 15;
+      if (m.waveEvery) bot.waveMult = m.waveEvery;
+      if (m.enemyStart) this.giveStart(g, bot.pid, m.enemyStart);
+      if (m.fortress) this.fortify(g, bot.pid);
+      if (m.guardFlags) this.guardFlags(g, bot.pid, m.guardFlags);
+      if (m.guardFaro) this.guardPoints(g, bot.pid, g.points.filter((pt) => pt.type === 'faro'), m.guardFaro.units);
+    }
+    if (m.myStart) this.giveStart(g, 0, m.myStart);
+    g.recomputeTerritory();
+    g.refreshEconomy();
+  },
+
+  // Casilla libre más cercana al Núcleo donde cabe ese edificio (en su territorio o en agua libre).
+  spotFor(g, pid, type) {
+    const core = g.cells[g.players[pid].core.cell];
+    let best = -1;
+    let bd = Infinity;
+    for (const c of g.cells) {
+      if (c.bld || c.point || (c.owner >= 0 && c.owner !== pid)) continue;
+      const d = g.map.dist(c, core);
+      if (d > 8 || d < 2) continue;
+      const why = g.placeInvalid(pid, type, c.i, true);
+      if (why && !(why === 'Fuera de tu territorio' && c.owner < 0 && type === 'harbor')) continue;
+      if (type === 'harbor' && (c.t !== 'shallow' || !g.map.isCoast(c))) continue;
+      if (d < bd) { bd = d; best = c.i; }
+    }
+    return best;
+  },
+
+  giveStart(g, pid, spec) {
+    const p = g.players[pid];
+    let harbor = null;
+    for (const type of spec.buildings || []) {
+      const ci = this.spotFor(g, pid, type);
+      if (ci < 0) continue;
+      const b = g.addBuilding(pid, type, ci, true);
+      if (type === 'harbor') harbor = b;
+      g.recomputeTerritory();
+    }
+    const sea = (spec.units || []).filter((t) => UNITS[t].mover === 'sea');
+    const land = (spec.units || []).filter((t) => UNITS[t].mover !== 'sea');
+    if (sea.length && harbor) {
+      const cells = g.freeCellsNear(harbor.cell, 'sea', pid, sea.length);
+      sea.forEach((t, k) => { if (cells[k] !== undefined) g.addUnit(pid, t, cells[k]); });
+    }
+    const cells = g.freeCellsNear(p.core.cell, 'land', pid, land.length + 2);
+    land.forEach((t, k) => { if (cells[k + 2] !== undefined) g.addUnit(pid, t, cells[k + 2]); });
+  },
+
+  // Cruzar el mar: el rival ya tiene las Banderas de otras islas más cercanas a ti, con guardias.
+  guardFlags(g, pid, spec) {
+    const mine = g.cells[g.players[0].core.cell];
+    const flags = g.points.filter((pt) => pt.type === 'flag' && g.cells[pt.cell].comp !== g.camp.homeComp)
+      .sort((a, b) => g.map.dist(g.cells[a.cell], mine) - g.map.dist(g.cells[b.cell], mine)).slice(0, spec.count);
+    this.guardPoints(g, pid, flags, spec.units);
+  },
+
+  // El rival empieza dueño de esos puntos, con guardias a su lado.
+  guardPoints(g, pid, points, units) {
+    for (const pt of points) {
+      pt.owner = pid;
+      pt.prog = 1;
+      pt.capTeam = g.players[pid].team;
+      const cells = g.freeCellsNear(pt.cell, 'land', pid, units.length);
+      units.forEach((t, k) => {
+        const u = g.addUnit(pid, t, cells[k]);
+        u.role = 'guard';
+      });
+    }
+    g.territoryDirty = true;
+  },
+
+  // Asedio: Núcleo en nivel 2, arco de murallas, Torretas de nivel 3 y 2 y AIR DEFENSE detrás.
+  fortify(g, pid) {
+    const core = g.players[pid].core;
+    const cc = g.cells[core.cell];
+    const mine = g.cells[g.players[0].core.cell];
+    const dir = Math.atan2(mine.z - cc.z, mine.x - cc.x);
+    const off = (c) => {
+      let a = Math.atan2(c.z - cc.z, c.x - cc.x) - dir;
+      while (a > Math.PI) a -= Math.PI * 2;
+      while (a < -Math.PI) a += Math.PI * 2;
+      return Math.abs(a);
+    };
+    const free = (c) => !c.bld && !c.point && TERRAIN[c.t].land && !['gold', 'fertile', 'oilland'].includes(c.t);
+    const ring = (d) => g.cells.filter((c) => g.map.dist(c, cc) === d && free(c)).sort((a, b) => off(a) - off(b));
+    const level = (b, lv) => {
+      if (lv <= 1) return;
+      b.upgrading = { level: lv, progress: 1 };
+      g.finishUpgrade(b);
+    };
+    level(core, 2);
+    for (const c of ring(3)) if (off(c) < 1.3) g.addBuilding(pid, 'wall', c.i, true);
+    const r2 = ring(2);
+    const picks = [];
+    const take = (ok) => {
+      const c = r2.find((x) => !picks.includes(x) && ok(x) && picks.every((p) => g.map.dist(p, x) >= 2));
+      if (c) picks.push(c);
+      return c;
+    };
+    const front = take(() => true);
+    if (front) level(g.addBuilding(pid, 'turret', front.i, true), 3);
+    for (let k = 0; k < 2; k++) {
+      const c = take((x) => off(x) > 0.45 && off(x) < 2);
+      if (c) level(g.addBuilding(pid, 'turret', c.i, true), 2);
+    }
+    const back = [...r2].reverse().find((x) => !picks.includes(x) && off(x) > 1.8);
+    if (back) g.addBuilding(pid, 'aadef', back.i, true);
+  },
+
+  // ---------- durante la partida ----------
+  update(g, dt) {
+    const c = g.camp;
+    if (!c || g.over || g.preview) return;
+    const core = g.players[0].core;
+    if (core.alive) c.minCore = Math.min(c.minCore, core.hp / core.maxHp);
+    c.checkT -= dt;
+    if (c.checkT > 0) return;
+    const step = 0.25 - c.checkT;
+    c.checkT = 0.25;
+    const m = this.def(c.id);
+    if (m.goal.kind === 'hold') {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      if (faro && faro.owner === 0) c.faroHold += step;
+    } else if (m.goal.kind === 'flags') {
+      for (const pt of g.points) {
+        if (pt.type === 'flag' && pt.owner === 0 && g.cells[pt.cell].comp !== c.homeComp && !c.flags.includes(pt.id)) {
+          c.flags.push(pt.id);
+          g.emit('toast', { text: `Bandera de otra isla: ${c.flags.length} de ${m.goal.count}`, kind: 'good' });
+        }
+      }
+    }
+    if (this.goalMet(g)) this.win(g);
+  },
+
+  army(g) {
+    return g.units.filter((u) => u.alive && u.owner === 0 && u.def.weapon).length;
+  },
+
+  goalMet(g) {
+    const c = g.camp;
+    const goal = this.def(c.id).goal;
+    const me = g.players[0];
+    if (!me.alive) return false;
+    if (goal.kind === 'eco') return me.income >= goal.income && this.army(g) >= goal.army;
+    if (goal.kind === 'survive') return g.time >= goal.time;
+    if (goal.kind === 'hold') return c.faroHold >= goal.time;
+    if (goal.kind === 'flags') return c.flags.length >= goal.count;
+    return false; // destroy: lo decide checkEnd cuando cae el último Núcleo rival
+  },
+
+  win(g) {
+    if (g.over) return;
+    g.over = true;
+    g.result = 'victory';
+    g.camp.won = true;
+    g.emit('over', { result: 'victory', mission: true });
+  },
+
+  // Líneas de la meta con su progreso (para el panel de objetivos).
+  goalLines(g) {
+    const c = g.camp;
+    const m = this.def(c.id);
+    const goal = m.goal;
+    const me = g.players[0];
+    if (goal.kind === 'eco') {
+      const army = this.army(g);
+      return [
+        { text: `Ingresos: ${fmt(me.income)} / ${fmt(goal.income)} por min`, done: me.income >= goal.income },
+        { text: `Tropas de combate: ${Math.min(army, goal.army)} / ${goal.army}`, done: army >= goal.army },
+      ];
+    }
+    if (goal.kind === 'survive') {
+      return [{ text: `Aguanta: ${fmtTime(Math.min(g.time, goal.time))} / ${fmtTime(goal.time)}`, done: g.time >= goal.time }];
+    }
+    if (goal.kind === 'hold') {
+      const faro = g.points.find((pt) => pt.type === 'faro');
+      const now = faro && faro.owner === 0 ? ' · ¡es tuyo!' : '';
+      return [{ text: `Faro en tu poder: ${Math.floor(Math.min(c.faroHold, goal.time))} / ${goal.time} s${now}`, done: c.faroHold >= goal.time }];
+    }
+    if (goal.kind === 'flags') {
+      return [{ text: `Banderas de otras islas: ${Math.min(c.flags.length, goal.count)} / ${goal.count}`, done: c.flags.length >= goal.count }];
+    }
+    const rivals = g.players.filter((p) => !p.human);
+    const down = rivals.filter((p) => !p.alive).length;
+    if (rivals.length === 1) return [{ text: down ? 'Núcleo enemigo destruido' : 'Destruye el Núcleo enemigo', done: down > 0 }];
+    return [{ text: `Núcleos rivales caídos: ${down} / ${rivals.length}`, done: down >= rivals.length }];
+  },
+
+  // Estrellas: la primera por terminar y dos por condiciones. final = al acabar la partida.
+  stars(g) {
+    const c = g.camp;
+    const m = this.def(c.id);
+    const me = g.players[0];
+    const won = c.won || (g.over && g.result === 'victory');
+    const core = me.core;
+    const coreK = core && core.alive ? core.hp / core.maxHp : 0;
+    const out = [{ text: 'Termina la misión', ok: won, live: true, why: won ? '' : 'No se cumplió la meta' }];
+    for (const s of m.stars) {
+      let ok;
+      let live;
+      let why;
+      let now;
+      if (s.kind === 'time') {
+        live = g.time < s.max;
+        ok = won && live;
+        now = live ? `quedan ${fmtTime(s.max - g.time)}` : 'se acabó el tiempo';
+        why = `Tardaste ${fmtTime(g.time)}`;
+      } else if (s.kind === 'lostBld' || s.kind === 'lostUnits') {
+        const n = s.kind === 'lostBld' ? c.lostBld : me.stats.lost;
+        live = n <= s.max;
+        ok = won && live;
+        now = `llevas ${n}`;
+        why = `Perdiste ${n} ${s.kind === 'lostBld' ? (n === 1 ? 'edificio' : 'edificios') : (n === 1 ? 'tropa' : 'tropas')}`;
+      } else if (s.kind === 'coreEnd') {
+        live = coreK >= s.min;
+        ok = won && live;
+        now = `ahora ${Math.round(coreK * 100)} %`;
+        why = `Tu Núcleo terminó al ${Math.round(coreK * 100)} %`;
+      } else {
+        live = c.minCore >= s.min;
+        ok = won && live;
+        now = `mínimo ${Math.round(c.minCore * 100)} %`;
+        why = `Tu Núcleo bajó al ${Math.round(c.minCore * 100)} %`;
+      }
+      if (!won && live) why = 'Hay que terminar la misión';
+      out.push({ text: this.starText(s), ok, live, now, why: ok ? '' : why });
+    }
+    return out;
+  },
+};
+
 // ---- 05-ai.js ----
 'use strict';
 // Bots (NPC): cada uno tiene una personalidad. Construyen economía, se expanden, planifican un
@@ -4319,6 +4807,8 @@ class Bot {
     this.produce(mine, units);
     if (this.tac.retreat) this.retreat(units, mine);
     this.repairBase(units, mine);
+    // Campaña: un vecino tranquilo no ataca ni sale a capturar.
+    if (this.passive) return;
     this.attack(units);
     this.ferry(mine, units);
   }
@@ -5113,7 +5603,7 @@ class Bot {
       this.waveSizes.push(sent.length);
       if (this.firstWaveAt < 0) this.firstWaveAt = g.time;
       this.wave = Math.min(this.wave + 3, 26);
-      this.nextWaveAt = g.time + (50 + Math.random() * 40) * this.persona.waveEvery;
+      this.nextWaveAt = g.time + (50 + Math.random() * 40) * this.persona.waveEvery * (this.waveMult || 1);
     }
     return sent;
   }
@@ -6717,6 +7207,7 @@ class Input {
     this.drag = null;
     this.keys = new Set();
     this.boxMode = false;
+    this.amoveArm = false; // «Avanzar atacando»: el siguiente toque en el mapa da la orden
     this.placement = null;
     this.lastTap = { t: 0, x: 0, y: 0, id: -1 };
     this.lastRot = {};
@@ -6873,8 +7364,22 @@ class Input {
     if (down) this.keys.add(k);
     else this.keys.delete(k);
     if (!down || !this.active()) return;
+    // Grupos (v0.7): número elige; Ctrl, Cmd o Mayús + número guarda. Se usa e.code para que
+    // Mayús + 1 funcione aunque el teclado escriba «!».
+    const digit = /^Digit([1-3])$/.exec(e.code || '');
+    if (digit) {
+      const n = Number(digit[1]);
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        e.preventDefault();
+        this.app.saveGroup(n);
+      } else {
+        this.app.selectGroup(n);
+      }
+      return;
+    }
     if (k === 'escape') {
-      if (this.placement) this.cancelPlacement();
+      if (this.amoveArm) this.disarmAttackMove();
+      else if (this.placement) this.cancelPlacement();
       else if (this.app.selection.length) this.app.setSelection([]);
       else this.app.togglePause(true);
     } else if (k === 'r' && this.placement && this.placement.kind === 'build') this.rotatePlacement();
@@ -6888,6 +7393,8 @@ class Input {
       if (s.length === 1 && s[0].kind === 'bld' && s[0].owner === 0) this.app.ui.demolishSelected();
     } else if (k === 't') this.app.quickSelect('army');
     else if (k === 'p') this.app.togglePause(true);
+    else if (k === 'f') this.armAttackMove();
+    else if (k === 'c') this.app.selectBuilders();
   }
 
   update(dt) {
@@ -6915,6 +7422,25 @@ class Input {
     this.r.setHover(c ? c.i : -1);
   }
 
+  // ---------- avanzar atacando ----------
+  armAttackMove() {
+    const armed = this.app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive && e.def.weapon);
+    if (!armed.length) {
+      this.app.ui.toast('Elige primero tropas que puedan pelear', 'bad');
+      return false;
+    }
+    this.amoveArm = true;
+    this.app.ui.selSig = '';
+    this.app.ui.toast('Toca el destino: avanzarán peleando con todo lo que encuentren');
+    return true;
+  }
+
+  disarmAttackMove() {
+    if (!this.amoveArm) return;
+    this.amoveArm = false;
+    if (this.app.ui) this.app.ui.selSig = '';
+  }
+
   // ---------- toques ----------
   tap(x, y, right) {
     const g = this.game;
@@ -6923,6 +7449,8 @@ class Input {
       this.placementTap(x, y);
       return;
     }
+    const amove = this.amoveArm;
+    this.disarmAttackMove();
     const mine = app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
     const unit = this.r.pickUnit(x, y);
     const cell = this.r.pickCell(x, y);
@@ -6932,6 +7460,15 @@ class Input {
     const now = performance.now();
     const dbl = now - this.lastTap.t < 330 && Math.hypot(x - this.lastTap.x, y - this.lastTap.y) < 30;
     this.lastTap = { t: now, x, y, id: target ? target.id : -1 };
+
+    // Avanzar atacando: a ese lugar, peleando en el camino (sobre un enemigo, se ataca directo).
+    if (amove && mine.length && cell && !(target && g.isEnemy(target.owner, 0))) {
+      g.orderMove(mine, cell.i, true, app.formation);
+      this.r.addMoveMarker(cell.i, 0xff6060);
+      app.ui.toast(`${mine.length === 1 ? 'Avanza' : `${mine.length} tropas avanzan`} atacando`);
+      app.sound.play('order');
+      return;
+    }
 
     if (target && g.isEnemy(target.owner, 0)) {
       if (mine.length) {
@@ -7028,7 +7565,7 @@ class Input {
   moveTo(units, ci) {
     const g = this.game;
     const founders = units.filter((u) => u.state === 'found');
-    g.orderMove(units, ci, false);
+    g.orderMove(units, ci, false, this.app.formation);
     for (const u of founders) u.foundCell = -1;
     this.r.addMoveMarker(ci);
     this.app.sound.play('order');
@@ -7202,6 +7739,7 @@ class UI {
     $('hud').hidden = name !== 'play';
     $('pause').hidden = true;
     $('end').hidden = true;
+    $('brief').hidden = true;
     $('modal').hidden = true;
     if (this.app.lobby) {
       this.app.lobby.modal = null;
@@ -7213,6 +7751,57 @@ class UI {
   objList() {
     const g = this.app.game;
     return g && g.mode.tutorial ? TUTORIAL_STEPS : OBJECTIVES;
+  }
+
+  // ---------- campaña ----------
+  // Historia y metas al empezar una misión. La partida espera en pausa hasta «¡A jugar!».
+  showBrief() {
+    const app = this.app;
+    const m = Campaign.def(app.game.camp.id);
+    app.paused = true;
+    const el = $('brief');
+    el.innerHTML = `<div class="dialog panel wide brief" role="dialog" aria-labelledby="brief-title">
+      <small class="lbl">Campaña · Misión ${m.id} de ${CAMPAIGN.length}</small>
+      <h2 id="brief-title">${esc(m.name)}</h2>
+      <p class="story">${esc(m.story)}</p>
+      <div class="brief-grid">
+        <div><h3 class="lbl">Meta</h3><p><b>${esc(Campaign.goalText(m))}</b></p></div>
+        <div><h3 class="lbl">Estrellas</h3><ul class="starlist"><li><b>★ Termina la misión</b></li>
+          ${m.stars.map((s) => `<li><b>★ ${esc(Campaign.starText(s))}</b></li>`).join('')}</ul></div>
+      </div>
+      <p class="tip"><b>Consejo:</b> ${esc(m.tip)}</p>
+      <div class="row"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
+        <button class="btn" type="button" id="btn-brief-menu">Vestíbulo</button></div>
+    </div>`;
+    el.hidden = false;
+    $('btn-brief-go').addEventListener('click', () => {
+      app.sound.unlock();
+      app.sound.play('click');
+      this.hideBrief();
+    });
+    $('btn-brief-menu').addEventListener('click', () => {
+      this.hideBrief();
+      app.toMenu();
+      app.abandonGame();
+    });
+  }
+
+  hideBrief() {
+    $('brief').hidden = true;
+    this.app.paused = false;
+  }
+
+  // Panel de la misión: meta con su progreso y las estrellas (con su estado en vivo).
+  renderMission(force) {
+    const g = this.app.game;
+    if (!g || !g.camp) return;
+    const lines = Campaign.goalLines(g).map((l) => `<li class="${l.done ? 'done' : ''}">${esc(l.text)}</li>`);
+    const stars = Campaign.stars(g).slice(1).map((s) =>
+      `<li class="star ${s.live ? '' : 'lost'}"><span>${esc(s.text)}<small>${esc(s.live ? s.now : 'ya no se puede')}</small></span></li>`);
+    const html = lines.join('') + stars.join('');
+    if (!force && html === this.missionSig) return;
+    this.missionSig = html;
+    $('objlist').innerHTML = html;
   }
 
   // ---------- HUD ----------
@@ -7261,6 +7850,10 @@ class UI {
     document.querySelectorAll('[data-quick]').forEach((b) => {
       b.addEventListener('click', () => app.quickSelect(b.dataset.quick));
     });
+    document.querySelectorAll('[data-group]').forEach((b) => {
+      b.addEventListener('click', () => app.selectGroup(Number(b.dataset.group)));
+    });
+    $('btn-builders').addEventListener('click', () => app.selectBuilders());
 
     $('btabs').innerHTML = BUILD_TABS.map((t) =>
       `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === this.tab}">${esc(t.name)}</button>`).join('');
@@ -7352,10 +7945,18 @@ class UI {
     this.playersSig = '';
     $('toasts').innerHTML = '';
     $('objectives').hidden = false;
-    $('objectives').classList.remove('collapsed');
-    $('btn-obj').textContent = 'Ocultar';
-    $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
+    const camp = this.app.game.camp;
+    // En pantallas chicas el panel de la misión empieza plegado (se abre con «Mostrar»).
+    const small = window.innerWidth <= 860 || window.innerHeight <= 520;
+    $('objectives').classList.toggle('collapsed', !!camp && small);
+    $('btn-obj').textContent = camp && small ? 'Mostrar' : 'Ocultar';
+    $('leftcol').classList.toggle('camp', !!camp);
+    $('objtitle').textContent = camp ? Campaign.mode(camp.id).name : 'Primeros pasos';
+    if (camp) this.renderMission(true);
+    else $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
+    this.groupsSig = '';
+    this.renderGroups(true);
     $('king').hidden = !this.app.game.mode.king;
     $('feed').innerHTML = '';
     this.togglePop(null);
@@ -7372,6 +7973,7 @@ class UI {
   }
 
   markObjective(id) {
+    if (this.app.game.camp) return;
     const li = document.querySelector(`[data-obj="${id}"]`);
     if (li) li.classList.add('done');
     const all = this.objList().every((o) => this.app.game.objDone[o.id]);
@@ -7658,7 +8260,7 @@ class UI {
     } else if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level}` +
         `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
-        `|${g.time - first.lastWork > 1.5}`;
+        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}`;
       if (first.def.produces) {
         sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
       }
@@ -7670,7 +8272,7 @@ class UI {
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
-        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
+        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}`;
     }
     if (force || sig !== this.selSig) {
       this.selSig = sig;
@@ -7755,6 +8357,13 @@ class UI {
           <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
         </button>`;
       }).join('') + '</div>';
+      if (b.lastType && d.produces.includes(b.lastType)) {
+        // Repetir (v0.7): vuelve a poner la última tropa entrenada, una o cinco veces.
+        const lu = UNITS[b.lastType];
+        html += `<div class="actions repeat"><span class="queue">Última: <b>${esc(lu.name)}</b></span>
+          <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">Repetir · ${fmt(lu.cost)}</button>
+          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">×5 · ${fmt(lu.cost * 5)}</button></div>`;
+      }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
       html += '<div class="queue" id="sel-queue">' + (b.queue.length
@@ -7801,8 +8410,17 @@ class UI {
     if (founder) {
       acts.push(`<button class="btn gold" type="button" data-act="found">Fundar puesto · 800</button>`);
     }
+    const app = this.app;
+    if (sel.some((u) => u.def.weapon)) {
+      acts.push(`<button class="btn ${app.input.amoveArm ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${app.input.amoveArm ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+    }
+    if (sel.length > 1) {
+      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
+    }
     acts.push('<button class="btn" type="button" data-act="stop">Detener</button>');
     html += `<div class="actions">${acts.join('')}</div>`;
+    html += `<div class="actions groupsave"><span class="queue">Guardar en</span>${[1, 2, 3].map((n) =>
+      `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
     return html;
   }
 
@@ -7929,7 +8547,52 @@ class UI {
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
+    } else if (act === 'repeat') {
+      const n = Number(btn.dataset.n) || 1;
+      let added = 0;
+      let err = null;
+      for (let k = 0; k < n; k++) {
+        err = g.enqueue(b, b.lastType);
+        if (err) break;
+        added++;
+      }
+      if (!added) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else if (added < n) {
+        this.toast(`${added} en cola · ${err}`, 'bad');
+      }
+      this.renderSel(true);
+    } else if (act === 'amove') {
+      if (app.input.amoveArm) app.input.disarmAttackMove();
+      else app.input.armAttackMove();
+      this.renderSel(true);
+    } else if (act === 'formation') {
+      app.toggleFormation();
+      this.renderSel(true);
+    } else if (act === 'savegrp') {
+      app.saveGroup(Number(btn.dataset.v));
     }
+  }
+
+  // Botones de grupo y de Constructores junto al minimapa: cuántas tropas tiene cada uno.
+  renderGroups(force) {
+    const app = this.app;
+    const g = app.game;
+    if (!g) return;
+    const counts = [1, 2, 3].map((n) => app.groupUnits(n).length);
+    const builders = g.units.filter((u) => u.owner === 0 && u.alive && u.def.builds === 'land');
+    const idle = builders.filter((u) => u.state === 'idle' && !u.inside).length;
+    const sig = counts.join(',') + '|' + idle + '/' + builders.length;
+    if (!force && sig === this.groupsSig) return;
+    this.groupsSig = sig;
+    counts.forEach((k, i) => {
+      const el = $('grp' + (i + 1));
+      el.textContent = k ? String(k) : '—';
+      el.parentElement.classList.toggle('has', k > 0);
+    });
+    $('bld-idle').textContent = builders.length ? `${idle}/${builders.length}` : '0';
+    $('btn-builders').classList.toggle('alert', idle > 0);
   }
 
   demolishSelected() {
@@ -7997,6 +8660,8 @@ class UI {
     this.updateTop();
     this.refreshBuild();
     this.renderSel();
+    this.renderMission();
+    this.renderGroups();
     this.popT = (this.popT || 0) - 0.15;
     if (this.pop && this.popT <= 0) {
       this.popT = 0.5;
@@ -8011,6 +8676,8 @@ class UI {
     $('enddialog').innerHTML = this.app.lobby.endHtml(g);
     $('end').hidden = false;
     $('btn-again').addEventListener('click', () => this.app.startGame());
+    const next = $('btn-next');
+    if (next) next.addEventListener('click', () => this.app.startMission(Number(next.dataset.v)));
     $('btn-menu').addEventListener('click', () => this.app.toMenu());
     $('btn-watch').addEventListener('click', () => { $('end').hidden = true; });
   }
@@ -8302,6 +8969,7 @@ const Profile = {
       play: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal' },
       custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
       creator: { on: true, instant: false },
+      campaign: { done: {}, stars: {} },
     };
   },
 
@@ -8492,6 +9160,7 @@ class Lobby {
       };
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
+    // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
     return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: P.play.difficulty };
   }
 
@@ -8533,6 +9202,7 @@ class Lobby {
     const off = (label) => `<button type="button" disabled title="Necesita servidores">${label}<small>Roblox</small></button>`;
     return `<nav class="lmenu panel" aria-label="Menú del vestíbulo">
       ${item('main', 'Jugar')}
+      ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${off('Rangos')}${off('Top jugadores')}${off('Servidores')}
@@ -8561,6 +9231,7 @@ class Lobby {
     const resume = this.resumeHtml();
     if (this.sub === 'custom') return resume + this.customHtml();
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
+    if (this.sub === 'campaign') return resume + this.campaignHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -8607,6 +9278,39 @@ class Lobby {
         <button class="btn gold" type="button" data-act="play" id="btn-play-custom">Jugar personalizado</button>
         <button class="btn" type="button" disabled>Unirse con código · Disponible en Roblox</button>
       </div>
+    </section>`;
+  }
+
+  campaignStars() {
+    const st = this.P.campaign.stars;
+    return CAMPAIGN.reduce((n, m) => n + (st[m.id] || 0), 0);
+  }
+
+  // Campaña «La ruta del Faro»: 6 misiones; cada una se abre al terminar la anterior.
+  campaignHtml() {
+    const P = this.P;
+    const creator = Creator.active();
+    const cards = CAMPAIGN.map((m) => {
+      const open = Campaign.unlocked(m.id, P, creator);
+      const got = P.campaign.stars[m.id] || 0;
+      const done = !!P.campaign.done[m.id];
+      const stars = [0, 1, 2].map((k) => `<i class="${k < got ? 'on' : ''}" aria-hidden="true">★</i>`).join('');
+      const extra = m.stars.map((s) => Campaign.starText(s)).join(' · ');
+      return `<article class="mcard ${open ? '' : 'locked'} ${done ? 'done' : ''}">
+        <div class="mnum">${m.id}</div>
+        <div class="mbody"><b>${esc(m.name)}</b><span>${esc(Campaign.goalText(m))}</span>
+          <small>★ ${esc(extra)}</small></div>
+        <div class="mside"><span class="mstars" title="${got} de 3 estrellas">${stars}</span>
+          ${open ? `<button class="btn ${done ? '' : 'gold'}" type="button" data-act="mission" data-v="${m.id}" id="btn-mission-${m.id}">${done ? 'Repetir' : 'Jugar'}</button>`
+            : `<span class="mlock">Termina la misión ${m.id - 1}</span>`}</div>
+      </article>`;
+    }).join('');
+    return `<section class="lcard panel">
+      <h2>La ruta del Faro</h2>
+      <p>Seis misiones para volver a encender el Faro de Ámbar. Cada una se abre al terminar la anterior y da hasta 3 estrellas:
+        una por terminarla y dos por las condiciones marcadas con ★.${creator ? ' Modo creador: todas abiertas.' : ''}</p>
+      <div class="missions">${cards}</div>
+      <p class="small-note">Premio la primera vez: cristales (50 a 250) y XP. Cada estrella nueva: +${CAMPAIGN_STAR_CRYSTALS} cristales. Tienes ${this.campaignStars()} de ${CAMPAIGN.length * 3} estrellas.</p>
     </section>`;
   }
 
@@ -8802,6 +9506,8 @@ class Lobby {
     } else if (act === 'play') {
       this.syncOpts();
       app.startGame();
+    } else if (act === 'mission') {
+      app.startMission(Number(b.dataset.v));
     } else if (act === 'reroll') {
       app.reroll();
     } else if (act === 'diff') {
@@ -9031,6 +9737,23 @@ class Lobby {
       out.crystals += 150;
       out.tutorial = 'Insignia «Primer Faro», 150 cristales y el aspecto Soldado Dorado';
     }
+    // Campaña: premio la primera vez que terminas la misión y cristales por cada estrella nueva.
+    if (game.camp) {
+      const m = Campaign.def(game.camp.id);
+      const got = Campaign.stars(game).filter((s) => s.ok).length;
+      const prev = P.campaign.stars[m.id] || 0;
+      out.camp = { id: m.id, got, prev, first: 0, newStars: 0 };
+      if (win && !P.campaign.done[m.id]) {
+        P.campaign.done[m.id] = true;
+        out.camp.first = m.crystals;
+        out.crystals += m.crystals;
+      }
+      if (got > prev) {
+        out.camp.newStars = got - prev;
+        out.crystals += out.camp.newStars * CAMPAIGN_STAR_CRYSTALS;
+        P.campaign.stars[m.id] = got;
+      }
+    }
     P.xp += out.xp;
     P.crystals += out.crystals;
     out.level = Profile.level();
@@ -9080,7 +9803,55 @@ class Lobby {
     return 'Entrena Constructores pronto y construye más Granjas y energía: con más monedas tendrás un ejército más grande.';
   }
 
+  // Final de una misión: estrellas, por qué faltó cada una y «Siguiente misión».
+  missionEndHtml(game) {
+    const r = this.finish(game);
+    const m = Campaign.def(game.camp.id);
+    const me = game.players[0];
+    const win = game.result === 'victory';
+    const stars = Campaign.stars(game);
+    if (!win) stars[0].why = 'Tu Núcleo cayó';
+    const got = stars.filter((s) => s.ok).length;
+    const next = Campaign.def(m.id + 1);
+    const nextOpen = !!next && Campaign.unlocked(next.id, this.P, Creator.active());
+    const c = r.camp;
+    const opened = nextOpen && !!c && c.first > 0;
+    const text = !win ? 'Tu Núcleo cayó. Puedes repetir la misión cuando quieras.'
+      : next ? `Misión cumplida.${opened ? ` Se abrió la misión ${next.id}: ${next.name}.` : ''}`
+        : '¡Terminaste la campaña! El Faro de Ámbar vuelve a brillar.';
+    const why = c ? [c.first ? `Primera vez: ${c.first}` : '', c.newStars ? `${c.newStars === 1 ? '1 estrella nueva' : `${c.newStars} estrellas nuevas`}: ${c.newStars * CAMPAIGN_STAR_CRYSTALS}` : '',
+      r.missions.length ? 'misiones' : ''].filter(Boolean).join(' · ') : '';
+    const prizes = r.creator
+      ? '<div><b>Modo creador</b><span>Sin XP ni cristales</span></div>'
+      : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
+         <div><b>+${fmt(r.crystals)} cristales</b><span>${esc(why || 'Por jugar')}</span></div>
+         <div><b>Nivel ${r.level}</b><span>${r.levelUp ? '¡Subiste de nivel!' : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
+    const core = me.core;
+    return `
+      <div class="endhero"><div><small class="lbl">Campaña · Misión ${m.id} de ${CAMPAIGN.length}</small>
+        <h2>${win ? '¡Misión cumplida!' : 'Misión fallida'}</h2><p>${esc(m.name)} · ${esc(text)}</p></div>
+        <div class="bigstars" role="img" aria-label="${got} de 3 estrellas">${stars.map((s) => `<i class="${s.ok ? 'on' : ''}">★</i>`).join('')}</div></div>
+      <ol class="starlist">${stars.map((s) => `<li class="${s.ok ? 'ok' : 'no'}"><b>${esc(s.text)}</b><span>${s.ok ? 'Conseguida' : esc(s.why)}</span></li>`).join('')}</ol>
+      <div class="endstats">
+        <div><b>${fmtTime(game.time)}</b><span>Tiempo</span></div>
+        <div><b>${me.stats.lost}</b><span>Tropas perdidas</span></div>
+        <div><b>${game.camp.lostBld}</b><span>Edificios perdidos</span></div>
+        <div><b>${core.alive ? Math.round((core.hp / core.maxHp) * 100) : 0} %</b><span>Vida del Núcleo</span></div>
+      </div>
+      <h3 class="lbl">Premios</h3>
+      <div class="prizes">${prizes}</div>
+      ${r.missions.length ? `<div class="advice">Misiones completadas: ${r.missions.map(esc).join(', ')}</div>` : ''}
+      ${win ? '' : `<div class="advice"><b>Consejo:</b> ${esc(m.tip)}</div>`}
+      <div class="row">
+        <button class="btn" type="button" id="btn-watch">Mirar el final</button>
+        ${win && next ? `<button class="btn gold" type="button" id="btn-next" data-v="${next.id}">Siguiente misión</button>` : ''}
+        <button class="btn ${win && next ? '' : 'gold'}" type="button" id="btn-again">Repetir</button>
+        <button class="btn" type="button" id="btn-menu">Vestíbulo</button>
+      </div>`;
+  }
+
   endHtml(game) {
+    if (game.camp) return this.missionEndHtml(game);
     const r = this.finish(game);
     const me = game.players[0];
     const s = me.stats;
@@ -9142,6 +9913,10 @@ const App = {
   opts: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', seed: 0 },
   suspended: null,
   lobby: null,
+  // Controles v0.7: grupos 1-3 (tropas guardadas) y formación al mover.
+  groups: { 1: [], 2: [], 3: [] },
+  groupTap: { n: 0, t: 0 },
+  formation: 'block',
   saveT: 15,
   last: 0,
   time: 0,
@@ -9156,6 +9931,7 @@ const App = {
       const q = localStorage.getItem('faro-quality');
       if (q === 'high' || q === 'low' || q === 'auto') this.qualityPref = q;
       this.showFps = localStorage.getItem('faro-fps') === 'on';
+      if (localStorage.getItem('faro-formation') === 'line') this.formation = 'line';
     } catch (err) { /* sin almacenamiento */ }
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
@@ -9239,6 +10015,16 @@ const App = {
     return o;
   },
 
+  // Campaña: empieza la misión con su mapa fijo (si está abierta).
+  startMission(id) {
+    if (!Campaign.unlocked(id, Profile.data, Creator.active())) {
+      this.ui.toast(`Termina primero la misión ${id - 1}`, 'bad');
+      return;
+    }
+    this.opts = { ...Campaign.opts(id) };
+    this.startGame();
+  },
+
   startGame() {
     clearTimeout(this.endTimer);
     if (this.game && this.game.over && !this.game.preview) this.lobby.finish(this.game);
@@ -9248,10 +10034,20 @@ const App = {
     Save.clear();
     this.game = new Game(this.gameOpts());
     this.enterGame();
+    if (this.game.camp) {
+      this.focusCore();
+      this.ui.showBrief();
+    }
   },
 
   enterGame(keepRenderer) {
     if (!keepRenderer) this.newRenderer(this.game);
+    // Los grupos son de esta partida: al cambiar de partida empiezan vacíos.
+    if (this.groupsGame !== this.game) {
+      this.groups = { 1: [], 2: [], 3: [] };
+      this.groupsGame = this.game;
+    }
+    this.input.disarmAttackMove();
     this.selection = [];
     this.paused = false;
     this.state = 'play';
@@ -9281,6 +10077,8 @@ const App = {
     this.paused = false;
     $('pause').hidden = true;
     if (!this.suspended) {
+      // Después de una misión, el fondo del vestíbulo vuelve a la isla de «Jugar».
+      if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
       this.opts.seed = (Math.random() * 1e9) | 0;
       this.makePreview();
     }
@@ -9320,13 +10118,14 @@ const App = {
   abandonGame() {
     this.suspended = null;
     Save.clear();
+    if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
     this.opts.seed = (Math.random() * 1e9) | 0;
     this.makePreview();
     this.lobby.render();
   },
 
   togglePause(on) {
-    if (this.state !== 'play') return;
+    if (this.state !== 'play' || !$('brief').hidden) return;
     this.paused = on;
     $('pause').hidden = !on;
     this.markQuality();
@@ -9377,12 +10176,82 @@ const App = {
   },
 
   setSelection(list) {
+    const before = this.selection;
     this.selection = list.filter((e) => e && e.alive && !e.inside);
+    if (this.input.amoveArm && (this.selection.length !== before.length || this.selection.some((e, i) => e !== before[i]))) {
+      this.input.disarmAttackMove();
+    }
     this.ui.demolishArm = -1;
     if (this.input.placement && this.input.placement.kind === 'found' && !this.selection.includes(this.input.placement.unit)) {
       this.input.cancelPlacement();
     }
     this.ui.renderSel(true);
+  },
+
+  // ---------- grupos, constructores y formación (v0.7) ----------
+  saveGroup(n) {
+    if (this.state !== 'play') return;
+    const list = this.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
+    if (!list.length) {
+      this.ui.toast('Elige tropas y luego guárdalas en un grupo', 'bad');
+      return;
+    }
+    this.groups[n] = list.slice();
+    this.ui.toast(`Grupo ${n}: ${list.length} ${list.length === 1 ? 'tropa' : 'tropas'}`, 'good');
+    this.sound.play('click');
+    this.ui.renderGroups(true);
+  },
+
+  groupUnits(n) {
+    const list = (this.groups[n] || []).filter((u) => u.alive && u.owner === 0);
+    this.groups[n] = list;
+    return list;
+  },
+
+  // Tocar un grupo lo elige; tocarlo dos veces seguidas lleva la cámara a sus tropas.
+  selectGroup(n) {
+    if (this.state !== 'play') return;
+    const list = this.groupUnits(n).filter((u) => !u.inside);
+    const now = performance.now();
+    const twice = this.groupTap.n === n && now - this.groupTap.t < 450;
+    this.groupTap = { n, t: now };
+    if (!list.length) {
+      this.ui.toast(`Grupo ${n} vacío: elige tropas y toca «Guardar en ${n}»`);
+      return;
+    }
+    this.setSelection(list);
+    this.sound.play('click');
+    if (twice) {
+      let x = 0;
+      let z = 0;
+      for (const u of list) { x += u.x; z += u.z; }
+      this.focusAt(x / list.length, z / list.length);
+    }
+  },
+
+  // Constructores e Ingenieros: primero los que no trabajan; si ya los tienes elegidos, todos.
+  selectBuilders() {
+    const g = this.game;
+    if (!g || this.state !== 'play') return;
+    const all = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.builds === 'land');
+    if (!all.length) {
+      this.ui.toast('No tienes Constructores: entrénalos en el Núcleo o el Cuartel', 'bad');
+      return;
+    }
+    const idle = all.filter((u) => u.state === 'idle');
+    const same = (a, b) => a.length === b.length && a.every((u) => b.includes(u));
+    const pick = idle.length && !same(idle, this.selection) ? idle : all;
+    this.setSelection(pick);
+    this.sound.play('click');
+    this.ui.toast(pick === idle ? `${idle.length} ${idle.length === 1 ? 'constructor libre' : 'constructores libres'}`
+      : `${all.length} ${all.length === 1 ? 'constructor' : 'constructores'} (${idle.length} sin trabajo)`);
+  },
+
+  toggleFormation() {
+    this.formation = this.formation === 'line' ? 'block' : 'line';
+    try { localStorage.setItem('faro-formation', this.formation); } catch (err) { /* sin almacenamiento */ }
+    this.ui.toast(this.formation === 'line' ? 'Formación: línea (de frente al destino)' : 'Formación: bloque');
+    this.ui.selSig = '';
   },
 
   quickSelect(kind) {

@@ -18,7 +18,7 @@ function customMode(c) {
 class Game {
   constructor(opts) {
     this.opts = opts;
-    const mode = opts.custom ? customMode(opts.custom) : MODES[opts.mode];
+    const mode = opts.mission ? Campaign.mode(opts.mission) : opts.custom ? customMode(opts.custom) : MODES[opts.mode];
     this.mode = mode;
     this.diff = DIFFICULTY[opts.difficulty];
     this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
@@ -99,6 +99,9 @@ class Game {
       p.persona = opts.personas && opts.personas[p.id] ? opts.personas[p.id] : order[i % order.length];
       return new Bot(this, p.id);
     });
+    // Campaña (v0.7): preparación de la misión y seguimiento de su meta.
+    this.camp = null;
+    if (opts.mission) Campaign.setup(this);
   }
 
   // ---------- consultas básicas ----------
@@ -598,6 +601,7 @@ class Game {
     p.coins -= def.cost;
     p.energy -= def.energy || 0;
     b.queue.push({ type, t: 0 });
+    b.lastType = type;
     p.popUsed += def.pop;
     return null;
   }
@@ -767,13 +771,54 @@ class Game {
     return center.i;
   }
 
-  orderMove(units, ci, attackMove = false) {
+  // Formación en línea (v0.7): una fila de frente al destino, perpendicular a la dirección de marcha.
+  // Devuelve una casilla por tropa (ordenadas de izquierda a derecha) y hacia dónde miran.
+  lineSlots(units, center) {
+    let cx = 0;
+    let cz = 0;
+    for (const u of units) { cx += u.x; cz += u.z; }
+    cx /= units.length;
+    cz /= units.length;
+    let dx = center.x - cx;
+    let dz = center.z - cz;
+    const len = Math.hypot(dx, dz);
+    if (len < 0.5) { dx = 0; dz = 1; } else { dx /= len; dz /= len; }
+    const px = -dz;
+    const pz = dx;
+    const perRow = 10;
+    const order = [...units].sort((a, b) => (a.x * px + a.z * pz) - (b.x * px + b.z * pz));
+    const slots = new Map();
+    const used = new Set();
+    order.forEach((u, k) => {
+      const row = Math.floor(k / perRow);
+      const inRow = Math.min(perRow, order.length - row * perRow);
+      const off = (k % perRow) - (inRow - 1) / 2;
+      const x = center.x + px * off * SQ3 - dx * row * SQ3;
+      const z = center.z + pz * off * SQ3 - dz * row * SQ3;
+      const c = this.map.atWorld(x, z) || center;
+      const dest = this.spreadDest(u, c, used);
+      used.add(dest);
+      slots.set(u, dest);
+      // Dentro de su casilla, se para justo sobre la línea (sin salirse de la casilla).
+      const dc = this.cells[dest];
+      let ox = x - dc.x;
+      let oz = z - dc.z;
+      const ol = Math.hypot(ox, oz);
+      if (ol > 0.7) { ox *= 0.7 / ol; oz *= 0.7 / ol; }
+      if (u.mover !== 'air') { u.offX = ox; u.offZ = oz; }
+    });
+    return { slots, face: Math.atan2(dx, dz) };
+  }
+
+  orderMove(units, ci, attackMove = false, formation = 'block') {
     const used = new Set();
     const center = this.cells[ci];
-    for (const u of units) {
-      if (!u.alive) continue;
-      const dest = this.spreadDest(u, center, used);
+    const alive = units.filter((u) => u.alive);
+    const line = formation === 'line' && alive.length > 1 ? this.lineSlots(alive, center) : null;
+    for (const u of alive) {
+      const dest = line ? line.slots.get(u) : this.spreadDest(u, center, used);
       used.add(dest);
+      u.faceYaw = line ? line.face : null;
       u.target = null;
       u.autoTarget = null;
       u.aggroTarget = null;
@@ -787,6 +832,7 @@ class Game {
   orderAttack(units, target) {
     for (const u of units) {
       if (!u.alive) continue;
+      u.faceYaw = null;
       const w = u.def.weapon;
       if (!w || !this.canAttack(u, w, target)) continue;
       u.state = 'attack';
@@ -1007,6 +1053,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.kind === 'bld' && e.owner === 0 && this.camp && !this.over) this.camp.lostBld++;
     if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
       const c = this.cells[e.cell];
@@ -1127,6 +1174,7 @@ class Game {
     }
     this.updateProjectiles(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
+    if (this.camp) Campaign.update(this, dt);
 
     if (this.units.some((u) => !u.alive)) {
       for (const u of this.units) if (!u.alive) this.removed.push(u);
@@ -1651,7 +1699,9 @@ class Game {
     const cell = this.cells[u.cell];
     const gy = this.groundY(u, cell);
     u.y += (gy - u.y) * Math.min(1, dt * 10);
-    const want = u.moving ? u.moveYaw : ft && !u.def.turretOnly ? u.aimYaw : u.yaw;
+    // Quieta en formación en línea: mira hacia donde se la mandó.
+    const face = u.faceYaw !== null && u.faceYaw !== undefined && u.state === 'idle' ? u.faceYaw : u.yaw;
+    const want = u.moving ? u.moveYaw : ft && !u.def.turretOnly ? u.aimYaw : face;
     u.yaw = lerpAngle(u.yaw, want, Math.min(1, dt * 8));
   }
 

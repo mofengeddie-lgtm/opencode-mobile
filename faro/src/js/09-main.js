@@ -21,6 +21,10 @@ const App = {
   opts: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', seed: 0 },
   suspended: null,
   lobby: null,
+  // Controles v0.7: grupos 1-3 (tropas guardadas) y formación al mover.
+  groups: { 1: [], 2: [], 3: [] },
+  groupTap: { n: 0, t: 0 },
+  formation: 'block',
   saveT: 15,
   last: 0,
   time: 0,
@@ -35,6 +39,7 @@ const App = {
       const q = localStorage.getItem('faro-quality');
       if (q === 'high' || q === 'low' || q === 'auto') this.qualityPref = q;
       this.showFps = localStorage.getItem('faro-fps') === 'on';
+      if (localStorage.getItem('faro-formation') === 'line') this.formation = 'line';
     } catch (err) { /* sin almacenamiento */ }
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
@@ -118,6 +123,16 @@ const App = {
     return o;
   },
 
+  // Campaña: empieza la misión con su mapa fijo (si está abierta).
+  startMission(id) {
+    if (!Campaign.unlocked(id, Profile.data, Creator.active())) {
+      this.ui.toast(`Termina primero la misión ${id - 1}`, 'bad');
+      return;
+    }
+    this.opts = { ...Campaign.opts(id) };
+    this.startGame();
+  },
+
   startGame() {
     clearTimeout(this.endTimer);
     if (this.game && this.game.over && !this.game.preview) this.lobby.finish(this.game);
@@ -127,10 +142,20 @@ const App = {
     Save.clear();
     this.game = new Game(this.gameOpts());
     this.enterGame();
+    if (this.game.camp) {
+      this.focusCore();
+      this.ui.showBrief();
+    }
   },
 
   enterGame(keepRenderer) {
     if (!keepRenderer) this.newRenderer(this.game);
+    // Los grupos son de esta partida: al cambiar de partida empiezan vacíos.
+    if (this.groupsGame !== this.game) {
+      this.groups = { 1: [], 2: [], 3: [] };
+      this.groupsGame = this.game;
+    }
+    this.input.disarmAttackMove();
     this.selection = [];
     this.paused = false;
     this.state = 'play';
@@ -160,6 +185,8 @@ const App = {
     this.paused = false;
     $('pause').hidden = true;
     if (!this.suspended) {
+      // Después de una misión, el fondo del vestíbulo vuelve a la isla de «Jugar».
+      if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
       this.opts.seed = (Math.random() * 1e9) | 0;
       this.makePreview();
     }
@@ -199,13 +226,14 @@ const App = {
   abandonGame() {
     this.suspended = null;
     Save.clear();
+    if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
     this.opts.seed = (Math.random() * 1e9) | 0;
     this.makePreview();
     this.lobby.render();
   },
 
   togglePause(on) {
-    if (this.state !== 'play') return;
+    if (this.state !== 'play' || !$('brief').hidden) return;
     this.paused = on;
     $('pause').hidden = !on;
     this.markQuality();
@@ -256,12 +284,82 @@ const App = {
   },
 
   setSelection(list) {
+    const before = this.selection;
     this.selection = list.filter((e) => e && e.alive && !e.inside);
+    if (this.input.amoveArm && (this.selection.length !== before.length || this.selection.some((e, i) => e !== before[i]))) {
+      this.input.disarmAttackMove();
+    }
     this.ui.demolishArm = -1;
     if (this.input.placement && this.input.placement.kind === 'found' && !this.selection.includes(this.input.placement.unit)) {
       this.input.cancelPlacement();
     }
     this.ui.renderSel(true);
+  },
+
+  // ---------- grupos, constructores y formación (v0.7) ----------
+  saveGroup(n) {
+    if (this.state !== 'play') return;
+    const list = this.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
+    if (!list.length) {
+      this.ui.toast('Elige tropas y luego guárdalas en un grupo', 'bad');
+      return;
+    }
+    this.groups[n] = list.slice();
+    this.ui.toast(`Grupo ${n}: ${list.length} ${list.length === 1 ? 'tropa' : 'tropas'}`, 'good');
+    this.sound.play('click');
+    this.ui.renderGroups(true);
+  },
+
+  groupUnits(n) {
+    const list = (this.groups[n] || []).filter((u) => u.alive && u.owner === 0);
+    this.groups[n] = list;
+    return list;
+  },
+
+  // Tocar un grupo lo elige; tocarlo dos veces seguidas lleva la cámara a sus tropas.
+  selectGroup(n) {
+    if (this.state !== 'play') return;
+    const list = this.groupUnits(n).filter((u) => !u.inside);
+    const now = performance.now();
+    const twice = this.groupTap.n === n && now - this.groupTap.t < 450;
+    this.groupTap = { n, t: now };
+    if (!list.length) {
+      this.ui.toast(`Grupo ${n} vacío: elige tropas y toca «Guardar en ${n}»`);
+      return;
+    }
+    this.setSelection(list);
+    this.sound.play('click');
+    if (twice) {
+      let x = 0;
+      let z = 0;
+      for (const u of list) { x += u.x; z += u.z; }
+      this.focusAt(x / list.length, z / list.length);
+    }
+  },
+
+  // Constructores e Ingenieros: primero los que no trabajan; si ya los tienes elegidos, todos.
+  selectBuilders() {
+    const g = this.game;
+    if (!g || this.state !== 'play') return;
+    const all = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.builds === 'land');
+    if (!all.length) {
+      this.ui.toast('No tienes Constructores: entrénalos en el Núcleo o el Cuartel', 'bad');
+      return;
+    }
+    const idle = all.filter((u) => u.state === 'idle');
+    const same = (a, b) => a.length === b.length && a.every((u) => b.includes(u));
+    const pick = idle.length && !same(idle, this.selection) ? idle : all;
+    this.setSelection(pick);
+    this.sound.play('click');
+    this.ui.toast(pick === idle ? `${idle.length} ${idle.length === 1 ? 'constructor libre' : 'constructores libres'}`
+      : `${all.length} ${all.length === 1 ? 'constructor' : 'constructores'} (${idle.length} sin trabajo)`);
+  },
+
+  toggleFormation() {
+    this.formation = this.formation === 'line' ? 'block' : 'line';
+    try { localStorage.setItem('faro-formation', this.formation); } catch (err) { /* sin almacenamiento */ }
+    this.ui.toast(this.formation === 'line' ? 'Formación: línea (de frente al destino)' : 'Formación: bloque');
+    this.ui.selSig = '';
   },
 
   quickSelect(kind) {

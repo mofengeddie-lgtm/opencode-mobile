@@ -34,6 +34,7 @@ class UI {
     $('hud').hidden = name !== 'play';
     $('pause').hidden = true;
     $('end').hidden = true;
+    $('brief').hidden = true;
     $('modal').hidden = true;
     if (this.app.lobby) {
       this.app.lobby.modal = null;
@@ -45,6 +46,57 @@ class UI {
   objList() {
     const g = this.app.game;
     return g && g.mode.tutorial ? TUTORIAL_STEPS : OBJECTIVES;
+  }
+
+  // ---------- campaña ----------
+  // Historia y metas al empezar una misión. La partida espera en pausa hasta «¡A jugar!».
+  showBrief() {
+    const app = this.app;
+    const m = Campaign.def(app.game.camp.id);
+    app.paused = true;
+    const el = $('brief');
+    el.innerHTML = `<div class="dialog panel wide brief" role="dialog" aria-labelledby="brief-title">
+      <small class="lbl">Campaña · Misión ${m.id} de ${CAMPAIGN.length}</small>
+      <h2 id="brief-title">${esc(m.name)}</h2>
+      <p class="story">${esc(m.story)}</p>
+      <div class="brief-grid">
+        <div><h3 class="lbl">Meta</h3><p><b>${esc(Campaign.goalText(m))}</b></p></div>
+        <div><h3 class="lbl">Estrellas</h3><ul class="starlist"><li><b>★ Termina la misión</b></li>
+          ${m.stars.map((s) => `<li><b>★ ${esc(Campaign.starText(s))}</b></li>`).join('')}</ul></div>
+      </div>
+      <p class="tip"><b>Consejo:</b> ${esc(m.tip)}</p>
+      <div class="row"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
+        <button class="btn" type="button" id="btn-brief-menu">Vestíbulo</button></div>
+    </div>`;
+    el.hidden = false;
+    $('btn-brief-go').addEventListener('click', () => {
+      app.sound.unlock();
+      app.sound.play('click');
+      this.hideBrief();
+    });
+    $('btn-brief-menu').addEventListener('click', () => {
+      this.hideBrief();
+      app.toMenu();
+      app.abandonGame();
+    });
+  }
+
+  hideBrief() {
+    $('brief').hidden = true;
+    this.app.paused = false;
+  }
+
+  // Panel de la misión: meta con su progreso y las estrellas (con su estado en vivo).
+  renderMission(force) {
+    const g = this.app.game;
+    if (!g || !g.camp) return;
+    const lines = Campaign.goalLines(g).map((l) => `<li class="${l.done ? 'done' : ''}">${esc(l.text)}</li>`);
+    const stars = Campaign.stars(g).slice(1).map((s) =>
+      `<li class="star ${s.live ? '' : 'lost'}"><span>${esc(s.text)}<small>${esc(s.live ? s.now : 'ya no se puede')}</small></span></li>`);
+    const html = lines.join('') + stars.join('');
+    if (!force && html === this.missionSig) return;
+    this.missionSig = html;
+    $('objlist').innerHTML = html;
   }
 
   // ---------- HUD ----------
@@ -93,6 +145,10 @@ class UI {
     document.querySelectorAll('[data-quick]').forEach((b) => {
       b.addEventListener('click', () => app.quickSelect(b.dataset.quick));
     });
+    document.querySelectorAll('[data-group]').forEach((b) => {
+      b.addEventListener('click', () => app.selectGroup(Number(b.dataset.group)));
+    });
+    $('btn-builders').addEventListener('click', () => app.selectBuilders());
 
     $('btabs').innerHTML = BUILD_TABS.map((t) =>
       `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === this.tab}">${esc(t.name)}</button>`).join('');
@@ -184,10 +240,18 @@ class UI {
     this.playersSig = '';
     $('toasts').innerHTML = '';
     $('objectives').hidden = false;
-    $('objectives').classList.remove('collapsed');
-    $('btn-obj').textContent = 'Ocultar';
-    $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
+    const camp = this.app.game.camp;
+    // En pantallas chicas el panel de la misión empieza plegado (se abre con «Mostrar»).
+    const small = window.innerWidth <= 860 || window.innerHeight <= 520;
+    $('objectives').classList.toggle('collapsed', !!camp && small);
+    $('btn-obj').textContent = camp && small ? 'Mostrar' : 'Ocultar';
+    $('leftcol').classList.toggle('camp', !!camp);
+    $('objtitle').textContent = camp ? Campaign.mode(camp.id).name : 'Primeros pasos';
+    if (camp) this.renderMission(true);
+    else $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
+    this.groupsSig = '';
+    this.renderGroups(true);
     $('king').hidden = !this.app.game.mode.king;
     $('feed').innerHTML = '';
     this.togglePop(null);
@@ -204,6 +268,7 @@ class UI {
   }
 
   markObjective(id) {
+    if (this.app.game.camp) return;
     const li = document.querySelector(`[data-obj="${id}"]`);
     if (li) li.classList.add('done');
     const all = this.objList().every((o) => this.app.game.objDone[o.id]);
@@ -490,7 +555,7 @@ class UI {
     } else if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level}` +
         `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
-        `|${g.time - first.lastWork > 1.5}`;
+        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}`;
       if (first.def.produces) {
         sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
       }
@@ -502,7 +567,7 @@ class UI {
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
-        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('');
+        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}`;
     }
     if (force || sig !== this.selSig) {
       this.selSig = sig;
@@ -587,6 +652,13 @@ class UI {
           <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
         </button>`;
       }).join('') + '</div>';
+      if (b.lastType && d.produces.includes(b.lastType)) {
+        // Repetir (v0.7): vuelve a poner la última tropa entrenada, una o cinco veces.
+        const lu = UNITS[b.lastType];
+        html += `<div class="actions repeat"><span class="queue">Última: <b>${esc(lu.name)}</b></span>
+          <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">Repetir · ${fmt(lu.cost)}</button>
+          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">×5 · ${fmt(lu.cost * 5)}</button></div>`;
+      }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
       html += '<div class="queue" id="sel-queue">' + (b.queue.length
@@ -633,8 +705,17 @@ class UI {
     if (founder) {
       acts.push(`<button class="btn gold" type="button" data-act="found">Fundar puesto · 800</button>`);
     }
+    const app = this.app;
+    if (sel.some((u) => u.def.weapon)) {
+      acts.push(`<button class="btn ${app.input.amoveArm ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${app.input.amoveArm ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+    }
+    if (sel.length > 1) {
+      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
+    }
     acts.push('<button class="btn" type="button" data-act="stop">Detener</button>');
     html += `<div class="actions">${acts.join('')}</div>`;
+    html += `<div class="actions groupsave"><span class="queue">Guardar en</span>${[1, 2, 3].map((n) =>
+      `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
     return html;
   }
 
@@ -761,7 +842,52 @@ class UI {
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
+    } else if (act === 'repeat') {
+      const n = Number(btn.dataset.n) || 1;
+      let added = 0;
+      let err = null;
+      for (let k = 0; k < n; k++) {
+        err = g.enqueue(b, b.lastType);
+        if (err) break;
+        added++;
+      }
+      if (!added) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else if (added < n) {
+        this.toast(`${added} en cola · ${err}`, 'bad');
+      }
+      this.renderSel(true);
+    } else if (act === 'amove') {
+      if (app.input.amoveArm) app.input.disarmAttackMove();
+      else app.input.armAttackMove();
+      this.renderSel(true);
+    } else if (act === 'formation') {
+      app.toggleFormation();
+      this.renderSel(true);
+    } else if (act === 'savegrp') {
+      app.saveGroup(Number(btn.dataset.v));
     }
+  }
+
+  // Botones de grupo y de Constructores junto al minimapa: cuántas tropas tiene cada uno.
+  renderGroups(force) {
+    const app = this.app;
+    const g = app.game;
+    if (!g) return;
+    const counts = [1, 2, 3].map((n) => app.groupUnits(n).length);
+    const builders = g.units.filter((u) => u.owner === 0 && u.alive && u.def.builds === 'land');
+    const idle = builders.filter((u) => u.state === 'idle' && !u.inside).length;
+    const sig = counts.join(',') + '|' + idle + '/' + builders.length;
+    if (!force && sig === this.groupsSig) return;
+    this.groupsSig = sig;
+    counts.forEach((k, i) => {
+      const el = $('grp' + (i + 1));
+      el.textContent = k ? String(k) : '—';
+      el.parentElement.classList.toggle('has', k > 0);
+    });
+    $('bld-idle').textContent = builders.length ? `${idle}/${builders.length}` : '0';
+    $('btn-builders').classList.toggle('alert', idle > 0);
   }
 
   demolishSelected() {
@@ -829,6 +955,8 @@ class UI {
     this.updateTop();
     this.refreshBuild();
     this.renderSel();
+    this.renderMission();
+    this.renderGroups();
     this.popT = (this.popT || 0) - 0.15;
     if (this.pop && this.popT <= 0) {
       this.popT = 0.5;
@@ -843,6 +971,8 @@ class UI {
     $('enddialog').innerHTML = this.app.lobby.endHtml(g);
     $('end').hidden = false;
     $('btn-again').addEventListener('click', () => this.app.startGame());
+    const next = $('btn-next');
+    if (next) next.addEventListener('click', () => this.app.startMission(Number(next.dataset.v)));
     $('btn-menu').addEventListener('click', () => this.app.toMenu());
     $('btn-watch').addEventListener('click', () => { $('end').hidden = true; });
   }

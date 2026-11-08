@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.6 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.7 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -21,6 +21,9 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Seleccionar | Toca una tropa o un edificio | Clic |
 | Todas las tropas de un tipo | Doble toque | Doble clic |
 | Varias tropas | Botón «Recuadro» y arrastra | Mayús + arrastrar |
+| Grupos 1, 2 y 3 | «Guardar en 1/2/3» y botones 1-2-3 junto al minimapa (dos toques: ir) | Número elige; Ctrl, Cmd o Mayús + número guarda |
+| Avanzar atacando | Botón en el panel de tropas y luego toca el destino | F y clic |
+| Constructores | Botón junto al minimapa (primero los que no trabajan) | C |
 | Mover / atacar | Toca un destino o un enemigo | Clic izquierdo o derecho |
 | Construir | Elige edificio → toca casilla → «Construir» | Igual; R gira, Enter confirma |
 | Mejorar | Toca un edificio terminado → «Mejorar» | Igual |
@@ -29,6 +32,15 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v0.7
+
+- **Campaña «La ruta del Faro»:** 6 misiones con historia, meta, progreso en pantalla y hasta 3
+  estrellas cada una (Primera luz, Defender la costa, El Faro, Cruzar el mar, Asedio y La gran
+  batalla). Cada misión se abre al terminar la anterior; premio de cristales la primera vez y por
+  cada estrella nueva.
+- **Mejores controles:** grupos 1-2-3, «Avanzar atacando», formación en bloque o en línea (de frente
+  al destino), «Repetir» y «×5» en los edificios que entrenan, y botón Constructores.
 
 ## Novedades de la v0.6
 
@@ -68,17 +80,18 @@ El código está en `src/` y se une en un solo archivo:
 
 ```bash
 node faro/build.mjs                                   # genera faro/faro.html
-node faro/docs/pdf.cjs faro/docs/prd/PRD_web_v0.5.html  # PDF del PRD (requiere Playwright)
+node faro/docs/pdf.cjs faro/docs/prd/PRD_web_v0.7.html  # PDF del PRD (requiere Playwright)
 python faro/blender/generate_models.py faro/assets/models  # modelos 3D (requiere el módulo bpy)
 ```
 
 | Archivo | Qué contiene |
 | --- | --- |
-| `src/js/00-config.js` | Costos, niveles, energías, límites, unidades, modos y dificultad |
+| `src/js/00-config.js` | Costos, niveles, energías, límites, unidades, modos, dificultad y misiones |
 | `src/js/02-map.js` | Generación de islas, lugares de recursos, el Faro y las Banderas |
 | `src/js/03-models.js` | Carga de los modelos GLB, aspectos y luz de ambiente |
 | `src/js/04-world.js` | Reglas: obras, mejoras, economía, combate, captura, victoria |
 | `src/js/045-save.js` | Guardar y cargar la partida |
+| `src/js/046-campaign.js` | Campaña: preparación de cada misión, metas, progreso y estrellas |
 | `src/js/05-ai.js` | Comportamiento de los bots |
 | `src/js/06-render.js` | Gráficos, Cúpulas, minimapa, cámara y calidad |
 | `src/js/061-fx.js` | Partículas: explosiones, humo, chispas, estelas y agua |
