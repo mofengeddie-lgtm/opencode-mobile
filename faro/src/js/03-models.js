@@ -437,6 +437,14 @@ const UNIT_MODEL = {
 // EQUIPO y EQUIPO_OSC se pintan con el color del jugador.
 const GLB = {};
 const GLB_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.06 });
+// v0.9 «Más fluido»: materiales Lambert, mucho más livianos para la tarjeta gráfica del iPad.
+const GLB_MAT_FAST = new THREE.MeshLambertMaterial({ vertexColors: true });
+const MODEL_MAT_FAST = new THREE.MeshLambertMaterial({ vertexColors: true });
+let FAST_MATS = false;
+function fastMat(mat, fast) {
+  if (fast) return mat === GLB_MAT ? GLB_MAT_FAST : mat === MODEL_MAT ? MODEL_MAT_FAST : mat;
+  return mat === GLB_MAT_FAST ? GLB_MAT : mat === MODEL_MAT_FAST ? MODEL_MAT : mat;
+}
 const PART_NAMES = ['main', 'turret', 'rotor', 'blades', 'rocker', 'crystal', 'legl', 'legr', 'shinl', 'shinr'];
 // Caminar y correr de CMU (v0.8): ángulos de cadera y rodilla, inclinación y rebote por ciclo.
 const CMU_GAIT = typeof FARO_ANIM !== 'undefined' && FARO_ANIM && FARO_ANIM.walk && FARO_ANIM.run ? FARO_ANIM : null;
@@ -639,7 +647,7 @@ function createVisual(type, color, look) {
   const m = getModel(type, color, look);
   const group = new THREE.Group();
   const out = { group, main: null, turret: null, rotor: null, crystal: null, rocker: null, blades: null, type };
-  const mat = m.glb ? GLB_MAT : MODEL_MAT;
+  const mat = fastMat(m.glb ? GLB_MAT : MODEL_MAT, FAST_MATS);
   _partMesh(m.main, mat, out, group, 'main', null).receiveShadow = true;
   const pp = m.partPos || {};
   if (m.blades) _partMesh(m.blades, mat, out, group, 'blades', pp.blades || new THREE.Vector3(0, m.bladesY, m.bladesZ));
@@ -688,7 +696,7 @@ function createPointVisual(type) {
     }
     b.add(GEO.cone8, PAL.dark, 0, 2.78, 0, 0.3, 0.32, 0.3);
     b.box(0.2, 0.3, 0.02, PAL.wood, 0, 0.4, 0.44);
-    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    const main = new THREE.Mesh(b.build(), fastMat(MODEL_MAT, FAST_MATS));
     main.castShadow = true;
     group.add(main);
     const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10),
@@ -715,7 +723,7 @@ function createPointVisual(type) {
     b.cyl(0.32, 0.1, PAL.stone, 0, 0, 0, GEO.cyl6);
     b.cyl(0.035, 1.25, PAL.dark, 0, 0.1, 0);
     b.add(GEO.sphere, PAL.yellow, 0, 1.38, 0, 0.05, 0.05, 0.05);
-    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    const main = new THREE.Mesh(b.build(), fastMat(MODEL_MAT, FAST_MATS));
     main.castShadow = true;
     group.add(main);
     const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.02), own);
@@ -777,5 +785,101 @@ const Thumbs = {
     }
     this.cache.set(key, url);
     return url;
+  },
+
+  // Portada (v0.9): una escena con los modelos del juego, dibujada una sola vez como imagen.
+  coverUrl: '',
+  cover(w = 1200, h = 330) {
+    if (this.coverUrl || !this.renderer) return this.coverUrl;
+    try {
+      const r = this.renderer;
+      const scene = new THREE.Scene();
+      const sky = document.createElement('canvas');
+      sky.width = 4;
+      sky.height = 256;
+      const sctx = sky.getContext('2d');
+      const grad = sctx.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#16283a');
+      grad.addColorStop(0.55, '#d9874a');
+      grad.addColorStop(1, '#f6c46a');
+      sctx.fillStyle = grad;
+      sctx.fillRect(0, 0, 4, 256);
+      scene.background = new THREE.CanvasTexture(sky);
+      scene.fog = new THREE.Fog(0xe0a060, 12, 30);
+      if (ENV_MAP) scene.environment = ENV_MAP;
+      scene.add(new THREE.HemisphereLight(0xffe2b8, 0x2d4a5a, 0.75));
+      const sun = new THREE.DirectionalLight(0xffc98a, 1.05);
+      sun.position.set(-6, 5, 3);
+      scene.add(sun);
+      const water = new THREE.Mesh(new THREE.PlaneGeometry(80, 40),
+        new THREE.MeshStandardMaterial({ color: 0x2b6f93, roughness: 0.25, metalness: 0.1 }));
+      water.rotation.x = -Math.PI / 2;
+      water.position.y = -0.12;
+      scene.add(water);
+      // Isla de casillas hexagonales.
+      const hexGeo = new THREE.CylinderGeometry(0.98, 0.98, 0.3, 6);
+      const grass = new THREE.MeshStandardMaterial({ color: 0x6f9c55, roughness: 0.95, flatShading: true });
+      const sand = new THREE.MeshStandardMaterial({ color: 0xd8c38a, roughness: 0.95, flatShading: true });
+      const rock = new THREE.MeshStandardMaterial({ color: 0x8b8f87, roughness: 0.95, flatShading: true });
+      for (let q = -6; q <= 14; q++) {
+        for (let rr = -5; rr <= 4; rr++) {
+          const x = q * 1.5;
+          const z = rr * 1.732 + (q & 1) * 0.866;
+          const d = Math.hypot((x - 4.5) * 0.48, z);
+          if (d > 5.6 || z > 3.6) continue;
+          const edge = d > 4.6 || z > 2.6;
+          const hill = q >= 6 && q <= 7 && rr <= -1;
+          const t = new THREE.Mesh(hexGeo, edge ? sand : hill ? rock : grass);
+          t.position.set(x, hill ? 0.18 : 0, z);
+          scene.add(t);
+        }
+      }
+      const blue = PLAYER_COLORS[0];
+      const red = PLAYER_COLORS[1];
+      const put = (type, x, y, z, yaw = 0, s = 1, color = blue, look) => {
+        const v = createVisual(type, color, look);
+        v.group.position.set(x, y, z);
+        v.group.rotation.y = yaw;
+        if (s !== 1) v.group.scale.multiplyScalar(s);
+        scene.add(v.group);
+        return v;
+      };
+      const faro = createPointVisual('faro');
+      faro.own.color.set(0xf2ab38);
+      faro.group.position.set(9.6, 0.33, -2.8);
+      faro.group.scale.setScalar(1.1);
+      scene.add(faro.group);
+      put('core_3', 0.8, 0.15, -2.4, 0.3);
+      put('aadef_4', 3.0, 0.15, -3.2, 0.8);
+      put('turret_4', 1.8, 0.15, 0.4, 1.0);
+      put('apc', 3.2, 0.15, -0.6, 1.2, 1.15);
+      put('heavytank', 4.4, 0.15, 0.9, 1.15, 1.15);
+      put('tank', 6.0, 0.15, -0.2, 1.25, 1.15);
+      put('launcher', 7.6, 0.33, -2.2, 1.3, 1.1);
+      ['rifle', 'rocket', 'rifle', 'medic', 'sniper', 'rifle'].forEach((k, i) =>
+        put(k, 4.6 + i * 0.6, 0.15, 2.2 - (i % 2) * 0.4, 1.4, 1.5));
+      const heli = put('heli', 3.4, 2.0, 0.6, 1.3, 1.2);
+      if (heli.rotor) heli.rotor.rotation.y = 0.5;
+      const apache = put('apache', 6.8, 2.5, -0.6, 1.25, 1.2);
+      if (apache.rotor) apache.rotor.rotation.y = 1.1;
+      const jet = put('fighter', 9.2, 3.3, 0.6, 1.9, 1.3);
+      jet.group.rotation.z = -0.35;
+      put('frigate', 11.2, -0.1, 2.6, -0.4, 1.2, red);
+      const cam = new THREE.PerspectiveCamera(30, w / h, 0.1, 80);
+      cam.position.set(4.6, 3.1, 9.6);
+      cam.lookAt(5.0, 0.8, 0);
+      r.setSize(w, h);
+      r.render(scene, cam);
+      this.coverUrl = r.domElement.toDataURL('image/jpeg', 0.86);
+      hexGeo.dispose();
+      [grass, sand, rock, water.material].forEach((m) => m.dispose());
+      water.geometry.dispose();
+      scene.background.dispose();
+      r.setSize(112, 112);
+    } catch (err) {
+      console.warn('[Thumbs] Sin portada:', err);
+      this.coverUrl = '';
+    }
+    return this.coverUrl;
   },
 };

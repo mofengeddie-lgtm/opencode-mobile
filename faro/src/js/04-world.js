@@ -980,6 +980,8 @@ class Game {
       if (d > maxD || !this.inRange(a, w, t, extraTiles)) return;
       const s = a.def && a.def.prefersBld
         ? d + (t.kind === 'bld' ? 0 : 8)
+        : a.def && a.def.prefersAir
+          ? d + (t.cls === 'air' ? 0 : 20)
         : focus
           ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
           : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
@@ -1527,9 +1529,32 @@ class Game {
         b.autoTarget2 = w.beams > 1 ? this.acquire(b, w, 0, b.autoTarget) : null;
       }
       const t = b.autoTarget;
+      // AIR DEFENSE (v0.9): el radar fija cada blanco nuevo antes de lanzar.
+      if (w.lock) {
+        if (t !== b.lockOn) {
+          b.lockOn = t && t.alive ? t : null;
+          b.lockT = w.lock;
+        }
+        b.lockT -= dt;
+      }
+      if (b.salvoLeft > 0) {
+        b.salvoT -= dt;
+        const st = b.salvoTarget;
+        if (b.salvoT <= 0) {
+          if (st && st.alive && this.inRange(b, w, st)) this.fire(b, w, st, b.salvoLeft);
+          b.salvoLeft--;
+          b.salvoT = 0.22;
+        }
+      }
       if (t && t.alive && this.inRange(b, w, t)) {
         b.aimYaw = Math.atan2(t.x - b.x, t.z - b.z);
-        if (b.cd <= 0) {
+        if (b.cd <= 0 && !(w.lock && b.lockT > 0)) {
+          if (w.salvo > 1) {
+            b.salvoLeft = w.salvo - 1;
+            b.salvoT = 0.22;
+            b.salvoTarget = t;
+            b.lastLaunch = this.time;
+          }
           this.fire(b, w, t);
           // Núcleo nivel 3: segundo láser (a otro enemigo si lo hay).
           if (w.beams > 1) {

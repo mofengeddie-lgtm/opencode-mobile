@@ -403,7 +403,12 @@ class Lobby {
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
     const pct = st.games ? Math.round((st.wins / st.games) * 100) : 0;
+    const cover = Thumbs.cover();
     return `${resume}
+      <section class="cover panel"${cover ? ` style="background-image:url('${cover}')"` : ''}>
+        <div class="cover-text"><small>Versión ${GAME_VERSION}</small><h2>Faro de <span>Ámbar</span></h2>
+          <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p></div>
+      </section>
       <section class="lcard panel">
         <div class="mode-now"><small>Modo</small><b>${esc(m.name)}</b><span>${esc(m.desc)}</span>
           <span>Mapa: <b>${esc(MAPS[P.play.mapKind].name)}</b></span></div>

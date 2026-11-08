@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.8 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 0.9 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -25,13 +25,33 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Avanzar atacando | Botón en el panel de tropas y luego toca el destino | F y clic |
 | Constructores | Botón junto al minimapa (primero los que no trabajan) | C |
 | Mover / atacar | Toca un destino o un enemigo | Clic izquierdo o derecho |
-| Construir | Elige edificio → toca casilla → «Construir» | Igual; R gira, Enter confirma |
+| Construir | Elige edificio → toca casillas doradas (se construye al instante, varias seguidas) → «Listo» | Igual; R gira, Enter termina |
 | Mejorar | Toca un edificio terminado → «Mejorar» | Igual |
 | Capturar | Lleva infantería junto a una Bandera o al Faro | Igual |
 | Pausa / salir | Botón de pausa → «Salir al menú» (la partida queda guardada) | Esc o P |
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v0.9
+
+- **Ejército nuevo:** Aeropuerto militar con Caza furtivo y Bombardero furtivo; Portaaviones, Fragata y
+  Lancha de desembarco en el Puerto; Tanque ligero, Tanque pesado, Camión de misiles, Transporte blindado
+  y Lanzacohetes en la Fábrica; Médico en el Cuartel. El Jeep y el Transporte llevan soldados.
+- **Helicópteros:** el Helicóptero tiene ahora el equipo y el precio del Apache viejo (con artilleros en
+  las puertas); el Apache cuesta 10 000 y es más fuerte (cañón, misiles y bengalas). Sin límite propio,
+  vuelven solos a repararse al Helipuerto o al Aeropuerto. Se ve cuándo disparan y lanzan misiles.
+- **Defensas:** 20 Torretas; la Torreta nivel 4 tiene 3 miniguns, más daño y tiro antiaéreo. La AIR
+  DEFENSE fija el blanco con el radar, prioriza aeronaves y lanza ráfagas de 2 misiles, con ficha de
+  radar. Nivel 4 (solo 3): misil nuclear carísimo con 3 minutos de recarga; el Escudo antimisiles lo derriba.
+- **Reglas:** comunidad hasta 180 (y más por eliminar tropas y Núcleos), Casa nivel 2 = Apartamento
+  (+20), 6 Helipuertos, cada edificio con su escudo, escudo de las tropas solo dentro de la Cúpula,
+  barras de escudo en azul, amarillo y rojo, tarjeta «Qué mejoró» en cada mejora, tierra fértil más
+  grande, construir de un toque y todas las tropas armadas dañan edificios.
+- **Modelos y portada:** soldados más realistas (chaleco, mochila, brazos que sostienen el arma),
+  Núcleo con banderas, Apartamento, aviones, barcos y vehículos nuevos hechos en Blender, y una portada
+  con una escena 3D del juego.
+- **Calidad:** «Más fluido» usa materiales más livianos y «Alta» se ve más nítida en pantallas Retina.
 
 ## Novedades de la v0.8
 

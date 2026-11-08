@@ -62,7 +62,8 @@ class Renderer {
   applyQuality(q) {
     this.quality = q;
     const dpr = window.devicePixelRatio || 1;
-    this.renderer.setPixelRatio(q === 'high' ? Math.min(dpr, 1.75) : 1);
+    // v0.9: Alta llega a 2× en pantallas Retina (un poco más nítida).
+    this.renderer.setPixelRatio(q === 'high' ? Math.min(dpr, 2) : 1);
     this.renderer.shadowMap.enabled = q === 'high';
     this.renderer.shadowMap.needsUpdate = true;
     // Más fluido: sin la luz de ambiente del cielo y la mitad de partículas.
@@ -72,9 +73,14 @@ class Renderer {
     for (const part of this.terrainParts || []) {
       if (part.key !== 'plain') part.mesh.material.map = terrainTex(part.key, q);
     }
+    // v0.9: Más fluido usa materiales Lambert (más livianos) y Alta un reflejo del cielo algo más fuerte.
+    FAST_MATS = q !== 'high';
+    GLB_MAT.envMapIntensity = 0.68;
     if (this.scene) {
       this.scene.traverse((o) => {
-        if (o.material) o.material.needsUpdate = true;
+        if (!o.material) return;
+        if (o.isMesh) o.material = fastMat(o.material, FAST_MATS);
+        o.material.needsUpdate = true;
       });
     }
     this.resize();
@@ -392,7 +398,7 @@ class Renderer {
     const flag = new PartBuilder();
     flag.box(0.04, 0.9, 0.04, PAL.dark, 0, 0, 0);
     flag.box(0.34, 0.22, 0.02, 0xffffff, 0.17, 0.62, 0);
-    this.rallyFlag = new THREE.Mesh(flag.build(), MODEL_MAT);
+    this.rallyFlag = new THREE.Mesh(flag.build(), fastMat(MODEL_MAT, FAST_MATS));
     this.rallyFlag.visible = false;
     this.scene.add(this.rallyFlag);
   }
@@ -738,7 +744,7 @@ class Renderer {
       // Andamio mientras se construye o se mejora.
       const working = !b.built || !!b.upgrading;
       if (working && !v.scaffold && GLB.scaffold) {
-        v.scaffold = new THREE.Mesh(getModel('scaffold', PLAYER_COLORS[b.owner]).main, GLB_MAT);
+        v.scaffold = new THREE.Mesh(getModel('scaffold', PLAYER_COLORS[b.owner]).main, fastMat(GLB_MAT, FAST_MATS));
         v.scaffold.rotation.y = -v.group.rotation.y;
         if (b.type === 'core') v.scaffold.scale.set(1.35, 1.6, 1.35);
         v.group.add(v.scaffold);
@@ -868,7 +874,7 @@ class Renderer {
     HEX_DIRS.forEach(([dq, dr], i) => {
       if (!(mask & (1 << i))) return;
       const w = hexToWorld(dq, dr);
-      const seg = new THREE.Mesh(geo, GLB_MAT);
+      const seg = new THREE.Mesh(geo, fastMat(GLB_MAT, FAST_MATS));
       seg.castShadow = true;
       seg.receiveShadow = true;
       seg.rotation.y = Math.atan2(w.x, w.z);
@@ -1155,6 +1161,37 @@ class Renderer {
       ctx.stroke();
     }
     ctx.setLineDash([]);
+    // AIR DEFENSE (v0.9): el radar marca la aeronave que sigue (amarillo) y la que ya fijó (rojo).
+    // Si un radar enemigo fija una aeronave tuya, aparece un aro rojo de alerta sobre ella.
+    for (const bl of g.buildings) {
+      const t = bl.lockOn;
+      if (!bl.alive || !t || !t.alive || t.cls !== 'air' || !bl.def.weapon || !bl.def.weapon.lock) continue;
+      const mine = bl.owner === 0;
+      if (!mine && t.owner !== 0) continue;
+      if (!g.inRange(bl, g.weaponOf(bl), t)) continue;
+      const s = this.project(t.x, t.y + 0.2, t.z);
+      if (!s.ok || s.x < -30 || s.y < -30 || s.x > this.width + 30 || s.y > this.height + 30) continue;
+      const locked = bl.lockT <= 0;
+      ctx.lineWidth = 2;
+      if (mine) {
+        const r = locked ? 13 : 13 + Math.max(0, bl.lockT) * 30;
+        ctx.strokeStyle = locked ? '#ef5350' : '#f2c94c';
+        for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+          ctx.beginPath();
+          ctx.moveTo(s.x + sx * r, s.y + sy * (r - 6));
+          ctx.lineTo(s.x + sx * r, s.y + sy * r);
+          ctx.lineTo(s.x + sx * (r - 6), s.y + sy * r);
+          ctx.stroke();
+        }
+      } else {
+        const pulse = 0.5 + 0.5 * Math.sin(g.time * 12);
+        ctx.strokeStyle = `rgba(239,83,80,${0.45 + pulse * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 15 + pulse * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.lineWidth = 1;
+    }
     // Obras: «En construcción» o «Mejorando», con progreso y aviso si no hay constructor.
     for (const bl of g.buildings) {
       if (!bl.alive || g.players[bl.owner].team !== myTeam) continue;
@@ -1436,7 +1473,8 @@ class Renderer {
     this.renderer.render(this.scene, this.camera);
     // Con muchas tropas, las barras de vida y los iconos se dibujan un cuadro sí y otro no.
     this.ovFrame = (this.ovFrame || 0) + 1;
-    this.overlayHalf = g.units.length > 120;
+    // v0.9: en Más fluido las barras y avisos se dibujan cada dos cuadros con más de 40 tropas.
+    this.overlayHalf = g.units.length > (this.quality === 'high' ? 120 : 40);
     if (!this.overlayHalf || this.ovFrame % 2 === 0) this.drawOverlay(selection);
   }
 }

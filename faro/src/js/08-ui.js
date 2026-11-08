@@ -458,6 +458,26 @@ class UI {
       <tbody>${rows}</tbody></table></div>`;
   }
 
+  // ---------- AIR DEFENSE y Torreta (v0.9): alcance, recarga, contra qué sirve y qué sigue el radar ----------
+  radarHtml(b) {
+    const g = this.app.game;
+    const w = g.weaponOf(b);
+    const air = (w.mult.air || 0) > 0;
+    const rows = [`<span>Alcance</span><b>${w.range} casillas</b>`,
+      `<span>Recarga</span><b>${w.cd.toLocaleString('es-ES')} s${w.salvo ? ` · ráfaga de ${w.salvo}` : ''}</b>`,
+      `<span>${w.salvo ? 'Daño a aeronaves por ráfaga' : 'Daño a aeronaves por tiro'}</span><b>${air ? fmt(w.dmg * w.mult.air * (w.salvo || 1)) : 'no'}</b>`];
+    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push('<span>Detecta furtivos</span><b>a 3 casillas</b>');
+    const t = b.lockOn && b.lockOn.alive && g.inRange(b, w, b.lockOn) ? b.lockOn : b.autoTarget && b.autoTarget.alive ? b.autoTarget : null;
+    let status = '<b class="radar-idle">Sin blancos</b>';
+    if (t) {
+      const name = t.kind === 'bld' ? t.def.name : UNITS[t.type].name;
+      const locking = w.lock && b.lockOn === t && b.lockT > 0;
+      status = `<b class="${locking ? 'radar-track' : 'radar-lock'}">${locking ? 'Siguiendo' : 'Fijado'}: ${esc(name)}</b>`;
+    }
+    return `<div class="radar"><div class="radar-scope" aria-hidden="true"><i></i></div>
+      <div class="radar-body"><div class="radar-status">Radar · ${status}</div><div class="numbers">${rows.join('')}</div></div></div>`;
+  }
+
   // ---------- ficha de unidad ----------
   statsHtml(type) {
     const u = UNITS[type];
@@ -610,6 +630,7 @@ class UI {
       }
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
       if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
@@ -716,6 +737,7 @@ class UI {
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
     }
+    if (b.built && d.weapon && (b.type === 'aadef' || b.type === 'turret')) html += this.radarHtml(b);
     if (b.type === 'aadef' && b.built && b.level >= 4) {
       // Misil nuclear (v0.9): muy caro, recarga de 3 min.
       const why = g.nukeInvalid(b);

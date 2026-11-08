@@ -4,7 +4,7 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.8';
+const GAME_VERSION = '0.9';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -148,7 +148,9 @@ const BUILDINGS = {
   },
   aadef: {
     name: 'AIR DEFENSE', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6, builtBy: 'land', maxLevel: 4,
-    weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
+    // v0.9: el radar fija el blanco (0,5 s), prioriza aeronaves y lanza ráfagas de 2 misiles.
+    weapon: { dmg: 90, cd: 2.4, range: 6, proj: 'missile', mult: { air: 2.2 }, salvo: 2, lock: 0.5 },
+    prefersAir: true,
     // Nivel 4 (solo 3 por imperio): lanza el misil nuclear (ver NUKE).
     l4Limit: 3,
     desc: 'Misiles de largo alcance contra aeronaves. Nivel 4 (solo 3 de tus 6): lanza el misil nuclear.',

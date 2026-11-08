@@ -387,6 +387,27 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.radar { display: flex; gap: 12px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8,15,21,0.35); }
+.radar-scope { flex: 0 0 52px; height: 52px; border-radius: 50%; position: relative; overflow: hidden;
+  background: radial-gradient(circle, rgba(94,224,122,0.18) 0 30%, transparent 31% 32%, rgba(94,224,122,0.12) 33% 62%, transparent 63% 64%, rgba(94,224,122,0.08) 65%);
+  border: 1px solid rgba(94,224,122,0.55); }
+.radar-scope i { position: absolute; inset: 0; background: conic-gradient(from 0deg, rgba(94,224,122,0.65), rgba(94,224,122,0) 70deg); animation: radarspin 2.4s linear infinite; }
+@keyframes radarspin { to { transform: rotate(360deg); } }
+.radar-body { flex: 1 1 auto; min-width: 0; display: grid; gap: 4px; }
+.radar-status { font-size: 13px; }
+.radar .numbers { grid-template-columns: auto auto; gap: 2px 12px; font-size: 12px; }
+.radar-idle { color: var(--muted); }
+.radar-track { color: #f2c94c; }
+.radar-lock { color: #ef5350; }
+@media (prefers-reduced-motion: reduce) { .radar-scope i { animation: none; } }
+.cover { position: relative; min-height: 168px; padding: 0; overflow: hidden; display: flex; align-items: flex-end;
+  background: linear-gradient(180deg, #16283a, #d9874a 60%, #f6c46a) 70% 35% / cover no-repeat; }
+.cover::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,15,21,0.78), rgba(8,15,21,0.35) 48%, rgba(8,15,21,0) 70%); }
+.cover-text { position: relative; padding: 16px 18px; max-width: 60%; }
+.cover-text small { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber, #f2ab38); font-weight: 700; }
+.cover-text h2 { margin: 2px 0 4px; font-family: var(--font-display); font-size: 30px; line-height: 1.05; letter-spacing: 0.02em; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+.cover-text h2 span { color: #f2ab38; }
+.cover-text p { margin: 0; font-size: 13px; line-height: 1.35; color: #e8edf1; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
 .lcard h2 { margin: 0; font-family: var(--font-display); font-size: 22px; letter-spacing: 0.03em; }
 .lcard h3 { margin: 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .lcard p { margin: 0; color: var(--muted); line-height: 1.45; }
@@ -492,6 +513,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   .endstats { grid-template-columns: repeat(2, 1fr); }
   .prizes { grid-template-columns: 1fr; }
   .daygrid { grid-template-columns: repeat(4, 1fr); }
+  .cover-text { max-width: 80%; }
+  .cover-text h2 { font-size: 24px; }
 }
 /* ---------- v0.7: grupos, campaña y misión ---------- */
 .mapcol { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -721,7 +744,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v0.8</span>
+      <span class="version">v0.9</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -806,7 +829,7 @@ const FARO_ANIM = {"source":"CMU Graphics Lab Motion Capture Database (mocap.cs.
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '0.8';
+const GAME_VERSION = '0.9';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -950,7 +973,9 @@ const BUILDINGS = {
   },
   aadef: {
     name: 'AIR DEFENSE', cat: 'def', cost: 2000, hp: 1000, build: 12, on: 'land', limit: 6, vision: 6, builtBy: 'land', maxLevel: 4,
-    weapon: { dmg: 110, cd: 1.6, range: 6, proj: 'missile', mult: { air: 2.2 } },
+    // v0.9: el radar fija el blanco (0,5 s), prioriza aeronaves y lanza ráfagas de 2 misiles.
+    weapon: { dmg: 90, cd: 2.4, range: 6, proj: 'missile', mult: { air: 2.2 }, salvo: 2, lock: 0.5 },
+    prefersAir: true,
     // Nivel 4 (solo 3 por imperio): lanza el misil nuclear (ver NUKE).
     l4Limit: 3,
     desc: 'Misiles de largo alcance contra aeronaves. Nivel 4 (solo 3 de tus 6): lanza el misil nuclear.',
@@ -2353,6 +2378,14 @@ const UNIT_MODEL = {
 // EQUIPO y EQUIPO_OSC se pintan con el color del jugador.
 const GLB = {};
 const GLB_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.06 });
+// v0.9 «Más fluido»: materiales Lambert, mucho más livianos para la tarjeta gráfica del iPad.
+const GLB_MAT_FAST = new THREE.MeshLambertMaterial({ vertexColors: true });
+const MODEL_MAT_FAST = new THREE.MeshLambertMaterial({ vertexColors: true });
+let FAST_MATS = false;
+function fastMat(mat, fast) {
+  if (fast) return mat === GLB_MAT ? GLB_MAT_FAST : mat === MODEL_MAT ? MODEL_MAT_FAST : mat;
+  return mat === GLB_MAT_FAST ? GLB_MAT : mat === MODEL_MAT_FAST ? MODEL_MAT : mat;
+}
 const PART_NAMES = ['main', 'turret', 'rotor', 'blades', 'rocker', 'crystal', 'legl', 'legr', 'shinl', 'shinr'];
 // Caminar y correr de CMU (v0.8): ángulos de cadera y rodilla, inclinación y rebote por ciclo.
 const CMU_GAIT = typeof FARO_ANIM !== 'undefined' && FARO_ANIM && FARO_ANIM.walk && FARO_ANIM.run ? FARO_ANIM : null;
@@ -2555,7 +2588,7 @@ function createVisual(type, color, look) {
   const m = getModel(type, color, look);
   const group = new THREE.Group();
   const out = { group, main: null, turret: null, rotor: null, crystal: null, rocker: null, blades: null, type };
-  const mat = m.glb ? GLB_MAT : MODEL_MAT;
+  const mat = fastMat(m.glb ? GLB_MAT : MODEL_MAT, FAST_MATS);
   _partMesh(m.main, mat, out, group, 'main', null).receiveShadow = true;
   const pp = m.partPos || {};
   if (m.blades) _partMesh(m.blades, mat, out, group, 'blades', pp.blades || new THREE.Vector3(0, m.bladesY, m.bladesZ));
@@ -2604,7 +2637,7 @@ function createPointVisual(type) {
     }
     b.add(GEO.cone8, PAL.dark, 0, 2.78, 0, 0.3, 0.32, 0.3);
     b.box(0.2, 0.3, 0.02, PAL.wood, 0, 0.4, 0.44);
-    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    const main = new THREE.Mesh(b.build(), fastMat(MODEL_MAT, FAST_MATS));
     main.castShadow = true;
     group.add(main);
     const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10),
@@ -2631,7 +2664,7 @@ function createPointVisual(type) {
     b.cyl(0.32, 0.1, PAL.stone, 0, 0, 0, GEO.cyl6);
     b.cyl(0.035, 1.25, PAL.dark, 0, 0.1, 0);
     b.add(GEO.sphere, PAL.yellow, 0, 1.38, 0, 0.05, 0.05, 0.05);
-    const main = new THREE.Mesh(b.build(), MODEL_MAT);
+    const main = new THREE.Mesh(b.build(), fastMat(MODEL_MAT, FAST_MATS));
     main.castShadow = true;
     group.add(main);
     const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.02), own);
@@ -2693,6 +2726,102 @@ const Thumbs = {
     }
     this.cache.set(key, url);
     return url;
+  },
+
+  // Portada (v0.9): una escena con los modelos del juego, dibujada una sola vez como imagen.
+  coverUrl: '',
+  cover(w = 1200, h = 330) {
+    if (this.coverUrl || !this.renderer) return this.coverUrl;
+    try {
+      const r = this.renderer;
+      const scene = new THREE.Scene();
+      const sky = document.createElement('canvas');
+      sky.width = 4;
+      sky.height = 256;
+      const sctx = sky.getContext('2d');
+      const grad = sctx.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#16283a');
+      grad.addColorStop(0.55, '#d9874a');
+      grad.addColorStop(1, '#f6c46a');
+      sctx.fillStyle = grad;
+      sctx.fillRect(0, 0, 4, 256);
+      scene.background = new THREE.CanvasTexture(sky);
+      scene.fog = new THREE.Fog(0xe0a060, 12, 30);
+      if (ENV_MAP) scene.environment = ENV_MAP;
+      scene.add(new THREE.HemisphereLight(0xffe2b8, 0x2d4a5a, 0.75));
+      const sun = new THREE.DirectionalLight(0xffc98a, 1.05);
+      sun.position.set(-6, 5, 3);
+      scene.add(sun);
+      const water = new THREE.Mesh(new THREE.PlaneGeometry(80, 40),
+        new THREE.MeshStandardMaterial({ color: 0x2b6f93, roughness: 0.25, metalness: 0.1 }));
+      water.rotation.x = -Math.PI / 2;
+      water.position.y = -0.12;
+      scene.add(water);
+      // Isla de casillas hexagonales.
+      const hexGeo = new THREE.CylinderGeometry(0.98, 0.98, 0.3, 6);
+      const grass = new THREE.MeshStandardMaterial({ color: 0x6f9c55, roughness: 0.95, flatShading: true });
+      const sand = new THREE.MeshStandardMaterial({ color: 0xd8c38a, roughness: 0.95, flatShading: true });
+      const rock = new THREE.MeshStandardMaterial({ color: 0x8b8f87, roughness: 0.95, flatShading: true });
+      for (let q = -6; q <= 14; q++) {
+        for (let rr = -5; rr <= 4; rr++) {
+          const x = q * 1.5;
+          const z = rr * 1.732 + (q & 1) * 0.866;
+          const d = Math.hypot((x - 4.5) * 0.48, z);
+          if (d > 5.6 || z > 3.6) continue;
+          const edge = d > 4.6 || z > 2.6;
+          const hill = q >= 6 && q <= 7 && rr <= -1;
+          const t = new THREE.Mesh(hexGeo, edge ? sand : hill ? rock : grass);
+          t.position.set(x, hill ? 0.18 : 0, z);
+          scene.add(t);
+        }
+      }
+      const blue = PLAYER_COLORS[0];
+      const red = PLAYER_COLORS[1];
+      const put = (type, x, y, z, yaw = 0, s = 1, color = blue, look) => {
+        const v = createVisual(type, color, look);
+        v.group.position.set(x, y, z);
+        v.group.rotation.y = yaw;
+        if (s !== 1) v.group.scale.multiplyScalar(s);
+        scene.add(v.group);
+        return v;
+      };
+      const faro = createPointVisual('faro');
+      faro.own.color.set(0xf2ab38);
+      faro.group.position.set(9.6, 0.33, -2.8);
+      faro.group.scale.setScalar(1.1);
+      scene.add(faro.group);
+      put('core_3', 0.8, 0.15, -2.4, 0.3);
+      put('aadef_4', 3.0, 0.15, -3.2, 0.8);
+      put('turret_4', 1.8, 0.15, 0.4, 1.0);
+      put('apc', 3.2, 0.15, -0.6, 1.2, 1.15);
+      put('heavytank', 4.4, 0.15, 0.9, 1.15, 1.15);
+      put('tank', 6.0, 0.15, -0.2, 1.25, 1.15);
+      put('launcher', 7.6, 0.33, -2.2, 1.3, 1.1);
+      ['rifle', 'rocket', 'rifle', 'medic', 'sniper', 'rifle'].forEach((k, i) =>
+        put(k, 4.6 + i * 0.6, 0.15, 2.2 - (i % 2) * 0.4, 1.4, 1.5));
+      const heli = put('heli', 3.4, 2.0, 0.6, 1.3, 1.2);
+      if (heli.rotor) heli.rotor.rotation.y = 0.5;
+      const apache = put('apache', 6.8, 2.5, -0.6, 1.25, 1.2);
+      if (apache.rotor) apache.rotor.rotation.y = 1.1;
+      const jet = put('fighter', 9.2, 3.3, 0.6, 1.9, 1.3);
+      jet.group.rotation.z = -0.35;
+      put('frigate', 11.2, -0.1, 2.6, -0.4, 1.2, red);
+      const cam = new THREE.PerspectiveCamera(30, w / h, 0.1, 80);
+      cam.position.set(4.6, 3.1, 9.6);
+      cam.lookAt(5.0, 0.8, 0);
+      r.setSize(w, h);
+      r.render(scene, cam);
+      this.coverUrl = r.domElement.toDataURL('image/jpeg', 0.86);
+      hexGeo.dispose();
+      [grass, sand, rock, water.material].forEach((m) => m.dispose());
+      water.geometry.dispose();
+      scene.background.dispose();
+      r.setSize(112, 112);
+    } catch (err) {
+      console.warn('[Thumbs] Sin portada:', err);
+      this.coverUrl = '';
+    }
+    return this.coverUrl;
   },
 };
 
@@ -3679,6 +3808,8 @@ class Game {
       if (d > maxD || !this.inRange(a, w, t, extraTiles)) return;
       const s = a.def && a.def.prefersBld
         ? d + (t.kind === 'bld' ? 0 : 8)
+        : a.def && a.def.prefersAir
+          ? d + (t.cls === 'air' ? 0 : 20)
         : focus
           ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
           : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
@@ -4226,9 +4357,32 @@ class Game {
         b.autoTarget2 = w.beams > 1 ? this.acquire(b, w, 0, b.autoTarget) : null;
       }
       const t = b.autoTarget;
+      // AIR DEFENSE (v0.9): el radar fija cada blanco nuevo antes de lanzar.
+      if (w.lock) {
+        if (t !== b.lockOn) {
+          b.lockOn = t && t.alive ? t : null;
+          b.lockT = w.lock;
+        }
+        b.lockT -= dt;
+      }
+      if (b.salvoLeft > 0) {
+        b.salvoT -= dt;
+        const st = b.salvoTarget;
+        if (b.salvoT <= 0) {
+          if (st && st.alive && this.inRange(b, w, st)) this.fire(b, w, st, b.salvoLeft);
+          b.salvoLeft--;
+          b.salvoT = 0.22;
+        }
+      }
       if (t && t.alive && this.inRange(b, w, t)) {
         b.aimYaw = Math.atan2(t.x - b.x, t.z - b.z);
-        if (b.cd <= 0) {
+        if (b.cd <= 0 && !(w.lock && b.lockT > 0)) {
+          if (w.salvo > 1) {
+            b.salvoLeft = w.salvo - 1;
+            b.salvoT = 0.22;
+            b.salvoTarget = t;
+            b.lastLaunch = this.time;
+          }
           this.fire(b, w, t);
           // Núcleo nivel 3: segundo láser (a otro enemigo si lo hay).
           if (w.beams > 1) {
@@ -6440,7 +6594,8 @@ class Renderer {
   applyQuality(q) {
     this.quality = q;
     const dpr = window.devicePixelRatio || 1;
-    this.renderer.setPixelRatio(q === 'high' ? Math.min(dpr, 1.75) : 1);
+    // v0.9: Alta llega a 2× en pantallas Retina (un poco más nítida).
+    this.renderer.setPixelRatio(q === 'high' ? Math.min(dpr, 2) : 1);
     this.renderer.shadowMap.enabled = q === 'high';
     this.renderer.shadowMap.needsUpdate = true;
     // Más fluido: sin la luz de ambiente del cielo y la mitad de partículas.
@@ -6450,9 +6605,14 @@ class Renderer {
     for (const part of this.terrainParts || []) {
       if (part.key !== 'plain') part.mesh.material.map = terrainTex(part.key, q);
     }
+    // v0.9: Más fluido usa materiales Lambert (más livianos) y Alta un reflejo del cielo algo más fuerte.
+    FAST_MATS = q !== 'high';
+    GLB_MAT.envMapIntensity = 0.68;
     if (this.scene) {
       this.scene.traverse((o) => {
-        if (o.material) o.material.needsUpdate = true;
+        if (!o.material) return;
+        if (o.isMesh) o.material = fastMat(o.material, FAST_MATS);
+        o.material.needsUpdate = true;
       });
     }
     this.resize();
@@ -6770,7 +6930,7 @@ class Renderer {
     const flag = new PartBuilder();
     flag.box(0.04, 0.9, 0.04, PAL.dark, 0, 0, 0);
     flag.box(0.34, 0.22, 0.02, 0xffffff, 0.17, 0.62, 0);
-    this.rallyFlag = new THREE.Mesh(flag.build(), MODEL_MAT);
+    this.rallyFlag = new THREE.Mesh(flag.build(), fastMat(MODEL_MAT, FAST_MATS));
     this.rallyFlag.visible = false;
     this.scene.add(this.rallyFlag);
   }
@@ -7116,7 +7276,7 @@ class Renderer {
       // Andamio mientras se construye o se mejora.
       const working = !b.built || !!b.upgrading;
       if (working && !v.scaffold && GLB.scaffold) {
-        v.scaffold = new THREE.Mesh(getModel('scaffold', PLAYER_COLORS[b.owner]).main, GLB_MAT);
+        v.scaffold = new THREE.Mesh(getModel('scaffold', PLAYER_COLORS[b.owner]).main, fastMat(GLB_MAT, FAST_MATS));
         v.scaffold.rotation.y = -v.group.rotation.y;
         if (b.type === 'core') v.scaffold.scale.set(1.35, 1.6, 1.35);
         v.group.add(v.scaffold);
@@ -7246,7 +7406,7 @@ class Renderer {
     HEX_DIRS.forEach(([dq, dr], i) => {
       if (!(mask & (1 << i))) return;
       const w = hexToWorld(dq, dr);
-      const seg = new THREE.Mesh(geo, GLB_MAT);
+      const seg = new THREE.Mesh(geo, fastMat(GLB_MAT, FAST_MATS));
       seg.castShadow = true;
       seg.receiveShadow = true;
       seg.rotation.y = Math.atan2(w.x, w.z);
@@ -7533,6 +7693,37 @@ class Renderer {
       ctx.stroke();
     }
     ctx.setLineDash([]);
+    // AIR DEFENSE (v0.9): el radar marca la aeronave que sigue (amarillo) y la que ya fijó (rojo).
+    // Si un radar enemigo fija una aeronave tuya, aparece un aro rojo de alerta sobre ella.
+    for (const bl of g.buildings) {
+      const t = bl.lockOn;
+      if (!bl.alive || !t || !t.alive || t.cls !== 'air' || !bl.def.weapon || !bl.def.weapon.lock) continue;
+      const mine = bl.owner === 0;
+      if (!mine && t.owner !== 0) continue;
+      if (!g.inRange(bl, g.weaponOf(bl), t)) continue;
+      const s = this.project(t.x, t.y + 0.2, t.z);
+      if (!s.ok || s.x < -30 || s.y < -30 || s.x > this.width + 30 || s.y > this.height + 30) continue;
+      const locked = bl.lockT <= 0;
+      ctx.lineWidth = 2;
+      if (mine) {
+        const r = locked ? 13 : 13 + Math.max(0, bl.lockT) * 30;
+        ctx.strokeStyle = locked ? '#ef5350' : '#f2c94c';
+        for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+          ctx.beginPath();
+          ctx.moveTo(s.x + sx * r, s.y + sy * (r - 6));
+          ctx.lineTo(s.x + sx * r, s.y + sy * r);
+          ctx.lineTo(s.x + sx * (r - 6), s.y + sy * r);
+          ctx.stroke();
+        }
+      } else {
+        const pulse = 0.5 + 0.5 * Math.sin(g.time * 12);
+        ctx.strokeStyle = `rgba(239,83,80,${0.45 + pulse * 0.5})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 15 + pulse * 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.lineWidth = 1;
+    }
     // Obras: «En construcción» o «Mejorando», con progreso y aviso si no hay constructor.
     for (const bl of g.buildings) {
       if (!bl.alive || g.players[bl.owner].team !== myTeam) continue;
@@ -7814,7 +8005,8 @@ class Renderer {
     this.renderer.render(this.scene, this.camera);
     // Con muchas tropas, las barras de vida y los iconos se dibujan un cuadro sí y otro no.
     this.ovFrame = (this.ovFrame || 0) + 1;
-    this.overlayHalf = g.units.length > 120;
+    // v0.9: en Más fluido las barras y avisos se dibujan cada dos cuadros con más de 40 tropas.
+    this.overlayHalf = g.units.length > (this.quality === 'high' ? 120 : 40);
     if (!this.overlayHalf || this.ovFrame % 2 === 0) this.drawOverlay(selection);
   }
 }
@@ -9033,6 +9225,26 @@ class UI {
       <tbody>${rows}</tbody></table></div>`;
   }
 
+  // ---------- AIR DEFENSE y Torreta (v0.9): alcance, recarga, contra qué sirve y qué sigue el radar ----------
+  radarHtml(b) {
+    const g = this.app.game;
+    const w = g.weaponOf(b);
+    const air = (w.mult.air || 0) > 0;
+    const rows = [`<span>Alcance</span><b>${w.range} casillas</b>`,
+      `<span>Recarga</span><b>${w.cd.toLocaleString('es-ES')} s${w.salvo ? ` · ráfaga de ${w.salvo}` : ''}</b>`,
+      `<span>${w.salvo ? 'Daño a aeronaves por ráfaga' : 'Daño a aeronaves por tiro'}</span><b>${air ? fmt(w.dmg * w.mult.air * (w.salvo || 1)) : 'no'}</b>`];
+    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push('<span>Detecta furtivos</span><b>a 3 casillas</b>');
+    const t = b.lockOn && b.lockOn.alive && g.inRange(b, w, b.lockOn) ? b.lockOn : b.autoTarget && b.autoTarget.alive ? b.autoTarget : null;
+    let status = '<b class="radar-idle">Sin blancos</b>';
+    if (t) {
+      const name = t.kind === 'bld' ? t.def.name : UNITS[t.type].name;
+      const locking = w.lock && b.lockOn === t && b.lockT > 0;
+      status = `<b class="${locking ? 'radar-track' : 'radar-lock'}">${locking ? 'Siguiendo' : 'Fijado'}: ${esc(name)}</b>`;
+    }
+    return `<div class="radar"><div class="radar-scope" aria-hidden="true"><i></i></div>
+      <div class="radar-body"><div class="radar-status">Radar · ${status}</div><div class="numbers">${rows.join('')}</div></div></div>`;
+  }
+
   // ---------- ficha de unidad ----------
   statsHtml(type) {
     const u = UNITS[type];
@@ -9185,6 +9397,7 @@ class UI {
       }
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
+      if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
       if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
@@ -9291,6 +9504,7 @@ class UI {
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
     }
+    if (b.built && d.weapon && (b.type === 'aadef' || b.type === 'turret')) html += this.radarHtml(b);
     if (b.type === 'aadef' && b.built && b.level >= 4) {
       // Misil nuclear (v0.9): muy caro, recarga de 3 min.
       const why = g.nukeInvalid(b);
@@ -10315,7 +10529,12 @@ class Lobby {
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
     const pct = st.games ? Math.round((st.wins / st.games) * 100) : 0;
+    const cover = Thumbs.cover();
     return `${resume}
+      <section class="cover panel"${cover ? ` style="background-image:url('${cover}')"` : ''}>
+        <div class="cover-text"><small>Versión ${GAME_VERSION}</small><h2>Faro de <span>Ámbar</span></h2>
+          <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p></div>
+      </section>
       <section class="lcard panel">
         <div class="mode-now"><small>Modo</small><b>${esc(m.name)}</b><span>${esc(m.desc)}</span>
           <span>Mapa: <b>${esc(MAPS[P.play.mapKind].name)}</b></span></div>
