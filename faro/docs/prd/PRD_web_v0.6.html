@@ -44,7 +44,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 0.6</p>
-  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu elección para la v0.6 (las cuatro opciones)</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu elección para la v0.6 (las cuatro opciones)</p>
   <div class="tiles">
     <div class="tile"><b>Ritmo</b><span>Cada imperio empieza con un Constructor y los bots atacan antes.</span></div>
     <div class="tile"><b>Fluidez</b><span>Calidad automática, modo fluido y contador de cuadros por segundo.</span></div>
@@ -140,20 +140,20 @@ li { margin-bottom: 3px; }
   <table style="table-layout: fixed">
     <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>C01</td><td>Cada imperio empieza con Núcleo, 1 Granja y 1 Constructor (sin soldados).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C02</td><td>En 10 partidas simuladas (5 mapas, Normal), el 80 % o más de los bots ataca un Núcleo y la primera oleada sale (mediana) a los 7 min o antes.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C03</td><td>Difícil ataca antes que Normal y Normal antes que Fácil.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C04</td><td>Las pruebas de la v0.5 siguen pasando (adaptadas al Constructor inicial).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C05</td><td>Gráficos Automática: con pocos cuadros por segundo pasa a Más fluido y avisa; con muchos se queda en Alta.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C06</td><td>Más fluido apaga sombras y luz del cielo, usa resolución normal y la mitad de partículas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C07</td><td>El contador de cuadros por segundo se enciende y apaga desde la pausa y no tapa nada.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C08</td><td>Escena grande (200 tropas): Más fluido da más cuadros por segundo que Alta en el emulador.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C09</td><td>30 cuadros por segundo o más en tu iPad (lo mides tú con el contador).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C10</td><td>Los 15 modelos nuevos cargan sin errores y sus piezas se mueven (aspas, rueda, boya, radar).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C11</td><td>Explosiones, fogonazos, estelas, chispas y salpicaduras aparecen y respetan el tope de partículas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C12</td><td>Un edificio con menos del 40 % de vida echa humo y deja de hacerlo al repararlo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C13</td><td>Los sonidos nuevos suenan sin errores (se crean y se limita cuántos suenan a la vez).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>C14</td><td>Nada tapado ni fuera de pantalla en 5 tamaños con el contador y el menú nuevos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>C01</td><td>Cada imperio empieza con Núcleo, 1 Granja y 1 Constructor (sin soldados).</td><td><span class="chip ok">Aprobada</span></td><td>18/18 imperios en 5 modos (Duelo, Todos contra todos, Conquista, Equipos y Tutorial): edificios «core,farm», tropas «builder»</td></tr>
+<tr><td>C02</td><td>En 10 partidas simuladas (5 mapas, Normal), el 80 % o más de los bots ataca un Núcleo y la primera oleada sale (mediana) a los 7 min o antes.</td><td><span class="chip ok">Aprobada</span></td><td>87 % de 30 bots atacan (v0.5: 57 %); primera oleada a los 274 s (4.6 min); errores 0</td></tr>
+<tr><td>C03</td><td>Difícil ataca antes que Normal y Normal antes que Fácil.</td><td><span class="chip ok">Aprobada</span></td><td>primera oleada (mediana): Difícil 218 s, Normal 274 s, Fácil 300 s; atacan 90 % / 87 % / 83 %</td></tr>
+<tr><td>C04</td><td>Las pruebas de la v0.5 siguen pasando (adaptadas al Constructor inicial).</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas de la v0.5 en la v0.6: reglas 17/17, vestíbulo 20/20, modelos/muro/efectos 4/4, referencias 5/5, 5 tamaños sin problemas, mapas 75/75 y bots en 5 mapas (mejoran 100 %, atacan 87 %). Anteriores: controles v0.1 18/18, v0.2 10/10, v0.3 43/43, interfaz v0.4 13/13, bots v0.4 15/15; diseño, pausa en celular y combate sin errores. Adaptadas al Constructor inicial (las pruebas «sin constructor» lo quitan antes) y a dar tiempo a que el constructor camine hasta la obra.</td></tr>
+<tr><td>C05</td><td>Gráficos Automática: con pocos cuadros por segundo pasa a Más fluido y avisa; con muchos se queda en Alta.</td><td><span class="chip ok">Aprobada</span></td><td>empieza en high; 25-30-28-22 fps → cambia al 4.º segundo: false,false,false,true → low, aviso true; con 52-60 fps se queda en high</td></tr>
+<tr><td>C06</td><td>Más fluido apaga sombras y luz del cielo, usa resolución normal y la mitad de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>Alta {&quot;shadows&quot;:true,&quot;env&quot;:true,&quot;ratio&quot;:1,&quot;fx&quot;:1}; Más fluido {&quot;shadows&quot;:false,&quot;env&quot;:false,&quot;ratio&quot;:1,&quot;fx&quot;:0.5}; partículas en 200 explosiones: 4400 → 2293 (52 %)</td></tr>
+<tr><td>C07</td><td>El contador de cuadros por segundo se enciende y apaga desde la pausa y no tapa nada.</td><td><span class="chip ok">Aprobada</span></td><td>encendido: «10 fps» (guardado on); apagado: oculto true, botón «Contador de cuadros: no»</td></tr>
+<tr><td>C08</td><td>Escena grande (200 tropas): Más fluido da más cuadros por segundo que Alta en el emulador.</td><td><span class="chip ok">Aprobada</span></td><td>202 tropas, emulador sin GPU: Alta 929 ms por cuadro, Más fluido 284 ms (69 % menos)</td></tr>
+<tr><td>C09</td><td>30 cuadros por segundo o más en tu iPad (lo mides tú con el contador).</td><td><span class="chip np">No probada</span></td><td>Solo se puede medir en tu iPad: abre la pausa, enciende «Contador de cuadros» y dime el número. Aquí no hay tarjeta gráfica.</td></tr>
+<tr><td>C10</td><td>Los 15 modelos nuevos cargan sin errores y sus piezas se mueven (aspas, rueda, boya, radar).</td><td><span class="chip ok">Aprobada</span></td><td>58 modelos; con piezas correctas: 17/17 (incluye Enfermería 1-3); se mueven: wind:true, hydro:true, tidal:true, wave:true, aadef:true; lámina shots/models-v06.png</td></tr>
+<tr><td>C11</td><td>Explosiones, fogonazos, estelas, chispas y salpicaduras aparecen y respetan el tope de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>en 3 s de pelea: 47 partículas; impacto en el mar: 10 gotas; con 400 explosiones seguidas: 1240 visibles, tope 1240</td></tr>
+<tr><td>C12</td><td>Un edificio con menos del 40 % de vida echa humo y deja de hacerlo al repararlo.</td><td><span class="chip ok">Aprobada</span></td><td>al 30 %: 1 edificio echando humo, 8 bocanadas en 2 s; reparado: 0</td></tr>
+<tr><td>C13</td><td>Los sonidos nuevos suenan sin errores (se crean y se limita cuántos suenan a la vez).</td><td><span class="chip ok">Aprobada</span></td><td>audio running; 16 sonidos sin errores (12 de efecto con voz propia + interfaz); con 120 explosiones seguidas suenan como máximo 24 a la vez (tope 24)</td></tr>
+<tr><td>C14</td><td>Nada tapado ni fuera de pantalla en 5 tamaños con el contador y el menú nuevos.</td><td><span class="chip ok">Aprobada</span></td><td>5/5 tamaños sin problemas (contador encendido y menú de pausa abierto)</td></tr>
     </tbody>
   </table>
 </section>
@@ -166,8 +166,15 @@ li { margin-bottom: 3px; }
     <li><b>Rendimiento real:</b> solo tú puedes medirlo en tu iPad con el contador. Dime el número y ajusto la calidad automática.</li>
     <li><b>GitHub:</b> el código se guarda aquí; para subirlo falta que conectes tu cuenta.</li>
   </ul>
+  <h3>Resultado</h3>
+  <p><b>13 pruebas aprobadas y 1 sin probar</b> (C09: los cuadros por segundo en tu iPad, que solo puedes medir tú con el contador). Ninguna fallida.</p>
+  <ul>
+    <li><b>Ritmo:</b> el 87 % de los bots ataca un Núcleo en 15 minutos (antes 57 %) y la primera oleada sale hacia el minuto 4,6 en Normal (3,6 en Difícil y 5 en Fácil).</li>
+    <li><b>Fluidez:</b> con 200 tropas, «Más fluido» dibuja cada cuadro un 64 % más rápido que «Alta» en el emulador.</li>
+    <li><b>Bots:</b> además de atacar antes, siguen mejorando edificios en todos los mapas (100 % de los bots).</li>
+  </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v0.6, completar las pruebas con evidencia y entregar el PDF final.</p>
+  <p>Que lo juegues en tu iPad con el contador encendido y me digas cuántos cuadros por segundo da y si el ritmo se siente bien.</p>
 </section>
 
 </body>
