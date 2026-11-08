@@ -60,7 +60,9 @@ const App = {
     Thumbs.init();
     this.sound = new Sound();
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
-    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
+    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null),
+      loadTerrainTextures(this.gl).catch(() => 0)]).then(([n, , nTex]) => {
+      this.texCount = nTex;
       this.modelCount = n;
       this.ui = new UI(this);
       this.input = new Input(this);
@@ -393,7 +395,10 @@ const App = {
   drainEvents() {
     const g = this.game;
     for (const ev of g.events) {
-      if (ev.type === 'toast') this.ui.toast(ev.text, ev.kind, ev.x !== undefined ? { x: ev.x, z: ev.z } : null);
+      if (ev.type === 'toast') {
+        this.ui.toast(ev.text, ev.kind, ev.x !== undefined ? { x: ev.x, z: ev.z } : null);
+        if (ev.kind === 'bad' && ev.x !== undefined) this.ui.addEdgeAlert(ev.text, ev.x, ev.z);
+      }
       else if (ev.type === 'ping') this.renderer.addPing(ev.x, ev.z, ev.kind);
       else if (ev.type === 'chat') {
         this.ui.chat(ev.msg);
@@ -453,6 +458,7 @@ const App = {
           }
         }
         this.renderer.frame(this.paused ? 0 : dt, this.time, this.selection);
+        this.ui.updateEdges();
         // Guardado automático cada 15 s.
         this.saveT -= dt;
         if (this.saveT <= 0) {

@@ -10,7 +10,23 @@ const ICON = {
   close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   pop: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c0-4 3-7 7-7s7 3 7 7"/></svg>',
   bolt: '<svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h10V5l7 7-7 7v-5H4z"/></svg>',
 };
+// Iconos de los botones de acción (v0.8). bi(nombre) devuelve el icono listo para poner antes del texto.
+const BTN_ICON = {
+  amove: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
+  formation: '<path d="M4 8h3M10.5 8h3M17 8h3M4 15h3M10.5 15h3M17 15h3"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+  upgrade: '<path d="M12 19V6M6 11l6-6 6 6"/><path d="M6 20h12"/>',
+  demolish: '<path d="M5 5l14 14M19 5 5 19"/>',
+  rally: '<path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/>',
+  repeat: '<path d="M4 12a8 8 0 0 1 13.7-5.6M20 4v5h-5M20 12a8 8 0 0 1-13.7 5.6M4 20v-5h5"/>',
+  group: '<path d="M7 3h10v18l-5-4-5 4z"/>',
+  unload: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  found: '<path d="M6 21V4h10l-2 3.5L16 11H6M18 15v6M15 18h6"/>',
+  dome: '<path d="M3 18a9 9 0 0 1 18 0zM2 18h20"/>',
+};
+const bi = (k) => `<span class="bi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${BTN_ICON[k]}</svg></span>`;
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -26,6 +42,7 @@ class UI {
     this.lastToast = {};
     this.demolishArm = -1;
     this.playersSig = '';
+    this.edgeAlerts = [];
     this.initHud();
   }
 
@@ -149,6 +166,15 @@ class UI {
       b.addEventListener('click', () => app.selectGroup(Number(b.dataset.group)));
     });
     $('btn-builders').addEventListener('click', () => app.selectBuilders());
+    $('prodbar').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-prod]');
+      if (!b || !app.game) return;
+      const bld = app.game.buildings.find((x) => x.id === Number(b.dataset.prod) && x.alive);
+      if (!bld) return;
+      app.sound.play('click');
+      app.setSelection([bld]);
+      app.focusAt(bld.x, bld.z);
+    });
 
     $('btabs').innerHTML = BUILD_TABS.map((t) =>
       `<button class="tab" role="tab" type="button" data-tab="${t.id}" aria-selected="${t.id === this.tab}">${esc(t.name)}</button>`).join('');
@@ -246,12 +272,16 @@ class UI {
     $('objectives').classList.toggle('collapsed', !!camp && small);
     $('btn-obj').textContent = camp && small ? 'Mostrar' : 'Ocultar';
     $('leftcol').classList.toggle('camp', !!camp);
+    document.body.classList.toggle('camp-on', !!camp);
     $('objtitle').textContent = camp ? Campaign.mode(camp.id).name : 'Primeros pasos';
     if (camp) this.renderMission(true);
     else $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
     this.groupsSig = '';
     this.renderGroups(true);
+    this.prodSig = '';
+    for (const a of this.edgeAlerts || []) if (a.el) a.el.remove();
+    this.edgeAlerts = [];
     $('king').hidden = !this.app.game.mode.king;
     $('feed').innerHTML = '';
     this.togglePop(null);
@@ -608,7 +638,7 @@ class UI {
       ? ` <span class="lvtag">Nivel ${b.level}</span><span class="levels" title="Nivel ${b.level} de ${maxLv}">${Array.from({ length: maxLv }, (_, i) => `<i class="${i < b.level ? 'on' : ''}"></i>`).join('')}</span>` : '';
     const mkey = GLB[b.type + '_' + b.level] ? b.type + '_' + b.level : b.type;
     let html = this.head(mkey, PLAYER_COLORS[b.owner], esc(d.name) + lv, sub);
-    if (!own) return html;
+    if (!own) return html + (g.isEnemy(b.owner, 0) ? this.counterHtml(b) : '');
     // Obra o mejora en curso.
     if (!b.built || b.upgrading) {
       const k = b.upgrading ? b.upgrading.progress : b.progress;
@@ -637,7 +667,7 @@ class UI {
         const label = dome ? `Mejorar Cúpula a nivel ${next}` : 'Comprar Cúpula';
         const why = b.level < 3 ? 'Necesita el Núcleo en nivel 3.' : next === 3 ? 'Nivel 3: escudo personal para todas tus tropas.'
           : `Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
-        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${label} · ${fmt(g.domeCost(0))}</button>
+        html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${bi('dome')}${label} · ${fmt(g.domeCost(0))}</button>
           <span class="queue" style="flex:1 1 200px">${why}</span></div>`;
       }
     }
@@ -656,8 +686,8 @@ class UI {
         // Repetir (v0.7): vuelve a poner la última tropa entrenada, una o cinco veces.
         const lu = UNITS[b.lastType];
         html += `<div class="actions repeat"><span class="queue">Última: <b>${esc(lu.name)}</b></span>
-          <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">Repetir · ${fmt(lu.cost)}</button>
-          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">×5 · ${fmt(lu.cost * 5)}</button></div>`;
+          <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">${bi('repeat')}Repetir · ${fmt(lu.cost)}</button>
+          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">${bi('repeat')}×5 · ${fmt(lu.cost * 5)}</button></div>`;
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
@@ -668,11 +698,11 @@ class UI {
     }
     const acts = [];
     if (b.built && !b.upgrading && b.level < maxLv) {
-      acts.push(`<button class="btn gold" type="button" data-act="upgrade">Mejorar a nivel ${b.level + 1} · ${fmt(g.upgradeCost(b))}</button>`);
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a nivel ${b.level + 1} · ${fmt(g.upgradeCost(b))}</button>`);
     }
-    if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
+    if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${bi('rally')}${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
     if (b.type !== 'core') {
-      acts.push(`<button class="btn danger" type="button" data-act="demolish">${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
+      acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
     }
     if (acts.length) html += `<div class="actions">${acts.join('')}</div>`;
     return html;
@@ -696,25 +726,25 @@ class UI {
       html += `<div class="queue">Carga: ${g.cargoSlots(ship)}/${ship.def.capacity}` +
         (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
           : ' · Selecciona tropas de tierra y toca la Barcaza para subirlas.') + '</div>';
-      if (ship.cargo.length) acts.push('<button class="btn gold" type="button" data-act="unload">Desembarcar</button>');
+      if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}Desembarcar</button>`);
     }
     if (sel.some((u) => u.def.builds)) {
       html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
-      acts.push(`<button class="btn gold" type="button" data-act="found">Fundar puesto · 800</button>`);
+      acts.push(`<button class="btn gold" type="button" data-act="found">${bi('found')}Fundar puesto · 800</button>`);
     }
     const app = this.app;
     if (sel.some((u) => u.def.weapon)) {
-      acts.push(`<button class="btn ${app.input.amoveArm ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${app.input.amoveArm ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+      acts.push(`<button class="btn ${app.input.amoveArm ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${bi('amove')}${app.input.amoveArm ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
     }
     if (sel.length > 1) {
-      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
+      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">${bi('formation')}Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
     }
-    acts.push('<button class="btn" type="button" data-act="stop">Detener</button>');
+    acts.push(`<button class="btn" type="button" data-act="stop">${bi('stop')}Detener</button>`);
     html += `<div class="actions">${acts.join('')}</div>`;
-    html += `<div class="actions groupsave"><span class="queue">Guardar en</span>${[1, 2, 3].map((n) =>
+    html += `<div class="actions groupsave"><span class="queue">${bi('group')}Guardar en</span>${[1, 2, 3].map((n) =>
       `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
     return html;
   }
@@ -744,10 +774,39 @@ class UI {
     const owner = g.players[e.owner];
     const rel = g.isEnemy(e.owner, 0) ? 'Enemigo' : 'Aliado';
     const sub = `<b style="color:${hexColor(PLAYER_COLORS[e.owner])}">${esc(owner.name)}</b> · ${rel} · ${esc(e.def.desc)}`;
-    return this.head(e.type, PLAYER_COLORS[e.owner], esc(e.def.name), sub);
+    return this.head(e.type, PLAYER_COLORS[e.owner], esc(e.def.name), sub) + (g.isEnemy(e.owner, 0) ? this.counterHtml(e) : '');
+  }
+
+  // Ficha del enemigo (v0.8): vida, nivel, contra qué es fuerte y qué conviene usar contra él.
+  counterHtml(e) {
+    const g = this.app.game;
+    const cls = e.kind === 'bld' ? 'bld' : e.cls;
+    const w = e.kind === 'bld' ? g.weaponOf(e) : e.def.weapon;
+    const rows = [`<span>Vida</span><b id="enemy-hp">${fmt(Math.max(0, e.hp))} / ${fmt(e.maxHp)} (${Math.round((Math.max(0, e.hp) / e.maxHp) * 100)} %)</b>`];
+    if (e.kind === 'bld' && e.def.maxLevel > 1) rows.push(`<span>Nivel</span><b>${e.level} de ${e.def.maxLevel}</b>`);
+    if (w && w.mult) {
+      const strong = Object.entries(w.mult).filter(([k, v]) => v >= 1.2 && CAT_NAMES[k]).map(([k]) => CAT_NAMES[k]);
+      const cant = Object.entries(w.mult).filter(([k, v]) => v === 0 && CAT_NAMES[k]).map(([k]) => CAT_NAMES[k]);
+      rows.push(`<span>Fuerte contra</span><b>${strong.length ? strong.join(', ') : 'nada en especial'}</b>`);
+      if (cant.length) rows.push(`<span>No ataca a</span><b>${cant.join(', ')}</b>`);
+    } else {
+      rows.push('<span>Ataque</span><b>no dispara</b>');
+    }
+    rows.push(`<span>Usa</span><b>${this.countersFor(cls).join(', ')}</b>`);
+    return `<div class="cardinfo enemycard" id="enemycard">${rows.join('')}</div>`;
+  }
+
+  // Las 3 tropas que más daño hacen a esa clase por cada moneda (daño por segundo × multiplicador).
+  countersFor(cls) {
+    return Object.entries(UNITS)
+      .filter(([, d]) => d.weapon && (d.weapon.mult[cls] || 0) > 0 && !d.limit)
+      .map(([t, d]) => [t, ((d.weapon.dmg / d.weapon.cd) * d.weapon.mult[cls]) / Math.sqrt(d.cost)])
+      .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => UNITS[t].name);
   }
 
   updateSelLive(sel) {
+    const ehp = $('enemy-hp');
+    if (ehp && sel[0]) ehp.textContent = `${fmt(Math.max(0, sel[0].hp))} / ${fmt(sel[0].maxHp)} (${Math.round((Math.max(0, sel[0].hp) / sel[0].maxHp) * 100)} %)`;
     const hp = $('sel-hp');
     if (!hp || sel[0].kind === 'point') return;
     const first = sel[0];
@@ -870,6 +929,106 @@ class UI {
     }
   }
 
+  // ---------- v0.8: barra de producción ----------
+  // Tus edificios que entrenan, con su cola y su progreso. Los parados (sin cola) en amarillo.
+  renderProd() {
+    const app = this.app;
+    const g = app.game;
+    const el = $('prodbar');
+    if (!g) return;
+    const order = { core: 0, barracks: 1, factory: 2, harbor: 3, helipad: 4 };
+    const list = g.buildings.filter((b) => b.alive && b.owner === 0 && b.built && b.def.produces)
+      .sort((a, b) => order[a.type] - order[b.type] || a.id - b.id);
+    const sig = list.map((b) => `${b.id}:${b.queue.length}:${b.queue[0] ? b.queue[0].type : ''}`).join(',');
+    el.hidden = list.length < 2;
+    document.body.classList.toggle('has-prod', !el.hidden);
+    if (el.hidden) return;
+    if (sig !== this.prodSig) {
+      this.prodSig = sig;
+      el.innerHTML = '<span class="lbl">Producción</span>' + list.map((b) => {
+        const idle = !b.queue.length && b.type !== 'core';
+        const q = b.queue[0];
+        const tip = `${b.def.name}: ${q ? `entrenando ${UNITS[q.type].name}${b.queue.length > 1 ? ` (+${b.queue.length - 1})` : ''}` : 'parado'}`;
+        return `<button class="pitem ${idle ? 'idle' : ''}" type="button" data-prod="${b.id}" title="${esc(tip)}" aria-label="${esc(tip)}">
+          <img src="${Thumbs.get(q ? q.type : b.type, PLAYER_COLORS[0])}" alt="">${b.queue.length ? `<em>${b.queue.length}</em>` : ''}<i><s data-pbar="${b.id}"></s></i></button>`;
+      }).join('');
+    }
+    for (const b of list) {
+      const bar = el.querySelector(`[data-pbar="${b.id}"]`);
+      const q = b.queue[0];
+      if (bar) bar.style.width = q ? Math.min(100, (q.t / UNITS[q.type].build) * 100) + '%' : '0';
+    }
+  }
+
+  // ---------- v0.8: avisos en el borde ----------
+  // Si atacan algo tuyo fuera de la pantalla, una flecha en el borde apunta hacia allá.
+  addEdgeAlert(text, x, z) {
+    const now = performance.now();
+    let label = text.replace(/^Atacan tu /, '').replace(/^Perdiste: /, 'Perdiste ').replace(/^Perdiste /, 'Perdiste ');
+    if (/Núcleo/.test(text)) label = 'Núcleo';
+    else if (/tropas/i.test(text)) label = 'Tropas';
+    if (label.length > 18) label = label.slice(0, 17) + '…';
+    const near = this.edgeAlerts.find((a) => Math.hypot(a.x - x, a.z - z) < 5);
+    if (near) {
+      near.until = now + 8000;
+      near.label = label;
+      near.x = x;
+      near.z = z;
+      if (near.el) near.el.querySelector('span').textContent = label;
+      return;
+    }
+    this.edgeAlerts.push({ x, z, label, until: now + 8000, el: null });
+    if (this.edgeAlerts.length > 4) {
+      const old = this.edgeAlerts.shift();
+      if (old.el) old.el.remove();
+    }
+  }
+
+  updateEdges() {
+    const r = this.app.renderer;
+    if (!r) return;
+    const now = performance.now();
+    const box = $('edges');
+    for (const a of this.edgeAlerts) {
+      if (a.until > now) continue;
+      if (a.el) a.el.remove();
+      a.el = null;
+    }
+    this.edgeAlerts = this.edgeAlerts.filter((a) => a.until > now);
+    const W = r.width;
+    const H = r.height;
+    const m = 34;
+    for (const a of this.edgeAlerts) {
+      if (!a.el) {
+        a.el = document.createElement('button');
+        a.el.type = 'button';
+        a.el.className = 'edge';
+        a.el.innerHTML = `<i>${ICON.arrow}</i><span></span>`;
+        a.el.querySelector('span').textContent = a.label;
+        a.el.addEventListener('click', () => {
+          this.app.focusAt(a.x, a.z);
+          a.until = 0;
+        });
+        box.appendChild(a.el);
+      }
+      const s = r.project(a.x, 0.3, a.z);
+      const inside = s.ok && s.x > m && s.x < W - m && s.y > 70 && s.y < H - m;
+      a.el.hidden = inside;
+      if (inside) continue;
+      let dx = s.x - W / 2;
+      let dy = s.y - H / 2;
+      if (!s.ok) { dx = -dx; dy = -dy; }
+      const ang = Math.atan2(dy, dx);
+      const hw = W / 2 - m - 40;
+      const hh = H / 2 - m - 40;
+      const c = Math.cos(ang);
+      const sn = Math.sin(ang);
+      const t = Math.min(Math.abs(c) > 1e-6 ? hw / Math.abs(c) : 1e9, Math.abs(sn) > 1e-6 ? hh / Math.abs(sn) : 1e9);
+      a.el.style.transform = `translate(${Math.round(W / 2 + c * t)}px, ${Math.round(H / 2 + sn * t)}px) translate(-50%, -50%)`;
+      a.el.querySelector('i').style.transform = `rotate(${ang}rad)`;
+    }
+  }
+
   // Botones de grupo y de Constructores junto al minimapa: cuántas tropas tiene cada uno.
   renderGroups(force) {
     const app = this.app;
@@ -957,6 +1116,7 @@ class UI {
     this.renderSel();
     this.renderMission();
     this.renderGroups();
+    this.renderProd();
     this.popT = (this.popT || 0) - 0.15;
     if (this.pop && this.popT <= 0) {
       this.popT = 0.5;

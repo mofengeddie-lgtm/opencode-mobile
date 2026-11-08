@@ -1,0 +1,8 @@
+Texturas: Poly Haven (polyhaven.com), licencia CC0.
+grass.jpg <- grass_ground (Diffuse 1k, reducida a 512 px y desaturada)
+forest.jpg <- forest_leaves_02 (Diffuse 1k, reducida a 512 px y desaturada)
+sand.jpg <- coast_sand_01 (Diffuse 1k, reducida a 512 px y desaturada)
+mount.jpg <- aerial_rocks_02 (Diffuse 1k, reducida a 512 px y desaturada)
+fertile.jpg <- farm_soil (Diffuse 1k, reducida a 512 px y desaturada)
+oilland.jpg <- burned_ground_01 (Diffuse 1k, reducida a 512 px y desaturada)
+gold.jpg <- aerial_ground_rock (Diffuse 1k, reducida a 512 px y desaturada)

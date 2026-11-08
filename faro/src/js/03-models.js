@@ -437,7 +437,9 @@ const UNIT_MODEL = {
 // EQUIPO y EQUIPO_OSC se pintan con el color del jugador.
 const GLB = {};
 const GLB_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.06 });
-const PART_NAMES = ['main', 'turret', 'rotor', 'blades', 'rocker', 'crystal', 'legl', 'legr'];
+const PART_NAMES = ['main', 'turret', 'rotor', 'blades', 'rocker', 'crystal', 'legl', 'legr', 'shinl', 'shinr'];
+// Caminar y correr de CMU (v0.8): ángulos de cadera y rodilla, inclinación y rebote por ciclo.
+const CMU_GAIT = typeof FARO_ANIM !== 'undefined' && FARO_ANIM && FARO_ANIM.walk && FARO_ANIM.run ? FARO_ANIM : null;
 
 function _b64ToBuffer(b64) {
   const bin = atob(b64);
@@ -510,6 +512,41 @@ function loadEnvMap(gl) {
       }
     }, undefined, () => resolve(null));
   });
+}
+
+// Texturas del suelo (Poly Haven, CC0, v0.8): aportan el detalle escaneado; el color lo pone cada
+// terreno (brillo medio 0,5, por eso el material las multiplica por 2).
+const TERRAIN_TEX = {};
+function loadTerrainTextures(gl) {
+  if (typeof FARO_TEX === 'undefined' || !FARO_TEX) return Promise.resolve(0);
+  const loader = new THREE.TextureLoader();
+  const aniso = gl && gl.capabilities ? Math.min(4, gl.capabilities.getMaxAnisotropy()) : 1;
+  return Promise.all(Object.entries(FARO_TEX).map(([k, uri]) => new Promise((resolve) => {
+    loader.load(uri, (tex) => {
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.anisotropy = aniso;
+      TERRAIN_TEX[k] = { full: tex, small: null };
+      resolve(1);
+    }, undefined, () => resolve(0));
+  }))).then((r) => r.reduce((a, b) => a + b, 0));
+}
+
+// «Más fluido»: la misma textura a 256 px (se hace una vez y se reutiliza).
+function terrainTex(k, quality) {
+  const t = TERRAIN_TEX[k];
+  if (!t) return null;
+  if (quality === 'high') return t.full;
+  if (!t.small) {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 256;
+    c.getContext('2d').drawImage(t.full.image, 0, 0, 256, 256);
+    t.small = new THREE.CanvasTexture(c);
+    t.small.wrapS = THREE.RepeatWrapping;
+    t.small.wrapT = THREE.RepeatWrapping;
+  }
+  return t.small;
 }
 
 function glbKey(type) {
@@ -615,6 +652,9 @@ function createVisual(type, color, look) {
   // Piernas de los soldados (se mueven al caminar).
   if (m.legl) _partMesh(m.legl, mat, out, group, 'legl', pp.legl);
   if (m.legr) _partMesh(m.legr, mat, out, group, 'legr', pp.legr);
+  // La pierna cuelga del muslo: gira en la rodilla y sigue a la cadera.
+  if (m.shinl && out.legl) _partMesh(m.shinl, mat, out, out.legl, 'shinl', pp.shinl.clone().sub(pp.legl));
+  if (m.shinr && out.legr) _partMesh(m.shinr, mat, out, out.legr, 'shinr', pp.shinr.clone().sub(pp.legr));
   if (m.crystal) {
     const cmat = new THREE.MeshStandardMaterial({
       color, emissive: color, emissiveIntensity: 0.55, flatShading: true, roughness: 0.4,

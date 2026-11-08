@@ -68,6 +68,10 @@ class Renderer {
     // Más fluido: sin la luz de ambiente del cielo y la mitad de partículas.
     if (this.scene) this.scene.environment = q === 'high' && ENV_MAP ? ENV_MAP : null;
     if (this.fxs) this.fxs.scale = q === 'high' ? 1 : 0.5;
+    // Suelo: texturas de 512 px en Alta y de 256 px en Más fluido.
+    for (const part of this.terrainParts || []) {
+      if (part.key !== 'plain') part.mesh.material.map = terrainTex(part.key, q);
+    }
     if (this.scene) {
       this.scene.traverse((o) => {
         if (o.material) o.material.needsUpdate = true;
@@ -99,30 +103,65 @@ class Renderer {
   }
 
   // ---------- terreno ----------
+  // Material del suelo. Con textura (v0.8), las coordenadas salen de la posición en el mundo,
+  // así la textura sigue de una casilla a la otra sin cortes.
+  terrainMaterial(key) {
+    const mat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.95, metalness: 0 });
+    const tex = key === 'plain' ? null : terrainTex(key, this.quality);
+    if (tex) {
+      mat.map = tex;
+      mat.color.setScalar(2);
+      mat.onBeforeCompile = (sh) => {
+        sh.vertexShader = sh.vertexShader.replace('#include <uv_vertex>', [
+          '#ifdef USE_UV',
+          '  vec4 terrW = vec4(position, 1.0);',
+          '  #ifdef USE_INSTANCING',
+          '    terrW = instanceMatrix * terrW;',
+          '  #endif',
+          '  terrW = modelMatrix * terrW;',
+          '  vUv = terrW.xz * 0.22 + vec2(terrW.y * 0.3, 0.0);',
+          '#endif',
+        ].join('\n'));
+      };
+    }
+    return mat;
+  }
+
   buildTerrain() {
     const cells = this.game.cells;
     const geo = new THREE.CylinderGeometry(0.985, 0.985, 1, 6, 1, false, Math.PI / 6);
     geo.translate(0, -0.5, 0);
-    const mat = new THREE.MeshStandardMaterial({ flatShading: true, roughness: 0.95, metalness: 0 });
-    const mesh = new THREE.InstancedMesh(geo, mat, cells.length);
-    mesh.receiveShadow = true;
-    const m = new THREE.Matrix4();
     const rng = mulberry32(this.game.opts.seed + 5);
     this.baseColors = [];
+    // Un grupo de hexágonos por terreno con textura (pasto, arena, bosque, roca...); el agua, lisa.
+    const groups = new Map();
     for (const c of cells) {
-      const h = c.h;
-      m.makeScale(1, h + 1.4, 1);
-      m.setPosition(c.x, h, c.z);
-      mesh.setMatrixAt(c.i, m);
       const col = new THREE.Color(TERRAIN[c.t].color);
       const v = (rng() - 0.5) * (TERRAIN[c.t].water ? 0.04 : 0.09);
       col.offsetHSL(0, 0, v);
       this.baseColors.push(col);
-      mesh.setColorAt(c.i, col);
+      const key = TERRAIN_TEX[c.t] ? c.t : 'plain';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(c);
     }
-    mesh.instanceMatrix.needsUpdate = true;
-    this.terrain = mesh;
-    this.scene.add(mesh);
+    const m = new THREE.Matrix4();
+    this.terrainParts = [];
+    this.cellPart = new Array(cells.length);
+    for (const [key, list] of groups) {
+      const mesh = new THREE.InstancedMesh(geo, this.terrainMaterial(key), list.length);
+      mesh.receiveShadow = true;
+      list.forEach((c, k) => {
+        m.makeScale(1, c.h + 1.4, 1);
+        m.setPosition(c.x, c.h, c.z);
+        mesh.setMatrixAt(k, m);
+        mesh.setColorAt(k, this.baseColors[c.i]);
+        this.cellPart[c.i] = { mesh, k };
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+      this.scene.add(mesh);
+      this.terrainParts.push({ key, mesh });
+    }
+    this.terrain = this.terrainParts[0].mesh;
 
     const ocean = new THREE.Mesh(
       new THREE.PlaneGeometry(600, 600),
@@ -140,9 +179,10 @@ class Renderer {
     for (const c of g.cells) {
       tmp.copy(this.baseColors[c.i]);
       if (c.owner >= 0) tmp.lerp(new THREE.Color(PLAYER_COLORS[c.owner]), TERRAIN[c.t].water ? 0.1 : 0.16);
-      this.terrain.setColorAt(c.i, tmp);
+      const part = this.cellPart[c.i];
+      part.mesh.setColorAt(part.k, tmp);
     }
-    this.terrain.instanceColor.needsUpdate = true;
+    for (const part of this.terrainParts) part.mesh.instanceColor.needsUpdate = true;
   }
 
   buildDecor() {
@@ -698,6 +738,9 @@ class Renderer {
       }
     }
     this.smokingCount = smoking;
+    // Movimiento de CMU solo en Alta calidad y con hasta 120 soldados a la vista (si no, balanceo simple).
+    const gaitFull = !!CMU_GAIT && this.quality === 'high' && (this.soldiersSeen || 0) <= 120;
+    let soldiers = 0;
     for (const u of g.units) {
       let v = this.vis.get(u.id);
       if (!v) {
@@ -721,14 +764,57 @@ class Renderer {
       }
       if (v.rotor) v.rotor.rotation.y += dt * 22;
       if (v.legl) {
-        // Paso: las piernas se balancean mientras la tropa camina.
-        const sw = u.moving && !u.inside ? Math.sin(time * 10 + u.id) * 0.55 : 0;
-        v.legl.rotation.x += (sw - v.legl.rotation.x) * Math.min(1, dt * 12);
-        v.legr.rotation.x = -v.legl.rotation.x;
+        soldiers++;
+        this.animateLegs(u, v, dt, time, gaitFull);
       }
     }
+    this.soldiersSeen = soldiers;
     this.updateUnitShields(time);
     this.updateSkyBeams(time);
+  }
+
+  // Piernas de los soldados. Alta calidad: ciclo de caminar o correr de CMU (cadera, rodilla,
+  // inclinación y rebote), al ritmo de la velocidad real para que los pies no patinen.
+  // Más fluido o muchísimas tropas: el balanceo simple de antes.
+  animateLegs(u, v, dt, time, full) {
+    const moving = u.moving && !u.inside;
+    const k = Math.min(1, dt * 8);
+    v.gaitA = (v.gaitA || 0) + ((moving ? 1 : 0) - (v.gaitA || 0)) * k;
+    const a = v.gaitA;
+    if (!full || !v.shinl) {
+      const sw = moving ? Math.sin(time * 10 + u.id) * 0.55 : 0;
+      v.legl.rotation.x += (sw - v.legl.rotation.x) * Math.min(1, dt * 12);
+      v.legr.rotation.x = -v.legl.rotation.x;
+      if (v.shinl) { v.shinl.rotation.x = 0; v.shinr.rotation.x = 0; }
+      v.main.rotation.x = 0;
+      v.main.position.y = 0;
+      v.gaitClip = null;
+      return;
+    }
+    const cell = this.game.cells[u.cell];
+    const slow = TERRAIN[cell.t].slow || 1;
+    // Constructores, Ingenieros y el bosque: caminan. Las tropas de combate corren.
+    const clip = u.def.builds || slow > 1 ? CMU_GAIT.walk : CMU_GAIT.run;
+    v.gaitClip = clip === CMU_GAIT.walk ? 'walk' : 'run';
+    const leg = 0.19 * (v.group.scale.x || 1);
+    if (moving) {
+      const speed = (u.def.speed * SQ3) / slow;
+      v.gaitPhase = ((v.gaitPhase === undefined ? (u.id * 0.37) % 1 : v.gaitPhase) + dt * (speed / (clip.stride * leg))) % 1;
+    }
+    const n = clip.hipL.length;
+    const t = (v.gaitPhase || 0) * n;
+    const i0 = Math.floor(t) % n;
+    const i1 = (i0 + 1) % n;
+    const f = t - Math.floor(t);
+    const at = (arr) => arr[i0] + (arr[i1] - arr[i0]) * f;
+    v.legl.rotation.x = -at(clip.hipL) * a;
+    v.legr.rotation.x = -at(clip.hipR) * a;
+    v.shinl.rotation.x = at(clip.kneeL) * a;
+    v.shinr.rotation.x = at(clip.kneeR) * a;
+    v.main.rotation.x = at(clip.pitch) * a;
+    // Rebote al paso; quieto, respira despacio.
+    v.group.position.y += at(clip.bob) * leg * a;
+    v.main.position.y = Math.sin(time * 2.4 + u.id) * 0.004 * (1 - a);
   }
 
   // ---------- muralla: torreón + tramos hacia los muros vecinos ----------

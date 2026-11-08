@@ -4,6 +4,10 @@
 // capturan puntos (también cruzando el mar) y hablan con el jugador.
 
 const unitCat = (u) => (u.cls === 'ship' || u.cls === 'sub' ? 'sea' : u.cls);
+// Tropas rápidas para hostigar la economía enemiga (v0.8).
+// Orden de preferencia: Jeep, Lancha, Ranger (sin Fábrica ni Puerto) y Helicóptero.
+const FAST_UNITS = { jeep: 'veh', speedboat: 'sea', ranger: 'inf', heli: 'air' };
+const ECO_TYPES = ['farm', 'mine', 'pump', 'rig'];
 
 class Bot {
   constructor(game, pid) {
@@ -27,6 +31,18 @@ class Bot {
     this.threatAt = -99;
     this.siegeAt = -99;
     this.ferryTrips = 0;
+    // v0.8: fuego concentrado, hostigamiento, Torreta de defensa y ayuda a aliados.
+    p.focusFire = !!this.tac.focus;
+    this.nextHarassAt = 200 + Math.random() * 60;
+    this.wantFast = -99;
+    this.turretAt = -99;
+    this.helpAt = {};
+    this.lastTarget = null;
+    this.harassSent = 0;
+    this.firstHarassAt = -1;
+    this.defTurrets = 0;
+    this.helpSent = 0;
+    this.lastDefense = null;
     // Métricas para las pruebas.
     this.wavesSent = 0;
     this.waveSizes = [];
@@ -93,6 +109,8 @@ class Bot {
     if (this.passive) return;
     this.attack(units);
     this.ferry(mine, units);
+    if (this.tac.harass) this.harass(units);
+    if (this.tac.teamwork) this.helpAllies(units);
   }
 
   coreCell() {
@@ -413,6 +431,13 @@ class Bot {
       if (mix.sea >= 0.25) plan.sea += 2;
       if (mix.veh >= 0.3) plan.inf += 1;
     }
+    // Hostigamiento: si faltan tropas rápidas, entrena una (Jeep, Lancha o Helicóptero).
+    if (this.tac.harass && T - this.wantFast < 40) {
+      const fastHave = units.filter((u) => FAST_UNITS[u.type]).length +
+        producers.reduce((s, b) => s + b.queue.filter((q) => FAST_UNITS[q.type]).length, 0);
+      const opt = Object.entries(FAST_UNITS).find(([t, c]) => cats[c] && (t !== 'heli' || this.p.energy >= UNITS.heli.energy));
+      if (opt && fastHave < 3) return { type: opt[0], btype: cats[opt[1]], since: T };
+    }
     // Recién empezada la partida, o bajo ataque: infantería rápida.
     const urgent = T < 120 || g.time - this.threatAt < 12;
     let avail = Object.keys(cats);
@@ -511,11 +536,20 @@ class Bot {
       for (const u of this.raid.units) if (u.alive && u.role === 'raid') u.role = 'home';
       this.raid = null;
     }
-    const guards = units.filter((u) => u.def.weapon && u.role === 'home' && !u.inside &&
-      (u.state === 'idle' || u.state === 'move') && g.canAttack(u, u.def.weapon, threat));
+    // Defensa en equipo (v0.8): van todas las tropas de casa, también las que salen de la producción,
+    // y los hostigadores que estén cerca. Los guardias se quedan cuidando sus Banderas.
+    const tc = g.cells[threat.cell];
+    const near = (u) => g.map.dist(g.cells[u.cell], tc) <= 10;
+    const guards = units.filter((u) => u.def.weapon && !u.inside && g.canAttack(u, u.def.weapon, threat) &&
+      (u.role === 'home' || (u.role === 'harass' && near(u))) &&
+      (u.state === 'idle' || u.state === 'move' || (u.state === 'amove' && u.role !== 'raid')));
+    for (const u of guards) if (u.role !== 'home') u.role = 'home';
+    const nearby = units.filter((u) => u.def.weapon && !u.inside && u.role !== 'retreat' && near(u));
+    this.lastDefense = { t: g.time, cell: tc.i, near: nearby.length, sent: guards.filter(near).length,
+      fighting: nearby.filter((u) => u.state === 'attack' || guards.includes(u)).length };
+    if (this.tac.turret && td <= 7) this.defenseTurret(tc);
     const byMover = { land: [], sea: [], air: [] };
     for (const u of guards) byMover[u.mover].push(u);
-    const tc = g.cells[threat.cell];
     if (byMover.land.length && TERRAIN[tc.t].land) g.orderMove(byMover.land, tc.i, true);
     if (byMover.air.length) g.orderMove(byMover.air, tc.i, true);
     if (byMover.sea.length) {
@@ -725,8 +759,20 @@ class Bot {
     // Primero los Núcleos a los que el ejército llega a pie.
     const byLand = cores.filter((c) => g.cells[c.p.core.cell].comp === core.comp);
     if (byLand.length) cores = byLand;
+    // Aliados coordinados (v0.8): atacan al mismo rival que un aliado bot.
+    if (this.tac.teamwork) {
+      for (const b of g.bots) {
+        if (b === this || b.p.team !== this.p.team || !b.p.alive) continue;
+        const t = b.lastTarget;
+        if (t && t.alive && cores.some((c) => c.p.core === t) && Math.random() < 0.8) {
+          this.lastTarget = t;
+          return t;
+        }
+      }
+    }
     const pickI = cores.length > 1 && Math.random() < 0.3 ? 1 : 0;
-    return cores[pickI].p.core;
+    this.lastTarget = cores[pickI].p.core;
+    return this.lastTarget;
   }
 
   sendTo(units, targetB) {
@@ -740,6 +786,7 @@ class Bot {
       else if (u.mover === 'sea') sea.push(u);
       else if (g.cells[u.cell].comp === tc.comp || tc.nb.some((ni) => g.cells[ni].comp === g.cells[u.cell].comp)) land.push(u);
     }
+    // Avanzan atacando, juntas (en bloque) para llegar a la vez; la línea se usa al reunirse.
     if (land.length) g.orderMove(land, tc.i, true);
     if (air.length) g.orderMove(air, tc.i, true);
     if (sea.length) {
@@ -747,6 +794,131 @@ class Bot {
       if (wc >= 0) g.orderMove(sea, wc, true);
     }
     return [...land, ...air, ...(sea.length && this.waterNear(tc, sea[0]) >= 0 ? sea : [])];
+  }
+
+  // ---------- v0.8: Torreta de defensa, hostigamiento y aliados ----------
+  // Levanta una Torreta entre el Núcleo y el lado por donde vino el ataque (cada 45 s como mucho).
+  defenseTurret(threatCell) {
+    const g = this.g;
+    if (g.time - this.turretAt < 45) return false;
+    const core = this.coreCell();
+    const p = this.p;
+    if (p.coins < BUILDINGS.turret.cost + 200) return false;
+    const dir = Math.atan2(threatCell.z - core.z, threatCell.x - core.x);
+    const off = (c) => {
+      let a = Math.atan2(c.z - core.z, c.x - core.x) - dir;
+      while (a > Math.PI) a -= Math.PI * 2;
+      while (a < -Math.PI) a += Math.PI * 2;
+      return Math.abs(a);
+    };
+    const own = g.buildings.filter((b) => b.alive && b.owner === this.pid && b.type === 'turret');
+    const cand = g.cells.filter((c) => {
+      const d = g.map.dist(c, core);
+      return d >= 2 && d <= 3 && off(c) < 0.9 && !own.some((t) => g.map.dist(g.cells[t.cell], c) < 2) && !g.placeInvalid(this.pid, 'turret', c.i);
+    }).sort((a, b) => off(a) - off(b));
+    if (!cand.length) return false;
+    if (g.place(this.pid, 'turret', cand[0].i)) return false;
+    this.turretAt = g.time;
+    this.defTurrets++;
+    return true;
+  }
+
+  // Granja, Mina, Bomba o Plataforma enemiga lejos de sus defensas y alcanzable por esa tropa.
+  ecoTarget(u, maxDist = Infinity) {
+    const g = this.g;
+    const uc = g.cells[u.cell];
+    const defs = g.buildings.filter((b) => b.alive && g.isEnemy(b.owner, this.pid) && b.def.weapon && g.canAttack(b, b.def.weapon, u));
+    let best = null;
+    let bs = Infinity;
+    for (const b of g.buildings) {
+      if (!b.alive || !g.isEnemy(b.owner, this.pid) || !ECO_TYPES.includes(b.type)) continue;
+      const c = g.cells[b.cell];
+      const d = g.map.dist(c, uc);
+      if (d > maxDist) continue;
+      if (u.mover === 'land' && c.comp !== uc.comp && !c.nb.some((ni) => g.cells[ni].comp === uc.comp)) continue;
+      if (u.mover === 'sea' && this.waterNear(c, u) < 0) continue;
+      let safe = 99;
+      for (const t of defs) safe = Math.min(safe, g.map.dist(g.cells[t.cell], c) - (t.def.weapon.range || 4));
+      if (safe < -1) continue;
+      const s = d / 3 - Math.min(safe, 6) * 3;
+      if (s < bs) { bs = s; best = b; }
+    }
+    return best;
+  }
+
+  // Hostigamiento: 2-3 tropas rápidas atacan la economía enemiga lejos de sus defensas.
+  harass(units) {
+    const g = this.g;
+    const team = units.filter((u) => u.role === 'harass' && !u.inside);
+    for (const u of team) {
+      if (u.state !== 'idle') continue;
+      const t = this.ecoTarget(u, 7);
+      if (t) this.sendTo([u], t);
+      else {
+        u.role = 'home';
+        g.orderMove([u], this.p.core.cell, false);
+      }
+    }
+    if (team.length || g.time < this.nextHarassAt) return;
+    const fast = units.filter((u) => FAST_UNITS[u.type] && u.role === 'home' && !u.inside && u.state === 'idle');
+    if (fast.length < 2) {
+      this.wantFast = g.time;
+      return;
+    }
+    const group = fast.slice(0, 3);
+    const target = this.ecoTarget(group[0]);
+    if (!target) {
+      this.nextHarassAt = g.time + 30;
+      return;
+    }
+    const sent = this.sendTo(group, target);
+    for (const u of sent) u.role = 'harass';
+    if (sent.length) {
+      this.harassSent++;
+      if (this.firstHarassAt < 0) this.firstHarassAt = g.time;
+      this.lastHarass = { t: g.time, target: target.type, owner: target.owner, units: sent.map((u) => u.type) };
+      this.nextHarassAt = g.time + 80 + Math.random() * 40;
+    } else this.nextHarassAt = g.time + 30;
+  }
+
+  // Aliados (Liga y Equipos): si atacan la base de un aliado, va la mitad del ejército de casa.
+  helpAllies(units) {
+    const g = this.g;
+    if (g.time - (this._helpScan || -99) < 3) return;
+    this._helpScan = g.time;
+    // Las tropas que ya ayudaron vuelven a casa.
+    for (const u of units) {
+      if (u.role === 'help' && u.state === 'idle') {
+        u.role = 'home';
+        g.orderMove([u], this.p.core.cell, false);
+      }
+    }
+    const me = this.p;
+    for (const ally of g.players) {
+      if (ally.id === this.pid || !ally.alive || ally.team !== me.team || !ally.core || !ally.core.alive) continue;
+      if (g.time - (this.helpAt[ally.id] || -99) < 40) continue;
+      const ac = g.cells[ally.core.cell];
+      let threat = null;
+      let n = 0;
+      for (const e of g.units) {
+        if (!e.alive || e.inside || !g.isEnemy(e.owner, this.pid) || !e.def.weapon) continue;
+        if (g.map.dist(g.cells[e.cell], ac) <= 6) { n++; if (!threat) threat = e; }
+      }
+      if (!threat || n < 2) continue;
+      const tc = g.cells[threat.cell];
+      const home = units.filter((u) => u.def.weapon && u.role === 'home' && !u.inside && (u.state === 'idle' || u.state === 'move') && g.canAttack(u, u.def.weapon, threat) &&
+        (u.mover !== 'land' || g.cells[u.cell].comp === tc.comp));
+      if (home.length < 3) continue;
+      const go = home.slice(0, Math.min(8, Math.ceil(home.length / 2)));
+      const sent = this.sendTo(go, threat.kind === 'bld' ? threat : { cell: tc.i });
+      for (const u of sent) u.role = 'help';
+      if (sent.length) {
+        this.helpAt[ally.id] = g.time;
+        this.helpSent++;
+        this.lastHelp = { t: g.time, ally: ally.id, units: sent.length };
+        if (ally.human) g.say(this.pid, '¡Voy a ayudarte!', { x: tc.x, z: tc.z, queue: 2 });
+      }
+    }
   }
 
   // Siguiente objetivo de una tropa en oleada. En Difícil, primero las defensas cercanas.
@@ -935,6 +1107,21 @@ class Bot {
       }
       return;
     }
+    // Romper empates (v0.8, desde Normal): pasados 15 min, si la oleada está lista sale con todo lo
+    // que hay en casa (los guardias siguen en sus Banderas), dejando 3 defensores.
+    if (this.tac.focus && g.time > 900 && g.time >= this.nextWaveAt) {
+      const home = army.filter((u) => u.role === 'home');
+      if (home.length >= 12) {
+        const target = this.chooseEnemyCore();
+        if (target) {
+          const keep = home.filter((u) => u.mover === 'land').slice(0, 3);
+          if (this.launch(home.filter((u) => !keep.includes(u)), target).length) {
+            this.allIn = (this.allIn || 0) + 1;
+            return;
+          }
+        }
+      }
+    }
     if (g.time < this.nextWaveAt) return;
     // v0.5 empieza sin tropas: la primera oleada pide menos y crece con el tiempo.
     // Si se atrasa más de 1 min, también salen los guardias de las Banderas.
@@ -958,7 +1145,7 @@ class Bot {
       const landers = raiders.filter((u) => u.mover !== 'sea');
       if (raiders.length >= Math.min(need, 5)) {
         for (const u of raiders) u.role = 'raid';
-        if (landers.length) g.orderMove(landers, stage, true);
+        if (landers.length) g.orderMove(landers, stage, true, this.tac.line !== false ? 'line' : 'block');
         this.raid = { units: raiders, target, stage, start: g.time };
         this.announce(raiders, target);
         return;

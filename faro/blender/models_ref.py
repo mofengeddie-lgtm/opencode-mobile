@@ -19,12 +19,17 @@ def soldier(kind, look=None):
     m = Model(kind if not look else f'{kind}@{look}')
     tox = look == 'toxico'
     pant = 'camo' if tox else 'oliva_osc'
+    # Piernas en dos piezas (v0.8): muslo desde la cadera y pierna desde la rodilla, para el
+    # movimiento de caminar y correr de CMU (blender/cmu_gait.py).
     for part, sx in (('legl', -1), ('legr', 1)):
+        shin = 'shin' + part[-1]
         m.pivot(part, sx * 0.055, 0, 0.19)
-        m.box(pant, (0.085, 0.1, 0.16), (sx * 0.055, 0, 0.03), bevel=0.015, part=part)
-        m.box('negro', (0.09, 0.12, 0.04), (sx * 0.055, -0.01, 0), bevel=0.01, part=part)
+        m.pivot(shin, sx * 0.055, 0, 0.105)
+        m.box(pant, (0.085, 0.1, 0.095), (sx * 0.055, 0, 0.098), bevel=0.012, part=part)
+        m.box(pant, (0.08, 0.095, 0.08), (sx * 0.055, 0, 0.03), bevel=0.012, part=shin)
+        m.box('negro', (0.09, 0.12, 0.04), (sx * 0.055, -0.01, 0), bevel=0.01, part=shin)
         if tox:
-            m.box('camo2', (0.088, 0.04, 0.05), (sx * 0.055, -0.035, 0.1), bevel=0.004, part=part)
+            m.box('camo2', (0.088, 0.04, 0.05), (sx * 0.055, -0.035, 0.06), bevel=0.004, part=shin)
     if tox:
         m.box('camo', (0.24, 0.15, 0.22), (0, 0, 0.18), bevel=0.025)
         for (x, z) in [(-0.07, 0.3), (0.05, 0.22), (0.08, 0.33), (-0.03, 0.2)]:

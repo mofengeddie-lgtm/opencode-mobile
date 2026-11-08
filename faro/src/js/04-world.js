@@ -896,6 +896,9 @@ class Game {
 
   acquire(a, w, extraTiles, exclude = null) {
     const maxD = (w.range + extraTiles) * SQ3 + 0.8;
+    // Fuego concentrado (bots desde Normal, v0.8): entre lo que tienen a tiro, primero la tropa
+    // armada con menos vida; así la eliminan antes en vez de repartir el daño.
+    const focus = extraTiles === 0 && this.players[a.owner].focusFire;
     let best = null;
     let bs = Infinity;
     const check = (t) => {
@@ -906,7 +909,9 @@ class Game {
       if (!this.canAttack(a, w, t)) return;
       const d = Math.hypot(dx, dz);
       if (d > maxD || !this.inRange(a, w, t, extraTiles)) return;
-      const s = d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
+      const s = focus
+        ? (t.kind === 'bld' ? 1e6 : 0) + (t.def.weapon ? 0 : 5000) + t.hp + (t.shield || 0) + d * 4
+        : d + (t.kind === 'bld' ? 3 : 0) + (t.def.weapon ? 0 : 1.5);
       if (s < bs) { bs = s; best = t; }
     };
     for (const t of this.units) check(t);
