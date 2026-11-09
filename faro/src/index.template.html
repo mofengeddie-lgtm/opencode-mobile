@@ -117,7 +117,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .pop td.n { text-align: right; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
 .pop tr.total td { border-top: 1px solid var(--line); font-weight: 600; }
 #econ { top: calc(var(--top) + 64px); left: var(--left); width: min(300px, calc(100% - 20px)); }
-#score { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(640px, calc(100% - 20px)); }
+#score { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(640px, calc(100% - 20px)); max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
+#econ { max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
 #score .wrap { overflow-x: auto; }
 #score i.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
 #score tr.dead td { opacity: 0.45; }

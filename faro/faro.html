@@ -122,7 +122,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .pop td.n { text-align: right; font-family: var(--font-display); font-variant-numeric: tabular-nums; }
 .pop tr.total td { border-top: 1px solid var(--line); font-weight: 600; }
 #econ { top: calc(var(--top) + 64px); left: var(--left); width: min(300px, calc(100% - 20px)); }
-#score { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(640px, calc(100% - 20px)); }
+#score { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(640px, calc(100% - 20px)); max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
+#econ { max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
 #score .wrap { overflow-x: auto; }
 #score i.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
 #score tr.dead td { opacity: 0.45; }
@@ -1296,7 +1297,7 @@ const MODES = {
   conquest: { name: 'Conquista de islas', desc: '6 imperios. Gana el último Núcleo en pie. Puedes aliarte desde el marcador.', players: 6, teams: [0, 1, 2, 3, 4, 5], lobby: true, alliances: true },
   fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true, alliances: true },
   turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true, alliances: true },
-  duos: { name: 'Dúos', desc: '3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.', players: 6, teams: [0, 0, 1, 1, 2, 2], lobby: true },
+  duos: { name: 'Dúos', desc: '3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.', players: 6, teams: [0, 0, 1, 1, 2, 2], lobby: true, duos: true },
   ranked: { name: 'Clasificatoria', desc: '3 vs 3 por puntos: gana para subir de rango.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, ranked: true },
   league: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3. Tus aliados son bots.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, minLevel: 10 },
   king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total.', players: 4, teams: [0, 1, 2, 3], king: true, lobby: true },
@@ -1618,10 +1619,12 @@ function SHIELD_HEX(k) {
 // Generación del mapa hexagonal, pasabilidad y búsqueda de caminos (A*).
 
 class GameMap {
-  constructor(seed, kind, nPlayers) {
+  constructor(seed, kind, nPlayers, pairs = false) {
     this.seed = seed;
     this.kind = kind;
     this.n = nPlayers;
+    // v1.1: Dúos: las bases de cada pareja (0-1, 2-3, 4-5) quedan juntas y las parejas, separadas.
+    this.pairs = pairs;
     this.R = nPlayers > 4 ? 22 : 21;
     this.cells = [];
     this.lookup = new Map();
@@ -1683,7 +1686,15 @@ class GameMap {
     const blobs = [];
     const homePos = [];
     const homeXZ = [];
-    if (kind === 'reef') {
+    if (this.pairs && n % 2 === 0) {
+      // Dúos: cada pareja en su zona del anillo, separadas 20° a cada lado del centro de la zona.
+      const zones = n / 2;
+      for (let i = 0; i < n; i++) {
+        const z = Math.floor(i / 2);
+        const ang = a0 + (z * Math.PI * 2) / zones + (i % 2 ? 1 : -1) * (Math.PI / 9);
+        homeXZ[i] = [Math.cos(ang) * ring, Math.sin(ang) * ring];
+      }
+    } else if (kind === 'reef') {
       // Arrecife Doble: dos grupos de islas, uno a cada lado, separados por agua navegable.
       const side = [[], []];
       for (let i = 0; i < n; i++) side[i % 2].push(i);
@@ -2938,7 +2949,7 @@ class Game {
     const mode = opts.mission ? Campaign.mode(opts.mission) : opts.custom ? customMode(opts.custom) : MODES[opts.mode];
     this.mode = mode;
     this.diff = DIFFICULTY[opts.difficulty];
-    this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
+    this.map = new GameMap(opts.seed, opts.mapKind, mode.players, !!mode.duos);
     this.cells = this.map.cells;
     this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.fog = !!(opts.fog || mode.fog);
@@ -11993,7 +12004,9 @@ class Lobby {
   }
 
   positions(game) {
-    const winTeam = game.kingWinner !== undefined ? game.kingWinner : (game.players.find((p) => p.alive) || {}).team;
+    // Solo hay «Ganador» si queda un equipo (o en Rey del Faro); si siguen varios, todos «Seguía en pie».
+    const aliveTeams = new Set(game.players.filter((p) => p.alive).map((p) => p.team));
+    const winTeam = game.kingWinner !== undefined ? game.kingWinner : aliveTeams.size === 1 ? [...aliveTeams][0] : -999;
     const alive = game.players.filter((p) => p.alive).sort((a, b) => (b.team === winTeam) - (a.team === winTeam));
     const list = [];
     let rank = 0;
@@ -12250,9 +12263,9 @@ class Music {
     this.current = null;
   }
 
-  // 0 = calma, 1 = combate: suma percusión en la partida.
+  // 0 = calma, 1 = combate: suma percusión en la partida. Sube o baja con el tiempo real (no con los cuadros).
   setIntensity(k) {
-    this.intensity += (Math.max(0, Math.min(1, k)) - this.intensity) * 0.05;
+    this.target = Math.max(0, Math.min(1, k));
   }
 
   refreshVolume() {
@@ -12267,6 +12280,7 @@ class Music {
     const c = this.sound.ctx;
     if (!c || !this.current) return;
     if (c.state !== 'running') return;
+    this.intensity += ((this.target || 0) - this.intensity) * 0.12;
     const T = MUSIC_THEMES[this.current];
     const eighth = 60 / T.bpm / 2;
     while (this.nextT < c.currentTime + 0.35) {
@@ -12338,6 +12352,7 @@ class Music {
   }
 
   kick(t) {
+    this.drums = (this.drums || 0) + 1;
     const g = this.env(t, 0.005, 0.25, 0.22);
     const o = this.osc('sine', 120, t, 0.3, g);
     o.frequency.exponentialRampToValueAtTime(42, t + 0.22);

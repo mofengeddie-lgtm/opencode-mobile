@@ -1007,7 +1007,9 @@ class Lobby {
   }
 
   positions(game) {
-    const winTeam = game.kingWinner !== undefined ? game.kingWinner : (game.players.find((p) => p.alive) || {}).team;
+    // Solo hay «Ganador» si queda un equipo (o en Rey del Faro); si siguen varios, todos «Seguía en pie».
+    const aliveTeams = new Set(game.players.filter((p) => p.alive).map((p) => p.team));
+    const winTeam = game.kingWinner !== undefined ? game.kingWinner : aliveTeams.size === 1 ? [...aliveTeams][0] : -999;
     const alive = game.players.filter((p) => p.alive).sort((a, b) => (b.team === winTeam) - (a.team === winTeam));
     const list = [];
     let rank = 0;

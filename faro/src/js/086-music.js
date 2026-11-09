@@ -71,9 +71,9 @@ class Music {
     this.current = null;
   }
 
-  // 0 = calma, 1 = combate: suma percusión en la partida.
+  // 0 = calma, 1 = combate: suma percusión en la partida. Sube o baja con el tiempo real (no con los cuadros).
   setIntensity(k) {
-    this.intensity += (Math.max(0, Math.min(1, k)) - this.intensity) * 0.05;
+    this.target = Math.max(0, Math.min(1, k));
   }
 
   refreshVolume() {
@@ -88,6 +88,7 @@ class Music {
     const c = this.sound.ctx;
     if (!c || !this.current) return;
     if (c.state !== 'running') return;
+    this.intensity += ((this.target || 0) - this.intensity) * 0.12;
     const T = MUSIC_THEMES[this.current];
     const eighth = 60 / T.bpm / 2;
     while (this.nextT < c.currentTime + 0.35) {
@@ -159,6 +160,7 @@ class Music {
   }
 
   kick(t) {
+    this.drums = (this.drums || 0) + 1;
     const g = this.env(t, 0.005, 0.25, 0.22);
     const o = this.osc('sine', 120, t, 0.3, g);
     o.frequency.exponentialRampToValueAtTime(42, t + 0.22);

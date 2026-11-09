@@ -2,10 +2,12 @@
 // Generación del mapa hexagonal, pasabilidad y búsqueda de caminos (A*).
 
 class GameMap {
-  constructor(seed, kind, nPlayers) {
+  constructor(seed, kind, nPlayers, pairs = false) {
     this.seed = seed;
     this.kind = kind;
     this.n = nPlayers;
+    // v1.1: Dúos: las bases de cada pareja (0-1, 2-3, 4-5) quedan juntas y las parejas, separadas.
+    this.pairs = pairs;
     this.R = nPlayers > 4 ? 22 : 21;
     this.cells = [];
     this.lookup = new Map();
@@ -67,7 +69,15 @@ class GameMap {
     const blobs = [];
     const homePos = [];
     const homeXZ = [];
-    if (kind === 'reef') {
+    if (this.pairs && n % 2 === 0) {
+      // Dúos: cada pareja en su zona del anillo, separadas 20° a cada lado del centro de la zona.
+      const zones = n / 2;
+      for (let i = 0; i < n; i++) {
+        const z = Math.floor(i / 2);
+        const ang = a0 + (z * Math.PI * 2) / zones + (i % 2 ? 1 : -1) * (Math.PI / 9);
+        homeXZ[i] = [Math.cos(ang) * ring, Math.sin(ang) * ring];
+      }
+    } else if (kind === 'reef') {
       // Arrecife Doble: dos grupos de islas, uno a cada lado, separados por agua navegable.
       const side = [[], []];
       for (let i = 0; i < n; i++) side[i % 2].push(i);

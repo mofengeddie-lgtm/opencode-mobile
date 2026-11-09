@@ -21,7 +21,7 @@ class Game {
     const mode = opts.mission ? Campaign.mode(opts.mission) : opts.custom ? customMode(opts.custom) : MODES[opts.mode];
     this.mode = mode;
     this.diff = DIFFICULTY[opts.difficulty];
-    this.map = new GameMap(opts.seed, opts.mapKind, mode.players);
+    this.map = new GameMap(opts.seed, opts.mapKind, mode.players, !!mode.duos);
     this.cells = this.map.cells;
     this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.fog = !!(opts.fog || mode.fog);

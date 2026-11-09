@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.0 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.1 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -32,6 +32,20 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.1
+
+- **Alianzas** en los modos de todos contra todos: desde el marcador, «Aliarse» con un rival (el bot acepta o
+  no, y dice por qué) y «Romper». Los aliados no se atacan y comparten lo que ven; si solo quedan aliados, la
+  alianza se rompe: gana uno solo.
+- **Dúos:** 3 parejas (tú y un bot aliado), cada pareja en su zona del mapa.
+- **Clasificatoria:** 3 vs 3 por puntos con 10 rangos (Bronce I a Ámbar); el panel «Rangos» del vestíbulo
+  muestra tu rango, tus puntos y tus últimas partidas.
+- **Órdenes a aliados:** «¡Ayuda!» y «¡Ataquemos!» en el marcador.
+- **Escudo antimisiles:** además del misil nuclear, derriba misiles y cohetes enemigos a 3 casillas.
+- **Música propia** generada por el juego (vestíbulo y batalla, más intensa en combate) con volumen en la pausa.
+- **Espectador:** al perder, «Seguir mirando» hasta el final.
+- **Resumen final** con gráficas de monedas por minuto y tropas de cada imperio.
 
 ## Novedades de la v1.0
 
