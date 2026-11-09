@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 1.0</p>
-  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tus «Mejoras V1.0» (8 puntos y la portada)</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tus «Mejoras V1.0» (8 puntos y la portada)</p>
   <div class="tiles">
     <div class="tile"><b>Construir y mejorar</b><span>Vuelve el botón «Construir», el constructor tiene que llegar de verdad, botón «Mejorar todo» y mejoras automáticas.</span></div>
     <div class="tile"><b>Más poder</b><span>Comunidad hasta 240, radiación de 1 minuto después del misil nuclear y lanzar los 3 misiles a la vez.</span></div>
@@ -70,7 +70,7 @@ li { margin-bottom: 3px; }
       <tr><td>0.1-0.6</td><td>6-8 nov 2026</td><td>Juego base, bots, constructores, niveles, vestíbulo, modelos de Blender, ritmo y efectos.</td></tr>
       <tr><td>0.7-0.8</td><td>8 nov 2026</td><td>Campaña de 6 misiones, mejores controles, movimiento de CMU, bots más listos y avisos en el borde.</td></tr>
       <tr><td>0.9</td><td>8 nov 2026</td><td>Tus 30 mejoras: ejército de tierra, mar y aire, misil nuclear, escudos, comunidad 180, portada y vuelta al suelo de la v0.6.</td></tr>
-      <tr><td>1.0</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir» y constructor que llega, comunidad 240, radiación, «Mejorar todo» y mejoras automáticas, «Lanzar los 3», Difícil más fuerte, Aeropuerto, Caza y Bombardero nuevos y portada nueva.</td></tr>
     </tbody>
   </table>
 </section>
@@ -101,33 +101,36 @@ li { margin-bottom: 3px; }
   <table>
     <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>G01</td><td>Tocar una casilla solo muestra la obra fantasma; la obra se pone con «Construir»; se pueden poner varias seguidas y salir con «Terminar».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G02</td><td>Comunidad máxima 240, 8 Casas y se puede llegar a 240.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G03</td><td>El misil nuclear deja 1 minuto de radiación: quema a los enemigos de dentro, se ve con su cuenta regresiva y se apaga a los 60 s.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G04</td><td>«Mejorar todo» y «Mejoras automáticas» solo aparecen con el Núcleo en nivel 3; funcionan, respetan el dinero y llegan al máximo.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G05</td><td>Difícil más fuerte: (1) el bot Difícil nuevo le gana al Difícil de la v0.9 en el 60 % o más de los duelos con ganador; (2) derrota más rápido a un piloto automático de nivel medio (hoy tarda 11,6 min de media; meta: menos de 9 min); (3) usa sus tácticas nuevas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G06</td><td>Aeropuerto, Caza y Bombardero: modelos nuevos sin errores, aviones que giran en vuelo con estela, y paneles con su información y la orden «Bombardear zona».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G07</td><td>La obra solo avanza con el constructor quieto y pegado a ella; mientras camina, no avanza.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G08</td><td>«Lanzar los 3» aparece con 3 AIR DEFENSE nivel 4 listos, lanza los tres a la vez y un Escudo antimisiles solo derriba uno.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G09</td><td>Portada nueva en 5 tamaños de pantalla, sin nada cortado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G10</td><td>Las pruebas anteriores siguen pasando (salvo la de construir de un toque, que cambia por G01), la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>G11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>G01</td><td>Tocar una casilla solo muestra la obra fantasma; la obra se pone con «Construir»; se pueden poner varias seguidas y salir con «Terminar».</td><td><span class="chip ok">Aprobada</span></td><td>antes de tocar, «Construir» está apagado (true); al tocar una casilla: Granjas 1 → 1 (solo la vista previa), barra «Granja · 300 · Toca «Construir» para poner la obra aquí»; con «Construir»: 2; sigue en modo construir (true) y otra casilla + «Construir»: 3; el botón «Terminar» sale: true</td></tr>
+<tr><td>G02</td><td>Comunidad máxima 240, 8 Casas y se puede llegar a 240.</td><td><span class="chip ok">Aprobada</span></td><td>máximo 240; Casas puestas 8 (la 9.ª: «Límite alcanzado (8)»); con 8 Apartamentos y el Núcleo en nivel 3 la comunidad llega a 240</td></tr>
+<tr><td>G03</td><td>El misil nuclear deja 1 minuto de radiación: quema a los enemigos de dentro, se ve con su cuenta regresiva y se apaga a los 60 s.</td><td><span class="chip ok">Aprobada</span></td><td>zona creada al caer (1), dura 60 s; en 5 s un tanque enemigo perdió 440 de vida (20 %) y el tuyo 0; un Cuartel enemigo dentro perdió 23 (escudo y vida) en otros 5 s; a 1 s del final sigue activa (true) y después se apaga (true); efectos de fuego y humo: 119. En pantalla: 3 zonas de radiación con su disco verde (3) y el cartel «☢ Radiación · 1:00»</td></tr>
+<tr><td>G04</td><td>«Mejorar todo» y «Mejoras automáticas» solo aparecen con el Núcleo en nivel 3; funcionan, respetan el dinero y llegan al máximo.</td><td><span class="chip ok">Aprobada</span></td><td>con el Núcleo en nivel 1: «Necesita el Núcleo en nivel 3»; con 2.500 monedas: 6 mejora(s) (quedan otras esperando dinero); con dinero: 2 más a la vez (8 en obra); automáticas con 3 Constructores: 8 mejoras en 10 min, como mucho 3 a la vez, nunca por debajo de 51412 monedas (reserva 1500); al final quedan 0 por mejorar y 7 de 7 edificios al máximo. En pantalla: Núcleo nivel 1: sin botones (true); nivel 3: «Mejorar todo · 3 de 3» y «Mejoras automáticas: no»; al tocar «Mejorar todo» quedaron 3 edificios mejorándose; «Mejoras automáticas: sí» (encendido: true)</td></tr>
+<tr><td>G05</td><td>Difícil más fuerte: (1) el bot Difícil nuevo le gana al Difícil de la v0.9 en el 60 % o más de los duelos con ganador; (2) derrota más rápido a un piloto automático de nivel medio (hoy tarda 11,6 min de media; meta: menos de 9 min); (3) usa sus tácticas nuevas.</td><td><span class="chip ok">Aprobada</span></td><td>(1) Difícil v1.0 contra Difícil v0.9, misma economía, 72 duelos de 25 min (3 mapas × 12 semillas × los dos lados): ganó 34, perdió 22, 16 sin ganador → 61 % de los duelos con ganador. (2) Piloto automático de nivel medio contra Difícil, 16 duelos con las mismas semillas: con el juego de la v0.9 perdía 15 de 16 en 12.0 min de media; con la v1.0 pierde 16 de 16 en 8.6 min. (3) con un Constructor y un Artillero a tiro, Difícil dispara a: Constructor (Normal: Artillero); 40 s después de ver un helicóptero enemigo tiene 3 AIR DEFENSE (Normal: 0); a los 15:50 min con 3 AIR DEFENSE nivel 4 lanza la salva de 3; ingresos ×1.7 (antes ×1,3), piensa cada 0.8 s (antes 1,1), primera oleada a los 80 s (antes 95)</td></tr>
+<tr><td>G06</td><td>Aeropuerto, Caza y Bombardero: modelos nuevos sin errores, aviones que giran en vuelo con estela, y paneles con su información y la orden «Bombardear zona».</td><td><span class="chip ok">Aprobada</span></td><td>Caza quieto: en 90 cuadros su avión recorre una vuelta (se aleja hasta 0.86 del centro) sin mover su posición de juego (0.00), inclinado en 73 cuadros; ficha del Caza: «Caza furtivo · Estado · Patrulla en círculo · Vida · 83 % · Misiles aire-aire · 140 · ×2.3 a aviones · Alcance · 5 casillas»; del Bombardero: «Bombardero furtivo · Estado · Patrulla en círculo · Vida · 100 % · Bombas · Listas · Furtivo · Oculto: solo se ve a 3 casillas»; «Bombardear zona» manda al Bombardero: true; Aeropuerto: «Torre de control · 1 Caza · 1 Bombardero · Ningún avión en la pista ahora. · Repara 40 de vida por segundo a los aviones y helicópteros cercanos; los dañados vuelven solos aquí.»; modelos (vértices): fighter:1680 bomber:1092 airport:3312; errores: ninguno</td></tr>
+<tr><td>G07</td><td>La obra solo avanza con el constructor quieto y pegado a ella; mientras camina, no avanza.</td><td><span class="chip ok">Aprobada</span></td><td>Constructor a 5 casillas: empezó a construir a los 3.0 s, siempre a 1.20 o menos del centro de la obra (límite 1.2); cuadros con avance caminando: 0, moviéndose: 0; obra terminada: true</td></tr>
+<tr><td>G08</td><td>«Lanzar los 3» aparece con 3 AIR DEFENSE nivel 4 listos, lanza los tres a la vez y un Escudo antimisiles solo derriba uno.</td><td><span class="chip ok">Aprobada</span></td><td>con 2 listos: «Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes 2)»; con 3: salen 3 a la vez y cuestan 60000; después: «Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes 0)»; el Escudo antimisiles derribó 1 de 3; sin dinero: «Monedas insuficientes (60.000)». En pantalla: con 2 listos el botón está apagado («☢☢☢ Lanzar los 3 · 60.000 Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes 2)»); con 3 se enciende (true); al elegir el blanco salen 3 misiles</td></tr>
+<tr><td>G09</td><td>Portada nueva en 5 tamaños de pantalla, sin nada cortado.</td><td><span class="chip ok">Aprobada</span></td><td>portada de 230 px de alto con escena 3D (112 KB), movimiento suave «coverpan», logo, «Versión 1.0» y novedades: Comunidad 240, Lanzar los 3, Radiación, Mejorar todo, Difícil de verdad. 5 tamaños: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien</td></tr>
+<tr><td>G10</td><td>Las pruebas anteriores siguen pasando (salvo la de construir de un toque, que cambia por G01), la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas anteriores en la v1.0: 38 de 38 bien (v0.9: 13 de lógica y 5 del navegador; v0.7: 10; v0.8: 10). F02 se ajustó al nuevo máximo de 240 y F07 (construir de un toque) ahora confirma cada obra con «Construir», como pide G01. Campaña con las reglas y bots nuevos: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 4 de 5 (3:08, 3:06, 3:09, 3:10); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:51, 2:53); M5 ganó 3 de 3 (15:44, 12:43, 17:46); M6 piloto atento ganó 5 de 6 (12:47, 27:26, 26:28, 22:48, 18:45). 5 tamaños con Núcleo nivel 3, AIR DEFENSE con «Lanzar los 3», Casa, Transporte, Bombardero, Aeropuerto y la barra de «Construir»: todo bien.</td></tr>
+<tr><td>G11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip ok">Aprobada</span></td><td>faro.html pesa 2.33 MB (meta: menos de 3,5 MB), con 75 modelos de Blender.</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">06 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Punto 1 y la v0.9:</b> en la v0.9 pediste construir de un toque; ahora vuelve el botón «Construir», pero se mantiene poder poner varias obras seguidas sin volver al menú.</li>
-    <li><b>Radiación:</b> solo quema a los enemigos de quien lanzó el misil, para que puedas entrar después con tus tropas. Es un efecto de juego (brillo, humo y fuego).</li>
-    <li><b>Mejoras automáticas:</b> guardan una reserva de monedas (para no dejarte sin tropas) y mejoran como máximo tantos edificios a la vez como Constructores tengas.</li>
-    <li><b>Difícil:</b> los bots en Difícil reciben más monedas que tú (como en los juegos de estrategia clásicos) y juegan mejor; Fácil y Normal no cambian.</li>
-    <li><b>Nombres:</b> el caza y el bombardero se inspiran en aviones reales, pero en el juego se llaman Caza furtivo y Bombardero furtivo.</li>
+    <li><b>Punto 1 y la v0.9:</b> vuelve el botón «Construir»; se mantiene poder poner varias obras seguidas y el botón de salir dice «Terminar» después de la primera.</li>
+    <li><b>Punto 7:</b> antes el constructor trabajaba desde la casilla de al lado, todavía lejos; ahora termina de acercarse hasta tocar la obra (1,2 de distancia al centro) y recién ahí avanza, con una animación de martilleo.</li>
+    <li><b>Radiación:</b> quema por segundo el 4 % de la vida a las tropas enemigas, el 0,5 % a sus edificios y el 0,25 % al Núcleo, durante 60 s; no daña a tus tropas, así que puedes entrar después. Al principio quemaba el 0,8 % a todo edificio, pero en la misión 6 un solo misil del bot más la radiación llegaba a decidir la partida, así que se bajó (sobre todo en el Núcleo).</li>
+    <li><b>Mejoras automáticas:</b> guardan 1,500 monedas de reserva y mejoran como mucho tantos edificios a la vez como Constructores tengas. Siempre hace falta que el constructor llegue.</li>
+    <li><b>Difícil:</b> recibe ×1,7 de monedas (antes ×1,3), piensa cada 0,8 s (antes 1,1), ataca antes (80 s) y usa tácticas propias. Con un primer ajuste (×1,55) el piloto caía en 9,9 min y no llegaba a la meta; con ×1,7 cae en menos de 9. También probé pensar cada 0,7 s y atacar a los 70 s, pero así el bot nuevo le ganaba menos al de la v0.9, y lo dejé en 0,8 s y 80 s. Como el piloto automático ya perdía todo contra el Difícil anterior, se midió contra el Difícil de la v0.9 y por el tiempo que tarda en derrotar al piloto (G05). La primera medición del piloto daba números distintos en cada corrida porque mi script usaba azar sin semilla; se corrigió y se repitió con el juego de la v0.9 y el de la v1.0 con las mismas semillas. Fácil y Normal no cambian.</li>
+    <li><b>Una frase por salva:</b> si caen varios misiles juntos, el bot avisa una sola vez.</li>
+    <li><b>Tus fuentes:</b> Poly Haven sigue solo en el cielo (el suelo es el de la v0.6, como pediste); Pixabay no deja descargar desde aquí; CMU sigue en el caminar y correr.</li>
+    <li><b>Tamaño:</b> 2.33 MB (meta: menos de 3,5 MB).</li>
   </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v1.0 por partes (reglas, bots y aviones, portada), probar cada parte y entregarte el PDF con los resultados.</p>
+  <p>Jugar la v1.0 en tu iPad: probar el botón «Construir», ver a los constructores llegar y martillar, subir la base a 240, usar «Mejorar todo», lanzar los 3 misiles y jugar en Difícil. Dime qué te parece la dificultad y los aviones.</p>
 </section>
 
 </body>

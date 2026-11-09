@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 0.9 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.0 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -25,13 +25,28 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Avanzar atacando | Botón en el panel de tropas y luego toca el destino | F y clic |
 | Constructores | Botón junto al minimapa (primero los que no trabajan) | C |
 | Mover / atacar | Toca un destino o un enemigo | Clic izquierdo o derecho |
-| Construir | Elige edificio → toca casillas doradas (se construye al instante, varias seguidas) → «Listo» | Igual; R gira, Enter termina |
+| Construir | Elige edificio → toca una casilla dorada → «Construir» (puedes poner varias seguidas) → «Terminar» | Igual; R gira, Enter construye |
 | Mejorar | Toca un edificio terminado → «Mejorar» | Igual |
 | Capturar | Lleva infantería junto a una Bandera o al Faro | Igual |
 | Pausa / salir | Botón de pausa → «Salir al menú» (la partida queda guardada) | Esc o P |
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.0
+
+- **Construir:** vuelve el botón «Construir» (tocar una casilla solo muestra la obra) y el constructor tiene
+  que llegar y quedarse pegado a la obra para que avance; mientras trabaja, martilla.
+- **Base grande:** comunidad hasta 240 (8 Casas). Con el Núcleo en nivel 3: «Mejorar todo» (un clic) y
+  «Mejoras automáticas» hasta dejar todo al máximo, guardando una reserva de monedas.
+- **Misil nuclear:** deja 1 minuto de radiación que quema a los enemigos de dentro (con cuenta regresiva), y
+  «Lanzar los 3» dispara los tres AIR DEFENSE de nivel 4 a la vez (un Escudo antimisiles solo derriba uno).
+- **Difícil de verdad:** más monedas, piensa y ataca antes, y tácticas propias (busca Constructores y
+  economía, retira heridos antes, defensa antiaérea al ver aviones, mejora y usa el misil antes).
+- **Aviones:** Caza, Bombardero y Aeropuerto rehechos en Blender; los aviones dan vueltas en el aire, se
+  inclinan y dejan estela; fichas con misiles, bombas y si están ocultos, orden «Bombardear zona» y torre de
+  control en el Aeropuerto.
+- **Portada:** más grande, con cazas, Bombardero, Apache y Portaaviones, logo, versión y novedades.
 
 ## Novedades de la v0.9
 

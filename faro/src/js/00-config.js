@@ -30,7 +30,8 @@ const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
 const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9,
   // v1.0: 1 minuto de radiación donde cae; quema por segundo esta parte de la vida máxima de los enemigos.
-  rad: { time: 60, unit: 0.04, bld: 0.008 } };
+  // El Núcleo se quema más despacio, para que un solo misil no decida la partida.
+  rad: { time: 60, unit: 0.04, bld: 0.005, core: 0.0025 } };
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
@@ -416,7 +417,7 @@ const DIFFICULTY = {
     tactics: { group: false, retreat: false, counter: false, focusDefense: false, focus: false, harass: false, turret: false, teamwork: true } },
   normal: { name: 'Normal', income: 1.0, think: 1.8, firstWave: 150, wave: 7,
     tactics: { group: true, retreat: true, counter: true, focusDefense: false, focus: true, harass: true, turret: true, teamwork: true } },
-  hard: { name: 'Difícil', income: 1.55, think: 0.8, firstWave: 80, wave: 6,
+  hard: { name: 'Difícil', income: 1.7, think: 0.8, firstWave: 80, wave: 6,
     tactics: { group: true, retreat: true, counter: true, focusDefense: true, focus: true, harass: true, turret: true, teamwork: true,
       snipe: true, medevac: true, earlyAA: true, fastUp: true, earlyNuke: true } },
 };

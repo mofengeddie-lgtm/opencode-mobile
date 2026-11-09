@@ -2126,7 +2126,9 @@ class Game {
         this.emit('toast', { text: mine ? `Misil nuclear lanzado: llega en ${NUKE.flight} s` : `¡Misil nuclear en camino! Llega en ${NUKE.flight} s`, kind: mine ? 'info' : 'bad', x: c.x, z: c.z });
         this.emit('ping', { x: c.x, z: c.z, kind: 'bad' });
       }
-      if (!q.human && near && !mine && q.persona) {
+      // Una sola frase aunque lleguen varios a la vez (salva de 3, v1.0).
+      if (!q.human && near && !mine && q.persona && this.time - (q.nukeSaidAt ?? -99) > 2) {
+        q.nukeSaidAt = this.time;
         this.say(q.id, '¡Un misil nuclear! ¡Todos a cubierto!', { force: true, public: true });
       }
     }
@@ -2190,7 +2192,7 @@ class Game {
         this.damage(t, t.maxHp * pct * step, z.owner, null);
       };
       for (const u of this.units) burn(u, NUKE.rad.unit);
-      for (const b of this.buildings) burn(b, NUKE.rad.bld);
+      for (const b of this.buildings) burn(b, b.type === 'core' ? NUKE.rad.core : NUKE.rad.bld);
       this.fx.push({ k: 'rad', x: z.x, y: z.y, z: z.z, r: R });
     }
     this.radZones = this.radZones.filter((z) => this.time < z.until);
