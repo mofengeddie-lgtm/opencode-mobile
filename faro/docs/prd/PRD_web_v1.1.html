@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.1</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.1</p>
+  <p class="meta">9 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «revisa qué le falta y busca diferencias con el juego de Roblox»</p>
+  <div class="tiles">
+    <div class="tile"><b>Jugar con otros</b><span>Alianzas en todos contra todos, modo Dúos, órdenes rápidas a tus aliados y Clasificatoria con rangos.</span></div>
+    <div class="tile"><b>Defensa</b><span>El Escudo antimisiles también derriba misiles y cohetes enemigos cerca.</span></div>
+    <div class="tile"><b>Más completo</b><span>Música propia, modo espectador al perder y resumen final con gráficas.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Revisar qué le falta al juego comparándolo con el juego de estrategia de Roblox que me nombraste y agregar lo que falte, como mecánicas de juego con diseño, nombres y arte propios (no se copia su nombre, su arte, sus mapas ni su música).</p>
+
+  <h3>2. Cómo se hizo la comparación</h3>
+  <ul>
+    <li>La red de este entorno no deja abrir roblox.com ni su foro, así que leí los resúmenes de los registros de cambios del creador que da el buscador (versiones 0.6 a 0.11). Si quieres que lea las páginas completas, se pueden permitir esos sitios en la configuración del entorno.</li>
+    <li>Fuentes: registros de cambios en el foro de desarrolladores de Roblox (v0.6.0, v0.7.0, v0.8.0, v0.8.3, v0.9.0, v0.9.2, v0.10.0) y la página del juego en Roblox, más la publicación del creador sobre la v0.11.</li>
+  </ul>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.8</td><td>6-8 nov 2026</td><td>Juego base, bots, campaña, controles, modelos de Blender y movimiento de CMU.</td></tr>
+      <tr><td>0.9</td><td>8 nov 2026</td><td>Tus 30 mejoras: ejército de tierra, mar y aire, misil nuclear, escudos y vuelta al suelo de la v0.6.</td></tr>
+      <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, «Mejorar todo», «Lanzar los 3», Difícil más fuerte y aviones nuevos.</td></tr>
+      <tr><td>1.1</td><td>9 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Comparación</div>
+  <h2>Qué tiene el juego de Roblox y qué tiene el nuestro</h2>
+  <table>
+    <thead><tr><th style="width:30%">En el juego de Roblox</th><th style="width:22%">Nuestro juego (v1.0)</th><th>Plan para la v1.1</th></tr></thead>
+    <tbody>
+      <tr><td>Granjas, Casas, campos de entrenamiento, defensas y destruir el Núcleo enemigo; solo o en equipos</td><td>Ya lo tiene</td><td>—</td></tr>
+      <tr><td>Puentes y mapas con alturas</td><td>Ya lo tiene (puentes de arena, montañas)</td><td>—</td></tr>
+      <tr><td>Cada tropa ocupa distinta población; Puerto que repara barcos</td><td>Ya lo tiene</td><td>—</td></tr>
+      <tr><td>Ingresos por minuto y total de edificios en pantalla</td><td>Ya lo tiene (barra y marcador)</td><td>—</td></tr>
+      <tr><td>Tienda, inventario, aspectos y cofres</td><td>Ya lo tiene</td><td>—</td></tr>
+      <tr><td>Helicópteros que vuelan por encima de todo, Helipuerto y AIR DEFENSE</td><td>Ya lo tiene</td><td>—</td></tr>
+      <tr><td>Escopetero y tutorial interactivo</td><td>Ya lo tiene</td><td>—</td></tr>
+      <tr><td>Seleccionar de una vez todas las tropas de tierra o de mar</td><td>Ya lo tiene (botones Ejército, Barcos y Aéreos)</td><td>—</td></tr>
+      <tr><td><b>Alianzas</b> en todos contra todos: formarlas, romperlas si los dos aceptan o si el otro se va, y chat de aliados</td><td>Solo equipos fijos (Liga, 2 vs 2)</td><td><b>Agregar</b>: proponer alianza a un rival, romperla, chat de aliados.</td></tr>
+      <tr><td><b>Dúos</b>: parejas que aparecen cerca y son aliadas en todos contra todos</td><td>No tiene</td><td><b>Agregar</b> el modo Dúos (3 parejas).</td></tr>
+      <tr><td><b>Clasificatoria</b> con 10 rangos y tabla por puntos</td><td>«Rangos» está apagado</td><td><b>Agregar</b> Clasificatoria con 10 rangos propios y puntos guardados.</td></tr>
+      <tr><td><b>Defensa antimisiles</b> que derriba los misiles que llegan</td><td>El Escudo antimisiles solo derriba el misil nuclear</td><td><b>Agregar</b>: también derriba misiles y cohetes enemigos cerca.</td></tr>
+      <tr><td><b>Banda sonora</b> propia</td><td>Solo efectos de sonido</td><td><b>Agregar</b> música propia hecha por el juego (vestíbulo y batalla).</td></tr>
+      <tr><td>Decoraciones de temporada (Halloween)</td><td>No tiene</td><td>No se hace ahora: ya pasó la fecha.</td></tr>
+    </tbody>
+  </table>
+  <h3>Lo que noté que le falta, además</h3>
+  <ul>
+    <li><b>Órdenes rápidas a tus aliados</b>: «¡Ayuda!» (vienen a defender tu base) y «¡Ataquemos!» (atacan contigo al rival que elijas).</li>
+    <li><b>Modo espectador</b>: al perder, poder seguir mirando la partida hasta el final.</li>
+    <li><b>Resumen final con gráficas</b>: monedas y ejército de cada imperio a lo largo de la partida.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Cómo funciona cada cosa nueva</div>
+  <h2>Detalle</h2>
+  <table>
+    <thead><tr><th style="width:24%">Qué</th><th>Cómo</th></tr></thead>
+    <tbody>
+      <tr><td>Alianzas</td><td>En el marcador, junto a cada rival: «Proponer alianza». El bot acepta o no según su forma de ser y cómo va la partida (más fácil si los dos tienen un rival en común). Aliados: no se atacan, comparten lo que ven y sus mensajes salen en un chat de aliados. «Romper alianza» pide confirmación y avisa al otro; un aliado también puede romperla si queda solo contra ti. Para ganar hay que quedar solo (como en el original, la alianza no da la victoria compartida en todos contra todos).</td></tr>
+      <tr><td>Dúos</td><td>Nuevo modo: 3 parejas (tú y un bot aliado), cada pareja aparece cerca. Gana la última pareja en pie.</td></tr>
+      <tr><td>Clasificatoria</td><td>Partida 3 vs 3 en Normal o Difícil según tu rango. Ganar suma puntos y perder resta. 10 rangos propios: Bronce I-III, Plata I-III, Oro I-III y Ámbar. El panel «Rangos» del vestíbulo muestra tu rango, tus puntos y tu historial.</td></tr>
+      <tr><td>Escudo antimisiles</td><td>Además del misil nuclear, derriba un misil o cohete enemigo que pase a 3 casillas, cada 1,5 s.</td></tr>
+      <tr><td>Música</td><td>Melodías propias generadas por el juego: una tranquila en el vestíbulo y otra en la partida que se intensifica cuando hay combate. Con su control de volumen en la pausa.</td></tr>
+      <tr><td>Órdenes a aliados</td><td>En los modos con aliados, dos botones: «¡Ayuda!» y «¡Ataquemos!» (tocas al rival). Los bots aliados responden en el chat y mandan tropas.</td></tr>
+      <tr><td>Espectador</td><td>En la pantalla de derrota: «Seguir mirando». La cámara queda libre y se ve el resto de la partida hasta que haya ganador.</td></tr>
+      <tr><td>Resumen final</td><td>Gráficas de monedas por minuto y tamaño del ejército de cada imperio, con su color.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>H01</td><td>Alianzas: proponer (el bot acepta o rechaza con su motivo), aliados no se atacan y comparten visión, chat de aliados, romper la alianza.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H02</td><td>Modo Dúos: 3 parejas que aparecen cerca; gana la última pareja.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H03</td><td>Clasificatoria: 10 rangos, puntos que suben y bajan, guardados, y panel «Rangos» encendido.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H04</td><td>El Escudo antimisiles derriba misiles y cohetes enemigos cerca, sin dejar de derribar el misil nuclear.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H05</td><td>Música del vestíbulo y de la partida, más intensa en combate, con volumen y silencio.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H06</td><td>«¡Ayuda!» y «¡Ataquemos!»: los aliados responden y mandan tropas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H07</td><td>Al perder, «Seguir mirando» deja ver la partida hasta el final.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H08</td><td>Resumen final con gráficas de monedas y ejército de cada imperio.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H09</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H10</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Original, no copia:</b> se toman las mecánicas (alianzas, dúos, clasificatoria, defensa antimisiles, música), con nombres, rangos, arte y melodías propios.</li>
+    <li><b>Clasificatoria sin servidores:</b> los rivales son bots y los puntos se guardan en tu aparato. Una tabla con otros jugadores necesita los servidores de Roblox («Top jugadores» y «Servidores» siguen para Roblox Studio).</li>
+    <li><b>Lo que ya teníamos:</b> casi todo lo del juego de Roblox ya estaba (puentes, alturas, helicópteros, AIR DEFENSE, tienda, aspectos, cofres, tutorial); lo nuevo de esta versión es lo que faltaba.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Programar la v1.1, probar cada parte y entregarte el PDF con los resultados.</p>
+</section>
+
+</body>
+</html>
