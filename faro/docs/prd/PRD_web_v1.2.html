@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.2</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.2</p>
+  <p class="meta">9 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «con toda la información que buscaste, agrégalo a nuestro juego»</p>
+  <div class="tiles">
+    <div class="tile"><b>Controles y equipo</b><span>Rueda de selección del ejército, chat de aliados con mensajes rápidos y tabla de la Clasificatoria.</span></div>
+    <div class="tile"><b>Colección</b><span>Dos colecciones de aspectos nuevas, planos y fragmentos en los cofres y un Taller para fabricar.</span></div>
+    <div class="tile"><b>Mundo</b><span>Dos mapas nuevos (alturas y desierto), miniaturas al elegir, tutorial que señala qué tocar y temporadas.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Agregar todo lo que quedó pendiente de la comparación con el juego de Roblox de la v1.1, siempre como mecánicas con diseño, nombres y arte propios.</p>
+
+  <h3>2. Qué queda de la investigación y qué se hace</h3>
+  <table>
+    <thead><tr><th style="width:34%">En el juego de Roblox</th><th>Plan para la v1.2</th></tr></thead>
+    <tbody>
+      <tr><td>Rueda para elegir de una vez todas las tropas de tierra o de mar</td><td><b>Rueda de selección</b>: mantienes pulsado el mapa (o la tecla Tab) y eliges Tierra, Mar, Aire, Todo, Constructores o un grupo (1, 2, 3).</td></tr>
+      <tr><td>Canal de chat de aliados</td><td><b>Mensajes</b> con pestañas Todos / Aliados y mensajes rápidos a tus aliados («¡Gracias!», «¡Voy!», «¡Defiende!»); los bots aliados contestan.</td></tr>
+      <tr><td>Tabla de la clasificatoria ordenada por puntos</td><td><b>Tabla de la Clasificatoria</b>: tú y 20 comandantes bot (marcados como bots) ordenados por puntos; se mueve con tus partidas.</td></tr>
+      <tr><td>Colecciones de aspectos (una de la Segunda Guerra Mundial y otra temática)</td><td><b>Dos colecciones nuevas</b> con nombres propios: «Frente 1940» (verde oliva y caqui) y «Marea» (azules y coral), para soldados, vehículos, barcos y Núcleo.</td></tr>
+      <tr><td>Cofres que dan planos y fragmentos de aspectos</td><td><b>Planos y fragmentos</b>: un cofre puede dar un aspecto, un plano o fragmentos; los repetidos se vuelven fragmentos. En el <b>Taller</b> fabricas un aspecto si tienes su plano y los fragmentos (según su rareza).</td></tr>
+      <tr><td>Mapas rehechos con alturas y un mapa árido</td><td><b>Dos mapas nuevos</b>: «Mesetas de Cobre» (mesetas altas: desde lo alto se dispara y se ve 1 casilla más lejos) y «Dunas Rojas» (desierto con oasis fértiles).</td></tr>
+      <tr><td>Miniaturas en las opciones de partida y descripción de cada modo</td><td><b>Miniaturas</b> de cada mapa al elegir mapa y en Personalizado (las descripciones de modos ya estaban).</td></tr>
+      <tr><td>Tutorial interactivo</td><td><b>Tutorial que señala</b> con un aro y una flecha qué tocar en cada paso (Núcleo, carta del Constructor, pestaña, edificio, casilla, «Construir»).</td></tr>
+      <tr><td>Decoraciones de temporada</td><td><b>Temporadas automáticas</b> según la fecha: «Calabazas» (15 oct-5 nov) e «Invierno» (10 dic-6 ene, con nieve). Hoy no toca ninguna, así que en la pausa hay una opción para verlas.</td></tr>
+      <tr><td>Romper una alianza si los dos aceptan o si el otro se fue</td><td>Ya se puede romper (con confirmación) y se rompe sola si solo quedan aliados; no se cambia.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
+      <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, «Mejorar todo», «Lanzar los 3» y Difícil más fuerte.</td></tr>
+      <tr><td>1.1</td><td>9 nov 2026</td><td>Alianzas, Dúos, Clasificatoria, órdenes a aliados, defensa de punto, música, espectador y gráficas.</td></tr>
+      <tr><td>1.2</td><td>9 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>I01</td><td>Rueda de selección: se abre manteniendo pulsado el mapa o con Tab y cada opción elige lo que dice.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I02</td><td>Mensajes: pestañas Todos / Aliados y mensajes rápidos que el aliado contesta.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I03</td><td>Tabla de la Clasificatoria: 21 puestos ordenados por puntos, bots marcados y tu puesto cambia al ganar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I04</td><td>Colecciones «Frente 1940» y «Marea»: 8 aspectos que se ven en los modelos y en la tienda.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I05</td><td>Planos y fragmentos: los cofres los dan, los repetidos dan fragmentos y el Taller fabrica con plano y fragmentos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I06</td><td>Mapas «Mesetas de Cobre» (ventaja de altura: +1 de alcance y visión) y «Dunas Rojas» se generan bien y se pueden jugar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I07</td><td>Miniaturas de los mapas al elegir mapa y en Personalizado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I08</td><td>Tutorial: el aro y la flecha señalan el paso siguiente y avanzan solos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I09</td><td>Temporadas: se eligen solas por la fecha y se pueden ver desde la pausa (calabazas y nieve).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I10</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Nombres propios:</b> las colecciones, los mapas y las temporadas tienen nombres nuestros; no se usan los nombres del juego de Roblox.</li>
+    <li><b>Tabla con bots:</b> sin servidores no hay otros jugadores reales; la tabla dice claramente que son comandantes bot.</li>
+    <li><b>Cofres:</b> los cristales que antes daban los aspectos repetidos ahora se convierten en fragmentos; los precios de los cofres no cambian.</li>
+    <li><b>Ventaja de altura:</b> solo en el mapa nuevo «Mesetas de Cobre», para no cambiar el equilibrio de los mapas que ya existen.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Programar la v1.2, probar cada parte y entregarte el PDF con los resultados.</p>
+</section>
+
+</body>
+</html>
