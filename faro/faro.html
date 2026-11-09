@@ -405,6 +405,31 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .rankhist li { display: grid; grid-template-columns: 90px 50px 1fr; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
 .rankhist li.win span { color: #8ff0a4; }
 .rankhist li.loss span { color: #ffb4b5; }
+#wheel { position: fixed; inset: 0; z-index: 30; background: rgba(6,10,14,0.35); }
+.wheel-hub { position: absolute; transform: translate(-50%, -50%); width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); background: rgba(12,21,29,0.92); border: 1px solid var(--line); }
+.wheel-opt { position: absolute; transform: translate(-50%, -50%); width: 78px; min-height: 52px; border-radius: 14px; border: 1px solid var(--line); background: rgba(16,26,36,0.95); color: var(--text); display: grid; place-items: center; gap: 0; padding: 4px; cursor: pointer; font: inherit; }
+.wheel-opt b { font-size: 12.5px; }
+.wheel-opt small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wheel-opt.hot, .wheel-opt:hover:not(:disabled) { border-color: #f2ab38; background: rgba(242,171,56,0.2); }
+.wheel-opt:disabled { opacity: 0.4; cursor: default; }
+#chatpop { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(520px, calc(100% - 20px)); max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
+.chattabs { display: flex; gap: 6px; }
+.chattabs button[aria-selected="true"] { border-color: #f2ab38; color: var(--text); }
+.chatlog { display: grid; gap: 4px; max-height: 260px; overflow-y: auto; font-size: 13px; }
+.chatlog p { margin: 0; padding: 4px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); }
+.chatlog p.mine { background: rgba(47,127,224,0.16); }
+.chatlog p i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.chatlog small { color: var(--muted); margin-left: 6px; }
+.quickmsgs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; max-height: 320px; overflow-y: auto; }
+.ladder li { display: grid; grid-template-columns: 38px 1fr 12px 70px 46px; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
+.ladder li.me { outline: 2px solid #f2ab38; background: rgba(242,171,56,0.12); font-weight: 700; }
+.ladder li i { width: 10px; height: 10px; border-radius: 2px; transform: rotate(45deg); }
+.ladder li small { font-size: 10px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+.ladder li em { font-style: normal; color: var(--muted); font-size: 12px; }
+.ladder li strong { text-align: right; font-variant-numeric: tabular-nums; }
+.item.plan img { filter: grayscale(0.6) brightness(0.9); outline: 2px dashed rgba(127,200,255,0.6); outline-offset: -4px; border-radius: 8px; }
+.fragicon { width: 64px; height: 64px; margin: 4px auto; background: conic-gradient(from 30deg, #7fc8ff, #b48cff, #7fc8ff 60%, #ffe08a, #7fc8ff); clip-path: polygon(50% 0, 95% 30%, 80% 100%, 20% 100%, 5% 30%); }
 .seg4 { grid-template-columns: repeat(4, 1fr) !important; }
 .musicbtn.off { opacity: 0.5; }
 .musicbtn.off svg { stroke-dasharray: 2 2; }
@@ -749,6 +774,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
   </div>
   <section id="econ" class="pop panel" hidden></section>
   <section id="score" class="pop panel" hidden></section>
+  <section id="chatpop" class="pop panel" hidden aria-label="Mensajes"></section>
 
   <div id="toasts" aria-live="polite"></div>
   <div id="prodbar" class="panel" hidden aria-label="Producción"></div>
@@ -922,6 +948,8 @@ const START_ENERGY = 60;
 const START_UNITS = ['builder'];
 // Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
 const MAX_POP = 240;
+// v1.2: tiempo que hay que mantener pulsado el mapa para abrir la rueda de selección.
+const WHEEL_HOLD_MS = 450;
 // v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.
 const BUILD_REACH = 1.2;
 // v1.0: «Mejoras automáticas» (Núcleo nivel 3): revisa cada 2 s y guarda una reserva de monedas para tropas.
@@ -2591,6 +2619,9 @@ const SKIN_LOOKS = {
   castillo: { name: 'Castillo', tints: [0x8c7b63, 0x6e6252, 0xa39478], mix: 0.6 },
   neon: { name: 'Neón', tints: [0x1b1830, 0x231d3d], mix: 0.8, glow: true },
   dorado: { name: 'Dorado', tints: [0xf2c14e, 0xd9a638], mix: 0.72, teamDark: 0xb8862a },
+  // v1.2: colecciones nuevas.
+  frente: { name: 'Frente 1940', tints: [0x5b5a3a, 0x8a7f55, 0x5a4632], mix: 0.62 },
+  marea: { name: 'Marea', tints: [0x2a6f9e, 0xf08a7a, 0x7fd0d8], mix: 0.58 },
   // Brigada Tóxica: cambia la forma (capucha y máscara de gas), no solo el color.
   toxico: { name: 'Tóxico', tints: [], mix: 0, geo: true },
 };
@@ -3153,6 +3184,28 @@ class Game {
     if (this.chat.length > 60) this.chat.shift();
     this.emit('chat', { msg });
     return true;
+  }
+
+  // v1.2: mensaje tuyo al chat de aliados; los bots aliados contestan.
+  playerSay(text) {
+    const me = this.players[0];
+    const msg = { pid: 0, text, time: this.time, kind: 'info', ally: true, mine: true, toMe: false, public: false };
+    this.chat.push(msg);
+    if (this.chat.length > 60) this.chat.shift();
+    const replies = {
+      '¡Gracias!': ['¡De nada!', '¡Para eso estamos!', 'Cuando quieras.'],
+      '¡Bien hecho!': ['¡Gracias, compañero!', '¡Seguimos así!', '¡Juntos somos fuertes!'],
+      '¡Cuidado!': ['¡Atento! Pongo defensas.', '¡Visto! Vigilo mi lado.', '¡Gracias por avisar!'],
+    }[text];
+    let n = 0;
+    if (replies) {
+      for (const p of this.players) {
+        if (p.id === 0 || !p.alive || p.human || p.team !== me.team) continue;
+        this.say(p.id, replies[(n + Math.floor(this.time)) % replies.length], { force: true, toMe: true });
+        n++;
+      }
+    }
+    return n;
   }
 
   // Alerta para el jugador con ubicación (para el botón «Ver» y el pulso del minimapa).
@@ -8872,7 +8925,19 @@ class Input {
         mode: null, sx: p.x, sy: p.y, x: p.x, y: p.y, moved: false,
         right: e.button === 2, shift: e.shiftKey, grab: this.r.screenToWorld(p.x, p.y, 0),
       };
+      // v1.2: mantener pulsado el mapa (sin moverse) abre la rueda de selección del ejército.
+      clearTimeout(this.holdTimer);
+      if (e.button !== 2 && !this.placement && !this.amoveArm && !this.boxMode && !e.shiftKey) {
+        const d0 = this.drag;
+        this.holdTimer = setTimeout(() => {
+          if (this.drag === d0 && !d0.moved && this.pointers.size === 1) {
+            d0.mode = 'wheel';
+            this.app.ui.showWheel(d0.sx, d0.sy);
+          }
+        }, WHEEL_HOLD_MS);
+      }
     } else if (this.pointers.size === 2) {
+      clearTimeout(this.holdTimer);
       const [a, b] = [...this.pointers.values()];
       const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
       this.drag = {
@@ -8912,8 +8977,13 @@ class Input {
       return;
     }
     if (this.pointers.size !== 1) return;
+    if (d.mode === 'wheel') {
+      this.app.ui.hoverWheel(p.x, p.y);
+      return;
+    }
     if (!d.moved && Math.hypot(p.x - d.sx, p.y - d.sy) > 9) {
       d.moved = true;
+      clearTimeout(this.holdTimer);
       d.mode = this.boxMode || d.shift ? 'box' : 'pan';
     }
     if (d.mode === 'pan') {
@@ -8947,6 +9017,12 @@ class Input {
     }
     if (this.pointers.size) return;
     this.drag = null;
+    clearTimeout(this.holdTimer);
+    if (d.mode === 'wheel') {
+      // Si suelta el dedo sobre una opción, la elige; si no, la rueda queda abierta para tocar.
+      if (!cancelled) this.app.ui.releaseWheel(p.x, p.y);
+      return;
+    }
     if (cancelled || !this.active()) return;
     if (d.mode === 'box') {
       this.app.ui.hideBox();
@@ -8990,6 +9066,16 @@ class Input {
       } else {
         this.app.selectGroup(n);
       }
+      return;
+    }
+    if (k === 'tab') {
+      e.preventDefault();
+      if (this.app.ui.wheelOpen()) this.app.ui.hideWheel();
+      else this.app.ui.showWheel(this.r.width / 2, this.r.height / 2);
+      return;
+    }
+    if (k === 'escape' && this.app.ui.wheelOpen()) {
+      this.app.ui.hideWheel();
       return;
     }
     if (k === 'escape') {
@@ -9503,6 +9589,8 @@ class UI {
     $('btn-resume').addEventListener('click', () => app.togglePause(false));
     $('btn-restart').addEventListener('click', () => app.startGame());
     $('btn-spec-exit').addEventListener('click', () => app.toMenu());
+    // v1.2: tocar un mensaje abre el panel de Mensajes.
+    $('feed').addEventListener('click', (e) => { if (!e.target.closest('button')) { this.chatKey = null; if (this.pop !== 'chat') this.togglePop('chat'); } });
     $('btn-quit').addEventListener('click', () => app.toMenu());
     $('btn-fps').addEventListener('click', () => app.toggleFps());
     app.toggleFps(app.showFps);
@@ -9624,11 +9712,16 @@ class UI {
     });
     $('players').addEventListener('click', () => this.togglePop('score'));
     $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
-    for (const id of ['econ', 'score']) {
+    for (const id of ['econ', 'score', 'chatpop']) {
       $(id).addEventListener('click', (e) => {
         if (e.target.closest('[data-close]')) this.togglePop(null);
         const ab = e.target.closest('[data-ally]');
         if (ab) this.allyAction(ab.dataset.ally, Number(ab.dataset.pid));
+        const ct = e.target.closest('[data-chattab]');
+        if (ct) { this.chatTab = ct.dataset.chattab; this.chatKey = null; this.renderPop(); }
+        const qm = e.target.closest('[data-qmsg]');
+        if (qm) this.quickMsg(qm.dataset.qmsg);
+        if (e.target.closest('[data-openchat]')) { this.chatKey = null; this.togglePop('chat'); }
       });
     }
 
@@ -9782,6 +9875,75 @@ class UI {
     if (msg.toMe) this.app.sound.play('alarm');
   }
 
+  // ---------- rueda de selección del ejército (v1.2) ----------
+  wheelOpen() {
+    return !!this.wheel;
+  }
+
+  showWheel(x, y) {
+    this.hideWheel();
+    const app = this.app;
+    const g = app.game;
+    if (!g || app.state !== 'play') return;
+    const count = (f) => g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && f(u)).length;
+    const opts = [
+      { k: 'army', label: 'Tierra', n: count((u) => u.def.weapon && u.mover === 'land') },
+      { k: 'sea', label: 'Mar', n: count((u) => u.def.weapon && u.mover === 'sea') },
+      { k: 'air', label: 'Aire', n: count((u) => u.def.weapon && u.mover === 'air') },
+      { k: 'all', label: 'Todo', n: count((u) => u.def.weapon) },
+      { k: 'builders', label: 'Constructores', n: count((u) => u.def.builds) },
+      { k: 'g1', label: 'Grupo 1', n: (app.groups[1] || []).filter((u) => u.alive).length },
+      { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
+      { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
+    ];
+    const R = 92;
+    const cx = clamp(x, R + 50, window.innerWidth - R - 50);
+    const cy = clamp(y, R + 40, window.innerHeight - R - 40);
+    const el = document.createElement('div');
+    el.id = 'wheel';
+    el.setAttribute('role', 'menu');
+    el.setAttribute('aria-label', 'Rueda de selección');
+    el.innerHTML = `<div class="wheel-hub" style="left:${cx}px;top:${cy}px">Elegir</div>` + opts.map((o, i) => {
+      const a = -Math.PI / 2 + (i / opts.length) * Math.PI * 2;
+      return `<button type="button" role="menuitem" class="wheel-opt" data-wk="${o.k}" style="left:${cx + Math.cos(a) * R}px;top:${cy + Math.sin(a) * R}px" ${o.n ? '' : 'disabled'}>
+        <b>${o.label}</b><small>${o.n}</small></button>`;
+    }).join('');
+    el.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-wk]');
+      if (b && !b.disabled) this.pickWheel(b.dataset.wk);
+      else if (!e.target.closest('.wheel-opt')) this.hideWheel();
+    });
+    document.body.appendChild(el);
+    this.wheel = el;
+    app.sound.play('click');
+  }
+
+  hoverWheel(x, y) {
+    if (!this.wheel) return;
+    const hit = document.elementFromPoint(x, y);
+    this.wheel.querySelectorAll('.wheel-opt').forEach((b) => b.classList.toggle('hot', b === (hit && hit.closest('.wheel-opt'))));
+  }
+
+  releaseWheel(x, y) {
+    if (!this.wheel) return;
+    const hit = document.elementFromPoint(x, y);
+    const b = hit && hit.closest('.wheel-opt');
+    if (b && !b.disabled) this.pickWheel(b.dataset.wk);
+  }
+
+  pickWheel(k) {
+    const app = this.app;
+    this.hideWheel();
+    if (k === 'builders') app.selectBuilders();
+    else if (k[0] === 'g') app.selectGroup(Number(k[1]));
+    else app.quickSelect(k);
+  }
+
+  hideWheel() {
+    if (this.wheel) this.wheel.remove();
+    this.wheel = null;
+  }
+
   // ---------- alianzas y órdenes a los aliados (v1.1) ----------
   allyAction(kind, pid) {
     const app = this.app;
@@ -9812,6 +9974,39 @@ class UI {
     this.renderPop();
   }
 
+  // ---------- mensajes (v1.2): pestañas Todos / Aliados y mensajes rápidos ----------
+  chatHtml(g) {
+    const tab = this.chatTab || 'all';
+    const me = g.players[0];
+    const list = g.chat.filter((m) => (tab === 'ally' ? m.ally : (m.ally || m.toMe || m.public))).slice(-30);
+    const rows = list.length ? list.map((m) => {
+      const p = g.players[m.pid];
+      const who = m.mine ? 'Tú' : p.name + (m.ally ? ' (aliado)' : '');
+      return `<p class="${m.mine ? 'mine' : ''}"><i style="background:${hexColor(p.color)}"></i><b>${esc(who)}:</b> ${esc(m.text)}<small>${fmtTime(m.time)}</small></p>`;
+    }).join('') : `<p>${tab === 'ally' ? 'Todavía no hay mensajes de aliados.' : 'Todavía no hay mensajes.'}</p>`;
+    const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === me.team) && me.alive;
+    const quick = hasAllies ? `<div class="quickmsgs">${['¡Gracias!', '¡Bien hecho!', '¡Cuidado!'].map((t) => `<button class="btn mini" type="button" data-qmsg="${t}">${t}</button>`).join('')}
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0">¡Ayuda!</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0">¡Ataquemos!</button></div>`
+      : '<p class="allyhint">Cuando tengas aliados, aquí puedes mandarles mensajes rápidos.</p>';
+    return `<header><h4>Mensajes</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
+      <div class="chattabs" role="tablist"><button class="btn mini" type="button" role="tab" data-chattab="all" aria-selected="${tab === 'all'}">Todos</button>
+      <button class="btn mini" type="button" role="tab" data-chattab="ally" aria-selected="${tab === 'ally'}">Aliados</button></div>
+      <div class="chatlog" id="chatlog">${rows}</div>${quick}`;
+  }
+
+  quickMsg(text) {
+    const g = this.app.game;
+    if (!g) return;
+    const n = g.playerSay(text);
+    this.chatKey = null;
+    this.renderPop();
+    this.app.sound.play('click');
+    if (!n) this.toast('No tienes aliados que te lean', 'bad');
+    const log = $('chatlog');
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
   allyOrder(kind) {
     const app = this.app;
     const g = app.game;
@@ -9834,6 +10029,7 @@ class UI {
     this.popSub = sub;
     $('econ').hidden = this.pop !== 'econ';
     $('score').hidden = this.pop !== 'score';
+    $('chatpop').hidden = this.pop !== 'chat';
     this.renderPop();
   }
 
@@ -9841,7 +10037,11 @@ class UI {
     const g = this.app.game;
     if (!g || !this.pop) return;
     if (this.pop === 'econ') $('econ').innerHTML = this.popSub === 'energy' ? this.energyHtml(g) : this.econHtml(g);
-    else $('score').innerHTML = this.scoreHtml(g);
+    else if (this.pop === 'chat') {
+      // Solo se vuelve a dibujar si llegó un mensaje nuevo (para no cortar el desplazamiento).
+      const key = `${g.chat.length}:${g.chat.length ? g.chat[g.chat.length - 1].time : 0}:${this.chatTab}`;
+      if (key !== this.chatKey) { this.chatKey = key; $('chatpop').innerHTML = this.chatHtml(g); }
+    } else $('score').innerHTML = this.scoreHtml(g);
   }
 
   econHtml(g) {
@@ -9913,7 +10113,7 @@ class UI {
       <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">¡Ayuda!</button>
       <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">¡Ataquemos!</button></div>` : '';
     const hint = g.alliancesAllowed() ? '<p class="allyhint">Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.</p>' : '';
-    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>${orders}${hint}
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><span class="row" style="gap:6px"><button class="btn mini" type="button" data-openchat id="btn-open-chat">Mensajes</button><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></span></header>${orders}${hint}
       <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
       <tbody>${rows}</tbody></table></div>`;
   }
@@ -11035,10 +11235,19 @@ const SKINS = [
   ['artico', 'inf', 'comun'], ['artico', 'veh', 'raro'], ['artico', 'sea', 'raro'], ['artico', 'core', 'epico'],
   ['castillo', 'inf', 'raro'], ['castillo', 'veh', 'raro'], ['castillo', 'sea', 'epico'], ['castillo', 'core', 'legendario'],
   ['neon', 'inf', 'raro'], ['neon', 'veh', 'epico'], ['neon', 'sea', 'epico'], ['neon', 'core', 'legendario'],
+  ['frente', 'inf', 'comun'], ['frente', 'veh', 'raro'], ['frente', 'sea', 'raro'], ['frente', 'core', 'epico'],
+  ['marea', 'inf', 'raro'], ['marea', 'veh', 'raro'], ['marea', 'sea', 'epico'], ['marea', 'core', 'legendario'],
 ].map(([look, slot, rar]) => ({ id: look + '_' + slot, look, slot, rar, name: `${SKIN_SLOTS[slot].name} ${SKIN_LOOKS[look].name}` }));
 SKINS.push({ id: 'toxico_inf', look: 'toxico', slot: 'inf', rar: 'legendario', name: 'Brigada Tóxica' });
 SKINS.push({ id: 'dorado_inf', look: 'dorado', slot: 'inf', rar: 'legendario', name: 'Soldado Dorado', special: 'Premio del Tutorial' });
 const SKIN_BY_ID = Object.fromEntries(SKINS.map((s) => [s.id, s]));
+// v1.2: planos y fragmentos. Un cofre da un aspecto (70 %), un plano (20 %) o fragmentos (10 %).
+// Los repetidos se vuelven fragmentos; en el Taller, plano + fragmentos = aspecto.
+const CHEST_SPLIT = { skin: 70, plan: 20 };
+const FRAG_DUP = { comun: 15, raro: 30, epico: 60, legendario: 120 };
+const FRAG_COST = { comun: 60, raro: 120, epico: 240, legendario: 480 };
+const FRAG_PACK = [20, 40];
+const FRAG_GAME = { play: 4, win: 8 };
 const CRYSTAL_PACKS = [
   { name: 'Bolsa de cristales', amount: 100 },
   { name: 'Caja de cristales', amount: 550 },
@@ -11127,6 +11336,22 @@ const RANK_STEP = 100;
 const RANK_WIN = 25;
 const RANK_LOSS = 15;
 const RANK_COLORS = ['#b87333', '#b87333', '#b87333', '#c0c7cf', '#c0c7cf', '#c0c7cf', '#f2c94c', '#f2c94c', '#f2c94c', '#f2ab38'];
+// Tabla de la Clasificatoria (v1.2): 20 comandantes bot con nombres propios. Sus puntos salen de tu
+// semilla y se mueven un poco con cada partida que juegas (no son jugadores reales).
+const LADDER_NAMES = ['Capitana Brisa', 'Coronel Basalto', 'Almirante Coral', 'Sargento Pino', 'Mariscal Ceniza', 'Teniente Ámbar',
+  'Comandante Niebla', 'Capitán Granito', 'General Duna', 'Cabo Relámpago', 'Comodoro Marea', 'Brigadier Roble', 'Capitana Aurora',
+  'Coronela Cobre', 'Mayor Tormenta', 'Teniente Alba', 'Almirante Faro', 'Sargenta Lava', 'General Escarcha', 'Capitán Bruma'];
+function ladderRows(P) {
+  const rng = mulberry32((P.seed || 1) + 4242);
+  const games = (P.ranked && P.ranked.games) || 0;
+  const rows = LADDER_NAMES.map((name, i) => {
+    const base = Math.round(80 + rng() * 1050);
+    const drift = Math.round(Math.sin((games + 1) * 0.7 + i) * 18 + games * (rng() * 6 - 1));
+    return { name, points: Math.max(0, base + drift), bot: true };
+  });
+  rows.push({ name: 'Tú', points: (P.ranked && P.ranked.points) || 0, me: true });
+  return rows.sort((a, b) => b.points - a.points || (a.me ? -1 : 1)).map((r, i) => ({ ...r, pos: i + 1 }));
+}
 function rankIndex(points) {
   return Math.min(RANKS.length - 1, Math.floor(Math.max(0, points) / RANK_STEP));
 }
@@ -11155,6 +11380,7 @@ const Profile = {
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
       ranked: { points: 0, best: 0, games: 0, wins: 0, history: [] },
+      fragments: 0, plans: {},
     };
   },
 
@@ -11548,6 +11774,9 @@ class Lobby {
         <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked">Jugar Clasificatoria</button></div>
       </section>
       <section class="lcard panel"><h3>Los 10 rangos</h3><ol class="ranklist">${ladder}</ol></section>
+      <section class="lcard panel"><h3>Tabla de la Clasificatoria</h3>
+        <p class="queue">Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.</p>
+        <ol class="ladder" id="ladder">${ladderRows(this.P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
       <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Clasificatoria.</p>'}</section>`;
   }
 
@@ -11573,7 +11802,7 @@ class Lobby {
 
   shopHtml() {
     const P = this.P;
-    const tabs = [['skins', 'Apariencias'], ['chests', 'Cofres'], ['crystals', 'Cristales']]
+    const tabs = [['skins', 'Apariencias'], ['chests', 'Cofres'], ['workshop', 'Taller'], ['crystals', 'Cristales']]
       .map(([k, l]) => `<button type="button" data-act="shoptab" data-v="${k}" class="${this.shopTab === k ? 'on' : ''}">${l}</button>`).join('');
     let inner = '';
     if (this.shopTab === 'skins') {
@@ -11593,7 +11822,16 @@ class Lobby {
           <div class="probs">${Object.entries(C.odds).map(([r, pct]) => `<span class="rar ${r}">${RARITY[r].name}</span><div class="xpbar"><i style="width:${pct}%"></i></div><span>${pct} %</span>`).join('')}</div>
           <button class="btn gold" type="button" data-act="chest" data-v="${k}" ${P.crystals < C.cost && !Creator.active() ? 'disabled' : ''}>Abrir · ${fmt(C.cost)} cristales</button>
         </div>`).join('')}</div>
-        <p>Garantía: 1 legendario cada ${CHEST_PITY} cofres (te faltan ${CHEST_PITY - P.chests.pity}). Si sale un aspecto repetido, te devolvemos cristales (${Object.values(RARITY).map((r) => `${r.name} ${r.refund}`).join(', ')}).</p>`;
+        <p>Cada cofre da un aspecto (${CHEST_SPLIT.skin} %), un plano (${CHEST_SPLIT.plan} %) o fragmentos (${100 - CHEST_SPLIT.skin - CHEST_SPLIT.plan} %). Garantía: 1 legendario cada ${CHEST_PITY} cofres (te faltan ${CHEST_PITY - P.chests.pity}). Un aspecto repetido se convierte en fragmentos (${Object.entries(FRAG_DUP).map(([r, n]) => `${RARITY[r].name} ${n}`).join(', ')}).</p>`;
+    } else if (this.shopTab === 'workshop') {
+      // v1.2: Taller: plano + fragmentos = aspecto.
+      const plans = SKINS.filter((s) => (P.plans || {})[s.id] && !P.owned[s.id]);
+      inner = `<p>Tienes <b id="frag-count">${P.fragments || 0}</b> fragmentos. Ganas fragmentos con los aspectos repetidos, en algunos cofres y jugando (+${FRAG_GAME.play} por partida, +${FRAG_GAME.win} si ganas).</p>
+        ${plans.length ? `<div class="shopgrid">${plans.map((s) => `<div class="item plan">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[s.slot].model, PLAYER_COLORS[0], s.look)}">
+          <b>${esc(s.name)}</b><span class="rar ${s.rar}">${RARITY[s.rar].name}</span>
+          <button class="btn gold" type="button" data-act="craft" data-id="${s.id}" ${(P.fragments || 0) < FRAG_COST[s.rar] ? 'disabled' : ''}>Fabricar · ${FRAG_COST[s.rar]} fragmentos</button></div>`).join('')}</div>`
+        : '<p class="queue">Todavía no tienes planos: salen en los cofres.</p>'}`;
     } else {
       inner = `<p>Los cristales se ganan jugando: partidas, misiones, pase y premio diario. Comprarlos con dinero real solo estará en Roblox.</p>
         <div class="shopgrid">${CRYSTAL_PACKS.map((c) => `<div class="item"><b>${esc(c.name)}</b><span>${fmt(c.amount)} cristales</span>
@@ -11699,12 +11937,25 @@ class Lobby {
         <p>Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.</p>`;
     } else if (n === 'chestopen') {
       const r = this.modalData;
-      html = head(esc(r.chest)) + `<div class="item ${r.dup ? 'owned' : 'equipped'}" style="cursor:default">
-        <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
-        <b>${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
-        <small>${r.dup ? `Repetido: te devolvemos ${r.refund} cristales` : '¡Nuevo! Ya está en tu Inventario'}</small></div>
-        <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
-        ${r.dup ? '' : `<button class="btn" type="button" data-act="equip" data-slot="${r.item.slot}" data-id="${r.item.id}">Equipar</button>`}</div>`;
+      if (r.kind === 'frags') {
+        html = head(esc(r.chest)) + `<div class="item equipped" style="cursor:default"><div class="fragicon" aria-hidden="true"></div>
+          <b>${r.frags} fragmentos</b><small>Ahora tienes ${this.P.fragments}. Úsalos en el Taller con un plano.</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button></div>`;
+      } else if (r.kind === 'plan') {
+        html = head(esc(r.chest)) + `<div class="item equipped plan" style="cursor:default">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
+          <b>Plano: ${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
+          <small>Fabrícalo en el Taller con ${FRAG_COST[r.item.rar]} fragmentos (tienes ${this.P.fragments}).</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
+          <button class="btn" type="button" data-act="shoptab" data-v="workshop">Ir al Taller</button></div>`;
+      } else {
+        html = head(esc(r.chest)) + `<div class="item ${r.dup ? 'owned' : 'equipped'}" style="cursor:default">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
+          <b>${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
+          <small>${r.dup ? `Repetido: se convierte en ${r.frags} fragmentos` : '¡Nuevo! Ya está en tu Inventario'}</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
+          ${r.dup ? '' : `<button class="btn" type="button" data-act="equip" data-slot="${r.item.slot}" data-id="${r.item.id}">Equipar</button>`}</div>`;
+      }
     } else if (n === 'info') {
       html = head(esc(this.modalData.title)) + `<p>${esc(this.modalData.text)}</p><div class="row"><button class="btn gold" type="button" data-act="close">Aceptar</button></div>`;
     }
@@ -11778,6 +12029,13 @@ class Lobby {
       this.claimDaily();
     } else if (act === 'shoptab') {
       this.shopTab = b.dataset.v;
+      this.view = 'shop';
+      if (this.modal) this.closeModal();
+      this.render();
+    } else if (act === 'craft') {
+      const err = this.craft(b.dataset.id);
+      if (err) this.openModal('info', { title: 'Taller', text: err });
+      else this.openModal('info', { title: 'Taller', text: `¡Fabricaste ${SKIN_BY_ID[b.dataset.id].name}! Ya está en tu Inventario.` });
       this.render();
     } else if (act === 'buy') {
       this.buySkin(b.dataset.id);
@@ -11868,6 +12126,21 @@ class Lobby {
     this.render();
   }
 
+  // Taller (v1.2): fabrica un aspecto con su plano y fragmentos.
+  craft(id) {
+    const P = this.P;
+    const s = SKIN_BY_ID[id];
+    if (!s || !(P.plans || {})[id]) return 'No tienes el plano de ese aspecto';
+    if (P.owned[id]) return 'Ya tienes ese aspecto';
+    const cost = FRAG_COST[s.rar];
+    if ((P.fragments || 0) < cost) return `Te faltan ${cost - (P.fragments || 0)} fragmentos`;
+    P.fragments -= cost;
+    delete P.plans[id];
+    P.owned[id] = true;
+    Profile.save();
+    return null;
+  }
+
   openChest(kind, free, quiet) {
     const P = this.P;
     const C = CHESTS[kind];
@@ -11892,12 +12165,31 @@ class Lobby {
     if (rar === 'legendario') P.chests.pity = 0;
     const pool = SKINS.filter((s) => s.rar === rar && !s.special);
     const item = pool[Math.floor(Math.random() * pool.length)];
-    const dup = !!P.owned[item.id];
-    const refund = dup ? RARITY[rar].refund : 0;
-    if (dup) P.crystals += refund;
-    else P.owned[item.id] = true;
+    // v1.2: aspecto, plano o fragmentos (la garantía del legendario siempre da el aspecto).
+    P.fragments = P.fragments || 0;
+    P.plans = P.plans || {};
+    const split = rar === 'legendario' && P.chests.pity === 0 ? 0 : Math.random() * 100;
+    let kindOut = split < CHEST_SPLIT.skin ? 'skin' : split < CHEST_SPLIT.skin + CHEST_SPLIT.plan ? 'plan' : 'frags';
+    let planItem = null;
+    if (kindOut === 'plan') {
+      const cand = SKINS.filter((s) => !s.special && !P.owned[s.id] && !P.plans[s.id]);
+      if (cand.length) planItem = cand[Math.floor(Math.random() * cand.length)];
+      else kindOut = 'frags';
+    }
+    let frags = 0;
+    let dup = false;
+    if (kindOut === 'skin') {
+      dup = !!P.owned[item.id];
+      if (dup) frags = FRAG_DUP[rar];
+      else P.owned[item.id] = true;
+    } else if (kindOut === 'plan') {
+      P.plans[planItem.id] = true;
+    } else {
+      frags = FRAG_PACK[0] + Math.floor(Math.random() * (FRAG_PACK[1] - FRAG_PACK[0] + 1));
+    }
+    P.fragments += frags;
     Profile.save();
-    const result = { chest: C.name, item, dup, refund };
+    const result = { chest: C.name, item: kindOut === 'plan' ? planItem : item, dup, frags, kind: kindOut };
     if (!quiet) {
       this.openModal('chestopen', result);
       this.render();
@@ -11935,6 +12227,10 @@ class Lobby {
     }
     if (half < 1) out.lines.push('Personalizado: mitad de XP');
     out.crystals = Math.round((GAME_CRYSTALS.play + (win ? GAME_CRYSTALS.win : 0)) * half);
+    // v1.2: fragmentos por jugar.
+    out.frags = Math.round((FRAG_GAME.play + (win ? FRAG_GAME.win : 0)) * half);
+    P.fragments = (P.fragments || 0) + out.frags;
+    if (out.frags) out.lines.push(`Fragmentos: +${out.frags}`);
     P.stats.games++;
     if (win) P.stats.wins++;
     P.stats.islands += me.stats.captures;
@@ -12770,9 +13066,9 @@ const App = {
     const g = this.game;
     if (!g) return;
     const list = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.weapon && (
-      kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
+      kind === 'all' ? true : kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
     if (!list.length) {
-      this.ui.toast(kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
+      this.ui.toast(kind === 'all' ? 'No tienes tropas de combate' : kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
       return;
     }
     this.setSelection(list);

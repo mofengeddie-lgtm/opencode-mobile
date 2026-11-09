@@ -60,7 +60,19 @@ class Input {
         mode: null, sx: p.x, sy: p.y, x: p.x, y: p.y, moved: false,
         right: e.button === 2, shift: e.shiftKey, grab: this.r.screenToWorld(p.x, p.y, 0),
       };
+      // v1.2: mantener pulsado el mapa (sin moverse) abre la rueda de selección del ejército.
+      clearTimeout(this.holdTimer);
+      if (e.button !== 2 && !this.placement && !this.amoveArm && !this.boxMode && !e.shiftKey) {
+        const d0 = this.drag;
+        this.holdTimer = setTimeout(() => {
+          if (this.drag === d0 && !d0.moved && this.pointers.size === 1) {
+            d0.mode = 'wheel';
+            this.app.ui.showWheel(d0.sx, d0.sy);
+          }
+        }, WHEEL_HOLD_MS);
+      }
     } else if (this.pointers.size === 2) {
+      clearTimeout(this.holdTimer);
       const [a, b] = [...this.pointers.values()];
       const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
       this.drag = {
@@ -100,8 +112,13 @@ class Input {
       return;
     }
     if (this.pointers.size !== 1) return;
+    if (d.mode === 'wheel') {
+      this.app.ui.hoverWheel(p.x, p.y);
+      return;
+    }
     if (!d.moved && Math.hypot(p.x - d.sx, p.y - d.sy) > 9) {
       d.moved = true;
+      clearTimeout(this.holdTimer);
       d.mode = this.boxMode || d.shift ? 'box' : 'pan';
     }
     if (d.mode === 'pan') {
@@ -135,6 +152,12 @@ class Input {
     }
     if (this.pointers.size) return;
     this.drag = null;
+    clearTimeout(this.holdTimer);
+    if (d.mode === 'wheel') {
+      // Si suelta el dedo sobre una opción, la elige; si no, la rueda queda abierta para tocar.
+      if (!cancelled) this.app.ui.releaseWheel(p.x, p.y);
+      return;
+    }
     if (cancelled || !this.active()) return;
     if (d.mode === 'box') {
       this.app.ui.hideBox();
@@ -178,6 +201,16 @@ class Input {
       } else {
         this.app.selectGroup(n);
       }
+      return;
+    }
+    if (k === 'tab') {
+      e.preventDefault();
+      if (this.app.ui.wheelOpen()) this.app.ui.hideWheel();
+      else this.app.ui.showWheel(this.r.width / 2, this.r.height / 2);
+      return;
+    }
+    if (k === 'escape' && this.app.ui.wheelOpen()) {
+      this.app.ui.hideWheel();
       return;
     }
     if (k === 'escape') {

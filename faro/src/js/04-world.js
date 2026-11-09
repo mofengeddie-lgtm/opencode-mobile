@@ -227,6 +227,28 @@ class Game {
     return true;
   }
 
+  // v1.2: mensaje tuyo al chat de aliados; los bots aliados contestan.
+  playerSay(text) {
+    const me = this.players[0];
+    const msg = { pid: 0, text, time: this.time, kind: 'info', ally: true, mine: true, toMe: false, public: false };
+    this.chat.push(msg);
+    if (this.chat.length > 60) this.chat.shift();
+    const replies = {
+      '¡Gracias!': ['¡De nada!', '¡Para eso estamos!', 'Cuando quieras.'],
+      '¡Bien hecho!': ['¡Gracias, compañero!', '¡Seguimos así!', '¡Juntos somos fuertes!'],
+      '¡Cuidado!': ['¡Atento! Pongo defensas.', '¡Visto! Vigilo mi lado.', '¡Gracias por avisar!'],
+    }[text];
+    let n = 0;
+    if (replies) {
+      for (const p of this.players) {
+        if (p.id === 0 || !p.alive || p.human || p.team !== me.team) continue;
+        this.say(p.id, replies[(n + Math.floor(this.time)) % replies.length], { force: true, toMe: true });
+        n++;
+      }
+    }
+    return n;
+  }
+
   // Alerta para el jugador con ubicación (para el botón «Ver» y el pulso del minimapa).
   alert(key, text, kind, x, z, every = 15) {
     if (this.time - (this._alertT[key] || -99) < every) return;

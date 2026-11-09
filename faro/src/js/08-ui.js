@@ -124,6 +124,8 @@ class UI {
     $('btn-resume').addEventListener('click', () => app.togglePause(false));
     $('btn-restart').addEventListener('click', () => app.startGame());
     $('btn-spec-exit').addEventListener('click', () => app.toMenu());
+    // v1.2: tocar un mensaje abre el panel de Mensajes.
+    $('feed').addEventListener('click', (e) => { if (!e.target.closest('button')) { this.chatKey = null; if (this.pop !== 'chat') this.togglePop('chat'); } });
     $('btn-quit').addEventListener('click', () => app.toMenu());
     $('btn-fps').addEventListener('click', () => app.toggleFps());
     app.toggleFps(app.showFps);
@@ -245,11 +247,16 @@ class UI {
     });
     $('players').addEventListener('click', () => this.togglePop('score'));
     $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
-    for (const id of ['econ', 'score']) {
+    for (const id of ['econ', 'score', 'chatpop']) {
       $(id).addEventListener('click', (e) => {
         if (e.target.closest('[data-close]')) this.togglePop(null);
         const ab = e.target.closest('[data-ally]');
         if (ab) this.allyAction(ab.dataset.ally, Number(ab.dataset.pid));
+        const ct = e.target.closest('[data-chattab]');
+        if (ct) { this.chatTab = ct.dataset.chattab; this.chatKey = null; this.renderPop(); }
+        const qm = e.target.closest('[data-qmsg]');
+        if (qm) this.quickMsg(qm.dataset.qmsg);
+        if (e.target.closest('[data-openchat]')) { this.chatKey = null; this.togglePop('chat'); }
       });
     }
 
@@ -403,6 +410,75 @@ class UI {
     if (msg.toMe) this.app.sound.play('alarm');
   }
 
+  // ---------- rueda de selección del ejército (v1.2) ----------
+  wheelOpen() {
+    return !!this.wheel;
+  }
+
+  showWheel(x, y) {
+    this.hideWheel();
+    const app = this.app;
+    const g = app.game;
+    if (!g || app.state !== 'play') return;
+    const count = (f) => g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && f(u)).length;
+    const opts = [
+      { k: 'army', label: 'Tierra', n: count((u) => u.def.weapon && u.mover === 'land') },
+      { k: 'sea', label: 'Mar', n: count((u) => u.def.weapon && u.mover === 'sea') },
+      { k: 'air', label: 'Aire', n: count((u) => u.def.weapon && u.mover === 'air') },
+      { k: 'all', label: 'Todo', n: count((u) => u.def.weapon) },
+      { k: 'builders', label: 'Constructores', n: count((u) => u.def.builds) },
+      { k: 'g1', label: 'Grupo 1', n: (app.groups[1] || []).filter((u) => u.alive).length },
+      { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
+      { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
+    ];
+    const R = 92;
+    const cx = clamp(x, R + 50, window.innerWidth - R - 50);
+    const cy = clamp(y, R + 40, window.innerHeight - R - 40);
+    const el = document.createElement('div');
+    el.id = 'wheel';
+    el.setAttribute('role', 'menu');
+    el.setAttribute('aria-label', 'Rueda de selección');
+    el.innerHTML = `<div class="wheel-hub" style="left:${cx}px;top:${cy}px">Elegir</div>` + opts.map((o, i) => {
+      const a = -Math.PI / 2 + (i / opts.length) * Math.PI * 2;
+      return `<button type="button" role="menuitem" class="wheel-opt" data-wk="${o.k}" style="left:${cx + Math.cos(a) * R}px;top:${cy + Math.sin(a) * R}px" ${o.n ? '' : 'disabled'}>
+        <b>${o.label}</b><small>${o.n}</small></button>`;
+    }).join('');
+    el.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-wk]');
+      if (b && !b.disabled) this.pickWheel(b.dataset.wk);
+      else if (!e.target.closest('.wheel-opt')) this.hideWheel();
+    });
+    document.body.appendChild(el);
+    this.wheel = el;
+    app.sound.play('click');
+  }
+
+  hoverWheel(x, y) {
+    if (!this.wheel) return;
+    const hit = document.elementFromPoint(x, y);
+    this.wheel.querySelectorAll('.wheel-opt').forEach((b) => b.classList.toggle('hot', b === (hit && hit.closest('.wheel-opt'))));
+  }
+
+  releaseWheel(x, y) {
+    if (!this.wheel) return;
+    const hit = document.elementFromPoint(x, y);
+    const b = hit && hit.closest('.wheel-opt');
+    if (b && !b.disabled) this.pickWheel(b.dataset.wk);
+  }
+
+  pickWheel(k) {
+    const app = this.app;
+    this.hideWheel();
+    if (k === 'builders') app.selectBuilders();
+    else if (k[0] === 'g') app.selectGroup(Number(k[1]));
+    else app.quickSelect(k);
+  }
+
+  hideWheel() {
+    if (this.wheel) this.wheel.remove();
+    this.wheel = null;
+  }
+
   // ---------- alianzas y órdenes a los aliados (v1.1) ----------
   allyAction(kind, pid) {
     const app = this.app;
@@ -433,6 +509,39 @@ class UI {
     this.renderPop();
   }
 
+  // ---------- mensajes (v1.2): pestañas Todos / Aliados y mensajes rápidos ----------
+  chatHtml(g) {
+    const tab = this.chatTab || 'all';
+    const me = g.players[0];
+    const list = g.chat.filter((m) => (tab === 'ally' ? m.ally : (m.ally || m.toMe || m.public))).slice(-30);
+    const rows = list.length ? list.map((m) => {
+      const p = g.players[m.pid];
+      const who = m.mine ? 'Tú' : p.name + (m.ally ? ' (aliado)' : '');
+      return `<p class="${m.mine ? 'mine' : ''}"><i style="background:${hexColor(p.color)}"></i><b>${esc(who)}:</b> ${esc(m.text)}<small>${fmtTime(m.time)}</small></p>`;
+    }).join('') : `<p>${tab === 'ally' ? 'Todavía no hay mensajes de aliados.' : 'Todavía no hay mensajes.'}</p>`;
+    const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === me.team) && me.alive;
+    const quick = hasAllies ? `<div class="quickmsgs">${['¡Gracias!', '¡Bien hecho!', '¡Cuidado!'].map((t) => `<button class="btn mini" type="button" data-qmsg="${t}">${t}</button>`).join('')}
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0">¡Ayuda!</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0">¡Ataquemos!</button></div>`
+      : '<p class="allyhint">Cuando tengas aliados, aquí puedes mandarles mensajes rápidos.</p>';
+    return `<header><h4>Mensajes</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
+      <div class="chattabs" role="tablist"><button class="btn mini" type="button" role="tab" data-chattab="all" aria-selected="${tab === 'all'}">Todos</button>
+      <button class="btn mini" type="button" role="tab" data-chattab="ally" aria-selected="${tab === 'ally'}">Aliados</button></div>
+      <div class="chatlog" id="chatlog">${rows}</div>${quick}`;
+  }
+
+  quickMsg(text) {
+    const g = this.app.game;
+    if (!g) return;
+    const n = g.playerSay(text);
+    this.chatKey = null;
+    this.renderPop();
+    this.app.sound.play('click');
+    if (!n) this.toast('No tienes aliados que te lean', 'bad');
+    const log = $('chatlog');
+    if (log) log.scrollTop = log.scrollHeight;
+  }
+
   allyOrder(kind) {
     const app = this.app;
     const g = app.game;
@@ -455,6 +564,7 @@ class UI {
     this.popSub = sub;
     $('econ').hidden = this.pop !== 'econ';
     $('score').hidden = this.pop !== 'score';
+    $('chatpop').hidden = this.pop !== 'chat';
     this.renderPop();
   }
 
@@ -462,7 +572,11 @@ class UI {
     const g = this.app.game;
     if (!g || !this.pop) return;
     if (this.pop === 'econ') $('econ').innerHTML = this.popSub === 'energy' ? this.energyHtml(g) : this.econHtml(g);
-    else $('score').innerHTML = this.scoreHtml(g);
+    else if (this.pop === 'chat') {
+      // Solo se vuelve a dibujar si llegó un mensaje nuevo (para no cortar el desplazamiento).
+      const key = `${g.chat.length}:${g.chat.length ? g.chat[g.chat.length - 1].time : 0}:${this.chatTab}`;
+      if (key !== this.chatKey) { this.chatKey = key; $('chatpop').innerHTML = this.chatHtml(g); }
+    } else $('score').innerHTML = this.scoreHtml(g);
   }
 
   econHtml(g) {
@@ -534,7 +648,7 @@ class UI {
       <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">¡Ayuda!</button>
       <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">¡Ataquemos!</button></div>` : '';
     const hint = g.alliancesAllowed() ? '<p class="allyhint">Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.</p>' : '';
-    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>${orders}${hint}
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><span class="row" style="gap:6px"><button class="btn mini" type="button" data-openchat id="btn-open-chat">Mensajes</button><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></span></header>${orders}${hint}
       <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
       <tbody>${rows}</tbody></table></div>`;
   }

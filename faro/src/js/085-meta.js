@@ -38,10 +38,19 @@ const SKINS = [
   ['artico', 'inf', 'comun'], ['artico', 'veh', 'raro'], ['artico', 'sea', 'raro'], ['artico', 'core', 'epico'],
   ['castillo', 'inf', 'raro'], ['castillo', 'veh', 'raro'], ['castillo', 'sea', 'epico'], ['castillo', 'core', 'legendario'],
   ['neon', 'inf', 'raro'], ['neon', 'veh', 'epico'], ['neon', 'sea', 'epico'], ['neon', 'core', 'legendario'],
+  ['frente', 'inf', 'comun'], ['frente', 'veh', 'raro'], ['frente', 'sea', 'raro'], ['frente', 'core', 'epico'],
+  ['marea', 'inf', 'raro'], ['marea', 'veh', 'raro'], ['marea', 'sea', 'epico'], ['marea', 'core', 'legendario'],
 ].map(([look, slot, rar]) => ({ id: look + '_' + slot, look, slot, rar, name: `${SKIN_SLOTS[slot].name} ${SKIN_LOOKS[look].name}` }));
 SKINS.push({ id: 'toxico_inf', look: 'toxico', slot: 'inf', rar: 'legendario', name: 'Brigada Tóxica' });
 SKINS.push({ id: 'dorado_inf', look: 'dorado', slot: 'inf', rar: 'legendario', name: 'Soldado Dorado', special: 'Premio del Tutorial' });
 const SKIN_BY_ID = Object.fromEntries(SKINS.map((s) => [s.id, s]));
+// v1.2: planos y fragmentos. Un cofre da un aspecto (70 %), un plano (20 %) o fragmentos (10 %).
+// Los repetidos se vuelven fragmentos; en el Taller, plano + fragmentos = aspecto.
+const CHEST_SPLIT = { skin: 70, plan: 20 };
+const FRAG_DUP = { comun: 15, raro: 30, epico: 60, legendario: 120 };
+const FRAG_COST = { comun: 60, raro: 120, epico: 240, legendario: 480 };
+const FRAG_PACK = [20, 40];
+const FRAG_GAME = { play: 4, win: 8 };
 const CRYSTAL_PACKS = [
   { name: 'Bolsa de cristales', amount: 100 },
   { name: 'Caja de cristales', amount: 550 },
@@ -130,6 +139,22 @@ const RANK_STEP = 100;
 const RANK_WIN = 25;
 const RANK_LOSS = 15;
 const RANK_COLORS = ['#b87333', '#b87333', '#b87333', '#c0c7cf', '#c0c7cf', '#c0c7cf', '#f2c94c', '#f2c94c', '#f2c94c', '#f2ab38'];
+// Tabla de la Clasificatoria (v1.2): 20 comandantes bot con nombres propios. Sus puntos salen de tu
+// semilla y se mueven un poco con cada partida que juegas (no son jugadores reales).
+const LADDER_NAMES = ['Capitana Brisa', 'Coronel Basalto', 'Almirante Coral', 'Sargento Pino', 'Mariscal Ceniza', 'Teniente Ámbar',
+  'Comandante Niebla', 'Capitán Granito', 'General Duna', 'Cabo Relámpago', 'Comodoro Marea', 'Brigadier Roble', 'Capitana Aurora',
+  'Coronela Cobre', 'Mayor Tormenta', 'Teniente Alba', 'Almirante Faro', 'Sargenta Lava', 'General Escarcha', 'Capitán Bruma'];
+function ladderRows(P) {
+  const rng = mulberry32((P.seed || 1) + 4242);
+  const games = (P.ranked && P.ranked.games) || 0;
+  const rows = LADDER_NAMES.map((name, i) => {
+    const base = Math.round(80 + rng() * 1050);
+    const drift = Math.round(Math.sin((games + 1) * 0.7 + i) * 18 + games * (rng() * 6 - 1));
+    return { name, points: Math.max(0, base + drift), bot: true };
+  });
+  rows.push({ name: 'Tú', points: (P.ranked && P.ranked.points) || 0, me: true });
+  return rows.sort((a, b) => b.points - a.points || (a.me ? -1 : 1)).map((r, i) => ({ ...r, pos: i + 1 }));
+}
 function rankIndex(points) {
   return Math.min(RANKS.length - 1, Math.floor(Math.max(0, points) / RANK_STEP));
 }
@@ -158,6 +183,7 @@ const Profile = {
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
       ranked: { points: 0, best: 0, games: 0, wins: 0, history: [] },
+      fragments: 0, plans: {},
     };
   },
 
@@ -551,6 +577,9 @@ class Lobby {
         <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked">Jugar Clasificatoria</button></div>
       </section>
       <section class="lcard panel"><h3>Los 10 rangos</h3><ol class="ranklist">${ladder}</ol></section>
+      <section class="lcard panel"><h3>Tabla de la Clasificatoria</h3>
+        <p class="queue">Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.</p>
+        <ol class="ladder" id="ladder">${ladderRows(this.P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
       <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Clasificatoria.</p>'}</section>`;
   }
 
@@ -576,7 +605,7 @@ class Lobby {
 
   shopHtml() {
     const P = this.P;
-    const tabs = [['skins', 'Apariencias'], ['chests', 'Cofres'], ['crystals', 'Cristales']]
+    const tabs = [['skins', 'Apariencias'], ['chests', 'Cofres'], ['workshop', 'Taller'], ['crystals', 'Cristales']]
       .map(([k, l]) => `<button type="button" data-act="shoptab" data-v="${k}" class="${this.shopTab === k ? 'on' : ''}">${l}</button>`).join('');
     let inner = '';
     if (this.shopTab === 'skins') {
@@ -596,7 +625,16 @@ class Lobby {
           <div class="probs">${Object.entries(C.odds).map(([r, pct]) => `<span class="rar ${r}">${RARITY[r].name}</span><div class="xpbar"><i style="width:${pct}%"></i></div><span>${pct} %</span>`).join('')}</div>
           <button class="btn gold" type="button" data-act="chest" data-v="${k}" ${P.crystals < C.cost && !Creator.active() ? 'disabled' : ''}>Abrir · ${fmt(C.cost)} cristales</button>
         </div>`).join('')}</div>
-        <p>Garantía: 1 legendario cada ${CHEST_PITY} cofres (te faltan ${CHEST_PITY - P.chests.pity}). Si sale un aspecto repetido, te devolvemos cristales (${Object.values(RARITY).map((r) => `${r.name} ${r.refund}`).join(', ')}).</p>`;
+        <p>Cada cofre da un aspecto (${CHEST_SPLIT.skin} %), un plano (${CHEST_SPLIT.plan} %) o fragmentos (${100 - CHEST_SPLIT.skin - CHEST_SPLIT.plan} %). Garantía: 1 legendario cada ${CHEST_PITY} cofres (te faltan ${CHEST_PITY - P.chests.pity}). Un aspecto repetido se convierte en fragmentos (${Object.entries(FRAG_DUP).map(([r, n]) => `${RARITY[r].name} ${n}`).join(', ')}).</p>`;
+    } else if (this.shopTab === 'workshop') {
+      // v1.2: Taller: plano + fragmentos = aspecto.
+      const plans = SKINS.filter((s) => (P.plans || {})[s.id] && !P.owned[s.id]);
+      inner = `<p>Tienes <b id="frag-count">${P.fragments || 0}</b> fragmentos. Ganas fragmentos con los aspectos repetidos, en algunos cofres y jugando (+${FRAG_GAME.play} por partida, +${FRAG_GAME.win} si ganas).</p>
+        ${plans.length ? `<div class="shopgrid">${plans.map((s) => `<div class="item plan">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[s.slot].model, PLAYER_COLORS[0], s.look)}">
+          <b>${esc(s.name)}</b><span class="rar ${s.rar}">${RARITY[s.rar].name}</span>
+          <button class="btn gold" type="button" data-act="craft" data-id="${s.id}" ${(P.fragments || 0) < FRAG_COST[s.rar] ? 'disabled' : ''}>Fabricar · ${FRAG_COST[s.rar]} fragmentos</button></div>`).join('')}</div>`
+        : '<p class="queue">Todavía no tienes planos: salen en los cofres.</p>'}`;
     } else {
       inner = `<p>Los cristales se ganan jugando: partidas, misiones, pase y premio diario. Comprarlos con dinero real solo estará en Roblox.</p>
         <div class="shopgrid">${CRYSTAL_PACKS.map((c) => `<div class="item"><b>${esc(c.name)}</b><span>${fmt(c.amount)} cristales</span>
@@ -702,12 +740,25 @@ class Lobby {
         <p>Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.</p>`;
     } else if (n === 'chestopen') {
       const r = this.modalData;
-      html = head(esc(r.chest)) + `<div class="item ${r.dup ? 'owned' : 'equipped'}" style="cursor:default">
-        <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
-        <b>${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
-        <small>${r.dup ? `Repetido: te devolvemos ${r.refund} cristales` : '¡Nuevo! Ya está en tu Inventario'}</small></div>
-        <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
-        ${r.dup ? '' : `<button class="btn" type="button" data-act="equip" data-slot="${r.item.slot}" data-id="${r.item.id}">Equipar</button>`}</div>`;
+      if (r.kind === 'frags') {
+        html = head(esc(r.chest)) + `<div class="item equipped" style="cursor:default"><div class="fragicon" aria-hidden="true"></div>
+          <b>${r.frags} fragmentos</b><small>Ahora tienes ${this.P.fragments}. Úsalos en el Taller con un plano.</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button></div>`;
+      } else if (r.kind === 'plan') {
+        html = head(esc(r.chest)) + `<div class="item equipped plan" style="cursor:default">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
+          <b>Plano: ${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
+          <small>Fabrícalo en el Taller con ${FRAG_COST[r.item.rar]} fragmentos (tienes ${this.P.fragments}).</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
+          <button class="btn" type="button" data-act="shoptab" data-v="workshop">Ir al Taller</button></div>`;
+      } else {
+        html = head(esc(r.chest)) + `<div class="item ${r.dup ? 'owned' : 'equipped'}" style="cursor:default">
+          <img alt="" src="${Thumbs.get(SKIN_SLOTS[r.item.slot].model, PLAYER_COLORS[0], r.item.look)}">
+          <b>${esc(r.item.name)}</b><span class="rar ${r.item.rar}">${RARITY[r.item.rar].name}</span>
+          <small>${r.dup ? `Repetido: se convierte en ${r.frags} fragmentos` : '¡Nuevo! Ya está en tu Inventario'}</small></div>
+          <div class="row"><button class="btn gold" type="button" data-act="close">Genial</button>
+          ${r.dup ? '' : `<button class="btn" type="button" data-act="equip" data-slot="${r.item.slot}" data-id="${r.item.id}">Equipar</button>`}</div>`;
+      }
     } else if (n === 'info') {
       html = head(esc(this.modalData.title)) + `<p>${esc(this.modalData.text)}</p><div class="row"><button class="btn gold" type="button" data-act="close">Aceptar</button></div>`;
     }
@@ -781,6 +832,13 @@ class Lobby {
       this.claimDaily();
     } else if (act === 'shoptab') {
       this.shopTab = b.dataset.v;
+      this.view = 'shop';
+      if (this.modal) this.closeModal();
+      this.render();
+    } else if (act === 'craft') {
+      const err = this.craft(b.dataset.id);
+      if (err) this.openModal('info', { title: 'Taller', text: err });
+      else this.openModal('info', { title: 'Taller', text: `¡Fabricaste ${SKIN_BY_ID[b.dataset.id].name}! Ya está en tu Inventario.` });
       this.render();
     } else if (act === 'buy') {
       this.buySkin(b.dataset.id);
@@ -871,6 +929,21 @@ class Lobby {
     this.render();
   }
 
+  // Taller (v1.2): fabrica un aspecto con su plano y fragmentos.
+  craft(id) {
+    const P = this.P;
+    const s = SKIN_BY_ID[id];
+    if (!s || !(P.plans || {})[id]) return 'No tienes el plano de ese aspecto';
+    if (P.owned[id]) return 'Ya tienes ese aspecto';
+    const cost = FRAG_COST[s.rar];
+    if ((P.fragments || 0) < cost) return `Te faltan ${cost - (P.fragments || 0)} fragmentos`;
+    P.fragments -= cost;
+    delete P.plans[id];
+    P.owned[id] = true;
+    Profile.save();
+    return null;
+  }
+
   openChest(kind, free, quiet) {
     const P = this.P;
     const C = CHESTS[kind];
@@ -895,12 +968,31 @@ class Lobby {
     if (rar === 'legendario') P.chests.pity = 0;
     const pool = SKINS.filter((s) => s.rar === rar && !s.special);
     const item = pool[Math.floor(Math.random() * pool.length)];
-    const dup = !!P.owned[item.id];
-    const refund = dup ? RARITY[rar].refund : 0;
-    if (dup) P.crystals += refund;
-    else P.owned[item.id] = true;
+    // v1.2: aspecto, plano o fragmentos (la garantía del legendario siempre da el aspecto).
+    P.fragments = P.fragments || 0;
+    P.plans = P.plans || {};
+    const split = rar === 'legendario' && P.chests.pity === 0 ? 0 : Math.random() * 100;
+    let kindOut = split < CHEST_SPLIT.skin ? 'skin' : split < CHEST_SPLIT.skin + CHEST_SPLIT.plan ? 'plan' : 'frags';
+    let planItem = null;
+    if (kindOut === 'plan') {
+      const cand = SKINS.filter((s) => !s.special && !P.owned[s.id] && !P.plans[s.id]);
+      if (cand.length) planItem = cand[Math.floor(Math.random() * cand.length)];
+      else kindOut = 'frags';
+    }
+    let frags = 0;
+    let dup = false;
+    if (kindOut === 'skin') {
+      dup = !!P.owned[item.id];
+      if (dup) frags = FRAG_DUP[rar];
+      else P.owned[item.id] = true;
+    } else if (kindOut === 'plan') {
+      P.plans[planItem.id] = true;
+    } else {
+      frags = FRAG_PACK[0] + Math.floor(Math.random() * (FRAG_PACK[1] - FRAG_PACK[0] + 1));
+    }
+    P.fragments += frags;
     Profile.save();
-    const result = { chest: C.name, item, dup, refund };
+    const result = { chest: C.name, item: kindOut === 'plan' ? planItem : item, dup, frags, kind: kindOut };
     if (!quiet) {
       this.openModal('chestopen', result);
       this.render();
@@ -938,6 +1030,10 @@ class Lobby {
     }
     if (half < 1) out.lines.push('Personalizado: mitad de XP');
     out.crystals = Math.round((GAME_CRYSTALS.play + (win ? GAME_CRYSTALS.win : 0)) * half);
+    // v1.2: fragmentos por jugar.
+    out.frags = Math.round((FRAG_GAME.play + (win ? FRAG_GAME.win : 0)) * half);
+    P.fragments = (P.fragments || 0) + out.frags;
+    if (out.frags) out.lines.push(`Fragmentos: +${out.frags}`);
     P.stats.games++;
     if (win) P.stats.wins++;
     P.stats.islands += me.stats.captures;

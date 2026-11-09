@@ -535,6 +535,9 @@ const SKIN_LOOKS = {
   castillo: { name: 'Castillo', tints: [0x8c7b63, 0x6e6252, 0xa39478], mix: 0.6 },
   neon: { name: 'Neón', tints: [0x1b1830, 0x231d3d], mix: 0.8, glow: true },
   dorado: { name: 'Dorado', tints: [0xf2c14e, 0xd9a638], mix: 0.72, teamDark: 0xb8862a },
+  // v1.2: colecciones nuevas.
+  frente: { name: 'Frente 1940', tints: [0x5b5a3a, 0x8a7f55, 0x5a4632], mix: 0.62 },
+  marea: { name: 'Marea', tints: [0x2a6f9e, 0xf08a7a, 0x7fd0d8], mix: 0.58 },
   // Brigada Tóxica: cambia la forma (capucha y máscara de gas), no solo el color.
   toxico: { name: 'Tóxico', tints: [], mix: 0, geo: true },
 };

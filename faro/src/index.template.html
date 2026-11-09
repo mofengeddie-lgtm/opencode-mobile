@@ -400,6 +400,31 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .rankhist li { display: grid; grid-template-columns: 90px 50px 1fr; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
 .rankhist li.win span { color: #8ff0a4; }
 .rankhist li.loss span { color: #ffb4b5; }
+#wheel { position: fixed; inset: 0; z-index: 30; background: rgba(6,10,14,0.35); }
+.wheel-hub { position: absolute; transform: translate(-50%, -50%); width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); background: rgba(12,21,29,0.92); border: 1px solid var(--line); }
+.wheel-opt { position: absolute; transform: translate(-50%, -50%); width: 78px; min-height: 52px; border-radius: 14px; border: 1px solid var(--line); background: rgba(16,26,36,0.95); color: var(--text); display: grid; place-items: center; gap: 0; padding: 4px; cursor: pointer; font: inherit; }
+.wheel-opt b { font-size: 12.5px; }
+.wheel-opt small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wheel-opt.hot, .wheel-opt:hover:not(:disabled) { border-color: #f2ab38; background: rgba(242,171,56,0.2); }
+.wheel-opt:disabled { opacity: 0.4; cursor: default; }
+#chatpop { top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); width: min(520px, calc(100% - 20px)); max-height: calc(100% - var(--top) - 76px); overflow-y: auto; }
+.chattabs { display: flex; gap: 6px; }
+.chattabs button[aria-selected="true"] { border-color: #f2ab38; color: var(--text); }
+.chatlog { display: grid; gap: 4px; max-height: 260px; overflow-y: auto; font-size: 13px; }
+.chatlog p { margin: 0; padding: 4px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); }
+.chatlog p.mine { background: rgba(47,127,224,0.16); }
+.chatlog p i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.chatlog small { color: var(--muted); margin-left: 6px; }
+.quickmsgs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; max-height: 320px; overflow-y: auto; }
+.ladder li { display: grid; grid-template-columns: 38px 1fr 12px 70px 46px; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
+.ladder li.me { outline: 2px solid #f2ab38; background: rgba(242,171,56,0.12); font-weight: 700; }
+.ladder li i { width: 10px; height: 10px; border-radius: 2px; transform: rotate(45deg); }
+.ladder li small { font-size: 10px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+.ladder li em { font-style: normal; color: var(--muted); font-size: 12px; }
+.ladder li strong { text-align: right; font-variant-numeric: tabular-nums; }
+.item.plan img { filter: grayscale(0.6) brightness(0.9); outline: 2px dashed rgba(127,200,255,0.6); outline-offset: -4px; border-radius: 8px; }
+.fragicon { width: 64px; height: 64px; margin: 4px auto; background: conic-gradient(from 30deg, #7fc8ff, #b48cff, #7fc8ff 60%, #ffe08a, #7fc8ff); clip-path: polygon(50% 0, 95% 30%, 80% 100%, 20% 100%, 5% 30%); }
 .seg4 { grid-template-columns: repeat(4, 1fr) !important; }
 .musicbtn.off { opacity: 0.5; }
 .musicbtn.off svg { stroke-dasharray: 2 2; }
@@ -744,6 +769,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
   </div>
   <section id="econ" class="pop panel" hidden></section>
   <section id="score" class="pop panel" hidden></section>
+  <section id="chatpop" class="pop panel" hidden aria-label="Mensajes"></section>
 
   <div id="toasts" aria-live="polite"></div>
   <div id="prodbar" class="panel" hidden aria-label="Producción"></div>

@@ -386,9 +386,9 @@ const App = {
     const g = this.game;
     if (!g) return;
     const list = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.weapon && (
-      kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
+      kind === 'all' ? true : kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
     if (!list.length) {
-      this.ui.toast(kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
+      this.ui.toast(kind === 'all' ? 'No tienes tropas de combate' : kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
       return;
     }
     this.setSelection(list);
