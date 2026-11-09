@@ -3,14 +3,34 @@
 // Todo el balance vive aquí para poder ajustarlo sin tocar la lógica.
 
 const SQ3 = Math.sqrt(3);
+// v1.2: color de un terreno según el mapa (Dunas Rojas tiene su propia paleta).
+function terrainColor(mapKind, t) {
+  const m = typeof MAPS !== 'undefined' && MAPS[mapKind];
+  const pal = m && m.tint && typeof PALETTES !== 'undefined' ? PALETTES[m.tint] : null;
+  return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
+}
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.1';
+const GAME_VERSION = '1.2';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
 const START_UNITS = ['builder'];
 // Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
 const MAX_POP = 240;
+// v1.2: temporadas automáticas por la fecha (mes 1-12, día): Calabazas e Invierno.
+const SEASONS = {
+  pumpkin: { name: 'Calabazas', from: [10, 15], to: [11, 5] },
+  winter: { name: 'Invierno', from: [12, 10], to: [1, 6] },
+};
+function seasonForDate(d) {
+  const v = (d.getMonth() + 1) * 100 + d.getDate();
+  for (const [k, S] of Object.entries(SEASONS)) {
+    const a = S.from[0] * 100 + S.from[1];
+    const b = S.to[0] * 100 + S.to[1];
+    if (a <= b ? v >= a && v <= b : v >= a || v <= b) return k;
+  }
+  return null;
+}
 // v1.2: tiempo que hay que mantener pulsado el mapa para abrir la rueda de selección.
 const WHEEL_HOLD_MS = 450;
 // v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.
@@ -52,6 +72,9 @@ const TERRAIN = {
   fertile: { land: true, color: 0x93a24b, h: 0.42, name: 'Tierra fértil' },
   oilland: { land: true, color: 0x6f7253, h: 0.42, name: 'Petróleo en tierra' },
   mount: { color: 0x9a958b, h: 0.6, cover: true, name: 'Montaña' },
+  // v1.2: meseta alta (ventaja de altura) y duna del desierto.
+  high: { land: true, color: 0xa8794e, h: 0.82, name: 'Meseta', highGround: true },
+  dune: { land: true, color: 0xd9a066, h: 0.3, name: 'Duna' },
 };
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
@@ -404,12 +427,18 @@ const MAPS = {
   archipelago: { name: 'Archipiélago Ámbar', desc: 'Islas en círculo unidas por puentes de arena.' },
   open: { name: 'Mar abierto', desc: 'Sin puentes: necesitas barcos o helicópteros.' },
   continent: { name: 'Continente', desc: 'Una gran isla con lagos.' },
-  bay: { name: 'Bahía Gris', desc: 'Islas irregulares y paleta fría; solo algunas tienen puente.', palette: 'cold' },
+  bay: { name: 'Bahía Gris', desc: 'Islas irregulares; solo algunas tienen puente.', palette: 'cold' },
   reef: { name: 'Arrecife Doble', desc: 'Dos grupos de islas separados por agua navegable.' },
+  // v1.2: variantes con nombres propios.
+  mesa: { name: 'Mesetas de Cobre', desc: 'Un continente con mesetas altas: desde lo alto se dispara y se ve 1 casilla más lejos.', base: 'continent' },
+  dunes: { name: 'Dunas Rojas', desc: 'Desierto de islas con puentes y oasis fértiles.', base: 'archipelago', tint: 'desert' },
 };
 
 // Colores alternativos por mapa (Bahía Gris).
 const PALETTES = {
+  // v1.2: Dunas Rojas.
+  desert: { deep: 0x1f5f7a, shallow: 0x3aa0a8, oil: 0x3aa0a8, sand: 0xe3bf7e, grass: 0xbfa75c, forest: 0x7f8f3e,
+    gold: 0xc9b04a, mount: 0xb07a52, fertile: 0x93a84a, oilland: 0x7a6a4e, dune: 0xd9a066 },
   cold: { deep: 0x1d4a63, shallow: 0x3a7891, oil: 0x3a7891, sand: 0xb9b6a6, grass: 0x6f9a74, forest: 0x4f7a5d,
     gold: 0x95a36a, mount: 0x8d949a, fertile: 0x8a9a62, oilland: 0x5e6458 },
 };

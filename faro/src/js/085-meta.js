@@ -82,7 +82,50 @@ const TUTORIAL_STEPS = [
   { id: 'army', text: '2 · Producí: construye un Cuartel y ten 5 tropas de combate' },
   { id: 'kill', text: '3 · Atacá: destruye el Núcleo del bot' },
 ];
-const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef'];
+const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
+// v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
+const MAP_THUMBS = {};
+function mapThumb(kind, players = 6) {
+  const key = kind + ':' + players;
+  if (MAP_THUMBS[key]) return MAP_THUMBS[key];
+  let url = '';
+  try {
+    const m = new GameMap(4321, kind, players, false);
+    const S = 132;
+    const cv = document.createElement('canvas');
+    cv.width = S;
+    cv.height = S;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#' + terrainColor(kind, 'deep').toString(16).padStart(6, '0');
+    ctx.fillRect(0, 0, S, S);
+    const ext = Math.max(...m.cells.map((c) => Math.max(Math.abs(c.x), Math.abs(c.z)))) + 1;
+    const k = (S / 2 - 3) / ext;
+    for (const c of m.cells) {
+      if (c.t === 'deep') continue;
+      ctx.fillStyle = '#' + terrainColor(kind, c.t).toString(16).padStart(6, '0');
+      ctx.beginPath();
+      ctx.arc(S / 2 + c.x * k, S / 2 + c.z * k, k * 1.02, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (const hi of m.homes) {
+      const c = m.cells[hi];
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(S / 2 + c.x * k, S / 2 + c.z * k, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const f = m.cells[m.points[0].cell];
+    ctx.fillStyle = '#f2ab38';
+    ctx.beginPath();
+    ctx.arc(S / 2 + f.x * k, S / 2 + f.z * k, 4, 0, Math.PI * 2);
+    ctx.fill();
+    url = cv.toDataURL('image/png');
+  } catch (err) {
+    console.warn('[Vestíbulo] Sin miniatura de mapa:', err);
+  }
+  MAP_THUMBS[key] = url;
+  return url;
+}
 const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 function skinSlotOf(kind, type) {
@@ -462,7 +505,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Alianzas', 'Dúos', 'Clasificatoria', 'Música', 'Espectador'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Rueda de selección', 'Mensajes', 'Taller', 'Mapas nuevos', this.app.season() ? `Temporada: ${SEASONS[this.app.season()].name}` : 'Temporadas'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
       </section>
       <section class="lcard panel">
@@ -498,7 +541,7 @@ class Lobby {
       <p>Arma tu partida contra bots. Da la mitad de XP.</p>
       <div class="field"><label>Modo</label>${seg('kind', [['conquest', 'Conquista'], ['king', 'Rey del Faro']])}</div>
       <div class="field"><label>Jugadores</label>${seg('players', [[2, '2 (Duelo 1 vs 1)'], [3, '3'], [4, '4'], [5, '5'], [6, '6']])}</div>
-      <div class="field"><label>Mapa</label>${seg('mapKind', LOBBY_MAPS.map((k) => [k, MAPS[k].name]))}</div>
+      <div class="field"><label>Mapa</label><div class="mapthumbs">${LOBBY_MAPS.map((k) => `<button type="button" data-act="cset" data-k="mapKind" data-v="${k}" class="mapopt ${c.mapKind === k ? 'on' : ''}"><img alt="" src="${mapThumb(k, Math.max(2, c.players))}"><span>${esc(MAPS[k].name)}</span></button>`).join('')}</div></div>
       <div class="field"><label>Monedas iniciales</label>${seg('coins', [[2000, '2.000'], [4000, '4.000'], [6000, '6.000'], [10000, '10.000']])}</div>
       <div class="field"><label>Dificultad</label>${seg('difficulty', Object.entries(DIFFICULTY).map(([k, d]) => [k, d.name]))}</div>
       <div class="field"><label>Equipos</label>${seg('teams', [[false, 'Todos contra todos'], [true, 'Dos equipos']])}</div>
@@ -689,8 +732,8 @@ class Lobby {
           <b>${esc(m.name)}</b><small>${esc(m.desc)}</small>${locked ? `<em>Desde nivel ${m.minLevel}</em>` : ''}</button>`;
       }).join('')}</div>`;
     } else if (n === 'maps') {
-      html = head('Elige un mapa') + `<div class="mode-cards">${LOBBY_MAPS.map((k) => `<button type="button" class="mode-card ${P.play.mapKind === k ? 'on' : ''}" data-act="pickmap" data-v="${k}">
-        <b>${esc(MAPS[k].name)}</b><small>${esc(MAPS[k].desc)}</small></button>`).join('')}</div>`;
+      html = head('Elige un mapa') + `<div class="mode-cards">${LOBBY_MAPS.map((k) => `<button type="button" class="mode-card mapcard ${P.play.mapKind === k ? 'on' : ''}" data-act="pickmap" data-v="${k}">
+        <img class="mapthumb" alt="" src="${mapThumb(k)}"><b>${esc(MAPS[k].name)}</b><small>${esc(MAPS[k].desc)}</small></button>`).join('')}</div>`;
     } else if (n === 'pass') {
       const tier = Profile.passTier();
       const tiers = [];

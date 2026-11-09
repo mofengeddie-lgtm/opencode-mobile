@@ -104,6 +104,74 @@ class Renderer {
     }
   }
 
+  // ---------- temporadas (v1.2): calabazas o nieve ----------
+  applySeason(season) {
+    const g = this.game;
+    this.season = season || null;
+    if (this.seasonGroup) {
+      this.scene.remove(this.seasonGroup);
+      this.seasonGroup.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+    }
+    this.seasonGroup = new THREE.Group();
+    this.scene.add(this.seasonGroup);
+    this.snow = null;
+    // Suelo: en invierno, la tierra se aclara y las montañas quedan nevadas.
+    if (!this.baseColors0) this.baseColors0 = this.baseColors.map((c) => c.clone());
+    const white = new THREE.Color(0xf4f8fb);
+    this.baseColors = this.baseColors0.map((c, i) => {
+      const col = c.clone();
+      const t = g.cells[i].t;
+      if (season === 'winter' && t === 'mount') col.lerp(white, 0.65);
+      else if (season === 'winter' && TERRAIN[t].land) col.lerp(white, 0.32);
+      return col;
+    });
+    this.tintTerritory();
+    const rng = mulberry32(g.opts.seed + 31);
+    if (season === 'pumpkin') {
+      const spots = g.cells.filter((c) => (c.t === 'grass' || c.t === 'forest' || c.t === 'sand') && !c.bld && !c.point && rng() < 0.08).slice(0, 60);
+      const body = new THREE.InstancedMesh(new THREE.SphereGeometry(0.17, 12, 8), new THREE.MeshStandardMaterial({ color: 0xf07f1e, emissive: 0x7a2e00, emissiveIntensity: 0.35, roughness: 0.6 }), spots.length);
+      const stem = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.025, 0.03, 0.08, 6), new THREE.MeshStandardMaterial({ color: 0x3d6b22 }), spots.length);
+      const m = new THREE.Matrix4();
+      spots.forEach((c, k) => {
+        const ox = (rng() - 0.5) * 0.9;
+        const oz = (rng() - 0.5) * 0.9;
+        m.makeScale(1, 0.78, 1);
+        m.setPosition(c.x + ox, c.h + 0.13, c.z + oz);
+        body.setMatrixAt(k, m);
+        m.makeTranslation(c.x + ox, c.h + 0.29, c.z + oz);
+        stem.setMatrixAt(k, m);
+      });
+      this.seasonGroup.add(body, stem);
+      this.pumpkins = spots.length;
+    }
+    if (season === 'winter') {
+      const N = this.quality === 'high' ? 700 : 300;
+      const pos = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) {
+        pos[i * 3] = (rng() - 0.5) * 60;
+        pos[i * 3 + 1] = rng() * 16;
+        pos[i * 3 + 2] = (rng() - 0.5) * 60;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      this.snow = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14, transparent: true, opacity: 0.85, depthWrite: false }));
+      this.seasonGroup.add(this.snow);
+    }
+  }
+
+  updateSeason(dt) {
+    if (!this.snow) return;
+    const a = this.snow.geometry.attributes.position;
+    for (let i = 0; i < a.count; i++) {
+      let y = a.getY(i) - dt * 1.6;
+      if (y < 0) y += 16;
+      a.setY(i, y);
+      a.setX(i, a.getX(i) + Math.sin(y + i) * dt * 0.2);
+    }
+    a.needsUpdate = true;
+    this.snow.position.set(this.cam.tx, 0, this.cam.tz);
+  }
+
   // ---------- terreno ----------
   // v0.9: vuelve el suelo de la v0.6 (colores lisos por terreno, sin texturas).
   buildTerrain() {
@@ -121,7 +189,7 @@ class Renderer {
       m.makeScale(1, h + 1.4, 1);
       m.setPosition(c.x, h, c.z);
       mesh.setMatrixAt(c.i, m);
-      const col = new THREE.Color(TERRAIN[c.t].color);
+      const col = new THREE.Color(terrainColor(this.game.map.kind, c.t));
       const v = (rng() - 0.5) * (TERRAIN[c.t].water ? 0.04 : 0.09);
       col.offsetHSL(0, 0, v);
       this.baseColors.push(col);
@@ -1407,7 +1475,7 @@ class Renderer {
       const r = T.s * 1.02;
       const tmp = new THREE.Color();
       for (const c of g.cells) {
-        tmp.set(TERRAIN[c.t].color);
+        tmp.set(terrainColor(this.game.map.kind, c.t));
         if (c.t === 'deep') continue;
         if (c.owner >= 0) tmp.lerp(new THREE.Color(PLAYER_COLORS[c.owner]), TERRAIN[c.t].water ? 0.35 : 0.45);
         b.fillStyle = '#' + tmp.getHexString();
@@ -1529,6 +1597,7 @@ class Renderer {
     this.updatePoints(time);
     this.updateShields(time);
     this.updateRadZones(time);
+    this.updateSeason(dt);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);

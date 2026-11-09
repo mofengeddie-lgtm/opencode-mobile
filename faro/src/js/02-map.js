@@ -41,7 +41,8 @@ class GameMap {
     const seed = this.seed;
     const R = this.R;
     const n = this.n;
-    const kind = this.kind;
+    // v1.2: las variantes se generan como su mapa base y después se les cambia el terreno.
+    const kind = MAPS[this.kind] && MAPS[this.kind].base ? MAPS[this.kind].base : this.kind;
 
     for (let q = -R; q <= R; q++) {
       for (let r = -R; r <= R; r++) {
@@ -377,6 +378,8 @@ class GameMap {
     }
     this.points.unshift({ type: 'faro', cell: center.i });
 
+    if (this.kind === 'mesa') this.makeMesas(rng, a0, ring, n);
+    if (this.kind === 'dunes') this.makeDunes();
     for (const c of this.cells) c.h = TERRAIN[c.t].h;
     this.computeComponents();
 
@@ -392,6 +395,31 @@ class GameMap {
         for (const c of this.cells) if (c.t === 'mount') { c.t = 'forest'; c.h = TERRAIN.forest.h; }
         this.computeComponents();
       }
+    }
+  }
+
+  // Mesetas de Cobre (v1.2): mesetas altas entre las bases y alrededor del centro.
+  makeMesas(rng, a0, ring, n) {
+    const free = (c) => (c.t === 'grass' || c.t === 'forest' || c.t === 'sand') && !c.bridge &&
+      !this.points.some((pt) => this.dist(this.cells[pt.cell], c) <= 1) && !this.homes.some((hi) => this.dist(this.cells[hi], c) <= 3);
+    const plateau = (x, z, rad) => {
+      for (const c of this.cells) if (free(c) && Math.hypot(c.x - x, c.z - z) <= rad * SQ3) c.t = 'high';
+    };
+    for (let i = 0; i < n; i++) {
+      const ang = a0 + ((i + 0.5) * Math.PI * 2) / n;
+      plateau(Math.cos(ang) * ring * 0.55, Math.sin(ang) * ring * 0.55, 2.6);
+    }
+    for (let k = 0; k < 3; k++) {
+      const ang = a0 + rng() * Math.PI * 2;
+      plateau(Math.cos(ang) * ring * 0.25, Math.sin(ang) * ring * 0.25, 1.6);
+    }
+  }
+
+  // Dunas Rojas (v1.2): lejos de las bases, el pasto y los bosques son dunas.
+  makeDunes() {
+    for (const c of this.cells) {
+      if ((c.t === 'grass' || c.t === 'forest') && !c.bridge && !this.points.some((pt) => pt.cell === c.i) &&
+        !this.homes.some((hi) => this.dist(this.cells[hi], c) <= 3)) c.t = 'dune';
     }
   }
 

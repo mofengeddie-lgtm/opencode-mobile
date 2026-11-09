@@ -1133,8 +1133,16 @@ class Game {
     return false;
   }
 
+  // v1.2: ventaja de altura: desde una meseta se dispara 1 casilla más lejos a lo que está abajo.
+  heightBonus(a, t) {
+    if (a.mover === 'air' || a.cell === undefined || !this.cells[a.cell]) return 0;
+    if (!TERRAIN[this.cells[a.cell].t].highGround) return 0;
+    if (t && t.cell !== undefined && this.cells[t.cell] && TERRAIN[this.cells[t.cell].t].highGround) return 0;
+    return 1;
+  }
+
   inRange(a, w, t, extraTiles = 0) {
-    let r = w.range + extraTiles;
+    let r = w.range + extraTiles + (w.range >= 2 ? this.heightBonus(a, t) : 0);
     const d = Math.hypot(t.x - a.x, t.z - a.z);
     const reach = (rr) => rr * SQ3 + (t.kind === 'bld' ? 0.75 : 0.35);
     if (d > reach(r)) return false;
@@ -1145,7 +1153,7 @@ class Game {
   }
 
   acquire(a, w, extraTiles, exclude = null) {
-    const maxD = (w.range + extraTiles) * SQ3 + 0.8;
+    const maxD = (w.range + extraTiles + (w.range >= 2 ? this.heightBonus(a, null) : 0)) * SQ3 + 0.8;
     // Fuego concentrado (bots desde Normal, v0.8): entre lo que tienen a tiro, primero la tropa
     // armada con menos vida; así la eliminan antes en vez de repartir el daño.
     const focus = extraTiles === 0 && this.players[a.owner].focusFire;
@@ -1690,7 +1698,7 @@ class Game {
     }
     const eyes = [];
     for (const u of this.units) {
-      if (this.players[u.owner].team === myTeam) eyes.push([u.x, u.z, ((u.def.vision || (u.def.weapon ? u.def.weapon.range + 1.5 : 3)) * SQ3) ** 2]);
+      if (this.players[u.owner].team === myTeam) eyes.push([u.x, u.z, (((u.def.vision || (u.def.weapon ? u.def.weapon.range + 1.5 : 3)) + this.heightBonus(u, null)) * SQ3) ** 2]);
     }
     for (const b of this.buildings) {
       if (this.players[b.owner].team === myTeam) eyes.push([b.x, b.z, ((b.def.vision || 3) * SQ3) ** 2]);

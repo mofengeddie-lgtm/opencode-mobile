@@ -142,6 +142,8 @@ class UI {
       app.music.setLevel(lv);
       if (lv > 0) app.music.play(app.state === 'play' ? 'battle' : 'lobby');
       this.updateMusicBtns();
+    document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
+    this.updateSeasonBtns();
     });
     this.updateMusicBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
@@ -279,6 +281,16 @@ class UI {
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
   }
 
+  updateSeasonBtns() {
+    const pref = this.app.seasonPref();
+    document.querySelectorAll('[data-season]').forEach((b) => b.classList.toggle('gold', b.dataset.season === pref));
+    const note = $('season-note');
+    if (note) {
+      const auto = seasonForDate(new Date());
+      note.textContent = `Automática: ${auto ? SEASONS[auto].name : 'ninguna en esta fecha'} (Calabazas del 15 oct al 5 nov; Invierno del 10 dic al 6 ene).`;
+    }
+  }
+
   updateMusicBtns() {
     const lv = this.app.music.level;
     document.querySelectorAll('[data-music]').forEach((b) => b.classList.toggle('gold', Number(b.dataset.music) === lv));
@@ -408,6 +420,91 @@ class UI {
     }
     if (msg.toMe || !wide) this.toast(`${who}: ${msg.text}`, msg.toMe ? 'bad' : 'info', msg.toMe ? at : null);
     if (msg.toMe) this.app.sound.play('alarm');
+  }
+
+  // ---------- tutorial que señala qué tocar (v1.2) ----------
+  coachStep(g) {
+    const app = this.app;
+    const me = g.players[0];
+    const mine = g.units.filter((u) => u.owner === 0 && u.alive);
+    const blds = g.buildings.filter((b) => b.owner === 0 && b.alive);
+    const sel = app.selection;
+    const core = me.core;
+    const p = app.input.placement;
+    const bp = $('buildpanel');
+    // (offsetParent no sirve con paneles «position: fixed»; se mira si ocupa lugar en la pantalla.)
+    const shown = (el) => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+    const panelOpen = shown(bp) && !bp.classList.contains('min') && (window.innerWidth > 860 || bp.classList.contains('open'));
+    const buildFlow = (tab, type, name, tabName) => {
+      if (p && p.kind === 'build' && p.btype === type) {
+        if (p.cell < 0) {
+          const c = [...(p.valid || [])].map((i) => g.cells[i]).sort((a, b) => g.map.dist(a, g.cells[core.cell]) - g.map.dist(b, g.cells[core.cell]))[0];
+          return c ? { world: { x: c.x, y: c.h, z: c.z }, text: 'Toca una casilla dorada (por ejemplo, esta)' } : { text: 'No quedan casillas libres' };
+        }
+        return { sel: '#btn-place-ok', text: 'Toca «Construir» para poner la obra' };
+      }
+      if (!panelOpen) return { sel: '#btn-build', text: 'Abre «Construir»' };
+      if (this.tab !== tab) return { sel: `#btabs [data-tab="${tab}"]`, text: `Abre la pestaña «${tabName}»` };
+      return { sel: `.bitem[data-b="${type}"]`, text: `Elige «${name}»` };
+    };
+    const hasBuilder = mine.some((u) => u.def.builds) || core.queue.some((q) => q.type === 'builder');
+    if (!hasBuilder) {
+      if (!(sel.length === 1 && sel[0] === core)) return { world: { x: core.x, y: core.y + 1, z: core.z }, text: 'Toca tu Núcleo' };
+      return { sel: '[data-act="train"][data-type="builder"]', text: 'Entrena un Constructor' };
+    }
+    if (!blds.some((b) => ['solar', 'wind', 'hydro', 'tidal', 'wave'].includes(b.type))) return buildFlow('energy', 'solar', 'Solar', 'Energía');
+    const bar = blds.find((b) => b.type === 'barracks');
+    if (!bar) return buildFlow('prod', 'barracks', 'Cuartel', 'Producción');
+    const combat = mine.filter((u) => u.def.weapon).length;
+    if (combat < 5) {
+      if (!bar.built) return { world: { x: bar.x, y: bar.y + 1, z: bar.z }, text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
+      if (!(sel.length === 1 && sel[0] === bar)) return { world: { x: bar.x, y: bar.y + 1, z: bar.z }, text: 'Toca tu Cuartel' };
+      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${combat} de 5)` };
+    }
+    const foe = g.players.find((q) => q.id !== 0 && q.alive && q.core && q.core.alive);
+    if (!foe) return null;
+    if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus tropas' };
+    return { world: { x: foe.core.x, y: foe.core.y + 1, z: foe.core.z }, text: 'Toca el Núcleo enemigo para atacarlo' };
+  }
+
+  updateCoach() {
+    const app = this.app;
+    const g = app.game;
+    let el = $('coach');
+    const step = g && g.mode.tutorial && !g.over && app.state === 'play' && !app.paused ? this.coachStep(g) : null;
+    if (!step) {
+      if (el) el.hidden = true;
+      return;
+    }
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'coach';
+      el.setAttribute('aria-live', 'polite');
+      el.innerHTML = '<div class="coach-ring"></div><div class="coach-tip"></div>';
+      document.body.appendChild(el);
+    }
+    let rect = null;
+    if (step.sel) {
+      const t = document.querySelector(step.sel);
+      if (t && t.getClientRects().length > 0) {
+        const r = t.getBoundingClientRect();
+        rect = { x: r.left - 6, y: r.top - 6, w: r.width + 12, h: r.height + 12 };
+      }
+    } else if (step.world && app.renderer) {
+      const sp = app.renderer.project(step.world.x, step.world.y, step.world.z);
+      if (sp.ok) rect = { x: sp.x - 30, y: sp.y - 30, w: 60, h: 60, round: true };
+    }
+    el.hidden = false;
+    const ring = el.querySelector('.coach-ring');
+    const tip = el.querySelector('.coach-tip');
+    ring.hidden = !rect;
+    if (rect) Object.assign(ring.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px`, borderRadius: rect.round ? '50%' : '12px' });
+    tip.textContent = step.text;
+    const tx = rect ? clamp(rect.x + rect.w / 2 - 110, 8, window.innerWidth - 228) : window.innerWidth / 2 - 110;
+    const below = rect ? rect.y + rect.h + 8 : 120;
+    const ty = rect && below + 50 > window.innerHeight ? rect.y - 52 : below;
+    Object.assign(tip.style, { left: `${tx}px`, top: `${ty}px` });
+    this.coachText = step.text;
   }
 
   // ---------- rueda de selección del ejército (v1.2) ----------
@@ -1512,6 +1609,7 @@ class UI {
     this.slowT -= dt;
     if (this.slowT > 0) return;
     this.slowT = 0.15;
+    this.updateCoach();
     this.updateTop();
     this.refreshBuild();
     this.renderSel();

@@ -102,6 +102,25 @@ const App = {
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
     this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.quality);
+    this.renderer.applySeason(this.season());
+  },
+
+  // v1.2: temporada activa: la que pone la fecha, o la que elegiste en la pausa.
+  seasonPref() {
+    try { return localStorage.getItem('faro-season') || 'auto'; } catch (err) { return 'auto'; }
+  },
+
+  season() {
+    const pref = this.seasonPref();
+    if (pref === 'auto') return seasonForDate(new Date());
+    return pref === 'none' ? null : pref;
+  },
+
+  setSeason(v) {
+    try { localStorage.setItem('faro-season', v); } catch (err) { /* sin almacenamiento */ }
+    if (this.renderer) this.renderer.applySeason(this.season());
+    this.ui.updateSeasonBtns();
+    if (this.lobby) this.lobby.render();
   },
 
   makePreview() {
