@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 1.1</p>
-  <p class="meta">9 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «revisa qué le falta y busca diferencias con el juego de Roblox»</p>
+  <p class="meta">9 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu pedido «revisa qué le falta y busca diferencias con el juego de Roblox»</p>
   <div class="tiles">
     <div class="tile"><b>Jugar con otros</b><span>Alianzas en todos contra todos, modo Dúos, órdenes rápidas a tus aliados y Clasificatoria con rangos.</span></div>
     <div class="tile"><b>Defensa</b><span>El Escudo antimisiles también derriba misiles y cohetes enemigos cerca.</span></div>
@@ -69,7 +69,7 @@ li { margin-bottom: 3px; }
       <tr><td>0.1-0.8</td><td>6-8 nov 2026</td><td>Juego base, bots, campaña, controles, modelos de Blender y movimiento de CMU.</td></tr>
       <tr><td>0.9</td><td>8 nov 2026</td><td>Tus 30 mejoras: ejército de tierra, mar y aire, misil nuclear, escudos y vuelta al suelo de la v0.6.</td></tr>
       <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, «Mejorar todo», «Lanzar los 3», Difícil más fuerte y aviones nuevos.</td></tr>
-      <tr><td>1.1</td><td>9 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>1.1</td><td>9 nov 2026</td><td>Alianzas, Dúos, Clasificatoria con 10 rangos, órdenes a aliados, defensa de punto del Escudo antimisiles, música propia, modo espectador y resumen final con gráficas.</td></tr>
     </tbody>
   </table>
 </section>
@@ -110,7 +110,7 @@ li { margin-bottom: 3px; }
   <table>
     <thead><tr><th style="width:24%">Qué</th><th>Cómo</th></tr></thead>
     <tbody>
-      <tr><td>Alianzas</td><td>En el marcador, junto a cada rival: «Proponer alianza». El bot acepta o no según su forma de ser y cómo va la partida (más fácil si los dos tienen un rival en común). Aliados: no se atacan, comparten lo que ven y sus mensajes salen en un chat de aliados. «Romper alianza» pide confirmación y avisa al otro; un aliado también puede romperla si queda solo contra ti. Para ganar hay que quedar solo (como en el original, la alianza no da la victoria compartida en todos contra todos).</td></tr>
+      <tr><td>Alianzas</td><td>En el marcador, junto a cada rival: «Proponer alianza». El bot acepta o no según su forma de ser y cómo va la partida (más fácil si los dos tienen un rival en común). Aliados: no se atacan, comparten lo que ven y sus mensajes salen en un chat de aliados. «Romper alianza» pide confirmación y avisa al otro; un aliado también puede romperla si queda solo contra ti. Para ganar hay que quedar solo: si solo quedan aliados, la alianza se rompe y siguen peleando.</td></tr>
       <tr><td>Dúos</td><td>Nuevo modo: 3 parejas (tú y un bot aliado), cada pareja aparece cerca. Gana la última pareja en pie.</td></tr>
       <tr><td>Clasificatoria</td><td>Partida 3 vs 3 en Normal o Difícil según tu rango. Ganar suma puntos y perder resta. 10 rangos propios: Bronce I-III, Plata I-III, Oro I-III y Ámbar. El panel «Rangos» del vestíbulo muestra tu rango, tus puntos y tu historial.</td></tr>
       <tr><td>Escudo antimisiles</td><td>Además del misil nuclear, derriba un misil o cohete enemigo que pase a 3 casillas, cada 1,5 s.</td></tr>
@@ -129,30 +129,39 @@ li { margin-bottom: 3px; }
   <table>
     <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>H01</td><td>Alianzas: proponer (el bot acepta o rechaza con su motivo), aliados no se atacan y comparten visión, chat de aliados, romper la alianza.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H02</td><td>Modo Dúos: 3 parejas que aparecen cerca; gana la última pareja.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H03</td><td>Clasificatoria: 10 rangos, puntos que suben y bajan, guardados, y panel «Rangos» encendido.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H04</td><td>El Escudo antimisiles derriba misiles y cohetes enemigos cerca, sin dejar de derribar el misil nuclear.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H05</td><td>Música del vestíbulo y de la partida, más intensa en combate, con volumen y silencio.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H06</td><td>«¡Ayuda!» y «¡Ataquemos!»: los aliados responden y mandan tropas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H07</td><td>Al perder, «Seguir mirando» deja ver la partida hasta el final.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H08</td><td>Resumen final con gráficas de monedas y ejército de cada imperio.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H09</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>H10</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>H01</td><td>Alianzas: proponer (el bot acepta o rechaza con su motivo), aliados no se atacan y comparten visión, chat de aliados, romper la alianza.</td><td><span class="chip ok">Aprobada</span></td><td>respuestas: Rojo (Agresivo): no; Naranja (Constructor): acepta; Violeta (Almirante): no; Rosa (Guardián del Faro): no; Turquesa (Agresivo): no; otra vez al aliado: «Naranja ya es tu aliado»; aliados no enemigos: true; ves sus tropas: true; mensaje en el chat de aliados: true; su Artillero no te elige de blanco: true; a quien atacaste: «Rojo: «Hace poco me atacaste. No confío en ti.»»; romper: hecho (vuelven a ser rivales: true); si solo quedan aliados la alianza se rompe y la partida sigue: true; en Dúos: «En este modo no hay alianzas». En pantalla: «Aliarse» con Rosa Constructor · aliadoRomper 10 % 0 6 +1860 0: aliados (true), la fila dice «Rosa Constructor · aliadoRomper 10 % 0 6 +1860 0», mensaje en el chat: true; «Romper» pide confirmación (sigue aliado tras el primer toque: true) y al segundo toque vuelven a ser rivales (true)</td></tr>
+<tr><td>H02</td><td>Modo Dúos: 3 parejas que aparecen cerca; gana la última pareja.</td><td><span class="chip ok">Aprobada</span></td><td>archipelago: equipos 001122, tu pareja a 11 casillas y el rival más cerca a 23 · continent: equipos 001122, tu pareja a 12 casillas y el rival más cerca a 21 · open: equipos 001122, tu pareja a 12 casillas y el rival más cerca a 22; con una pareja rival en pie la partida sigue (true); al caer la última: victory</td></tr>
+<tr><td>H03</td><td>Clasificatoria: 10 rangos, puntos que suben y bajan, guardados, y panel «Rangos» encendido.</td><td><span class="chip ok">Aprobada</span></td><td>al empezar: Bronce I; «Jugar Clasificatoria» abre «Clasificatoria» (equipos 000111, rivales en normal); al ganar: «Clasificatoria: +25 puntos · Bronce I» → 25 puntos (Bronce I, guardado: 25); con 310 (Plata I) y una derrota: «Clasificatoria: -15 puntos · Plata I → Bronce III» → 295 (Bronce III); 10 rangos en el panel; dificultad con 590 y 600 puntos: normal / hard</td></tr>
+<tr><td>H04</td><td>El Escudo antimisiles derriba misiles y cohetes enemigos cerca, sin dejar de derribar el misil nuclear.</td><td><span class="chip ok">Aprobada</span></td><td>Lanzacohetes y Camión de misiles enemigos a 5 casillas durante 30 s: derribó 6 (vida y escudo del Escudo: 1680 → 1680); misil nuclear a 2 casillas: derribado (1)</td></tr>
+<tr><td>H05</td><td>Música del vestíbulo y de la partida, más intensa en combate, con volumen y silencio.</td><td><span class="chip ok">Aprobada</span></td><td>vestíbulo: melodía «lobby» (9 notas, audio running); partida: «battle»; con combate la intensidad sube a 0.98 y suenan 1 golpes de bombo; en la pausa «Apagada» la detiene (true) y «Media» la vuelve a encender (true)</td></tr>
+<tr><td>H06</td><td>«¡Ayuda!» y «¡Ataquemos!»: los aliados responden y mandan tropas.</td><td><span class="chip ok">Aprobada</span></td><td>«¡Ayuda!»: tus 2 aliados mandan 2 y 2 tropas (4 van hacia tu Núcleo); «¡Ataquemos!» a Violeta: mandan 3 y 3 y lo eligen como blanco de sus oleadas (true); mensajes en el chat: 4. En pantalla: en el marcador de la Liga: «¡Ayuda!» y «¡Ataquemos!» (true); «¡Ayuda!»: «Tus aliados mandan 4 tropas a tu base»; «¡Ataquemos!» y tocar el Núcleo de Violeta: «Tus aliados atacan a Violeta con 6 tropas»</td></tr>
+<tr><td>H07</td><td>Al perder, «Seguir mirando» deja ver la partida hasta el final.</td><td><span class="chip ok">Aprobada</span></td><td>al caer tu Núcleo: derrota (true); se puede seguir mirando (true); la partida siguió 60 s más sin terminar; cuando queda un imperio termina y muestra al ganador (Rojo). En pantalla: derrota con «Seguir mirando» (true); al tocarlo: barra «Modo espectador» (true) y la partida sigue (30 s más); al quedar un imperio: «Derrota Tu Núcleo fue destruido. Seguiste mirando: ganó Rojo.»</td></tr>
+<tr><td>H08</td><td>Resumen final con gráficas de monedas y ejército de cada imperio.</td><td><span class="chip ok">Aprobada</span></td><td>18 muestras (cada 10 s), de 0 s a 172 s; última: monedas/min 0, 1860, 1860, 2460, 1860, 1860 · tropas 0, 0, 4, 3, 1, 2. En pantalla: 2 gráficas (monedas por minuto y tropas), 12 líneas (6 imperios × 2), leyenda con 6 nombres, tabla (true); al pasar el dedo: «01:31 Rojo 1860 Naranja 1860 Violeta 1860 Rosa 1860 Turquesa 1860 Tú 1140»</td></tr>
+<tr><td>H09</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas anteriores en la v1.1: 50 de 50 bien (v1.0: 12; v0.9: 18; v0.8: 10; v0.7: 10). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 4 de 5 (3:08, 3:06, 3:09, 3:10); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:51, 2:53); M5 ganó 2 de 3 (18:22, 20:59); M6 piloto atento ganó 5 de 6 (12:47, 27:26, 26:28, 22:48, 18:45). 5 tamaños con portada, Rangos, Núcleo, AIR DEFENSE, Casa, Transporte, Bombardero, Aeropuerto, marcador con «Aliarse», barra de «Construir», final con gráficas y barra de espectador: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien</td></tr>
+<tr><td>H10</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip ok">Aprobada</span></td><td>faro.html pesa 2.37 MB (meta: menos de 3,5 MB).</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">07 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Original, no copia:</b> se toman las mecánicas (alianzas, dúos, clasificatoria, defensa antimisiles, música), con nombres, rangos, arte y melodías propios.</li>
-    <li><b>Clasificatoria sin servidores:</b> los rivales son bots y los puntos se guardan en tu aparato. Una tabla con otros jugadores necesita los servidores de Roblox («Top jugadores» y «Servidores» siguen para Roblox Studio).</li>
-    <li><b>Lo que ya teníamos:</b> casi todo lo del juego de Roblox ya estaba (puentes, alturas, helicópteros, AIR DEFENSE, tienda, aspectos, cofres, tutorial); lo nuevo de esta versión es lo que faltaba.</li>
+    <li><b>Original, no copia:</b> se tomaron las mecánicas (alianzas, dúos, clasificatoria, defensa antimisiles, música), con nombres, rangos, arte y melodías propios.</li>
+    <li><b>Comparación:</b> no pude abrir roblox.com desde aquí; usé los resúmenes del buscador de los registros de cambios del creador. En el plan había escrito que en el original la alianza no da victoria compartida: no lo pude comprobar, así que lo quité; en nuestro juego, si solo quedan aliados, la alianza se rompe.</li>
+    <li><b>Alianzas:</b> cada bot decide según su forma de ser (el Constructor acepta más fácil, el Agresivo casi nunca), si hay un rival en común más fuerte, si está en apuros y si lo atacaste hace poco. Entre preguntas al mismo bot hay que esperar 1 minuto.</li>
+    <li><b>Dúos:</b> en los primeros mapas la pareja quedaba a la misma distancia que un rival; ahora cada pareja tiene su zona del mapa (tu pareja a unas 11-12 casillas y el rival más cerca a más de 21).</li>
+    <li><b>Clasificatoria sin servidores:</b> rivales bots y puntos guardados en tu aparato; desde Oro los rivales juegan en Difícil. «Top jugadores» y «Servidores» siguen para Roblox Studio.</li>
+    <li><b>Gráficas:</b> cada línea lleva el color de su imperio (el mismo de todo el juego), pero dos de esos colores se confunden con daltonismo, así que cada línea también tiene su propio trazo, su nombre al final y la leyenda; además hay una tabla.</li>
+    <li><b>Música:</b> la intensidad de la batalla depende del tiempo real y no de los cuadros por segundo, para que en un iPad lento suene igual.</li>
+    <li><b>Posiciones del final:</b> ahora solo dice «Ganador» si queda un equipo; antes lo ponía aunque otros siguieran en pie.</li>
+    <li><b>Corrección del informe de la v1.0:</b> ahí puse que la misión 5 se ganó 3 de 3, pero esa medición se hizo antes del último ajuste de la radiación. Con el código final de la v1.0 (igual que en la v1.1) el piloto la gana 2 de 3: en una semilla lanza un misil, la radiación ya no quema tanto el Núcleo y el rival lo vence a los 26 min. La misión se sigue pudiendo ganar.</li>
+    <li><b>Marcador en celular horizontal:</b> se salía por abajo en pantallas muy bajas; ahora se desplaza.</li>
+    <li><b>Halloween:</b> no se agregaron decoraciones de temporada porque ya pasó la fecha.</li>
+    <li><b>Tamaño:</b> 2.37 MB (meta: menos de 3,5 MB).</li>
   </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v1.1, probar cada parte y entregarte el PDF con los resultados.</p>
+  <p>Jugar la v1.1 en tu iPad: probar aliarte en Conquista, jugar Dúos y la Clasificatoria, escuchar la música y, si pierdes, seguir mirando. Dime qué más le ves que falta.</p>
 </section>
 
 </body>
