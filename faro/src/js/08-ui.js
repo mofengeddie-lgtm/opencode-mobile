@@ -123,12 +123,25 @@ class UI {
     $('btn-pause').addEventListener('click', () => app.togglePause(true));
     $('btn-resume').addEventListener('click', () => app.togglePause(false));
     $('btn-restart').addEventListener('click', () => app.startGame());
+    $('btn-spec-exit').addEventListener('click', () => app.toMenu());
     $('btn-quit').addEventListener('click', () => app.toMenu());
     $('btn-fps').addEventListener('click', () => app.toggleFps());
     app.toggleFps(app.showFps);
     document.querySelectorAll('[data-quality]').forEach((b) => {
       b.addEventListener('click', () => app.setQuality(b.dataset.quality));
     });
+    // Música (v1.1): volumen en la pausa y botón en el vestíbulo.
+    document.querySelectorAll('[data-music]').forEach((b) => {
+      b.addEventListener('click', () => { app.sound.unlock(); app.music.setLevel(Number(b.dataset.music)); this.updateMusicBtns(); });
+    });
+    $('btn-music-lobby').addEventListener('click', () => {
+      app.sound.unlock();
+      const lv = app.music.level > 0 ? 0 : 0.6;
+      app.music.setLevel(lv);
+      if (lv > 0) app.music.play(app.state === 'play' ? 'battle' : 'lobby');
+      this.updateMusicBtns();
+    });
+    this.updateMusicBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
         app.sound.toggle();
@@ -233,7 +246,11 @@ class UI {
     $('players').addEventListener('click', () => this.togglePop('score'));
     $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
     for (const id of ['econ', 'score']) {
-      $(id).addEventListener('click', (e) => { if (e.target.closest('[data-close]')) this.togglePop(null); });
+      $(id).addEventListener('click', (e) => {
+        if (e.target.closest('[data-close]')) this.togglePop(null);
+        const ab = e.target.closest('[data-ally]');
+        if (ab) this.allyAction(ab.dataset.ally, Number(ab.dataset.pid));
+      });
     }
 
     const mm = $('minimap');
@@ -253,6 +270,15 @@ class UI {
     mm.addEventListener('pointermove', (e) => { if (this.mmDrag) moveCam(e); });
     mm.addEventListener('pointerup', () => { this.mmDrag = false; });
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
+  }
+
+  updateMusicBtns() {
+    const lv = this.app.music.level;
+    document.querySelectorAll('[data-music]').forEach((b) => b.classList.toggle('gold', Number(b.dataset.music) === lv));
+    const lb = $('btn-music-lobby');
+    lb.classList.toggle('off', lv === 0);
+    lb.setAttribute('aria-pressed', String(lv > 0));
+    lb.title = lv > 0 ? 'Música: sí (toca para apagarla)' : 'Música: no (toca para encenderla)';
   }
 
   updateSoundBtn() {
@@ -377,6 +403,51 @@ class UI {
     if (msg.toMe) this.app.sound.play('alarm');
   }
 
+  // ---------- alianzas y órdenes a los aliados (v1.1) ----------
+  allyAction(kind, pid) {
+    const app = this.app;
+    const g = app.game;
+    if (!g) return;
+    if (kind === 'ask') {
+      const res = g.proposeAlliance(0, pid);
+      this.toast(res.text, res.ok ? 'good' : 'bad');
+      app.sound.play(res.ok ? 'ready' : 'error');
+    } else if (kind === 'break') {
+      if (this.breakArm !== pid) {
+        this.breakArm = pid;
+        this.toast(`¿Romper la alianza con ${g.players[pid].name}? Toca «Romper» otra vez`, 'bad');
+        setTimeout(() => { if (this.breakArm === pid) this.breakArm = null; }, 4000);
+        return;
+      }
+      this.breakArm = null;
+      const err = g.breakAlliance(0);
+      if (err) this.toast(err, 'bad');
+      else {
+        g.say(pid, 'Rompiste la alianza. Ahora somos rivales otra vez.', { force: true, toMe: true });
+        this.toast(`Ya no eres aliado de ${g.players[pid].name}`, 'info');
+      }
+    } else if (kind === 'help' || kind === 'attack') {
+      this.allyOrder(kind);
+      return;
+    }
+    this.renderPop();
+  }
+
+  allyOrder(kind) {
+    const app = this.app;
+    const g = app.game;
+    const bots = g.bots.filter((b) => b.p.alive && b.p.team === g.players[0].team && b.pid !== 0);
+    if (!bots.length) return;
+    if (kind === 'help') {
+      const n = bots.reduce((a, b) => a + b.answerHelp(0), 0);
+      this.toast(n ? `Tus aliados mandan ${n} tropas a tu base` : 'Tus aliados no tienen tropas libres', n ? 'good' : 'bad');
+      app.sound.play('order');
+    } else {
+      this.togglePop(null);
+      app.input.startPlacement({ kind: 'allyattack' });
+    }
+  }
+
   // ---------- desglose de economía y marcador ----------
   togglePop(which, sub) {
     const same = this.pop === which && this.popSub === sub;
@@ -449,11 +520,21 @@ class UI {
       const pts = g.points.filter((pt) => pt.owner === p.id).length;
       const role = p.human ? '—' : PERSONALITIES[p.persona].name;
       const rel = p.id === 0 ? '' : p.team === myTeam ? ' · aliado' : '';
+      // v1.1: alianzas en los modos de todos contra todos.
+      const canAlly = g.alliancesAllowed() && p.id !== 0 && p.alive && g.players[0].alive;
+      const allyBtn = !canAlly ? '' : p.team === myTeam
+        ? `<button class="btn mini danger" type="button" data-ally="break" data-pid="${p.id}">Romper</button>`
+        : `<button class="btn mini" type="button" data-ally="ask" data-pid="${p.id}">Aliarse</button>`;
       return `<tr class="${p.alive ? '' : 'dead'}" data-pid="${p.id}"><td><i class="dot" style="background:${hexColor(p.color)}"></i>${esc(p.name)}</td>
-        <td>${esc(role)}${rel}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
+        <td>${esc(role)}${rel}${allyBtn}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
         <td class="n">${army}</td><td class="n">${blds}</td><td class="n">${p.alive ? '+' + fmt(p.income) : '—'}</td><td class="n">${pts}</td></tr>`;
     }).join('');
-    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
+    const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === myTeam) && g.players[0].alive;
+    const orders = hasAllies ? `<div class="allyorders"><span>A tus aliados:</span>
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">¡Ayuda!</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">¡Ataquemos!</button></div>` : '';
+    const hint = g.alliancesAllowed() ? '<p class="allyhint">Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.</p>' : '';
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>${orders}${hint}
       <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
       <tbody>${rows}</tbody></table></div>`;
   }
@@ -602,6 +683,8 @@ class UI {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+    } else if (p.kind === 'allyattack') {
+      text = 'Toca un edificio, una tropa o el territorio del <b>rival</b> que quieres atacar con tus aliados';
     } else if (p.kind === 'bombzone') {
       text = `Toca la <b>zona a bombardear</b>: ${p.units.length} ${p.units.length === 1 ? 'Bombardero va' : 'Bombarderos van'} atacando los edificios que encuentren`;
     } else if (p.kind === 'nuke3') {
@@ -842,6 +925,7 @@ class UI {
     if (b.type === 'antinuke' && b.built) {
       const ready = g.time >= (b.chargeAt || 0);
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
+      html += `<div class="queue">Defensa de punto: derriba misiles y cohetes enemigos a ${b.def.pointDefense.range} casillas · derribados: <b>${b.pdKills || 0}</b></div>`;
     }
     const acts = [];
     if (own && b.built && !b.upgrading && b.level < maxLv) {
@@ -1338,6 +1422,44 @@ class UI {
     if (next) next.addEventListener('click', () => this.app.startMission(Number(next.dataset.v)));
     $('btn-menu').addEventListener('click', () => this.app.toMenu());
     $('btn-watch').addEventListener('click', () => { $('end').hidden = true; });
+    const spec = $('btn-spectate');
+    if (spec) spec.addEventListener('click', () => this.app.spectate());
+    this.bindHistory(g);
+  }
+
+  // Gráficas del final: línea vertical y valores del momento al pasar el dedo o el ratón.
+  bindHistory(g) {
+    const H = g.history || [];
+    document.querySelectorAll('#enddialog .histchart').forEach((fig) => {
+      const key = fig.dataset.key;
+      const svg = fig.querySelector('svg');
+      const tip = fig.querySelector('.histtip');
+      const cross = fig.querySelector('.hcross');
+      const vb = svg.viewBox.baseVal;
+      const L = 40;
+      const R = 64;
+      const tMax = Math.max(H[H.length - 1].t, 1);
+      const show = (ev) => {
+        const r = svg.getBoundingClientRect();
+        const sx = ((ev.clientX - r.left) / r.width) * vb.width;
+        const t = clamp((sx - L) / (vb.width - L - R), 0, 1) * tMax;
+        let best = H[0];
+        for (const h of H) if (Math.abs(h.t - t) < Math.abs(best.t - t)) best = h;
+        const cx = L + (best.t / tMax) * (vb.width - L - R);
+        cross.setAttribute('x1', cx);
+        cross.setAttribute('x2', cx);
+        cross.setAttribute('visibility', 'visible');
+        const rows = g.players.map((p) => ({ p, v: best[key][p.id] })).sort((a, b) => b.v - a.v);
+        tip.innerHTML = `<b>${fmtTime(best.t)}</b>` + rows.map((x) => `<span><i style="background:${cssColor(x.p.color)}"></i>${esc(x.p.name)}<em>${fmt(x.v)}</em></span>`).join('');
+        tip.hidden = false;
+        const px = (cx / vb.width) * r.width;
+        tip.style.left = `${Math.min(r.width - 150, Math.max(0, px + 10))}px`;
+      };
+      const hide = () => { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); };
+      svg.addEventListener('pointermove', show);
+      svg.addEventListener('pointerdown', show);
+      svg.addEventListener('pointerleave', hide);
+    });
   }
 }
 
@@ -1371,6 +1493,10 @@ class Sound {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+    if (this.ctx && !this.unlocked) {
+      this.unlocked = true;
+      if (this.onUnlock && this.on) this.onUnlock();
+    }
   }
 
   toggle() {
@@ -1379,6 +1505,7 @@ class Sound {
       localStorage.setItem('faro-sound', this.on ? 'on' : 'off');
     } catch (err) { /* sin almacenamiento */ }
     if (this.on) this.unlock();
+    if (this.onToggle) this.onToggle();
   }
 
   // Límite de voces: si ya suenan muchas, los sonidos nuevos menos importantes se saltan.

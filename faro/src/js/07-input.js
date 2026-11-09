@@ -455,7 +455,7 @@ class Input {
       const comp = g.cells[u.cell].comp;
       cells = g.cells.filter((c) => !g.foundInvalid(0, c.i, u.def.founds) &&
         (u.mover !== 'land' || c.comp === comp)).map((c) => c.i);
-    } else if (p.kind === 'rally' || p.kind === 'bombzone') {
+    } else if (p.kind === 'rally' || p.kind === 'bombzone' || p.kind === 'allyattack') {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
@@ -516,6 +516,25 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
+      this.cancelPlacement();
+    } else if (p.kind === 'allyattack') {
+      // El rival es el dueño de lo que tocaste: edificio, tropa cercana o territorio.
+      let pid = cell.bld && cell.bld.alive ? cell.bld.owner : -1;
+      if (pid < 0) {
+        const u = g.units.find((x) => x.alive && Math.hypot(x.x - cell.x, x.z - cell.z) < 1.2 && g.isEnemy(0, x.owner));
+        if (u) pid = u.owner;
+      }
+      if (pid < 0 && cell.owner >= 0) pid = cell.owner;
+      if (pid < 0 || !g.isEnemy(0, pid)) {
+        this.app.ui.toast('Toca algo de un rival', 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      const bots = g.bots.filter((b) => b.p.alive && b.p.team === g.players[0].team && b.pid !== 0);
+      const n = bots.reduce((a, b) => a + b.answerAttack(pid), 0);
+      this.r.addMoveMarker(cell.i, 0xff4040);
+      this.app.ui.toast(`Tus aliados atacan a ${g.players[pid].name}${n ? ` con ${n} tropas` : ''}`, 'good');
+      this.app.sound.play('order');
       this.cancelPlacement();
     } else if (p.kind === 'bombzone') {
       const bombers = p.units.filter((u) => u.alive);

@@ -121,6 +121,26 @@ function cssColor(c) {
 }
 
 // ---------- perfil del jugador ----------
+// Trazo de cada imperio en las gráficas del final (además del color): Tú, línea continua.
+const HIST_DASH = ['', '7 4', '2 4', '10 3 2 3', '4 3', '1 3'];
+
+// Clasificatoria (v1.1): 10 rangos propios, 100 puntos cada uno. Ganar suma 25 y perder resta 15.
+const RANKS = ['Bronce I', 'Bronce II', 'Bronce III', 'Plata I', 'Plata II', 'Plata III', 'Oro I', 'Oro II', 'Oro III', 'Ámbar'];
+const RANK_STEP = 100;
+const RANK_WIN = 25;
+const RANK_LOSS = 15;
+const RANK_COLORS = ['#b87333', '#b87333', '#b87333', '#c0c7cf', '#c0c7cf', '#c0c7cf', '#f2c94c', '#f2c94c', '#f2c94c', '#f2ab38'];
+function rankIndex(points) {
+  return Math.min(RANKS.length - 1, Math.floor(Math.max(0, points) / RANK_STEP));
+}
+function rankName(points) {
+  return RANKS[rankIndex(points)];
+}
+// Desde Oro, los rivales de la Clasificatoria juegan en Difícil.
+function rankedDifficulty(points) {
+  return rankIndex(points) >= 6 ? 'hard' : 'normal';
+}
+
 const Profile = {
   data: null,
   memoryOnly: false,
@@ -137,6 +157,7 @@ const Profile = {
       custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
+      ranked: { points: 0, best: 0, games: 0, wins: 0, history: [] },
     };
   },
 
@@ -328,6 +349,8 @@ class Lobby {
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
     // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
+    // Clasificatoria: la dificultad la pone tu rango.
+    if (P.play.mode === 'ranked') return { mode: 'ranked', mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
     return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: P.play.difficulty };
   }
 
@@ -372,7 +395,7 @@ class Lobby {
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
-      ${off('Rangos')}${off('Top jugadores')}${off('Servidores')}
+      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}${off('Top jugadores')}${off('Servidores')}
     </nav>`;
   }
 
@@ -399,6 +422,7 @@ class Lobby {
     if (this.sub === 'custom') return resume + this.customHtml();
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
     if (this.sub === 'campaign') return resume + this.campaignHtml();
+    if (this.sub === 'ranks') return resume + this.ranksHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -412,7 +436,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Comunidad 240', 'Lanzar los 3', 'Radiación', 'Mejorar todo', 'Difícil de verdad'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Alianzas', 'Dúos', 'Clasificatoria', 'Música', 'Espectador'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
       </section>
       <section class="lcard panel">
@@ -423,7 +447,8 @@ class Lobby {
           <button class="btn gold" type="button" data-act="play" id="btn-play">Play</button>
           <button class="btn" type="button" data-act="modal" data-m="maps">Mapa</button>
         </div>
-        <div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>
+        ${P.play.mode === 'ranked' ? `<p class="queue">Clasificatoria · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
+          : `<div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
         <div class="row"><button class="btn" type="button" data-act="reroll">Otra isla</button></div>
       </section>
       <section class="lcard panel">
@@ -506,6 +531,27 @@ class Lobby {
       <p>${done ? 'Ya recibiste el premio. Puedes repetir el tutorial cuando quieras.' : 'El premio se entrega la primera vez que lo terminas.'}</p>
       <div class="row"><button class="btn gold" type="button" data-act="play" id="btn-play-tutorial">Empezar tutorial</button></div>
     </section>`;
+  }
+
+  // Clasificatoria (v1.1): tu rango, el camino de los 10 rangos y tus últimas partidas.
+  ranksHtml() {
+    const R = this.P.ranked;
+    const idx = rankIndex(R.points);
+    const inRank = R.points - idx * RANK_STEP;
+    const top = idx === RANKS.length - 1;
+    const pct = top ? 100 : Math.round((inRank / RANK_STEP) * 100);
+    const ladder = RANKS.map((n, i) => `<li class="${i === idx ? 'on' : i < idx ? 'past' : ''}"><i style="background:${RANK_COLORS[i]}"></i>${n}<small>${i * RANK_STEP}</small></li>`).join('');
+    const hist = (R.history || []).slice(0, 8).map((h) => `<li class="${h.win ? 'win' : 'loss'}"><b>${h.win ? 'Victoria' : 'Derrota'}</b><span>${h.delta >= 0 ? '+' : ''}${h.delta}</span><small>${esc(h.rank)} · ${prettyDate(h.day)}</small></li>`).join('');
+    const diff = DIFFICULTY[rankedDifficulty(R.points)].name;
+    return `<section class="lcard panel ranked">
+        <div class="rankhead"><div class="rankbadge" style="--rk:${RANK_COLORS[idx]}"><b>${RANKS[idx].split(' ')[0][0]}</b></div>
+          <div><small>Tu rango</small><h2 id="rank-name">${RANKS[idx]}</h2><span>${R.points} puntos · mejor: ${rankName(R.best || 0)}</span></div></div>
+        <div class="rankbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+        <p class="queue">${top ? 'Estás en el rango más alto.' : `${RANK_STEP - inRank} puntos para ${RANKS[idx + 1]}.`} Partida 3 vs 3 con aliados bots; rivales en ${diff}. Ganar: +${RANK_WIN} · perder: −${RANK_LOSS}.</p>
+        <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked">Jugar Clasificatoria</button></div>
+      </section>
+      <section class="lcard panel"><h3>Los 10 rangos</h3><ol class="ranklist">${ladder}</ol></section>
+      <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Clasificatoria.</p>'}</section>`;
   }
 
   sideHtml() {
@@ -682,6 +728,12 @@ class Lobby {
       this.syncOpts();
       this.render();
     } else if (act === 'play') {
+      this.syncOpts();
+      app.startGame();
+    } else if (act === 'ranked') {
+      this.P.play.mode = 'ranked';
+      Profile.save();
+      this.sub = 'main';
       this.syncOpts();
       app.startGame();
     } else if (act === 'mission') {
@@ -932,6 +984,19 @@ class Lobby {
         P.campaign.stars[m.id] = got;
       }
     }
+    // Clasificatoria: puntos y rango.
+    if (game.mode.ranked && !game.opts.custom) {
+      const R = P.ranked;
+      const before = R.points;
+      const delta = win ? RANK_WIN : -Math.min(RANK_LOSS, R.points);
+      R.points = Math.max(0, R.points + delta);
+      R.best = Math.max(R.best || 0, R.points);
+      R.games = (R.games || 0) + 1;
+      if (win) R.wins = (R.wins || 0) + 1;
+      R.history = [{ day: dayKey(), win, delta, rank: rankName(R.points) }, ...(R.history || [])].slice(0, 12);
+      out.ranked = { before, after: R.points, delta, from: rankName(before), to: rankName(R.points) };
+      out.lines.push(`Clasificatoria: ${delta >= 0 ? '+' : ''}${delta} puntos · ${out.ranked.from === out.ranked.to ? out.ranked.to : `${out.ranked.from} → ${out.ranked.to}`}`);
+    }
     P.xp += out.xp;
     P.crystals += out.crystals;
     out.level = Profile.level();
@@ -1028,6 +1093,61 @@ class Lobby {
       </div>`;
   }
 
+  // ---------- gráficas del final (v1.1) ----------
+  // Dos gráficas (no un solo eje doble): monedas por minuto y tropas de combate de cada imperio.
+  // Cada línea tiene el color de su imperio y además su propio trazo y su nombre al final.
+  historyHtml(game) {
+    const H = game.history || [];
+    if (H.length < 2) return '';
+    const ids = game.players.map((p) => p.id);
+    return `<h3 class="lbl">Cómo fue la partida</h3>
+      <div class="histcharts">${this.historyChart(game, 'inc', 'Monedas por minuto')}${this.historyChart(game, 'army', 'Tropas de combate')}</div>
+      <div class="histlegend">${ids.map((i) => `<span><svg width="26" height="8" aria-hidden="true"><line x1="1" y1="4" x2="25" y2="4" stroke="${cssColor(game.players[i].color)}" stroke-width="2" stroke-dasharray="${HIST_DASH[i]}" stroke-linecap="round"/></svg>${esc(game.players[i].name)}</span>`).join('')}</div>
+      <details class="histtable"><summary>Ver como tabla</summary><table><thead><tr><th>Imperio</th><th>Monedas/min (final)</th><th>Monedas/min (máx.)</th><th>Tropas (máx.)</th></tr></thead><tbody>
+        ${ids.map((i) => `<tr><td>${esc(game.players[i].name)}</td><td>${fmt(H[H.length - 1].inc[i])}</td><td>${fmt(Math.max(...H.map((h) => h.inc[i])))}</td><td>${Math.max(...H.map((h) => h.army[i]))}</td></tr>`).join('')}
+      </tbody></table></details>`;
+  }
+
+  historyChart(game, key, title) {
+    const H = game.history;
+    const W = 560;
+    const Ht = 170;
+    const L = 40;
+    const R = 64;
+    const T = 10;
+    const B = 22;
+    const tMax = Math.max(H[H.length - 1].t, 1);
+    const vMax = Math.max(1, ...H.map((h) => Math.max(...h[key])));
+    const nice = Math.pow(10, Math.floor(Math.log10(vMax)));
+    const yMax = Math.ceil(vMax / nice) * nice;
+    const x = (t) => L + (t / tMax) * (W - L - R);
+    const y = (v) => T + (1 - v / yMax) * (Ht - T - B);
+    const grid = [0, 0.5, 1].map((k) => `<line x1="${L}" x2="${W - R}" y1="${y(yMax * k)}" y2="${y(yMax * k)}" class="hgrid"/>
+      <text x="${L - 6}" y="${y(yMax * k) + 4}" text-anchor="end" class="haxis">${fmt(Math.round(yMax * k))}</text>`).join('');
+    const mins = Math.max(1, Math.round(tMax / 60));
+    const step = mins > 20 ? 10 : mins > 8 ? 5 : mins > 3 ? 2 : 1;
+    let xt = '';
+    for (let m = 0; m * 60 <= tMax; m += step) xt += `<text x="${x(m * 60)}" y="${Ht - 6}" text-anchor="middle" class="haxis">${m} min</text>`;
+    // Nombres al final de cada línea; si se tocan, se separan un poco.
+    const ends = game.players.map((p) => ({ id: p.id, v: H[H.length - 1][key][p.id] })).sort((a, b) => b.v - a.v);
+    let lastY = -99;
+    const labels = ends.map((e) => {
+      let ly = y(e.v) + 4;
+      if (ly - lastY < 11) ly = lastY + 11;
+      lastY = ly;
+      return `<text x="${W - R + 6}" y="${ly}" class="hend">${esc(game.players[e.id].name)}</text>`;
+    }).join('');
+    const lines = game.players.map((p) => {
+      const pts = H.map((h) => `${x(h.t).toFixed(1)},${y(h[key][p.id]).toFixed(1)}`).join(' ');
+      return `<polyline points="${pts}" fill="none" stroke="${cssColor(p.color)}" stroke-width="${p.id === 0 ? 2.5 : 2}" stroke-dasharray="${HIST_DASH[p.id]}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }).join('');
+    return `<figure class="histchart" data-key="${key}"><figcaption>${title}</figcaption>
+      <div class="histwrap"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${title} de cada imperio a lo largo de la partida">
+        ${grid}${xt}${lines}${labels}<line class="hcross" x1="0" x2="0" y1="${T}" y2="${Ht - B}" visibility="hidden"/>
+        <rect class="hhit" x="${L}" y="${T}" width="${W - L - R}" height="${Ht - T - B}" fill="transparent"/></svg>
+        <div class="histtip" hidden></div></div></figure>`;
+  }
+
   endHtml(game) {
     if (game.camp) return this.missionEndHtml(game);
     const r = this.finish(game);
@@ -1035,9 +1155,10 @@ class Lobby {
     const s = me.stats;
     const win = game.result === 'victory';
     const pos = this.positions(game);
+    const winnerName = game.spectateWinner >= 0 && game.players[game.spectateWinner] ? game.players[game.spectateWinner].name : null;
     const text = game.kingWinner !== undefined
       ? (win ? `Tu equipo mantuvo el Faro ${fmtTime(KING_TIME)}.` : 'Otro imperio mantuvo el Faro el tiempo necesario.')
-      : (win ? 'Todos los Núcleos rivales cayeron. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido.');
+      : (win ? 'Todos los Núcleos rivales cayeron. El archipiélago es tuyo.' : winnerName ? `Tu Núcleo fue destruido. Seguiste mirando: ganó ${winnerName}.` : 'Tu Núcleo fue destruido.');
     const prizes = r.creator
       ? '<div><b>Modo creador</b><span>Sin XP ni cristales</span></div>'
       : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
@@ -1059,8 +1180,10 @@ class Lobby {
       ${r.missions.length ? `<div class="advice">Misiones completadas: ${r.missions.map(esc).join(', ')}</div>` : ''}
       ${r.tutorial ? `<div class="advice">Premio del Tutorial: ${esc(r.tutorial)}</div>` : ''}
       ${win ? '' : `<div class="advice"><b>Consejo:</b> ${esc(this.advice(game))}</div>`}
+      ${this.historyHtml(game)}
       <div class="row">
-        <button class="btn" type="button" id="btn-watch">Mirar el final</button>
+        ${game.canSpectate() ? '<button class="btn" type="button" id="btn-spectate">Seguir mirando</button>' : ''}
+        <button class="btn" type="button" id="btn-watch">Mirar el mapa</button>
         <button class="btn gold" type="button" id="btn-again">Revancha</button>
         <button class="btn" type="button" id="btn-menu">Vestíbulo</button>
       </div>`;

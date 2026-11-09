@@ -36,6 +36,9 @@ class Game {
     this.projectiles = [];
     // Zonas de radiación del misil nuclear (v1.0).
     this.radZones = [];
+    // Historia de la partida para las gráficas del final (v1.1): cada 10 s, monedas/min y ejército.
+    this.history = [];
+    this._histT = 0;
     this.removed = [];
     this.fx = [];
     this.events = [];
@@ -50,7 +53,7 @@ class Game {
     this.players = [];
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
-        id: i, team: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
+        id: i, team: mode.teams[i], team0: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
         coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
         human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
         emergencyUsed: false, dome: null,
@@ -109,6 +112,90 @@ class Game {
   // ---------- consultas básicas ----------
   isEnemy(a, b) {
     return this.players[a].team !== this.players[b].team;
+  }
+
+  // ---------- alianzas (v1.1, modos de todos contra todos) ----------
+  alliancesAllowed() {
+    return !!this.mode.alliances && !this.camp && !this.mode.tutorial;
+  }
+
+  // Fuerza aproximada de un imperio: vida de su ejército y de sus edificios.
+  strengthOf(pid) {
+    let s = 0;
+    for (const u of this.units) if (u.alive && u.owner === pid && u.def.weapon) s += u.hp;
+    for (const b of this.buildings) if (b.alive && b.owner === pid) s += b.hp * 0.25;
+    return s;
+  }
+
+  // El bot decide si acepta la alianza; devuelve { ok, text } con su respuesta.
+  proposeAlliance(from, to) {
+    const A = this.players[from];
+    const B = this.players[to];
+    if (!this.alliancesAllowed()) return { ok: false, text: 'En este modo no hay alianzas' };
+    if (!B || !B.alive || !A.alive || from === to) return { ok: false, text: 'Ese imperio ya no está' };
+    if (A.team === B.team) return { ok: false, text: `${B.name} ya es tu aliado` };
+    A.allyAsk = A.allyAsk || {};
+    if (this.time - (A.allyAsk[to] ?? -999) < 60) return { ok: false, text: `${B.name}: «Ya te contesté. Pregúntame más tarde.»` };
+    A.allyAsk[to] = this.time;
+    const teams = new Set(this.players.filter((p) => p.alive).map((p) => p.team));
+    if (teams.size <= 2) return this.allyNo(to, 'Solo quedamos nosotros: uno tiene que ganar.');
+    if (this.time - ((B.hurtBy || {})[from] ?? -999) < 90) return this.allyNo(to, 'Hace poco me atacaste. No confío en ti.');
+    // Ganas de aliarse: según su forma de ser, si tienen un rival en común más fuerte y si está en apuros.
+    const base = { aggro: 0.3, admiral: 0.45, builder: 0.65, keeper: 0.55 }[B.persona] ?? 0.5;
+    const sA = this.strengthOf(from);
+    const sB = this.strengthOf(to);
+    let score = base;
+    const strongest = this.players.filter((p) => p.alive && p.team !== A.team && p.team !== B.team)
+      .reduce((m, p) => Math.max(m, this.strengthOf(p.id)), 0);
+    if (strongest > Math.max(sA, sB)) score += 0.25;
+    if (this.time - (B.underAttackAt ?? -999) < 45) score += 0.2;
+    if (sA > sB * 2.2) score -= 0.25;
+    if (score < 0.6) return this.allyNo(to, B.persona === 'aggro' ? 'Yo peleo solo.' : 'Todavía no. Muéstrame que vale la pena.');
+    this.formAlliance(from, to);
+    this.say(to, 'Trato hecho: ahora somos aliados. ¡Vamos por los demás!', { force: true, toMe: true });
+    return { ok: true, text: `${B.name} aceptó la alianza` };
+  }
+
+  allyNo(pid, text) {
+    this.say(pid, text, { force: true, toMe: true });
+    return { ok: false, text: `${this.players[pid].name}: «${text}»` };
+  }
+
+  // Une a «b» (y a sus aliados) al equipo de «a».
+  formAlliance(a, b) {
+    const ta = this.players[a].team;
+    const tb = this.players[b].team;
+    for (const p of this.players) if (p.team === tb) p.team = ta;
+    this.allianceChanged();
+    this.emit('alliance', { a, b, ok: true });
+  }
+
+  // «pid» sale de su alianza y vuelve a su equipo de siempre.
+  breakAlliance(pid, by = pid) {
+    const p = this.players[pid];
+    if (!this.alliancesAllowed()) return 'En este modo no hay alianzas';
+    const mates = this.players.filter((q) => q.id !== pid && q.team === p.team);
+    if (!mates.length) return 'No tienes aliados';
+    p.team = p.team0;
+    // Si su equipo era el de la alianza, los demás toman el equipo del primero de ellos.
+    if (mates.some((q) => q.team === p.team0)) {
+      const t = mates[0].team0;
+      for (const q of mates) q.team = t;
+    }
+    this.allianceChanged();
+    this.emit('alliance', { a: pid, ok: false, by });
+    return null;
+  }
+
+  allianceChanged() {
+    // Nadie sigue atacando a un nuevo aliado; la vista compartida se recalcula.
+    for (const u of this.units) {
+      if (u.target && u.target.alive !== undefined && !this.isEnemy(u.owner, u.target.owner)) { u.target = null; if (u.state === 'attack') u.state = 'idle'; }
+      if (u.autoTarget && !this.isEnemy(u.owner, u.autoTarget.owner)) u.autoTarget = null;
+    }
+    for (const b of this.buildings) if (b.autoTarget && !this.isEnemy(b.owner, b.autoTarget.owner)) b.autoTarget = null;
+    this.territoryDirty = true;
+    this.allianceVersion = (this.allianceVersion || 0) + 1;
   }
 
   emit(type, data) {
@@ -1149,6 +1236,13 @@ class Game {
   damage(t, dmg, src, srcEnt) {
     if (!t.alive || dmg <= 0) return;
     if (srcEnt) this.noteFight(t);
+    // v1.1: quién atacó a quién (para las alianzas).
+    if (src >= 0 && src !== t.owner && this.players[t.owner]) {
+      const tp = this.players[t.owner];
+      tp.hurtBy = tp.hurtBy || {};
+      tp.hurtBy[src] = this.time;
+      tp.underAttackAt = this.time;
+    }
     if (t.owner === 0 && srcEnt) {
       const k = srcEnt.kind === 'bld' ? 'bld' : srcEnt.type;
       const hb = this.players[0].stats.hitBy;
@@ -1281,17 +1375,48 @@ class Game {
   checkEnd() {
     if (this.over) return;
     const me = this.players[0];
+    const alive = this.players.filter((p) => p.alive);
+    const teams = new Set(alive.map((p) => p.team));
+    // v1.1: si solo quedan aliados de una alianza hecha en la partida, la alianza se rompe: gana uno solo.
+    if (alive.length > 1 && teams.size <= 1 && this.alliancesAllowed() && new Set(alive.map((p) => p.team0)).size > 1) {
+      for (const p of alive) p.team = p.team0;
+      this.allianceChanged();
+      const bot = alive.find((p) => !p.human);
+      if (bot) this.say(bot.id, 'Solo quedamos nosotros: se acabó la alianza. ¡Que gane el mejor!', { force: true, public: true });
+      this.emit('toast', { text: 'La alianza se rompió: solo puede quedar un imperio', kind: 'bad' });
+      return;
+    }
+    // v1.1: espectador. Ya perdiste; la partida sigue hasta que queda un solo equipo.
+    if (this.spectating) {
+      if (teams.size <= 1) {
+        this.over = true;
+        this.spectating = false;
+        this.spectateWinner = alive.length ? alive[0].id : -1;
+        this.emit('over', { result: this.result, spectated: true });
+      }
+      return;
+    }
     if (!me.alive) {
       this.over = true;
       this.result = 'defeat';
-    } else {
-      const teams = new Set(this.players.filter((p) => p.alive).map((p) => p.team));
-      if (teams.size <= 1) {
-        this.over = true;
-        this.result = 'victory';
-      }
+    } else if (teams.size <= 1) {
+      this.over = true;
+      this.result = 'victory';
     }
     if (this.over) this.emit('over', { result: this.result });
+  }
+
+  // Al perder, se puede seguir mirando si todavía pelean dos equipos o más.
+  canSpectate() {
+    if (this.result !== 'defeat' || this.camp || this.mode.tutorial) return false;
+    return new Set(this.players.filter((p) => p.alive).map((p) => p.team)).size > 1;
+  }
+
+  startSpectating() {
+    if (!this.canSpectate()) return false;
+    this.spectating = true;
+    this.over = false;
+    return true;
   }
 
   completeObjective(id) {
@@ -1353,6 +1478,7 @@ class Game {
     this.updateProjectiles(dt);
     this.updateRadiation(dt);
     this.updateAutoUpgrade(dt);
+    this.recordHistory(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
     if (this.camp) Campaign.update(this, dt);
 
@@ -2038,12 +2164,15 @@ class Game {
 
   updateProjectiles(dt) {
     if (!this.projectiles.length) return;
+    // v1.1: Escudos antimisiles con su defensa de punto lista.
+    const pds = this.buildings.filter((b) => b.alive && b.built && b.def.pointDefense);
     for (const p of this.projectiles) {
       p.time += dt;
       if (p.kind === 'nuke') {
         this.updateNuke(p);
         continue;
       }
+      if (pds.length && (p.kind === 'missile' || p.kind === 'rocket') && this.pointDefend(p, pds)) continue;
       if (p.t.alive && !p.miss) {
         p.tx = p.t.x;
         p.tz = p.t.z;
@@ -2055,6 +2184,27 @@ class Game {
       }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
+  }
+
+  // Defensa de punto (v1.1): derriba en el aire un misil o cohete enemigo cerca del Escudo antimisiles.
+  pointDefend(p, pds) {
+    const k = Math.min(1, p.time / p.dur);
+    const x = p.sx + (p.tx - p.sx) * k;
+    const z = p.sz + (p.tz - p.sz) * k;
+    for (const b of pds) {
+      if (!this.isEnemy(b.owner, p.owner) || this.time < (b.pdReadyAt || 0)) continue;
+      const pd = b.def.pointDefense;
+      if (Math.hypot(x - b.x, z - b.z) > pd.range * SQ3 + 0.5) continue;
+      p.done = true;
+      b.pdReadyAt = this.time + pd.cd;
+      b.pdKills = (b.pdKills || 0) + 1;
+      this.pdKills = (this.pdKills || 0) + 1;
+      const y = (p.sy || 0.5) + ((p.ty || 0) - (p.sy || 0.5)) * k + 0.4;
+      this.fx.push({ k: 'tracer', x1: b.x, y1: b.y + 1.3, z1: b.z, x2: x, y2: y, z2: z, color: 0xffe08a, heavy: true });
+      this.fx.push({ k: 'boom', x, y, z, s: 0.45, small: true });
+      return true;
+    }
+    return false;
   }
 
   // ---------- misil nuclear (v0.9) ----------
@@ -2175,6 +2325,18 @@ class Game {
     if (p.owner === 0 || near0) {
       this.emit('toast', { text: `Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
     }
+  }
+
+  // Gráficas del final (v1.1): una muestra cada 10 s (a lo sumo 240; si sobran, se juntan de a dos).
+  recordHistory(dt) {
+    if (!this.history) this.history = [];
+    this._histT = (this._histT || 0) - dt;
+    if (this._histT > 0) return;
+    this._histT = 10;
+    const army = this.players.map(() => 0);
+    for (const u of this.units) if (u.alive && u.def.weapon) army[u.owner]++;
+    this.history.push({ t: Math.round(this.time), inc: this.players.map((p) => (p.alive ? p.income : 0)), army });
+    if (this.history.length > 240) this.history = this.history.filter((_, i) => i % 2 === 0);
   }
 
   // Radiación (v1.0): cada medio segundo quema a tropas y edificios enemigos dentro de la zona.

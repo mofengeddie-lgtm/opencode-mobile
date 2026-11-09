@@ -112,6 +112,9 @@ const Save = {
     // Los datos de cada edificio y tropa vuelven a apuntar a la configuración actual.
     for (const b of game.buildings) if (BUILDINGS[b.type]) b.def = BUILDINGS[b.type];
     for (const u of game.units) if (UNITS[u.type]) u.def = UNITS[u.type];
+    // Partidas guardadas antes de la v1.1: equipo de origen para las alianzas.
+    for (const p of game.players) if (p.team0 === undefined) p.team0 = p.team;
+    if (!game.radZones) game.radZones = [];
     game.territoryDirty = true;
     return game;
   },

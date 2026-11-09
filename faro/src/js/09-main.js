@@ -59,6 +59,10 @@ const App = {
     }
     Thumbs.init();
     this.sound = new Sound();
+    // Música propia (v1.1): empieza con el primer toque (los navegadores no dejan antes).
+    this.music = new Music(this.sound);
+    this.sound.onUnlock = () => this.music.play(this.state === 'play' ? 'battle' : 'lobby');
+    this.sound.onToggle = () => { if (this.sound.on) this.music.play(this.state === 'play' ? 'battle' : 'lobby'); else this.music.stop(); this.music.refreshVolume(); };
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
     this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
       this.modelCount = n;
@@ -77,14 +81,14 @@ const App = {
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('dblclick', (e) => e.preventDefault());
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.state === 'play' && !this.game.over) {
+      if (document.hidden && this.state === 'play' && !this.game.over && !this.game.spectating) {
         this.togglePause(true);
         Save.write(this.game);
       }
     });
     // Si se cierra la pestaña sin querer, la partida queda guardada.
     window.addEventListener('pagehide', () => {
-      if (this.state === 'play' && this.game && !this.game.over) Save.write(this.game);
+      if (this.state === 'play' && this.game && !this.game.over && !this.game.spectating) Save.write(this.game);
     });
     this.last = performance.now();
     requestAnimationFrame((t) => this.loop(t));
@@ -159,6 +163,7 @@ const App = {
     this.selection = [];
     this.paused = false;
     this.state = 'play';
+    if (this.music) this.music.play('battle');
     this.saveT = 15;
     this.ui.showScreen('play');
     this.ui.startHud();
@@ -167,12 +172,26 @@ const App = {
   },
 
   // Salir al menú no borra la partida (punto 16): queda en pausa para «Volver a la partida».
+  // v1.1: después de perder, sigue la partida hasta el final para mirarla.
+  spectate() {
+    const g = this.game;
+    if (!g || !g.startSpectating()) return;
+    $('end').hidden = true;
+    this.setSelection([]);
+    this.input.cancelPlacement();
+    document.body.classList.add('spectating');
+    $('specbar').hidden = false;
+    this.ui.toast('Modo espectador: ves el resto de la partida', 'info');
+  },
+
   toMenu() {
     clearTimeout(this.endTimer);
     this.input.cancelPlacement();
+    document.body.classList.remove('spectating');
+    $('specbar').hidden = true;
     const g = this.game;
     if (g && !g.preview) {
-      if (g.over) {
+      if (g.over || g.spectating) {
         this.lobby.finish(g);
         this.suspended = null;
         Save.clear();
@@ -184,6 +203,7 @@ const App = {
     this.state = 'menu';
     this.paused = false;
     $('pause').hidden = true;
+    if (this.music) this.music.play('lobby');
     if (!this.suspended) {
       // Después de una misión, el fondo del vestíbulo vuelve a la isla de «Jugar».
       if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
@@ -416,6 +436,8 @@ const App = {
       else if (ev.type === 'built' || ev.type === 'spawned') this.ui.selSig = '';
       else if (ev.type === 'upgraded' && ev.lines && ev.lines.length) this.ui.upgradeCard(ev.b, ev.level, ev.lines);
       else if (ev.type === 'over') {
+        document.body.classList.remove('spectating');
+        $('specbar').hidden = true;
         Save.clear();
         this.lobby.finish(g);
         this.endTimer = setTimeout(() => this.ui.showEnd(ev.result), 1600);
@@ -458,11 +480,21 @@ const App = {
         }
         this.renderer.frame(this.paused ? 0 : dt, this.time, this.selection);
         this.ui.updateEdges();
+        // Música: más intensa si te atacan o si tus tropas pelean.
+        this.musicT = (this.musicT || 0) - dt;
+        if (this.musicT <= 0 && this.music) {
+          this.musicT = 0.5;
+          const g = this.game;
+          const me = g.players[0];
+          const fighting = g.time - (me.underAttackAt ?? -99) < 8 || g.units.some((u) => u.owner === 0 && u.alive && u.autoTarget && u.autoTarget.alive);
+          this.musicFight = fighting ? 1 : 0;
+        }
+        if (this.music) this.music.setIntensity(this.musicFight || 0);
         // Guardado automático cada 15 s.
         this.saveT -= dt;
         if (this.saveT <= 0) {
           this.saveT = 15;
-          if (!this.game.over) Save.write(this.game);
+          if (!this.game.over && !this.game.spectating) Save.write(this.game);
         }
         this.ui.update(dt);
         this.miniT -= dt;

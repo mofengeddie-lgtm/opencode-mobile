@@ -387,6 +387,50 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.ranked .rankhead { display: flex; gap: 14px; align-items: center; }
+.rankbadge { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 18px; display: grid; place-items: center; background: radial-gradient(circle at 30% 25%, #fff6, transparent 55%), var(--rk); box-shadow: 0 4px 14px rgba(0,0,0,0.35), inset 0 0 0 3px rgba(255,255,255,0.25); transform: rotate(45deg); }
+.rankbadge b { transform: rotate(-45deg); font-family: var(--font-display); font-size: 26px; color: #1a1206; }
+.ranked h2 { margin: 2px 0; }
+.ranked small { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.rankbar { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.rankbar i { display: block; height: 100%; background: linear-gradient(90deg, #f2ab38, #ffd27a); }
+.ranklist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+.ranklist li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); font-size: 13px; opacity: 0.6; }
+.ranklist li.past { opacity: 0.85; }
+.ranklist li.on { opacity: 1; outline: 2px solid #f2ab38; font-weight: 700; }
+.ranklist li i { width: 12px; height: 12px; border-radius: 3px; transform: rotate(45deg); }
+.ranklist li small { margin-left: auto; color: var(--muted); }
+.rankhist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rankhist li { display: grid; grid-template-columns: 90px 50px 1fr; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
+.rankhist li.win span { color: #8ff0a4; }
+.rankhist li.loss span { color: #ffb4b5; }
+.seg4 { grid-template-columns: repeat(4, 1fr) !important; }
+.musicbtn.off { opacity: 0.5; }
+.musicbtn.off svg { stroke-dasharray: 2 2; }
+#specbar { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); z-index: 7; display: flex; gap: 10px; align-items: center; padding: 8px 12px; max-width: calc(100% - 32px); flex-wrap: wrap; justify-content: center; font-size: 13px; }
+body.spectating #buildpanel, body.spectating #btn-build, body.spectating #selpanel, body.spectating #prodbar, body.spectating #groups, body.spectating #quick, body.spectating #objectives { display: none !important; }
+.histcharts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.histchart { margin: 0; padding: 8px; border-radius: 10px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); }
+.histchart figcaption { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
+.histwrap { position: relative; }
+.histchart svg { width: 100%; height: auto; display: block; touch-action: none; }
+.histchart .hgrid { stroke: rgba(255,255,255,0.08); stroke-width: 1; }
+.histchart .haxis { fill: var(--muted); font-size: 10px; }
+.histchart .hend { fill: var(--text); font-size: 10px; }
+.histchart .hcross { stroke: rgba(255,255,255,0.45); stroke-width: 1; stroke-dasharray: 3 3; }
+.histtip { position: absolute; top: 4px; min-width: 140px; padding: 6px 8px; border-radius: 8px; background: rgba(8,12,18,0.94); border: 1px solid var(--line); font-size: 11.5px; display: grid; gap: 2px; pointer-events: none; }
+.histtip span { display: flex; align-items: center; gap: 6px; }
+.histtip i { width: 8px; height: 8px; border-radius: 2px; }
+.histtip em { margin-left: auto; font-style: normal; font-variant-numeric: tabular-nums; }
+.histlegend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--text); margin: 6px 0; }
+.histlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.histtable summary { cursor: pointer; font-size: 12.5px; color: var(--muted); margin: 4px 0; }
+.histtable table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.histtable td, .histtable th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); }
+.btn.mini { min-height: 30px; padding: 0 10px; font-size: 12px; margin-left: 8px; }
+.allyorders { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; font-size: 12.5px; color: var(--muted); }
+.allyorders .btn.mini { margin-left: 0; min-height: 36px; }
+.allyhint { margin: 0; padding: 0 10px 6px; font-size: 12px; color: var(--muted); }
 .planecard { display: flex; gap: 10px; align-items: center; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8,15,21,0.35); }
 .planecard img { width: 46px; height: 46px; flex: 0 0 46px; }
 .planecard .numbers { grid-template-columns: auto auto; gap: 2px 12px; font-size: 12px; }
@@ -766,6 +810,8 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     </div>
   </div>
   <div id="boxsel" hidden></div>
+  <div id="specbar" class="panel" hidden><span><b>Modo espectador</b> · ves el resto de la partida hasta que haya ganador</span>
+    <button class="btn" type="button" id="btn-spec-exit">Salir al vestíbulo</button></div>
 </div>
 
 <div id="menu" class="screen lobby">
@@ -773,7 +819,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.0</span>
+      <span class="version">v1.1</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -781,6 +827,8 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
       <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
     </nav>
     <div class="lobby-res">
+      <button class="btn icon musicbtn" id="btn-music-lobby" type="button" aria-label="Música">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
       <span class="creator-badge" id="creator-badge" hidden>Creador</span>
       <span class="crystals" title="Cristales: se ganan jugando"><i></i><b id="crystals">0</b></span>
       <span class="lvl" id="lvl-badge">Nivel 1</span>
@@ -807,6 +855,15 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
         <button class="btn" type="button" data-quality="low">Más fluido</button>
       </div>
       <p class="small-note" id="quality-note"></p>
+    </div>
+    <div>
+      <div class="lbl" style="margin-bottom:6px">Música</div>
+      <div class="seg3 seg4">
+        <button class="btn" type="button" data-music="0">Apagada</button>
+        <button class="btn" type="button" data-music="0.3">Baja</button>
+        <button class="btn" type="button" data-music="0.6">Media</button>
+        <button class="btn" type="button" data-music="1">Alta</button>
+      </div>
     </div>
     <ul class="help">
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
@@ -857,7 +914,7 @@ const FARO_ANIM = {"source":"CMU Graphics Lab Motion Capture Database (mocap.cs.
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.0';
+const GAME_VERSION = '1.1';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -1034,7 +1091,9 @@ const BUILDINGS = {
   antinuke: {
     name: 'Escudo antimisiles', cat: 'def', cost: 9000, energyCost: 120, hp: 1400, build: 20, on: 'land', limit: 2, builtBy: 'land',
     maxLevel: 1, intercept: { range: 7, recharge: 120 },
-    desc: 'Derriba el misil nuclear enemigo si cae a 7 casillas o menos. Una carga cada 2 minutos.',
+    // v1.1: defensa de punto: también derriba misiles y cohetes enemigos que pasen cerca.
+    pointDefense: { range: 3, cd: 1.5 },
+    desc: 'Derriba el misil nuclear enemigo si cae a 7 casillas o menos (una carga cada 2 minutos), y misiles y cohetes enemigos a 3 casillas (uno cada 1,5 s).',
   },
   outpost: {
     name: 'Puesto avanzado', cat: null, cost: 800, hp: 800, build: 8, claim: 2, vision: 4, limit: 6, maxLevel: 1,
@@ -1233,16 +1292,19 @@ for (const [k, d] of Object.entries(UNITS)) d.key = k;
 
 // Modos del vestíbulo (lobby: true) y modos internos para Personalizado y pruebas.
 const MODES = {
-  conquest: { name: 'Conquista de islas', desc: '6 imperios. Gana el último Núcleo en pie.', players: 6, teams: [0, 1, 2, 3, 4, 5], lobby: true },
-  fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true },
-  turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true },
+  // v1.1: alliances = se pueden formar y romper alianzas durante la partida (todos contra todos).
+  conquest: { name: 'Conquista de islas', desc: '6 imperios. Gana el último Núcleo en pie. Puedes aliarte desde el marcador.', players: 6, teams: [0, 1, 2, 3, 4, 5], lobby: true, alliances: true },
+  fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true, alliances: true },
+  turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true, alliances: true },
+  duos: { name: 'Dúos', desc: '3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.', players: 6, teams: [0, 0, 1, 1, 2, 2], lobby: true },
+  ranked: { name: 'Clasificatoria', desc: '3 vs 3 por puntos: gana para subir de rango.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, ranked: true },
   league: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3. Tus aliados son bots.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, minLevel: 10 },
   king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total.', players: 4, teams: [0, 1, 2, 3], king: true, lobby: true },
-  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true },
+  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true, alliances: true },
   duel: { name: 'Duelo 1 vs 1', desc: 'Tú contra 1 rival', players: 2, teams: [0, 1] },
-  ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3] },
+  ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3], alliances: true },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
-  big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5] },
+  big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
   tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento.', players: 2, teams: [0, 1], tutorial: true },
 };
 
@@ -2891,6 +2953,9 @@ class Game {
     this.projectiles = [];
     // Zonas de radiación del misil nuclear (v1.0).
     this.radZones = [];
+    // Historia de la partida para las gráficas del final (v1.1): cada 10 s, monedas/min y ejército.
+    this.history = [];
+    this._histT = 0;
     this.removed = [];
     this.fx = [];
     this.events = [];
@@ -2905,7 +2970,7 @@ class Game {
     this.players = [];
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
-        id: i, team: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
+        id: i, team: mode.teams[i], team0: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
         coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
         human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
         emergencyUsed: false, dome: null,
@@ -2964,6 +3029,90 @@ class Game {
   // ---------- consultas básicas ----------
   isEnemy(a, b) {
     return this.players[a].team !== this.players[b].team;
+  }
+
+  // ---------- alianzas (v1.1, modos de todos contra todos) ----------
+  alliancesAllowed() {
+    return !!this.mode.alliances && !this.camp && !this.mode.tutorial;
+  }
+
+  // Fuerza aproximada de un imperio: vida de su ejército y de sus edificios.
+  strengthOf(pid) {
+    let s = 0;
+    for (const u of this.units) if (u.alive && u.owner === pid && u.def.weapon) s += u.hp;
+    for (const b of this.buildings) if (b.alive && b.owner === pid) s += b.hp * 0.25;
+    return s;
+  }
+
+  // El bot decide si acepta la alianza; devuelve { ok, text } con su respuesta.
+  proposeAlliance(from, to) {
+    const A = this.players[from];
+    const B = this.players[to];
+    if (!this.alliancesAllowed()) return { ok: false, text: 'En este modo no hay alianzas' };
+    if (!B || !B.alive || !A.alive || from === to) return { ok: false, text: 'Ese imperio ya no está' };
+    if (A.team === B.team) return { ok: false, text: `${B.name} ya es tu aliado` };
+    A.allyAsk = A.allyAsk || {};
+    if (this.time - (A.allyAsk[to] ?? -999) < 60) return { ok: false, text: `${B.name}: «Ya te contesté. Pregúntame más tarde.»` };
+    A.allyAsk[to] = this.time;
+    const teams = new Set(this.players.filter((p) => p.alive).map((p) => p.team));
+    if (teams.size <= 2) return this.allyNo(to, 'Solo quedamos nosotros: uno tiene que ganar.');
+    if (this.time - ((B.hurtBy || {})[from] ?? -999) < 90) return this.allyNo(to, 'Hace poco me atacaste. No confío en ti.');
+    // Ganas de aliarse: según su forma de ser, si tienen un rival en común más fuerte y si está en apuros.
+    const base = { aggro: 0.3, admiral: 0.45, builder: 0.65, keeper: 0.55 }[B.persona] ?? 0.5;
+    const sA = this.strengthOf(from);
+    const sB = this.strengthOf(to);
+    let score = base;
+    const strongest = this.players.filter((p) => p.alive && p.team !== A.team && p.team !== B.team)
+      .reduce((m, p) => Math.max(m, this.strengthOf(p.id)), 0);
+    if (strongest > Math.max(sA, sB)) score += 0.25;
+    if (this.time - (B.underAttackAt ?? -999) < 45) score += 0.2;
+    if (sA > sB * 2.2) score -= 0.25;
+    if (score < 0.6) return this.allyNo(to, B.persona === 'aggro' ? 'Yo peleo solo.' : 'Todavía no. Muéstrame que vale la pena.');
+    this.formAlliance(from, to);
+    this.say(to, 'Trato hecho: ahora somos aliados. ¡Vamos por los demás!', { force: true, toMe: true });
+    return { ok: true, text: `${B.name} aceptó la alianza` };
+  }
+
+  allyNo(pid, text) {
+    this.say(pid, text, { force: true, toMe: true });
+    return { ok: false, text: `${this.players[pid].name}: «${text}»` };
+  }
+
+  // Une a «b» (y a sus aliados) al equipo de «a».
+  formAlliance(a, b) {
+    const ta = this.players[a].team;
+    const tb = this.players[b].team;
+    for (const p of this.players) if (p.team === tb) p.team = ta;
+    this.allianceChanged();
+    this.emit('alliance', { a, b, ok: true });
+  }
+
+  // «pid» sale de su alianza y vuelve a su equipo de siempre.
+  breakAlliance(pid, by = pid) {
+    const p = this.players[pid];
+    if (!this.alliancesAllowed()) return 'En este modo no hay alianzas';
+    const mates = this.players.filter((q) => q.id !== pid && q.team === p.team);
+    if (!mates.length) return 'No tienes aliados';
+    p.team = p.team0;
+    // Si su equipo era el de la alianza, los demás toman el equipo del primero de ellos.
+    if (mates.some((q) => q.team === p.team0)) {
+      const t = mates[0].team0;
+      for (const q of mates) q.team = t;
+    }
+    this.allianceChanged();
+    this.emit('alliance', { a: pid, ok: false, by });
+    return null;
+  }
+
+  allianceChanged() {
+    // Nadie sigue atacando a un nuevo aliado; la vista compartida se recalcula.
+    for (const u of this.units) {
+      if (u.target && u.target.alive !== undefined && !this.isEnemy(u.owner, u.target.owner)) { u.target = null; if (u.state === 'attack') u.state = 'idle'; }
+      if (u.autoTarget && !this.isEnemy(u.owner, u.autoTarget.owner)) u.autoTarget = null;
+    }
+    for (const b of this.buildings) if (b.autoTarget && !this.isEnemy(b.owner, b.autoTarget.owner)) b.autoTarget = null;
+    this.territoryDirty = true;
+    this.allianceVersion = (this.allianceVersion || 0) + 1;
   }
 
   emit(type, data) {
@@ -4004,6 +4153,13 @@ class Game {
   damage(t, dmg, src, srcEnt) {
     if (!t.alive || dmg <= 0) return;
     if (srcEnt) this.noteFight(t);
+    // v1.1: quién atacó a quién (para las alianzas).
+    if (src >= 0 && src !== t.owner && this.players[t.owner]) {
+      const tp = this.players[t.owner];
+      tp.hurtBy = tp.hurtBy || {};
+      tp.hurtBy[src] = this.time;
+      tp.underAttackAt = this.time;
+    }
     if (t.owner === 0 && srcEnt) {
       const k = srcEnt.kind === 'bld' ? 'bld' : srcEnt.type;
       const hb = this.players[0].stats.hitBy;
@@ -4136,17 +4292,48 @@ class Game {
   checkEnd() {
     if (this.over) return;
     const me = this.players[0];
+    const alive = this.players.filter((p) => p.alive);
+    const teams = new Set(alive.map((p) => p.team));
+    // v1.1: si solo quedan aliados de una alianza hecha en la partida, la alianza se rompe: gana uno solo.
+    if (alive.length > 1 && teams.size <= 1 && this.alliancesAllowed() && new Set(alive.map((p) => p.team0)).size > 1) {
+      for (const p of alive) p.team = p.team0;
+      this.allianceChanged();
+      const bot = alive.find((p) => !p.human);
+      if (bot) this.say(bot.id, 'Solo quedamos nosotros: se acabó la alianza. ¡Que gane el mejor!', { force: true, public: true });
+      this.emit('toast', { text: 'La alianza se rompió: solo puede quedar un imperio', kind: 'bad' });
+      return;
+    }
+    // v1.1: espectador. Ya perdiste; la partida sigue hasta que queda un solo equipo.
+    if (this.spectating) {
+      if (teams.size <= 1) {
+        this.over = true;
+        this.spectating = false;
+        this.spectateWinner = alive.length ? alive[0].id : -1;
+        this.emit('over', { result: this.result, spectated: true });
+      }
+      return;
+    }
     if (!me.alive) {
       this.over = true;
       this.result = 'defeat';
-    } else {
-      const teams = new Set(this.players.filter((p) => p.alive).map((p) => p.team));
-      if (teams.size <= 1) {
-        this.over = true;
-        this.result = 'victory';
-      }
+    } else if (teams.size <= 1) {
+      this.over = true;
+      this.result = 'victory';
     }
     if (this.over) this.emit('over', { result: this.result });
+  }
+
+  // Al perder, se puede seguir mirando si todavía pelean dos equipos o más.
+  canSpectate() {
+    if (this.result !== 'defeat' || this.camp || this.mode.tutorial) return false;
+    return new Set(this.players.filter((p) => p.alive).map((p) => p.team)).size > 1;
+  }
+
+  startSpectating() {
+    if (!this.canSpectate()) return false;
+    this.spectating = true;
+    this.over = false;
+    return true;
   }
 
   completeObjective(id) {
@@ -4208,6 +4395,7 @@ class Game {
     this.updateProjectiles(dt);
     this.updateRadiation(dt);
     this.updateAutoUpgrade(dt);
+    this.recordHistory(dt);
     if (!this.over) for (const bot of this.bots) bot.update(dt);
     if (this.camp) Campaign.update(this, dt);
 
@@ -4893,12 +5081,15 @@ class Game {
 
   updateProjectiles(dt) {
     if (!this.projectiles.length) return;
+    // v1.1: Escudos antimisiles con su defensa de punto lista.
+    const pds = this.buildings.filter((b) => b.alive && b.built && b.def.pointDefense);
     for (const p of this.projectiles) {
       p.time += dt;
       if (p.kind === 'nuke') {
         this.updateNuke(p);
         continue;
       }
+      if (pds.length && (p.kind === 'missile' || p.kind === 'rocket') && this.pointDefend(p, pds)) continue;
       if (p.t.alive && !p.miss) {
         p.tx = p.t.x;
         p.tz = p.t.z;
@@ -4910,6 +5101,27 @@ class Game {
       }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
+  }
+
+  // Defensa de punto (v1.1): derriba en el aire un misil o cohete enemigo cerca del Escudo antimisiles.
+  pointDefend(p, pds) {
+    const k = Math.min(1, p.time / p.dur);
+    const x = p.sx + (p.tx - p.sx) * k;
+    const z = p.sz + (p.tz - p.sz) * k;
+    for (const b of pds) {
+      if (!this.isEnemy(b.owner, p.owner) || this.time < (b.pdReadyAt || 0)) continue;
+      const pd = b.def.pointDefense;
+      if (Math.hypot(x - b.x, z - b.z) > pd.range * SQ3 + 0.5) continue;
+      p.done = true;
+      b.pdReadyAt = this.time + pd.cd;
+      b.pdKills = (b.pdKills || 0) + 1;
+      this.pdKills = (this.pdKills || 0) + 1;
+      const y = (p.sy || 0.5) + ((p.ty || 0) - (p.sy || 0.5)) * k + 0.4;
+      this.fx.push({ k: 'tracer', x1: b.x, y1: b.y + 1.3, z1: b.z, x2: x, y2: y, z2: z, color: 0xffe08a, heavy: true });
+      this.fx.push({ k: 'boom', x, y, z, s: 0.45, small: true });
+      return true;
+    }
+    return false;
   }
 
   // ---------- misil nuclear (v0.9) ----------
@@ -5030,6 +5242,18 @@ class Game {
     if (p.owner === 0 || near0) {
       this.emit('toast', { text: `Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
     }
+  }
+
+  // Gráficas del final (v1.1): una muestra cada 10 s (a lo sumo 240; si sobran, se juntan de a dos).
+  recordHistory(dt) {
+    if (!this.history) this.history = [];
+    this._histT = (this._histT || 0) - dt;
+    if (this._histT > 0) return;
+    this._histT = 10;
+    const army = this.players.map(() => 0);
+    for (const u of this.units) if (u.alive && u.def.weapon) army[u.owner]++;
+    this.history.push({ t: Math.round(this.time), inc: this.players.map((p) => (p.alive ? p.income : 0)), army });
+    if (this.history.length > 240) this.history = this.history.filter((_, i) => i % 2 === 0);
   }
 
   // Radiación (v1.0): cada medio segundo quema a tropas y edificios enemigos dentro de la zona.
@@ -5169,6 +5393,9 @@ const Save = {
     // Los datos de cada edificio y tropa vuelven a apuntar a la configuración actual.
     for (const b of game.buildings) if (BUILDINGS[b.type]) b.def = BUILDINGS[b.type];
     for (const u of game.units) if (UNITS[u.type]) u.def = UNITS[u.type];
+    // Partidas guardadas antes de la v1.1: equipo de origen para las alianzas.
+    for (const p of game.players) if (p.team0 === undefined) p.team0 = p.team;
+    if (!game.radZones) game.radZones = [];
     game.territoryDirty = true;
     return game;
   },
@@ -6344,9 +6571,52 @@ class Bot {
     return this.chooseEnemyCore() || flags[0] || null;
   }
 
+  // ---------- órdenes de un aliado humano (v1.1) ----------
+  // «¡Ayuda!»: manda hasta la mitad de su ejército (máx. 8) a defender la base del aliado.
+  answerHelp(pid) {
+    const g = this.g;
+    const ally = g.players[pid];
+    if (!this.p.alive || !ally || !ally.core || !ally.core.alive || g.isEnemy(pid, this.pid)) return 0;
+    const home = g.units.filter((u) => u.alive && u.owner === this.pid && u.def.weapon && !u.inside && u.role !== 'guard');
+    if (!home.length) {
+      g.say(this.pid, 'No tengo tropas libres ahora, ¡aguanta!', { force: true, toMe: true });
+      return 0;
+    }
+    const go = home.slice(0, Math.min(8, Math.max(1, Math.ceil(home.length / 2))));
+    const sent = this.sendTo(go, { cell: ally.core.cell });
+    for (const u of sent) u.role = 'help';
+    this.helpAt[pid] = g.time;
+    if (sent.length) this.helpSent++;
+    g.say(this.pid, sent.length ? `¡Voy a ayudarte con ${sent.length} tropas!` : 'No llego a tu base desde aquí.', { force: true, toMe: true });
+    return sent.length;
+  }
+
+  // «¡Ataquemos!»: ataca ya al rival que elegiste y lo prefiere en sus oleadas por 3 minutos.
+  answerAttack(targetPid) {
+    const g = this.g;
+    const foe = g.players[targetPid];
+    if (!this.p.alive || !foe || !foe.alive || !g.isEnemy(targetPid, this.pid)) return 0;
+    this.focusPid = targetPid;
+    this.focusUntil = g.time + 180;
+    const target = foe.core && foe.core.alive ? foe.core : g.buildings.find((b) => b.alive && b.owner === targetPid);
+    if (!target) return 0;
+    const army = g.units.filter((u) => u.alive && u.owner === this.pid && u.def.weapon && !u.inside && u.role !== 'guard');
+    const go = army.slice(0, Math.max(1, Math.ceil(army.length * 0.7)));
+    const sent = go.length ? this.sendTo(go, target) : [];
+    for (const u of sent) u.role = 'help';
+    this.lastTarget = target;
+    g.say(this.pid, sent.length ? `¡Vamos por ${foe.name}! Mando ${sent.length} tropas.` : `Atacaré a ${foe.name} con la próxima oleada.`, { force: true, toMe: true });
+    return sent.length;
+  }
+
   chooseEnemyCore() {
     const g = this.g;
     const core = this.coreCell();
+    // v1.1: el rival que pidió el aliado humano con «¡Ataquemos!».
+    if (this.focusPid !== undefined && g.time < this.focusUntil) {
+      const f = g.players[this.focusPid];
+      if (f && f.alive && f.core && f.core.alive && g.isEnemy(f.id, this.pid)) return f.core;
+    }
     let cores = g.players
       .filter((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive)
       .map((p) => ({ p, d: g.map.dist(g.cells[p.core.cell], core) }))
@@ -8986,7 +9256,7 @@ class Input {
       const comp = g.cells[u.cell].comp;
       cells = g.cells.filter((c) => !g.foundInvalid(0, c.i, u.def.founds) &&
         (u.mover !== 'land' || c.comp === comp)).map((c) => c.i);
-    } else if (p.kind === 'rally' || p.kind === 'bombzone') {
+    } else if (p.kind === 'rally' || p.kind === 'bombzone' || p.kind === 'allyattack') {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
@@ -9047,6 +9317,25 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
+      this.cancelPlacement();
+    } else if (p.kind === 'allyattack') {
+      // El rival es el dueño de lo que tocaste: edificio, tropa cercana o territorio.
+      let pid = cell.bld && cell.bld.alive ? cell.bld.owner : -1;
+      if (pid < 0) {
+        const u = g.units.find((x) => x.alive && Math.hypot(x.x - cell.x, x.z - cell.z) < 1.2 && g.isEnemy(0, x.owner));
+        if (u) pid = u.owner;
+      }
+      if (pid < 0 && cell.owner >= 0) pid = cell.owner;
+      if (pid < 0 || !g.isEnemy(0, pid)) {
+        this.app.ui.toast('Toca algo de un rival', 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      const bots = g.bots.filter((b) => b.p.alive && b.p.team === g.players[0].team && b.pid !== 0);
+      const n = bots.reduce((a, b) => a + b.answerAttack(pid), 0);
+      this.r.addMoveMarker(cell.i, 0xff4040);
+      this.app.ui.toast(`Tus aliados atacan a ${g.players[pid].name}${n ? ` con ${n} tropas` : ''}`, 'good');
+      this.app.sound.play('order');
       this.cancelPlacement();
     } else if (p.kind === 'bombzone') {
       const bombers = p.units.filter((u) => u.alive);
@@ -9202,12 +9491,25 @@ class UI {
     $('btn-pause').addEventListener('click', () => app.togglePause(true));
     $('btn-resume').addEventListener('click', () => app.togglePause(false));
     $('btn-restart').addEventListener('click', () => app.startGame());
+    $('btn-spec-exit').addEventListener('click', () => app.toMenu());
     $('btn-quit').addEventListener('click', () => app.toMenu());
     $('btn-fps').addEventListener('click', () => app.toggleFps());
     app.toggleFps(app.showFps);
     document.querySelectorAll('[data-quality]').forEach((b) => {
       b.addEventListener('click', () => app.setQuality(b.dataset.quality));
     });
+    // Música (v1.1): volumen en la pausa y botón en el vestíbulo.
+    document.querySelectorAll('[data-music]').forEach((b) => {
+      b.addEventListener('click', () => { app.sound.unlock(); app.music.setLevel(Number(b.dataset.music)); this.updateMusicBtns(); });
+    });
+    $('btn-music-lobby').addEventListener('click', () => {
+      app.sound.unlock();
+      const lv = app.music.level > 0 ? 0 : 0.6;
+      app.music.setLevel(lv);
+      if (lv > 0) app.music.play(app.state === 'play' ? 'battle' : 'lobby');
+      this.updateMusicBtns();
+    });
+    this.updateMusicBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
         app.sound.toggle();
@@ -9312,7 +9614,11 @@ class UI {
     $('players').addEventListener('click', () => this.togglePop('score'));
     $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
     for (const id of ['econ', 'score']) {
-      $(id).addEventListener('click', (e) => { if (e.target.closest('[data-close]')) this.togglePop(null); });
+      $(id).addEventListener('click', (e) => {
+        if (e.target.closest('[data-close]')) this.togglePop(null);
+        const ab = e.target.closest('[data-ally]');
+        if (ab) this.allyAction(ab.dataset.ally, Number(ab.dataset.pid));
+      });
     }
 
     const mm = $('minimap');
@@ -9332,6 +9638,15 @@ class UI {
     mm.addEventListener('pointermove', (e) => { if (this.mmDrag) moveCam(e); });
     mm.addEventListener('pointerup', () => { this.mmDrag = false; });
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
+  }
+
+  updateMusicBtns() {
+    const lv = this.app.music.level;
+    document.querySelectorAll('[data-music]').forEach((b) => b.classList.toggle('gold', Number(b.dataset.music) === lv));
+    const lb = $('btn-music-lobby');
+    lb.classList.toggle('off', lv === 0);
+    lb.setAttribute('aria-pressed', String(lv > 0));
+    lb.title = lv > 0 ? 'Música: sí (toca para apagarla)' : 'Música: no (toca para encenderla)';
   }
 
   updateSoundBtn() {
@@ -9456,6 +9771,51 @@ class UI {
     if (msg.toMe) this.app.sound.play('alarm');
   }
 
+  // ---------- alianzas y órdenes a los aliados (v1.1) ----------
+  allyAction(kind, pid) {
+    const app = this.app;
+    const g = app.game;
+    if (!g) return;
+    if (kind === 'ask') {
+      const res = g.proposeAlliance(0, pid);
+      this.toast(res.text, res.ok ? 'good' : 'bad');
+      app.sound.play(res.ok ? 'ready' : 'error');
+    } else if (kind === 'break') {
+      if (this.breakArm !== pid) {
+        this.breakArm = pid;
+        this.toast(`¿Romper la alianza con ${g.players[pid].name}? Toca «Romper» otra vez`, 'bad');
+        setTimeout(() => { if (this.breakArm === pid) this.breakArm = null; }, 4000);
+        return;
+      }
+      this.breakArm = null;
+      const err = g.breakAlliance(0);
+      if (err) this.toast(err, 'bad');
+      else {
+        g.say(pid, 'Rompiste la alianza. Ahora somos rivales otra vez.', { force: true, toMe: true });
+        this.toast(`Ya no eres aliado de ${g.players[pid].name}`, 'info');
+      }
+    } else if (kind === 'help' || kind === 'attack') {
+      this.allyOrder(kind);
+      return;
+    }
+    this.renderPop();
+  }
+
+  allyOrder(kind) {
+    const app = this.app;
+    const g = app.game;
+    const bots = g.bots.filter((b) => b.p.alive && b.p.team === g.players[0].team && b.pid !== 0);
+    if (!bots.length) return;
+    if (kind === 'help') {
+      const n = bots.reduce((a, b) => a + b.answerHelp(0), 0);
+      this.toast(n ? `Tus aliados mandan ${n} tropas a tu base` : 'Tus aliados no tienen tropas libres', n ? 'good' : 'bad');
+      app.sound.play('order');
+    } else {
+      this.togglePop(null);
+      app.input.startPlacement({ kind: 'allyattack' });
+    }
+  }
+
   // ---------- desglose de economía y marcador ----------
   togglePop(which, sub) {
     const same = this.pop === which && this.popSub === sub;
@@ -9528,11 +9888,21 @@ class UI {
       const pts = g.points.filter((pt) => pt.owner === p.id).length;
       const role = p.human ? '—' : PERSONALITIES[p.persona].name;
       const rel = p.id === 0 ? '' : p.team === myTeam ? ' · aliado' : '';
+      // v1.1: alianzas en los modos de todos contra todos.
+      const canAlly = g.alliancesAllowed() && p.id !== 0 && p.alive && g.players[0].alive;
+      const allyBtn = !canAlly ? '' : p.team === myTeam
+        ? `<button class="btn mini danger" type="button" data-ally="break" data-pid="${p.id}">Romper</button>`
+        : `<button class="btn mini" type="button" data-ally="ask" data-pid="${p.id}">Aliarse</button>`;
       return `<tr class="${p.alive ? '' : 'dead'}" data-pid="${p.id}"><td><i class="dot" style="background:${hexColor(p.color)}"></i>${esc(p.name)}</td>
-        <td>${esc(role)}${rel}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
+        <td>${esc(role)}${rel}${allyBtn}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
         <td class="n">${army}</td><td class="n">${blds}</td><td class="n">${p.alive ? '+' + fmt(p.income) : '—'}</td><td class="n">${pts}</td></tr>`;
     }).join('');
-    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
+    const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === myTeam) && g.players[0].alive;
+    const orders = hasAllies ? `<div class="allyorders"><span>A tus aliados:</span>
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">¡Ayuda!</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">¡Ataquemos!</button></div>` : '';
+    const hint = g.alliancesAllowed() ? '<p class="allyhint">Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.</p>' : '';
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>${orders}${hint}
       <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
       <tbody>${rows}</tbody></table></div>`;
   }
@@ -9681,6 +10051,8 @@ class UI {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+    } else if (p.kind === 'allyattack') {
+      text = 'Toca un edificio, una tropa o el territorio del <b>rival</b> que quieres atacar con tus aliados';
     } else if (p.kind === 'bombzone') {
       text = `Toca la <b>zona a bombardear</b>: ${p.units.length} ${p.units.length === 1 ? 'Bombardero va' : 'Bombarderos van'} atacando los edificios que encuentren`;
     } else if (p.kind === 'nuke3') {
@@ -9921,6 +10293,7 @@ class UI {
     if (b.type === 'antinuke' && b.built) {
       const ready = g.time >= (b.chargeAt || 0);
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
+      html += `<div class="queue">Defensa de punto: derriba misiles y cohetes enemigos a ${b.def.pointDefense.range} casillas · derribados: <b>${b.pdKills || 0}</b></div>`;
     }
     const acts = [];
     if (own && b.built && !b.upgrading && b.level < maxLv) {
@@ -10417,6 +10790,44 @@ class UI {
     if (next) next.addEventListener('click', () => this.app.startMission(Number(next.dataset.v)));
     $('btn-menu').addEventListener('click', () => this.app.toMenu());
     $('btn-watch').addEventListener('click', () => { $('end').hidden = true; });
+    const spec = $('btn-spectate');
+    if (spec) spec.addEventListener('click', () => this.app.spectate());
+    this.bindHistory(g);
+  }
+
+  // Gráficas del final: línea vertical y valores del momento al pasar el dedo o el ratón.
+  bindHistory(g) {
+    const H = g.history || [];
+    document.querySelectorAll('#enddialog .histchart').forEach((fig) => {
+      const key = fig.dataset.key;
+      const svg = fig.querySelector('svg');
+      const tip = fig.querySelector('.histtip');
+      const cross = fig.querySelector('.hcross');
+      const vb = svg.viewBox.baseVal;
+      const L = 40;
+      const R = 64;
+      const tMax = Math.max(H[H.length - 1].t, 1);
+      const show = (ev) => {
+        const r = svg.getBoundingClientRect();
+        const sx = ((ev.clientX - r.left) / r.width) * vb.width;
+        const t = clamp((sx - L) / (vb.width - L - R), 0, 1) * tMax;
+        let best = H[0];
+        for (const h of H) if (Math.abs(h.t - t) < Math.abs(best.t - t)) best = h;
+        const cx = L + (best.t / tMax) * (vb.width - L - R);
+        cross.setAttribute('x1', cx);
+        cross.setAttribute('x2', cx);
+        cross.setAttribute('visibility', 'visible');
+        const rows = g.players.map((p) => ({ p, v: best[key][p.id] })).sort((a, b) => b.v - a.v);
+        tip.innerHTML = `<b>${fmtTime(best.t)}</b>` + rows.map((x) => `<span><i style="background:${cssColor(x.p.color)}"></i>${esc(x.p.name)}<em>${fmt(x.v)}</em></span>`).join('');
+        tip.hidden = false;
+        const px = (cx / vb.width) * r.width;
+        tip.style.left = `${Math.min(r.width - 150, Math.max(0, px + 10))}px`;
+      };
+      const hide = () => { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); };
+      svg.addEventListener('pointermove', show);
+      svg.addEventListener('pointerdown', show);
+      svg.addEventListener('pointerleave', hide);
+    });
   }
 }
 
@@ -10450,6 +10861,10 @@ class Sound {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+    if (this.ctx && !this.unlocked) {
+      this.unlocked = true;
+      if (this.onUnlock && this.on) this.onUnlock();
+    }
   }
 
   toggle() {
@@ -10458,6 +10873,7 @@ class Sound {
       localStorage.setItem('faro-sound', this.on ? 'on' : 'off');
     } catch (err) { /* sin almacenamiento */ }
     if (this.on) this.unlock();
+    if (this.onToggle) this.onToggle();
   }
 
   // Límite de voces: si ya suenan muchas, los sonidos nuevos menos importantes se saltan.
@@ -10691,6 +11107,26 @@ function cssColor(c) {
 }
 
 // ---------- perfil del jugador ----------
+// Trazo de cada imperio en las gráficas del final (además del color): Tú, línea continua.
+const HIST_DASH = ['', '7 4', '2 4', '10 3 2 3', '4 3', '1 3'];
+
+// Clasificatoria (v1.1): 10 rangos propios, 100 puntos cada uno. Ganar suma 25 y perder resta 15.
+const RANKS = ['Bronce I', 'Bronce II', 'Bronce III', 'Plata I', 'Plata II', 'Plata III', 'Oro I', 'Oro II', 'Oro III', 'Ámbar'];
+const RANK_STEP = 100;
+const RANK_WIN = 25;
+const RANK_LOSS = 15;
+const RANK_COLORS = ['#b87333', '#b87333', '#b87333', '#c0c7cf', '#c0c7cf', '#c0c7cf', '#f2c94c', '#f2c94c', '#f2c94c', '#f2ab38'];
+function rankIndex(points) {
+  return Math.min(RANKS.length - 1, Math.floor(Math.max(0, points) / RANK_STEP));
+}
+function rankName(points) {
+  return RANKS[rankIndex(points)];
+}
+// Desde Oro, los rivales de la Clasificatoria juegan en Difícil.
+function rankedDifficulty(points) {
+  return rankIndex(points) >= 6 ? 'hard' : 'normal';
+}
+
 const Profile = {
   data: null,
   memoryOnly: false,
@@ -10707,6 +11143,7 @@ const Profile = {
       custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
+      ranked: { points: 0, best: 0, games: 0, wins: 0, history: [] },
     };
   },
 
@@ -10898,6 +11335,8 @@ class Lobby {
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
     // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
+    // Clasificatoria: la dificultad la pone tu rango.
+    if (P.play.mode === 'ranked') return { mode: 'ranked', mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
     return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: P.play.difficulty };
   }
 
@@ -10942,7 +11381,7 @@ class Lobby {
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
-      ${off('Rangos')}${off('Top jugadores')}${off('Servidores')}
+      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}${off('Top jugadores')}${off('Servidores')}
     </nav>`;
   }
 
@@ -10969,6 +11408,7 @@ class Lobby {
     if (this.sub === 'custom') return resume + this.customHtml();
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
     if (this.sub === 'campaign') return resume + this.campaignHtml();
+    if (this.sub === 'ranks') return resume + this.ranksHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -10982,7 +11422,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Comunidad 240', 'Lanzar los 3', 'Radiación', 'Mejorar todo', 'Difícil de verdad'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Alianzas', 'Dúos', 'Clasificatoria', 'Música', 'Espectador'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
       </section>
       <section class="lcard panel">
@@ -10993,7 +11433,8 @@ class Lobby {
           <button class="btn gold" type="button" data-act="play" id="btn-play">Play</button>
           <button class="btn" type="button" data-act="modal" data-m="maps">Mapa</button>
         </div>
-        <div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>
+        ${P.play.mode === 'ranked' ? `<p class="queue">Clasificatoria · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
+          : `<div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
         <div class="row"><button class="btn" type="button" data-act="reroll">Otra isla</button></div>
       </section>
       <section class="lcard panel">
@@ -11076,6 +11517,27 @@ class Lobby {
       <p>${done ? 'Ya recibiste el premio. Puedes repetir el tutorial cuando quieras.' : 'El premio se entrega la primera vez que lo terminas.'}</p>
       <div class="row"><button class="btn gold" type="button" data-act="play" id="btn-play-tutorial">Empezar tutorial</button></div>
     </section>`;
+  }
+
+  // Clasificatoria (v1.1): tu rango, el camino de los 10 rangos y tus últimas partidas.
+  ranksHtml() {
+    const R = this.P.ranked;
+    const idx = rankIndex(R.points);
+    const inRank = R.points - idx * RANK_STEP;
+    const top = idx === RANKS.length - 1;
+    const pct = top ? 100 : Math.round((inRank / RANK_STEP) * 100);
+    const ladder = RANKS.map((n, i) => `<li class="${i === idx ? 'on' : i < idx ? 'past' : ''}"><i style="background:${RANK_COLORS[i]}"></i>${n}<small>${i * RANK_STEP}</small></li>`).join('');
+    const hist = (R.history || []).slice(0, 8).map((h) => `<li class="${h.win ? 'win' : 'loss'}"><b>${h.win ? 'Victoria' : 'Derrota'}</b><span>${h.delta >= 0 ? '+' : ''}${h.delta}</span><small>${esc(h.rank)} · ${prettyDate(h.day)}</small></li>`).join('');
+    const diff = DIFFICULTY[rankedDifficulty(R.points)].name;
+    return `<section class="lcard panel ranked">
+        <div class="rankhead"><div class="rankbadge" style="--rk:${RANK_COLORS[idx]}"><b>${RANKS[idx].split(' ')[0][0]}</b></div>
+          <div><small>Tu rango</small><h2 id="rank-name">${RANKS[idx]}</h2><span>${R.points} puntos · mejor: ${rankName(R.best || 0)}</span></div></div>
+        <div class="rankbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+        <p class="queue">${top ? 'Estás en el rango más alto.' : `${RANK_STEP - inRank} puntos para ${RANKS[idx + 1]}.`} Partida 3 vs 3 con aliados bots; rivales en ${diff}. Ganar: +${RANK_WIN} · perder: −${RANK_LOSS}.</p>
+        <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked">Jugar Clasificatoria</button></div>
+      </section>
+      <section class="lcard panel"><h3>Los 10 rangos</h3><ol class="ranklist">${ladder}</ol></section>
+      <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Clasificatoria.</p>'}</section>`;
   }
 
   sideHtml() {
@@ -11252,6 +11714,12 @@ class Lobby {
       this.syncOpts();
       this.render();
     } else if (act === 'play') {
+      this.syncOpts();
+      app.startGame();
+    } else if (act === 'ranked') {
+      this.P.play.mode = 'ranked';
+      Profile.save();
+      this.sub = 'main';
       this.syncOpts();
       app.startGame();
     } else if (act === 'mission') {
@@ -11502,6 +11970,19 @@ class Lobby {
         P.campaign.stars[m.id] = got;
       }
     }
+    // Clasificatoria: puntos y rango.
+    if (game.mode.ranked && !game.opts.custom) {
+      const R = P.ranked;
+      const before = R.points;
+      const delta = win ? RANK_WIN : -Math.min(RANK_LOSS, R.points);
+      R.points = Math.max(0, R.points + delta);
+      R.best = Math.max(R.best || 0, R.points);
+      R.games = (R.games || 0) + 1;
+      if (win) R.wins = (R.wins || 0) + 1;
+      R.history = [{ day: dayKey(), win, delta, rank: rankName(R.points) }, ...(R.history || [])].slice(0, 12);
+      out.ranked = { before, after: R.points, delta, from: rankName(before), to: rankName(R.points) };
+      out.lines.push(`Clasificatoria: ${delta >= 0 ? '+' : ''}${delta} puntos · ${out.ranked.from === out.ranked.to ? out.ranked.to : `${out.ranked.from} → ${out.ranked.to}`}`);
+    }
     P.xp += out.xp;
     P.crystals += out.crystals;
     out.level = Profile.level();
@@ -11598,6 +12079,61 @@ class Lobby {
       </div>`;
   }
 
+  // ---------- gráficas del final (v1.1) ----------
+  // Dos gráficas (no un solo eje doble): monedas por minuto y tropas de combate de cada imperio.
+  // Cada línea tiene el color de su imperio y además su propio trazo y su nombre al final.
+  historyHtml(game) {
+    const H = game.history || [];
+    if (H.length < 2) return '';
+    const ids = game.players.map((p) => p.id);
+    return `<h3 class="lbl">Cómo fue la partida</h3>
+      <div class="histcharts">${this.historyChart(game, 'inc', 'Monedas por minuto')}${this.historyChart(game, 'army', 'Tropas de combate')}</div>
+      <div class="histlegend">${ids.map((i) => `<span><svg width="26" height="8" aria-hidden="true"><line x1="1" y1="4" x2="25" y2="4" stroke="${cssColor(game.players[i].color)}" stroke-width="2" stroke-dasharray="${HIST_DASH[i]}" stroke-linecap="round"/></svg>${esc(game.players[i].name)}</span>`).join('')}</div>
+      <details class="histtable"><summary>Ver como tabla</summary><table><thead><tr><th>Imperio</th><th>Monedas/min (final)</th><th>Monedas/min (máx.)</th><th>Tropas (máx.)</th></tr></thead><tbody>
+        ${ids.map((i) => `<tr><td>${esc(game.players[i].name)}</td><td>${fmt(H[H.length - 1].inc[i])}</td><td>${fmt(Math.max(...H.map((h) => h.inc[i])))}</td><td>${Math.max(...H.map((h) => h.army[i]))}</td></tr>`).join('')}
+      </tbody></table></details>`;
+  }
+
+  historyChart(game, key, title) {
+    const H = game.history;
+    const W = 560;
+    const Ht = 170;
+    const L = 40;
+    const R = 64;
+    const T = 10;
+    const B = 22;
+    const tMax = Math.max(H[H.length - 1].t, 1);
+    const vMax = Math.max(1, ...H.map((h) => Math.max(...h[key])));
+    const nice = Math.pow(10, Math.floor(Math.log10(vMax)));
+    const yMax = Math.ceil(vMax / nice) * nice;
+    const x = (t) => L + (t / tMax) * (W - L - R);
+    const y = (v) => T + (1 - v / yMax) * (Ht - T - B);
+    const grid = [0, 0.5, 1].map((k) => `<line x1="${L}" x2="${W - R}" y1="${y(yMax * k)}" y2="${y(yMax * k)}" class="hgrid"/>
+      <text x="${L - 6}" y="${y(yMax * k) + 4}" text-anchor="end" class="haxis">${fmt(Math.round(yMax * k))}</text>`).join('');
+    const mins = Math.max(1, Math.round(tMax / 60));
+    const step = mins > 20 ? 10 : mins > 8 ? 5 : mins > 3 ? 2 : 1;
+    let xt = '';
+    for (let m = 0; m * 60 <= tMax; m += step) xt += `<text x="${x(m * 60)}" y="${Ht - 6}" text-anchor="middle" class="haxis">${m} min</text>`;
+    // Nombres al final de cada línea; si se tocan, se separan un poco.
+    const ends = game.players.map((p) => ({ id: p.id, v: H[H.length - 1][key][p.id] })).sort((a, b) => b.v - a.v);
+    let lastY = -99;
+    const labels = ends.map((e) => {
+      let ly = y(e.v) + 4;
+      if (ly - lastY < 11) ly = lastY + 11;
+      lastY = ly;
+      return `<text x="${W - R + 6}" y="${ly}" class="hend">${esc(game.players[e.id].name)}</text>`;
+    }).join('');
+    const lines = game.players.map((p) => {
+      const pts = H.map((h) => `${x(h.t).toFixed(1)},${y(h[key][p.id]).toFixed(1)}`).join(' ');
+      return `<polyline points="${pts}" fill="none" stroke="${cssColor(p.color)}" stroke-width="${p.id === 0 ? 2.5 : 2}" stroke-dasharray="${HIST_DASH[p.id]}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }).join('');
+    return `<figure class="histchart" data-key="${key}"><figcaption>${title}</figcaption>
+      <div class="histwrap"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${title} de cada imperio a lo largo de la partida">
+        ${grid}${xt}${lines}${labels}<line class="hcross" x1="0" x2="0" y1="${T}" y2="${Ht - B}" visibility="hidden"/>
+        <rect class="hhit" x="${L}" y="${T}" width="${W - L - R}" height="${Ht - T - B}" fill="transparent"/></svg>
+        <div class="histtip" hidden></div></div></figure>`;
+  }
+
   endHtml(game) {
     if (game.camp) return this.missionEndHtml(game);
     const r = this.finish(game);
@@ -11605,9 +12141,10 @@ class Lobby {
     const s = me.stats;
     const win = game.result === 'victory';
     const pos = this.positions(game);
+    const winnerName = game.spectateWinner >= 0 && game.players[game.spectateWinner] ? game.players[game.spectateWinner].name : null;
     const text = game.kingWinner !== undefined
       ? (win ? `Tu equipo mantuvo el Faro ${fmtTime(KING_TIME)}.` : 'Otro imperio mantuvo el Faro el tiempo necesario.')
-      : (win ? 'Todos los Núcleos rivales cayeron. El archipiélago es tuyo.' : 'Tu Núcleo fue destruido.');
+      : (win ? 'Todos los Núcleos rivales cayeron. El archipiélago es tuyo.' : winnerName ? `Tu Núcleo fue destruido. Seguiste mirando: ganó ${winnerName}.` : 'Tu Núcleo fue destruido.');
     const prizes = r.creator
       ? '<div><b>Modo creador</b><span>Sin XP ni cristales</span></div>'
       : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
@@ -11629,11 +12166,203 @@ class Lobby {
       ${r.missions.length ? `<div class="advice">Misiones completadas: ${r.missions.map(esc).join(', ')}</div>` : ''}
       ${r.tutorial ? `<div class="advice">Premio del Tutorial: ${esc(r.tutorial)}</div>` : ''}
       ${win ? '' : `<div class="advice"><b>Consejo:</b> ${esc(this.advice(game))}</div>`}
+      ${this.historyHtml(game)}
       <div class="row">
-        <button class="btn" type="button" id="btn-watch">Mirar el final</button>
+        ${game.canSpectate() ? '<button class="btn" type="button" id="btn-spectate">Seguir mirando</button>' : ''}
+        <button class="btn" type="button" id="btn-watch">Mirar el mapa</button>
         <button class="btn gold" type="button" id="btn-again">Revancha</button>
         <button class="btn" type="button" id="btn-menu">Vestíbulo</button>
       </div>`;
+  }
+}
+
+// ---- 086-music.js ----
+'use strict';
+// Música propia (v1.1): melodías generadas por el juego con Web Audio, sin archivos.
+// Vestíbulo: tranquila (acordes suaves y arpegio). Partida: más rápida, con bajo; cuando hay
+// combate se suman bombo, caja y platillos. Volumen guardado en el aparato.
+
+const MUSIC_THEMES = {
+  // Acordes por compás (notas MIDI) y tempo.
+  lobby: { bpm: 84, chords: [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]], bass: false, arp: [0, 1, 2, 1, 0, 1, 2, 1] },
+  battle: { bpm: 112, chords: [[50, 53, 57], [46, 50, 53], [48, 52, 55], [45, 49, 52]], bass: true, arp: [0, 2, 1, 2, 0, 2, 1, 2] },
+};
+const MUSIC_LEVELS = [0, 0.3, 0.6, 1];
+
+class Music {
+  constructor(sound) {
+    this.sound = sound;
+    this.theme = null;
+    this.intensity = 0;
+    this.step = 0;
+    this.nextT = 0;
+    this.timer = null;
+    this.level = 0.6;
+    try {
+      const v = Number(localStorage.getItem('faro-music'));
+      if (localStorage.getItem('faro-music') !== null && MUSIC_LEVELS.includes(v)) this.level = v;
+    } catch (err) { /* sin almacenamiento */ }
+    this.notes = 0;
+  }
+
+  get playing() {
+    return !!this.timer;
+  }
+
+  setLevel(v) {
+    this.level = v;
+    try { localStorage.setItem('faro-music', String(v)); } catch (err) { /* sin almacenamiento */ }
+    if (this.gain) this.gain.gain.setTargetAtTime(this.volume(), this.sound.ctx.currentTime, 0.2);
+    if (v > 0 && this.theme && !this.timer) this.start(this.theme);
+    if (v === 0) this.stop();
+  }
+
+  volume() {
+    return this.sound.on ? this.level * 0.35 : 0;
+  }
+
+  // Elige la melodía (lobby o battle) y empieza si el audio ya está desbloqueado.
+  play(theme) {
+    this.theme = theme;
+    if (!this.sound.ctx || this.level === 0) return;
+    if (this.timer && this.current === theme) return;
+    this.start(theme);
+  }
+
+  start(theme) {
+    const c = this.sound.ctx;
+    if (!c) return;
+    if (!this.gain) {
+      this.gain = c.createGain();
+      this.gain.connect(this.sound.master);
+    }
+    this.gain.gain.setTargetAtTime(this.volume(), c.currentTime, 0.3);
+    this.current = theme;
+    this.step = 0;
+    this.nextT = c.currentTime + 0.1;
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.tick(), 90);
+  }
+
+  stop() {
+    clearInterval(this.timer);
+    this.timer = null;
+    this.current = null;
+  }
+
+  // 0 = calma, 1 = combate: suma percusión en la partida.
+  setIntensity(k) {
+    this.intensity += (Math.max(0, Math.min(1, k)) - this.intensity) * 0.05;
+  }
+
+  refreshVolume() {
+    if (this.gain && this.sound.ctx) this.gain.gain.setTargetAtTime(this.volume(), this.sound.ctx.currentTime, 0.2);
+  }
+
+  midi(n) {
+    return 440 * Math.pow(2, (n - 69) / 12);
+  }
+
+  tick() {
+    const c = this.sound.ctx;
+    if (!c || !this.current) return;
+    if (c.state !== 'running') return;
+    const T = MUSIC_THEMES[this.current];
+    const eighth = 60 / T.bpm / 2;
+    while (this.nextT < c.currentTime + 0.35) {
+      this.playStep(T, this.step, this.nextT, eighth);
+      this.step = (this.step + 1) % 64;
+      this.nextT += eighth;
+    }
+  }
+
+  playStep(T, step, t, eighth) {
+    const bar = Math.floor(step / 16) % T.chords.length;
+    const inBar = step % 16;
+    const chord = T.chords[bar];
+    // Acorde de fondo al empezar cada compás.
+    if (inBar === 0) for (const n of chord) this.pad(this.midi(n), t, eighth * 16);
+    // Arpegio una octava arriba en corcheas.
+    if (inBar % 2 === 0 || this.current === 'battle') {
+      const n = chord[T.arp[inBar % 8]] + 12;
+      this.pluck(this.midi(n), t, eighth * 1.6, this.current === 'battle' ? 0.05 : 0.06);
+    }
+    if (T.bass && inBar % 4 === 0) this.bass(this.midi(chord[0] - 12), t, eighth * 3.2);
+    if (this.current === 'battle') {
+      const k = this.intensity;
+      if (k > 0.25 && inBar % 8 === 0) this.kick(t);
+      if (k > 0.25 && inBar % 8 === 4) this.snare(t);
+      if (k > 0.55 && inBar % 2 === 1) this.hat(t);
+    }
+  }
+
+  env(t, a, d, peak) {
+    const c = this.sound.ctx;
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(peak, t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+    g.connect(this.gain);
+    return g;
+  }
+
+  osc(type, f, t, dur, g) {
+    const o = this.sound.ctx.createOscillator();
+    o.type = type;
+    o.frequency.setValueAtTime(f, t);
+    o.connect(g);
+    o.start(t);
+    o.stop(t + dur + 0.05);
+    this.notes++;
+    return o;
+  }
+
+  pad(f, t, dur) {
+    const g = this.env(t, dur * 0.3, dur * 0.7, 0.035);
+    this.osc('triangle', f, t, dur, g);
+    this.osc('triangle', f * 1.004, t, dur, g);
+  }
+
+  pluck(f, t, dur, vol) {
+    this.osc('sine', f, t, dur, this.env(t, 0.01, dur, vol));
+  }
+
+  bass(f, t, dur) {
+    const c = this.sound.ctx;
+    const g = this.env(t, 0.02, dur, 0.09);
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 420;
+    lp.connect(g);
+    this.osc('sawtooth', f, t, dur, lp);
+  }
+
+  kick(t) {
+    const g = this.env(t, 0.005, 0.25, 0.22);
+    const o = this.osc('sine', 120, t, 0.3, g);
+    o.frequency.exponentialRampToValueAtTime(42, t + 0.22);
+  }
+
+  noise(t, dur, type, freq, vol) {
+    const c = this.sound.ctx;
+    if (!this.sound.noise) return;
+    const src = c.createBufferSource();
+    src.buffer = this.sound.noise;
+    const f = c.createBiquadFilter();
+    f.type = type;
+    f.frequency.value = freq;
+    src.connect(f);
+    f.connect(this.env(t, 0.003, dur, vol));
+    src.start(t, Math.random() * 0.5, dur + 0.05);
+    this.notes++;
+  }
+
+  snare(t) {
+    this.noise(t, 0.16, 'bandpass', 1800, 0.12);
+  }
+
+  hat(t) {
+    this.noise(t, 0.05, 'highpass', 7000, 0.05);
   }
 }
 
@@ -11699,6 +12428,10 @@ const App = {
     }
     Thumbs.init();
     this.sound = new Sound();
+    // Música propia (v1.1): empieza con el primer toque (los navegadores no dejan antes).
+    this.music = new Music(this.sound);
+    this.sound.onUnlock = () => this.music.play(this.state === 'play' ? 'battle' : 'lobby');
+    this.sound.onToggle = () => { if (this.sound.on) this.music.play(this.state === 'play' ? 'battle' : 'lobby'); else this.music.stop(); this.music.refreshVolume(); };
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
     this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
       this.modelCount = n;
@@ -11717,14 +12450,14 @@ const App = {
     document.addEventListener('gesturestart', (e) => e.preventDefault());
     document.addEventListener('dblclick', (e) => e.preventDefault());
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.state === 'play' && !this.game.over) {
+      if (document.hidden && this.state === 'play' && !this.game.over && !this.game.spectating) {
         this.togglePause(true);
         Save.write(this.game);
       }
     });
     // Si se cierra la pestaña sin querer, la partida queda guardada.
     window.addEventListener('pagehide', () => {
-      if (this.state === 'play' && this.game && !this.game.over) Save.write(this.game);
+      if (this.state === 'play' && this.game && !this.game.over && !this.game.spectating) Save.write(this.game);
     });
     this.last = performance.now();
     requestAnimationFrame((t) => this.loop(t));
@@ -11799,6 +12532,7 @@ const App = {
     this.selection = [];
     this.paused = false;
     this.state = 'play';
+    if (this.music) this.music.play('battle');
     this.saveT = 15;
     this.ui.showScreen('play');
     this.ui.startHud();
@@ -11807,12 +12541,26 @@ const App = {
   },
 
   // Salir al menú no borra la partida (punto 16): queda en pausa para «Volver a la partida».
+  // v1.1: después de perder, sigue la partida hasta el final para mirarla.
+  spectate() {
+    const g = this.game;
+    if (!g || !g.startSpectating()) return;
+    $('end').hidden = true;
+    this.setSelection([]);
+    this.input.cancelPlacement();
+    document.body.classList.add('spectating');
+    $('specbar').hidden = false;
+    this.ui.toast('Modo espectador: ves el resto de la partida', 'info');
+  },
+
   toMenu() {
     clearTimeout(this.endTimer);
     this.input.cancelPlacement();
+    document.body.classList.remove('spectating');
+    $('specbar').hidden = true;
     const g = this.game;
     if (g && !g.preview) {
-      if (g.over) {
+      if (g.over || g.spectating) {
         this.lobby.finish(g);
         this.suspended = null;
         Save.clear();
@@ -11824,6 +12572,7 @@ const App = {
     this.state = 'menu';
     this.paused = false;
     $('pause').hidden = true;
+    if (this.music) this.music.play('lobby');
     if (!this.suspended) {
       // Después de una misión, el fondo del vestíbulo vuelve a la isla de «Jugar».
       if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
@@ -12056,6 +12805,8 @@ const App = {
       else if (ev.type === 'built' || ev.type === 'spawned') this.ui.selSig = '';
       else if (ev.type === 'upgraded' && ev.lines && ev.lines.length) this.ui.upgradeCard(ev.b, ev.level, ev.lines);
       else if (ev.type === 'over') {
+        document.body.classList.remove('spectating');
+        $('specbar').hidden = true;
         Save.clear();
         this.lobby.finish(g);
         this.endTimer = setTimeout(() => this.ui.showEnd(ev.result), 1600);
@@ -12098,11 +12849,21 @@ const App = {
         }
         this.renderer.frame(this.paused ? 0 : dt, this.time, this.selection);
         this.ui.updateEdges();
+        // Música: más intensa si te atacan o si tus tropas pelean.
+        this.musicT = (this.musicT || 0) - dt;
+        if (this.musicT <= 0 && this.music) {
+          this.musicT = 0.5;
+          const g = this.game;
+          const me = g.players[0];
+          const fighting = g.time - (me.underAttackAt ?? -99) < 8 || g.units.some((u) => u.owner === 0 && u.alive && u.autoTarget && u.autoTarget.alive);
+          this.musicFight = fighting ? 1 : 0;
+        }
+        if (this.music) this.music.setIntensity(this.musicFight || 0);
         // Guardado automático cada 15 s.
         this.saveT -= dt;
         if (this.saveT <= 0) {
           this.saveT = 15;
-          if (!this.game.over) Save.write(this.game);
+          if (!this.game.over && !this.game.spectating) Save.write(this.game);
         }
         this.ui.update(dt);
         this.miniT -= dt;

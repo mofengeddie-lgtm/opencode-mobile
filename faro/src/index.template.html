@@ -382,6 +382,50 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bad); display: inline-block; }
 .lmain { display: grid; gap: 12px; min-width: 0; }
 .lcard { padding: 16px; display: grid; gap: 12px; }
+.ranked .rankhead { display: flex; gap: 14px; align-items: center; }
+.rankbadge { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 18px; display: grid; place-items: center; background: radial-gradient(circle at 30% 25%, #fff6, transparent 55%), var(--rk); box-shadow: 0 4px 14px rgba(0,0,0,0.35), inset 0 0 0 3px rgba(255,255,255,0.25); transform: rotate(45deg); }
+.rankbadge b { transform: rotate(-45deg); font-family: var(--font-display); font-size: 26px; color: #1a1206; }
+.ranked h2 { margin: 2px 0; }
+.ranked small { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.rankbar { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.rankbar i { display: block; height: 100%; background: linear-gradient(90deg, #f2ab38, #ffd27a); }
+.ranklist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+.ranklist li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; background: rgba(8,15,21,0.35); font-size: 13px; opacity: 0.6; }
+.ranklist li.past { opacity: 0.85; }
+.ranklist li.on { opacity: 1; outline: 2px solid #f2ab38; font-weight: 700; }
+.ranklist li i { width: 12px; height: 12px; border-radius: 3px; transform: rotate(45deg); }
+.ranklist li small { margin-left: auto; color: var(--muted); }
+.rankhist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rankhist li { display: grid; grid-template-columns: 90px 50px 1fr; gap: 8px; align-items: center; font-size: 13px; padding: 4px 8px; border-radius: 6px; background: rgba(8,15,21,0.3); }
+.rankhist li.win span { color: #8ff0a4; }
+.rankhist li.loss span { color: #ffb4b5; }
+.seg4 { grid-template-columns: repeat(4, 1fr) !important; }
+.musicbtn.off { opacity: 0.5; }
+.musicbtn.off svg { stroke-dasharray: 2 2; }
+#specbar { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); z-index: 7; display: flex; gap: 10px; align-items: center; padding: 8px 12px; max-width: calc(100% - 32px); flex-wrap: wrap; justify-content: center; font-size: 13px; }
+body.spectating #buildpanel, body.spectating #btn-build, body.spectating #selpanel, body.spectating #prodbar, body.spectating #groups, body.spectating #quick, body.spectating #objectives { display: none !important; }
+.histcharts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.histchart { margin: 0; padding: 8px; border-radius: 10px; background: rgba(8,15,21,0.35); border: 1px solid var(--line); }
+.histchart figcaption { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
+.histwrap { position: relative; }
+.histchart svg { width: 100%; height: auto; display: block; touch-action: none; }
+.histchart .hgrid { stroke: rgba(255,255,255,0.08); stroke-width: 1; }
+.histchart .haxis { fill: var(--muted); font-size: 10px; }
+.histchart .hend { fill: var(--text); font-size: 10px; }
+.histchart .hcross { stroke: rgba(255,255,255,0.45); stroke-width: 1; stroke-dasharray: 3 3; }
+.histtip { position: absolute; top: 4px; min-width: 140px; padding: 6px 8px; border-radius: 8px; background: rgba(8,12,18,0.94); border: 1px solid var(--line); font-size: 11.5px; display: grid; gap: 2px; pointer-events: none; }
+.histtip span { display: flex; align-items: center; gap: 6px; }
+.histtip i { width: 8px; height: 8px; border-radius: 2px; }
+.histtip em { margin-left: auto; font-style: normal; font-variant-numeric: tabular-nums; }
+.histlegend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--text); margin: 6px 0; }
+.histlegend span { display: inline-flex; align-items: center; gap: 6px; }
+.histtable summary { cursor: pointer; font-size: 12.5px; color: var(--muted); margin: 4px 0; }
+.histtable table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.histtable td, .histtable th { padding: 3px 6px; text-align: left; border-bottom: 1px solid var(--line); }
+.btn.mini { min-height: 30px; padding: 0 10px; font-size: 12px; margin-left: 8px; }
+.allyorders { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 10px; font-size: 12.5px; color: var(--muted); }
+.allyorders .btn.mini { margin-left: 0; min-height: 36px; }
+.allyhint { margin: 0; padding: 0 10px 6px; font-size: 12px; color: var(--muted); }
 .planecard { display: flex; gap: 10px; align-items: center; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: rgba(8,15,21,0.35); }
 .planecard img { width: 46px; height: 46px; flex: 0 0 46px; }
 .planecard .numbers { grid-template-columns: auto auto; gap: 2px 12px; font-size: 12px; }
@@ -761,6 +805,8 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     </div>
   </div>
   <div id="boxsel" hidden></div>
+  <div id="specbar" class="panel" hidden><span><b>Modo espectador</b> · ves el resto de la partida hasta que haya ganador</span>
+    <button class="btn" type="button" id="btn-spec-exit">Salir al vestíbulo</button></div>
 </div>
 
 <div id="menu" class="screen lobby">
@@ -768,7 +814,7 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.0</span>
+      <span class="version">v1.1</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -776,6 +822,8 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
       <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
     </nav>
     <div class="lobby-res">
+      <button class="btn icon musicbtn" id="btn-music-lobby" type="button" aria-label="Música">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
       <span class="creator-badge" id="creator-badge" hidden>Creador</span>
       <span class="crystals" title="Cristales: se ganan jugando"><i></i><b id="crystals">0</b></span>
       <span class="lvl" id="lvl-badge">Nivel 1</span>
@@ -802,6 +850,15 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
         <button class="btn" type="button" data-quality="low">Más fluido</button>
       </div>
       <p class="small-note" id="quality-note"></p>
+    </div>
+    <div>
+      <div class="lbl" style="margin-bottom:6px">Música</div>
+      <div class="seg3 seg4">
+        <button class="btn" type="button" data-music="0">Apagada</button>
+        <button class="btn" type="button" data-music="0.3">Baja</button>
+        <button class="btn" type="button" data-music="0.6">Media</button>
+        <button class="btn" type="button" data-music="1">Alta</button>
+      </div>
     </div>
     <ul class="help">
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>

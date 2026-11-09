@@ -825,9 +825,52 @@ class Bot {
     return this.chooseEnemyCore() || flags[0] || null;
   }
 
+  // ---------- órdenes de un aliado humano (v1.1) ----------
+  // «¡Ayuda!»: manda hasta la mitad de su ejército (máx. 8) a defender la base del aliado.
+  answerHelp(pid) {
+    const g = this.g;
+    const ally = g.players[pid];
+    if (!this.p.alive || !ally || !ally.core || !ally.core.alive || g.isEnemy(pid, this.pid)) return 0;
+    const home = g.units.filter((u) => u.alive && u.owner === this.pid && u.def.weapon && !u.inside && u.role !== 'guard');
+    if (!home.length) {
+      g.say(this.pid, 'No tengo tropas libres ahora, ¡aguanta!', { force: true, toMe: true });
+      return 0;
+    }
+    const go = home.slice(0, Math.min(8, Math.max(1, Math.ceil(home.length / 2))));
+    const sent = this.sendTo(go, { cell: ally.core.cell });
+    for (const u of sent) u.role = 'help';
+    this.helpAt[pid] = g.time;
+    if (sent.length) this.helpSent++;
+    g.say(this.pid, sent.length ? `¡Voy a ayudarte con ${sent.length} tropas!` : 'No llego a tu base desde aquí.', { force: true, toMe: true });
+    return sent.length;
+  }
+
+  // «¡Ataquemos!»: ataca ya al rival que elegiste y lo prefiere en sus oleadas por 3 minutos.
+  answerAttack(targetPid) {
+    const g = this.g;
+    const foe = g.players[targetPid];
+    if (!this.p.alive || !foe || !foe.alive || !g.isEnemy(targetPid, this.pid)) return 0;
+    this.focusPid = targetPid;
+    this.focusUntil = g.time + 180;
+    const target = foe.core && foe.core.alive ? foe.core : g.buildings.find((b) => b.alive && b.owner === targetPid);
+    if (!target) return 0;
+    const army = g.units.filter((u) => u.alive && u.owner === this.pid && u.def.weapon && !u.inside && u.role !== 'guard');
+    const go = army.slice(0, Math.max(1, Math.ceil(army.length * 0.7)));
+    const sent = go.length ? this.sendTo(go, target) : [];
+    for (const u of sent) u.role = 'help';
+    this.lastTarget = target;
+    g.say(this.pid, sent.length ? `¡Vamos por ${foe.name}! Mando ${sent.length} tropas.` : `Atacaré a ${foe.name} con la próxima oleada.`, { force: true, toMe: true });
+    return sent.length;
+  }
+
   chooseEnemyCore() {
     const g = this.g;
     const core = this.coreCell();
+    // v1.1: el rival que pidió el aliado humano con «¡Ataquemos!».
+    if (this.focusPid !== undefined && g.time < this.focusUntil) {
+      const f = g.players[this.focusPid];
+      if (f && f.alive && f.core && f.core.alive && g.isEnemy(f.id, this.pid)) return f.core;
+    }
     let cores = g.players
       .filter((p) => p.alive && g.isEnemy(p.id, this.pid) && p.core.alive)
       .map((p) => ({ p, d: g.map.dist(g.cells[p.core.cell], core) }))

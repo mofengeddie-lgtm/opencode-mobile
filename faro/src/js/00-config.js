@@ -4,7 +4,7 @@
 
 const SQ3 = Math.sqrt(3);
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.0';
+const GAME_VERSION = '1.1';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -181,7 +181,9 @@ const BUILDINGS = {
   antinuke: {
     name: 'Escudo antimisiles', cat: 'def', cost: 9000, energyCost: 120, hp: 1400, build: 20, on: 'land', limit: 2, builtBy: 'land',
     maxLevel: 1, intercept: { range: 7, recharge: 120 },
-    desc: 'Derriba el misil nuclear enemigo si cae a 7 casillas o menos. Una carga cada 2 minutos.',
+    // v1.1: defensa de punto: también derriba misiles y cohetes enemigos que pasen cerca.
+    pointDefense: { range: 3, cd: 1.5 },
+    desc: 'Derriba el misil nuclear enemigo si cae a 7 casillas o menos (una carga cada 2 minutos), y misiles y cohetes enemigos a 3 casillas (uno cada 1,5 s).',
   },
   outpost: {
     name: 'Puesto avanzado', cat: null, cost: 800, hp: 800, build: 8, claim: 2, vision: 4, limit: 6, maxLevel: 1,
@@ -380,16 +382,19 @@ for (const [k, d] of Object.entries(UNITS)) d.key = k;
 
 // Modos del vestíbulo (lobby: true) y modos internos para Personalizado y pruebas.
 const MODES = {
-  conquest: { name: 'Conquista de islas', desc: '6 imperios. Gana el último Núcleo en pie.', players: 6, teams: [0, 1, 2, 3, 4, 5], lobby: true },
-  fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true },
-  turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true },
+  // v1.1: alliances = se pueden formar y romper alianzas durante la partida (todos contra todos).
+  conquest: { name: 'Conquista de islas', desc: '6 imperios. Gana el último Núcleo en pie. Puedes aliarte desde el marcador.', players: 6, teams: [0, 1, 2, 3, 4, 5], lobby: true, alliances: true },
+  fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true, alliances: true },
+  turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true, alliances: true },
+  duos: { name: 'Dúos', desc: '3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.', players: 6, teams: [0, 0, 1, 1, 2, 2], lobby: true },
+  ranked: { name: 'Clasificatoria', desc: '3 vs 3 por puntos: gana para subir de rango.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, ranked: true },
   league: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3. Tus aliados son bots.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, minLevel: 10 },
   king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total.', players: 4, teams: [0, 1, 2, 3], king: true, lobby: true },
-  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true },
+  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true, alliances: true },
   duel: { name: 'Duelo 1 vs 1', desc: 'Tú contra 1 rival', players: 2, teams: [0, 1] },
-  ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3] },
+  ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3], alliances: true },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
-  big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5] },
+  big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
   tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento.', players: 2, teams: [0, 1], tutorial: true },
 };
 
