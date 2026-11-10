@@ -738,6 +738,33 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
+/* ---------- v1.3: panel de selección compacto y botones de 44 × 44 px (PRD 1.5) ---------- */
+/* Arriba los botones principales; las partes largas, plegadas en «Más detalles». */
+#selpanel { max-height: min(44vh, 380px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+#selpanel > .selhead { order: -2; }
+#selpanel > .mainacts { order: -1; }
+#selpanel:not(.more) .sec { display: none !important; }
+.selhead .headbtns { display: flex; gap: 6px; align-items: center; }
+.btn.seltoggle { min-width: 44px; padding: 0 10px; font-size: 12.5px; }
+@media (max-height: 520px) {
+  /* Celular horizontal: más bajo y sin pasar por encima de la barra de arriba. */
+  #selpanel { max-height: min(56vh, calc(100vh - var(--top) - 66px - var(--bottom))); }
+}
+/* Botones táctiles: 44 × 44 px como mínimo. */
+.btn, .btn.mini, .btn.icon { min-height: 44px !important; }
+.btn.icon { min-width: 44px; width: 44px; }
+.btn.mini { padding: 0 12px; }
+.tab { min-height: 44px !important; }
+.qbtn, .groups .qbtn { min-height: 44px !important; min-width: 44px; }
+#btn-build-close { width: 44px !important; min-height: 44px !important; }
+#btn-mini { width: 44px !important; min-height: 44px !important; top: 0; right: 0; background: rgba(12,21,29,0.55); }
+#btn-obj { min-height: 44px; min-width: 44px; padding: 0 10px; border-radius: 8px; }
+.players { min-height: 44px; align-items: center; }
+.pchip { min-height: 32px; }
+.stat[data-econ] { min-height: 44px; }
+.wheel-opt { min-height: 52px; }
+/* «+0/10 s» no se parte en dos líneas. */
+#energyRate, #income { white-space: nowrap; }
 </style>
 
 <canvas id="gl"></canvas>
@@ -1381,7 +1408,7 @@ const MODES = {
   ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3], alliances: true },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
-  tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento.', players: 2, teams: [0, 1], tutorial: true },
+  tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento en otra isla.', players: 2, teams: [0, 1], tutorial: true, coins: 6000 },
 };
 
 const MAPS = {
@@ -4572,7 +4599,13 @@ class Game {
     this.updateRadiation(dt);
     this.updateAutoUpgrade(dt);
     this.recordHistory(dt);
-    if (!this.over) for (const bot of this.bots) bot.update(dt);
+    if (!this.over && this.bots.length) {
+      // Como mucho un bot piensa por paso; el turno rota para que ninguno se quede esperando.
+      const n = this.bots.length;
+      this._botTurn = ((this._botTurn || 0) + 1) % n;
+      let busy = false;
+      for (let k = 0; k < n; k++) busy = this.bots[(this._botTurn + k) % n].update(dt, busy) || busy;
+    }
     if (this.camp) Campaign.update(this, dt);
 
     if (this.units.some((u) => !u.alive)) {
@@ -4601,6 +4634,13 @@ class Game {
     if ((this.players[0].stats.builders || 0) > 0) this.completeObjective('builder');
     if (this.buildings.some((b) => b.owner === 0 && b.def.cat === 'energy' && b.built)) this.completeObjective('energy');
     if (this.points.some((pt) => pt.owner === 0)) this.completeObjective('capture');
+    // v1.3: pasos del tutorial de tu documento.
+    if (this.mode.tutorial) {
+      const done = (t) => this.buildings.filter((b) => b.owner === 0 && b.alive && b.built && t(b)).length;
+      if (done((b) => b.type === 'farm') >= 2 && done((b) => b.def.cat === 'energy') >= 1) this.completeObjective('tut_build');
+      const soldiers = this.units.filter((u) => u.owner === 0 && u.alive && u.cls === 'inf' && u.def.weapon).length;
+      if (done((b) => b.type === 'barracks') >= 1 && soldiers >= 3) this.completeObjective('tut_army');
+    }
   }
 
   // Cúpula (puntos 5 y 6): pide Núcleo nivel 3; sube de nivel 1 a 3.
@@ -5502,10 +5542,36 @@ const Save = {
     return paths;
   },
 
+  // v1.3: guardado más chico y rápido (cada 60 s). El mapa no se guarda: se vuelve a crear con su
+  // semilla al cargar (una suma de control comprueba que sea el mismo). Las casillas solo guardan lo
+  // que no se puede recalcular; los efectos visuales y avisos ya mostrados tampoco se guardan.
+  MAP_STATIC: ['i', 'q', 'r', 'x', 'z', 't', 'h', 'land', 'nb', 'comp', 'bridge'],
+  // Datos de las casillas que se vuelven a poner al cargar: territorio (se recalcula), edificio y punto.
+  CELL_REBUILT: ['owner', 'ownerD', 'ownerId', 'bld', 'point'],
+  GAME_TRANSIENT: ['fx', 'events', 'removed'],
+
+  mapCheck(cells) {
+    let h = 2166136261;
+    for (const c of cells) {
+      const str = `${c.q},${c.r},${c.t},${Math.round(c.h * 100)},${c.land ? 1 : 0},${c.comp},${c.bridge ? 1 : 0};`;
+      for (let k = 0; k < str.length; k++) {
+        h ^= str.charCodeAt(k);
+        h = Math.imul(h, 16777619);
+      }
+    }
+    return h >>> 0;
+  },
+
   serialize(game) {
     const consts = this._consts();
     const ids = new Map();
     const objs = [];
+    const map = game.map;
+    const compact = map instanceof GameMap && map.cells === game.cells;
+    const cellIdx = compact ? new Map(map.cells.map((c, i) => [c, i])) : null;
+    const skipGame = new Set(this.GAME_TRANSIENT);
+    if (compact) skipGame.add('cells');
+    const skipMap = new Set(['cells', 'lookup']);
     const classes = new Map([[Game.prototype, 'Game'], [Bot.prototype, 'Bot'], [GameMap.prototype, 'GameMap'], [MinHeap.prototype, 'MinHeap']]);
     const enc = (v) => {
       if (typeof v === 'function' || v === undefined) return undefined;
@@ -5515,6 +5581,13 @@ const Save = {
       if (cp) return { $c: cp };
       const known = ids.get(v);
       if (known !== undefined) return { $r: known };
+      if (cellIdx && cellIdx.has(v)) {
+        // Referencia a una casilla: al cargar apunta a la casilla recreada.
+        const cid = objs.length;
+        ids.set(v, cid);
+        objs.push({ cell: cellIdx.get(v) });
+        return { $r: cid };
+      }
       const id = objs.length;
       ids.set(v, id);
       objs.push(null);
@@ -5525,13 +5598,31 @@ const Save = {
       else if (ArrayBuffer.isView(v)) rec = { t: v.constructor.name, n: v.length };
       else {
         const o = {};
+        const skip = v === game ? skipGame : compact && v === map ? skipMap : null;
         for (const k of Object.keys(v)) {
+          if (skip && skip.has(k)) continue;
           const e = enc(v[k]);
           if (e !== undefined) o[k] = e;
         }
         rec = { o };
         const cls = classes.get(Object.getPrototypeOf(v));
         if (cls) rec.k = cls;
+        if (compact && v === map) {
+          // Datos de casillas que no se recalculan solos (si los hay): se guardan aparte.
+          const fixed = new Set([...this.MAP_STATIC, ...this.CELL_REBUILT]);
+          const extra = [];
+          map.cells.forEach((c, i) => {
+            const ks = Object.keys(c).filter((k) => !fixed.has(k));
+            if (!ks.length) return;
+            const eo = {};
+            for (const k of ks) {
+              const e = enc(c[k]);
+              if (e !== undefined) eo[k] = e;
+            }
+            extra.push([i, eo]);
+          });
+          rec.gen = { seed: map.seed, kind: map.kind, n: map.n, pairs: !!map.pairs, check: this.mapCheck(map.cells), extra };
+        }
       }
       objs[id] = rec;
       return { $r: id };
@@ -5549,7 +5640,15 @@ const Save = {
     const byPath = this._byPath;
     const classes = { Game, Bot, GameMap, MinHeap };
     const typed = { Float32Array, Int32Array, Uint32Array, Uint8Array, Int16Array, Uint16Array, Float64Array };
+    let fresh = null;
+    const genRec = data.objs.find((r) => r && r.gen);
+    if (genRec) {
+      const g0 = genRec.gen;
+      fresh = new GameMap(g0.seed, g0.kind, g0.n, g0.pairs);
+      if (this.mapCheck(fresh.cells) !== g0.check) throw new Error('El mapa no coincide con esta versión del juego');
+    }
     const made = data.objs.map((r) => {
+      if (r.cell !== undefined) return fresh.cells[r.cell];
       if (r.a) return [];
       if (r.m) return new Map();
       if (r.s) return new Set();
@@ -5568,6 +5667,7 @@ const Save = {
       return v;
     };
     data.objs.forEach((r, i) => {
+      if (r.cell !== undefined) return;
       const t = made[i];
       if (r.a) r.a.forEach((x) => t.push(dec(x)));
       else if (r.m) r.m.forEach(([k, x]) => t.set(dec(k), dec(x)));
@@ -5578,6 +5678,18 @@ const Save = {
     if (!(game instanceof Game)) throw new Error('Guardado no válido');
     _nextId = Math.max(_nextId, data.nextId || 1);
     game.events = [];
+    if (!game.fx) game.fx = [];
+    if (!game.removed) game.removed = [];
+    if (genRec) {
+      // Mapa recreado: casillas nuevas, con sus edificios, puntos y datos extra.
+      game.map.cells = fresh.cells;
+      game.map.lookup = fresh.lookup;
+      game.cells = fresh.cells;
+      for (const [ci, eo] of genRec.gen.extra || []) for (const k of Object.keys(eo)) fresh.cells[ci][k] = dec(eo[k]);
+      for (const c of fresh.cells) { c.bld = null; delete c.point; }
+      for (const b of game.buildings) if (b.alive) fresh.cells[b.cell].bld = b;
+      for (const pt of game.points || []) fresh.cells[pt.cell].point = pt;
+    }
     // Los datos de cada edificio y tropa vuelven a apuntar a la configuración actual.
     for (const b of game.buildings) if (BUILDINGS[b.type]) b.def = BUILDINGS[b.type];
     for (const u of game.units) if (UNITS[u.type]) u.def = UNITS[u.type];
@@ -5991,13 +6103,16 @@ class Bot {
     return this.g.players[this.pid];
   }
 
-  update(dt) {
-    if (!this.p.alive) return;
+  // v1.3: si otro bot ya pensó en este paso (busy), espera al siguiente: así nunca piensan dos
+  // a la vez y el paso más lento de la simulación baja.
+  update(dt, busy = false) {
+    if (!this.p.alive) return false;
     this.t -= dt;
     this.defendT -= dt;
-    if (this.t > 0) return;
+    if (this.t > 0 || busy) return false;
     this.t = this.g.diff.think * (0.8 + Math.random() * 0.4);
     this.think();
+    return true;
   }
 
   targetArmy() {
@@ -10156,19 +10271,67 @@ class UI {
       if (!(sel.length === 1 && sel[0] === core)) return { world: { x: core.x, y: core.y + 1, z: core.z }, text: 'Toca tu Núcleo' };
       return { sel: '[data-act="train"][data-type="builder"]', text: 'Entrena un Constructor' };
     }
+    // v1.3: los 3 pasos de tu documento. 1 Construí: otra Granja y una energía.
+    const at = (e, dy = 0.5) => ({ x: e.x, y: (e.y || 0) + dy, z: e.z });
+    const isSel = (e) => sel.length === 1 && sel[0] === e;
+    if (blds.filter((b) => b.type === 'farm').length < 2) return buildFlow('eco', 'farm', 'Granja', 'Economía');
     if (!blds.some((b) => ['solar', 'wind', 'hydro', 'tidal', 'wave'].includes(b.type))) return buildFlow('energy', 'solar', 'Solar', 'Energía');
+    // 2 Producí: un Cuartel y 3 soldados.
     const bar = blds.find((b) => b.type === 'barracks');
     if (!bar) return buildFlow('prod', 'barracks', 'Cuartel', 'Producción');
-    const combat = mine.filter((u) => u.def.weapon).length;
-    if (combat < 5) {
-      if (!bar.built) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
-      if (!(sel.length === 1 && sel[0] === bar)) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'Toca tu Cuartel' };
-      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${combat} de 5)` };
+    const soldiers = mine.filter((u) => u.cls === 'inf' && u.def.weapon);
+    const inQueue = bar.queue.filter((q) => UNITS[q.type].cls === 'inf' && UNITS[q.type].weapon).length;
+    if (soldiers.length + inQueue < 3) {
+      if (!bar.built) return { world: at(bar), text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
+      if (!isSel(bar)) return { world: at(bar), text: 'Toca tu Cuartel' };
+      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${soldiers.length + inQueue} de 3)` };
     }
+    // 3 Atacá: Puerto, Barcaza, subir a los soldados, cruzar y tomar la isla del bot.
     const foe = g.players.find((q) => q.id !== 0 && q.alive && q.core && q.core.alive);
     if (!foe) return null;
-    if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus tropas' };
-    return { world: { x: foe.core.x, y: foe.core.y + 1, z: foe.core.z }, text: 'Toca el Núcleo enemigo para atacarlo' };
+    const foeComp = g.cells[foe.core.cell].comp;
+    const landed = soldiers.filter((u) => !u.inside && g.cells[u.cell].comp === foeComp);
+    if (landed.length) {
+      if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
+      return { world: at(foe.core, 1), text: 'Toca el Núcleo del bot para tomar su isla' };
+    }
+    const harbor = blds.find((b) => b.type === 'harbor');
+    if (!harbor) return buildFlow('prod', 'harbor', 'Puerto', 'Producción');
+    const barge = mine.find((u) => u.type === 'barge');
+    if (!barge) {
+      if (!harbor.built) return { world: at(harbor), text: 'El Constructor va a la obra: espera a que termine el Puerto' };
+      if (harbor.queue.some((q) => q.type === 'barge')) return { world: at(harbor), text: 'El Puerto fabrica la Barcaza: espera' };
+      if (!isSel(harbor)) return { world: at(harbor), text: 'Toca tu Puerto' };
+      return { sel: '[data-act="train"][data-type="barge"]', text: 'Entrena una Barcaza: lleva tropas por el mar' };
+    }
+    const ashore = soldiers.filter((u) => !u.inside);
+    if (soldiers.length < 3) return { world: at(bar), text: `Espera a tus soldados (${soldiers.length} de 3)` };
+    if (ashore.length) {
+      if (ashore.every((u) => u.state === 'board')) return { world: at(barge, 0.3), text: 'Los soldados suben a la Barcaza: espera' };
+      if (!sel.some((u) => u.kind === 'unit' && u.cls === 'inf' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
+      return { world: at(barge, 0.3), text: 'Toca la Barcaza para subirlos' };
+    }
+    // Todos a bordo: llevar la Barcaza junto a la isla del bot y desembarcar.
+    const c0 = g.cells[barge.cell];
+    const nearFoe = g.cells.some((c) => c.comp === foeComp && TERRAIN[c.t].land && g.map.dist(c, c0) <= 2);
+    if (!nearFoe) {
+      if (barge.path && barge.pathI < barge.path.length) return { world: at(barge, 0.3), text: 'La Barcaza navega hacia la isla del bot: espera' };
+      if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
+      const dest = this.landingCell(g, foe, foeComp);
+      return dest ? { world: { x: dest.x, y: 0.1, z: dest.z }, text: 'Toca el mar junto a la isla del bot para llevarla' } : { text: 'No hay costa libre junto a la isla del bot' };
+    }
+    if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
+    return { sel: '[data-act="unload"]', text: 'Toca «Desembarcar»' };
+  }
+
+  // Casilla de mar junto a la isla del bot, lo más cerca posible de su Núcleo.
+  landingCell(g, foe, foeComp) {
+    if (this._landing && this._landing.g === g && this._landing.pid === foe.id) return this._landing.c;
+    const core = g.cells[foe.core.cell];
+    const c = g.cells.filter((x) => TERRAIN[x.t].water && !x.bld && x.nb.some((ni) => g.cells[ni].comp === foeComp && TERRAIN[g.cells[ni].t].land))
+      .sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core))[0] || null;
+    this._landing = { g, pid: foe.id, c };
+    return c;
   }
 
   updateCoach() {
@@ -10724,6 +10887,7 @@ class UI {
     if (force || sig !== this.selSig) {
       this.selSig = sig;
       panel.hidden = false;
+      panel.classList.toggle('more', !!this.selMore);
       if (first.kind === 'point') panel.innerHTML = this.pointHtml(first);
       else if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
       else if (first.owner === 0) panel.innerHTML = this.unitsHtml(sel);
@@ -10735,10 +10899,11 @@ class UI {
   head(type, color, title, sub, hpId = true) {
     return `<div class="selhead">
       <img class="thumb" src="${Thumbs.get(type, color)}" alt="">
-      <div style="min-width:0"><h3>${title}</h3><p>${sub}</p>
+      <div style="min-width:0"><h3>${title}</h3><p class="sec">${sub}</p>
         ${hpId ? '<div class="hp" id="sel-hpbar"><i id="sel-hp"></i></div><div class="hptext" id="sel-hptext"></div>' : ''}
       </div>
-      <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button>
+      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? 'Menos' : 'Más detalles'}</button>
+      <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button></div>
     </div>`;
   }
 
@@ -10785,8 +10950,8 @@ class UI {
           : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? 'Núcleo nivel 3' : 'Disponible'),
         dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
       ];
-      html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
-      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
+      html += `<div class="coretiles sec">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue sec">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
       // v1.0: con el Núcleo en nivel 3, mejorar todo de un clic o dejar las mejoras automáticas.
       if (b.level >= AUTO_UP.coreLevel) {
@@ -10803,7 +10968,7 @@ class UI {
         html += `<div class="upall"><div class="actions">
           <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}</button>
           <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${bi('repeat')}Mejoras automáticas: ${auto ? 'sí' : 'no'}</button></div>
-          <span class="queue">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
+          <span class="queue sec">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
       }
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
@@ -10811,7 +10976,7 @@ class UI {
         const why = b.level < 3 ? 'Necesita el Núcleo en nivel 3.' : next === 3 ? 'Nivel 3: escudo personal para todas tus tropas.'
           : `Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
         html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${bi('dome')}${label} · ${fmt(g.domeCost(0))}</button>
-          <span class="queue" style="flex:1 1 200px">${why}</span></div>`;
+          <span class="queue sec" style="flex:1 1 200px">${why}</span></div>`;
       }
     }
     if (d.produces && b.built) {
@@ -10834,7 +10999,7 @@ class UI {
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
-      html += '<div class="queue" id="sel-queue">' + (b.queue.length
+      html += `<div class="queue ${b.queue.length ? '' : 'sec'}" id="sel-queue">` + (b.queue.length
         ? 'En cola: ' + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Cancelar ${esc(UNITS[q.type].name)}">
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
@@ -10863,7 +11028,7 @@ class UI {
     if (own && b.built && !b.upgrading && b.level < maxLv) {
       // v0.9: antes de pagar, qué vas a ganar con la mejora.
       const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
-      if (prev.length) html += `<div class="nextup"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+      if (prev.length) html += `<div class="nextup sec"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
     }
     if (b.built && !b.upgrading && b.level < maxLv) {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
@@ -10873,7 +11038,7 @@ class UI {
     if (b.type !== 'core') {
       acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
     }
-    if (acts.length) html += `<div class="actions">${acts.join('')}</div>`;
+    if (acts.length) html += `<div class="actions mainacts">${acts.join('')}</div>`;
     return html;
   }
 
@@ -10926,7 +11091,7 @@ class UI {
       acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">${bi('formation')}Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
     }
     acts.push(`<button class="btn" type="button" data-act="stop">${bi('stop')}Detener</button>`);
-    html += `<div class="actions">${acts.join('')}</div>`;
+    html += `<div class="actions mainacts">${acts.join('')}</div>`;
     html += `<div class="actions groupsave"><span class="queue">${bi('group')}Guardar en</span>${[1, 2, 3].map((n) =>
       `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
     return html;
@@ -11030,6 +11195,12 @@ class UI {
       return;
     }
     app.sound.play('click');
+    if (act === 'seldetails') {
+      // v1.3: las partes largas del panel se pliegan; este botón las muestra u oculta.
+      this.selMore = !this.selMore;
+      this.renderSel(true);
+      return;
+    }
     if (act === 'close') {
       app.setSelection([]);
       return;
@@ -11629,10 +11800,11 @@ const MISSIONS = {
   ],
 };
 const MISSION_BY_ID = Object.fromEntries([...MISSIONS.daily, ...MISSIONS.weekly].map((m) => [m.id, m]));
+// v1.3: los 3 pasos de tu documento de juego v2 (pág. 18), con la Barcaza que pide el PRD 1.5.
 const TUTORIAL_STEPS = [
-  { id: 'energy', text: '1 · Construí: entrena un Constructor en el Núcleo y construye una energía (Solar o Eólica)' },
-  { id: 'army', text: '2 · Producí: construye un Cuartel y ten 5 tropas de combate' },
-  { id: 'kill', text: '3 · Atacá: destruye el Núcleo del bot' },
+  { id: 'tut_build', text: '1 · Construí: pon otra Granja y una energía (Solar o Eólica)' },
+  { id: 'tut_army', text: '2 · Producí: construye un Cuartel y entrena 3 soldados' },
+  { id: 'kill', text: '3 · Atacá: cruza el mar en una Barcaza y toma la isla del bot' },
 ];
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
@@ -11688,6 +11860,15 @@ function skinSlotOf(kind, type) {
   if (d.cls === 'inf') return 'inf';
   if (d.cls === 'veh') return 'veh';
   return null;
+}
+
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
 }
 
 function dayKey(d = new Date()) {
@@ -11835,6 +12016,44 @@ const Profile = {
 
   level(xp = this.data.xp) {
     return 1 + Math.floor(xp / LEVEL_XP);
+  },
+
+  // v1.3: copia del progreso para llevarlo a otro iPad o navegador (sin servidores, no hay cuentas).
+  // Código = «FARO1.» + suma de control + «.» + el perfil en base64.
+  exportCode() {
+    const json = JSON.stringify(this.data);
+    const bytes = new TextEncoder().encode(json);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return `FARO1.${hashStr(json).toString(36)}.${btoa(bin)}`;
+  },
+
+  importCode(code) {
+    const m = String(code || '').trim().replace(/\s+/g, '').match(/^FARO1\.([0-9a-z]+)\.([A-Za-z0-9+/=]+)$/);
+    if (!m) return { err: 'Ese texto no es una copia del progreso de Faro de Ámbar' };
+    let json;
+    try {
+      const bin = atob(m[2]);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      json = new TextDecoder().decode(bytes);
+    } catch (err) {
+      return { err: 'La copia está incompleta: cópiala entera otra vez' };
+    }
+    if (hashStr(json).toString(36) !== m[1]) return { err: 'La copia está incompleta o cambiada: cópiala entera otra vez' };
+    let data;
+    try { data = JSON.parse(json); } catch (err) { return { err: 'La copia no se puede leer' }; }
+    if (!data || data.v !== 1 || typeof data.xp !== 'number') return { err: 'La copia no es de este juego' };
+    return { data };
+  },
+
+  restore(data) {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(data)); } catch (err) { this.memoryOnly = true; }
+    if (this.memoryOnly) {
+      this.data = data;
+      return;
+    }
+    this.load();
   },
 
   // XP: el nivel cuenta toda la XP; el pase, solo la de esta temporada.
@@ -12002,6 +12221,14 @@ class Lobby {
       if (e.target === $('modal')) this.closeModal();
       else this.onClick(e);
     });
+    $('modal').addEventListener('change', (e) => {
+      if (e.target.id !== 'bk-filein' || !e.target.files || !e.target.files[0]) return;
+      e.target.files[0].text().then((txt) => {
+        const box = $('bk-in');
+        if (box) box.value = txt.trim();
+        this.loadBackup(txt, $('btn-bk-load'));
+      });
+    });
     $('modal').addEventListener('submit', (e) => {
       e.preventDefault();
       if (e.target.id === 'code-form') this.redeem($('code-input').value);
@@ -12024,7 +12251,7 @@ class Lobby {
         custom: { players: c.players, teams: c.teams, coins: c.coins, fog: c.fog, turbo: c.turbo, king: c.kind === 'king' },
       };
     }
-    if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
+    if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'open', difficulty: 'easy' };
     // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
     // Liga 3 vs 3 (con rango): la dificultad la pone tu rango.
     if (MODES[P.play.mode] && MODES[P.play.mode].ranked) return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
@@ -12207,7 +12434,7 @@ class Lobby {
     const done = this.P.tutorialDone;
     return `<section class="lcard panel">
       <h2>Tutorial</h2>
-      <p>Tres pasos contra un bot lento con un Núcleo débil.</p>
+      <p>Tres pasos contra un bot lento con un Núcleo débil, que está en otra isla: para llegar hace falta una Barcaza.</p>
       <ol class="steps">${TUTORIAL_STEPS.map((s) => `<li>${esc(s.text)}</li>`).join('')}</ol>
       <div class="prizes">
         <div><b>Primer Faro</b><span>Insignia</span></div>
@@ -12267,6 +12494,7 @@ class Lobby {
       ${btn('missions', 'M', 'Misiones', `${missionsLeft} por hacer`, '')}
       ${btn('daily', 'D', 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
       ${btn('codes', 'C', 'Códigos', 'Canjea un código', '')}
+      ${btn('backup', '⇄', 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
       ${Creator.owner ? btn('creator', '★', 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
     </aside>`;
   }
@@ -12332,6 +12560,24 @@ class Lobby {
   }
 
   // ---------- ventanas ----------
+  // Carga una copia: primero avisa que reemplaza el progreso (toca otra vez para confirmar).
+  loadBackup(code, btn) {
+    const r = Profile.importCode(code);
+    if (r.err) {
+      this.openModal('backup', { msg: r.err });
+      return;
+    }
+    if (!this.bkArm || this.bkArm !== code) {
+      this.bkArm = code;
+      if (btn) btn.textContent = `¿Reemplazar? Nivel ${Profile.level(r.data.xp)} · toca otra vez`;
+      return;
+    }
+    this.bkArm = null;
+    Profile.restore(r.data);
+    this.openModal('backup', { msg: `Listo: cargaste tu progreso (nivel ${Profile.level()}, ${fmt(Profile.data.crystals)} cristales).` });
+    this.render();
+  }
+
   openModal(name, data) {
     this.modal = name;
     this.modalData = data || null;
@@ -12397,6 +12643,18 @@ class Lobby {
         <button class="btn gold" type="submit">Canjear</button></form>
         ${this.modalData && this.modalData.msg ? `<div class="advice">${esc(this.modalData.msg)}</div>` : ''}
         <p>Cada código se usa una vez. Los códigos nuevos se anuncian en las actualizaciones.</p>`;
+    } else if (n === 'backup') {
+      const D = this.modalData || {};
+      html = head('Copia de tu progreso') + `<p>Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador (en Roblox se guardarán en tu cuenta).</p>
+        <div class="field"><label for="bk-out">1 · Guardar: copia este texto o descárgalo</label>
+          <textarea id="bk-out" readonly rows="3" spellcheck="false">${esc(Profile.exportCode())}</textarea>
+          <div class="row"><button class="btn gold" type="button" data-act="bk-copy" id="btn-bk-copy">Copiar</button>
+          <button class="btn" type="button" data-act="bk-file" id="btn-bk-file">Descargar archivo</button></div></div>
+        <div class="field"><label for="bk-in">2 · Cargar: pega aquí una copia (reemplaza tu progreso de este navegador)</label>
+          <textarea id="bk-in" rows="3" spellcheck="false" placeholder="FARO1...."></textarea>
+          <div class="row"><button class="btn gold" type="button" data-act="bk-load" id="btn-bk-load">Cargar copia</button>
+          <label class="btn" for="bk-filein">Elegir archivo</label><input type="file" id="bk-filein" accept=".txt,.json,text/plain,application/json" hidden></div></div>
+        ${D.msg ? `<div class="advice" id="bk-msg">${esc(D.msg)}</div>` : ''}`;
     } else if (n === 'creator') {
       const C = P.creator;
       html = head('Modo creador') + `<p>Solo lo ves tú: la plataforma confirma que eres el dueño de este juego. Los demás jugadores no pueden abrirlo.</p>
@@ -12475,6 +12733,22 @@ class Lobby {
       this.openModal(b.dataset.m);
     } else if (act === 'close') {
       this.closeModal();
+    } else if (act === 'bk-copy') {
+      const t = $('bk-out');
+      t.select();
+      const done = () => this.openModal('backup', { msg: 'Copiado. Pégalo en «Cargar» en el otro iPad o navegador.' });
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done, () => { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); });
+      else { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); }
+    } else if (act === 'bk-file') {
+      const blob = new Blob([Profile.exportCode()], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `faro-de-ambar-progreso-${dayKey()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    } else if (act === 'bk-load') {
+      this.loadBackup($('bk-in').value, b);
     } else if (act === 'pickmode') {
       P.play.mode = b.dataset.v;
       Profile.save();
@@ -13207,7 +13481,8 @@ const App = {
   groups: { 1: [], 2: [], 3: [] },
   groupTap: { n: 0, t: 0 },
   formation: 'block',
-  saveT: 15,
+  // v1.3: guardado automático cada 60 s (antes 15) y al pausar, salir o cambiar de app.
+  saveT: 60,
   last: 0,
   time: 0,
   miniT: 0,
@@ -13379,7 +13654,7 @@ const App = {
     this.paused = false;
     this.state = 'play';
     if (this.music) this.music.play('battle');
-    this.saveT = 15;
+    this.saveT = 60;
     this.ui.showScreen('play');
     this.ui.startHud();
     this.sound.unlock();
@@ -13470,6 +13745,11 @@ const App = {
     if (this.state !== 'play' || !$('brief').hidden) return;
     this.paused = on;
     $('pause').hidden = !on;
+    // Al pausar se guarda (con la partida quieta no se nota el momento del guardado).
+    if (on && this.game && !this.game.over && !this.game.spectating && !this.game.preview) {
+      Save.write(this.game);
+      this.saveT = 60;
+    }
     this.markQuality();
   },
 
@@ -13707,7 +13987,7 @@ const App = {
         // Guardado automático cada 15 s.
         this.saveT -= dt;
         if (this.saveT <= 0) {
-          this.saveT = 15;
+          this.saveT = 60;
           if (!this.game.over && !this.game.spectating) Save.write(this.game);
         }
         this.ui.update(dt);

@@ -77,10 +77,11 @@ const MISSIONS = {
   ],
 };
 const MISSION_BY_ID = Object.fromEntries([...MISSIONS.daily, ...MISSIONS.weekly].map((m) => [m.id, m]));
+// v1.3: los 3 pasos de tu documento de juego v2 (pág. 18), con la Barcaza que pide el PRD 1.5.
 const TUTORIAL_STEPS = [
-  { id: 'energy', text: '1 · Construí: entrena un Constructor en el Núcleo y construye una energía (Solar o Eólica)' },
-  { id: 'army', text: '2 · Producí: construye un Cuartel y ten 5 tropas de combate' },
-  { id: 'kill', text: '3 · Atacá: destruye el Núcleo del bot' },
+  { id: 'tut_build', text: '1 · Construí: pon otra Granja y una energía (Solar o Eólica)' },
+  { id: 'tut_army', text: '2 · Producí: construye un Cuartel y entrena 3 soldados' },
+  { id: 'kill', text: '3 · Atacá: cruza el mar en una Barcaza y toma la isla del bot' },
 ];
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
@@ -136,6 +137,15 @@ function skinSlotOf(kind, type) {
   if (d.cls === 'inf') return 'inf';
   if (d.cls === 'veh') return 'veh';
   return null;
+}
+
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
 }
 
 function dayKey(d = new Date()) {
@@ -283,6 +293,44 @@ const Profile = {
 
   level(xp = this.data.xp) {
     return 1 + Math.floor(xp / LEVEL_XP);
+  },
+
+  // v1.3: copia del progreso para llevarlo a otro iPad o navegador (sin servidores, no hay cuentas).
+  // Código = «FARO1.» + suma de control + «.» + el perfil en base64.
+  exportCode() {
+    const json = JSON.stringify(this.data);
+    const bytes = new TextEncoder().encode(json);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return `FARO1.${hashStr(json).toString(36)}.${btoa(bin)}`;
+  },
+
+  importCode(code) {
+    const m = String(code || '').trim().replace(/\s+/g, '').match(/^FARO1\.([0-9a-z]+)\.([A-Za-z0-9+/=]+)$/);
+    if (!m) return { err: 'Ese texto no es una copia del progreso de Faro de Ámbar' };
+    let json;
+    try {
+      const bin = atob(m[2]);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      json = new TextDecoder().decode(bytes);
+    } catch (err) {
+      return { err: 'La copia está incompleta: cópiala entera otra vez' };
+    }
+    if (hashStr(json).toString(36) !== m[1]) return { err: 'La copia está incompleta o cambiada: cópiala entera otra vez' };
+    let data;
+    try { data = JSON.parse(json); } catch (err) { return { err: 'La copia no se puede leer' }; }
+    if (!data || data.v !== 1 || typeof data.xp !== 'number') return { err: 'La copia no es de este juego' };
+    return { data };
+  },
+
+  restore(data) {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(data)); } catch (err) { this.memoryOnly = true; }
+    if (this.memoryOnly) {
+      this.data = data;
+      return;
+    }
+    this.load();
   },
 
   // XP: el nivel cuenta toda la XP; el pase, solo la de esta temporada.
@@ -450,6 +498,14 @@ class Lobby {
       if (e.target === $('modal')) this.closeModal();
       else this.onClick(e);
     });
+    $('modal').addEventListener('change', (e) => {
+      if (e.target.id !== 'bk-filein' || !e.target.files || !e.target.files[0]) return;
+      e.target.files[0].text().then((txt) => {
+        const box = $('bk-in');
+        if (box) box.value = txt.trim();
+        this.loadBackup(txt, $('btn-bk-load'));
+      });
+    });
     $('modal').addEventListener('submit', (e) => {
       e.preventDefault();
       if (e.target.id === 'code-form') this.redeem($('code-input').value);
@@ -472,7 +528,7 @@ class Lobby {
         custom: { players: c.players, teams: c.teams, coins: c.coins, fog: c.fog, turbo: c.turbo, king: c.kind === 'king' },
       };
     }
-    if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
+    if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'open', difficulty: 'easy' };
     // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
     // Liga 3 vs 3 (con rango): la dificultad la pone tu rango.
     if (MODES[P.play.mode] && MODES[P.play.mode].ranked) return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
@@ -655,7 +711,7 @@ class Lobby {
     const done = this.P.tutorialDone;
     return `<section class="lcard panel">
       <h2>Tutorial</h2>
-      <p>Tres pasos contra un bot lento con un Núcleo débil.</p>
+      <p>Tres pasos contra un bot lento con un Núcleo débil, que está en otra isla: para llegar hace falta una Barcaza.</p>
       <ol class="steps">${TUTORIAL_STEPS.map((s) => `<li>${esc(s.text)}</li>`).join('')}</ol>
       <div class="prizes">
         <div><b>Primer Faro</b><span>Insignia</span></div>
@@ -715,6 +771,7 @@ class Lobby {
       ${btn('missions', 'M', 'Misiones', `${missionsLeft} por hacer`, '')}
       ${btn('daily', 'D', 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
       ${btn('codes', 'C', 'Códigos', 'Canjea un código', '')}
+      ${btn('backup', '⇄', 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
       ${Creator.owner ? btn('creator', '★', 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
     </aside>`;
   }
@@ -780,6 +837,24 @@ class Lobby {
   }
 
   // ---------- ventanas ----------
+  // Carga una copia: primero avisa que reemplaza el progreso (toca otra vez para confirmar).
+  loadBackup(code, btn) {
+    const r = Profile.importCode(code);
+    if (r.err) {
+      this.openModal('backup', { msg: r.err });
+      return;
+    }
+    if (!this.bkArm || this.bkArm !== code) {
+      this.bkArm = code;
+      if (btn) btn.textContent = `¿Reemplazar? Nivel ${Profile.level(r.data.xp)} · toca otra vez`;
+      return;
+    }
+    this.bkArm = null;
+    Profile.restore(r.data);
+    this.openModal('backup', { msg: `Listo: cargaste tu progreso (nivel ${Profile.level()}, ${fmt(Profile.data.crystals)} cristales).` });
+    this.render();
+  }
+
   openModal(name, data) {
     this.modal = name;
     this.modalData = data || null;
@@ -845,6 +920,18 @@ class Lobby {
         <button class="btn gold" type="submit">Canjear</button></form>
         ${this.modalData && this.modalData.msg ? `<div class="advice">${esc(this.modalData.msg)}</div>` : ''}
         <p>Cada código se usa una vez. Los códigos nuevos se anuncian en las actualizaciones.</p>`;
+    } else if (n === 'backup') {
+      const D = this.modalData || {};
+      html = head('Copia de tu progreso') + `<p>Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador (en Roblox se guardarán en tu cuenta).</p>
+        <div class="field"><label for="bk-out">1 · Guardar: copia este texto o descárgalo</label>
+          <textarea id="bk-out" readonly rows="3" spellcheck="false">${esc(Profile.exportCode())}</textarea>
+          <div class="row"><button class="btn gold" type="button" data-act="bk-copy" id="btn-bk-copy">Copiar</button>
+          <button class="btn" type="button" data-act="bk-file" id="btn-bk-file">Descargar archivo</button></div></div>
+        <div class="field"><label for="bk-in">2 · Cargar: pega aquí una copia (reemplaza tu progreso de este navegador)</label>
+          <textarea id="bk-in" rows="3" spellcheck="false" placeholder="FARO1...."></textarea>
+          <div class="row"><button class="btn gold" type="button" data-act="bk-load" id="btn-bk-load">Cargar copia</button>
+          <label class="btn" for="bk-filein">Elegir archivo</label><input type="file" id="bk-filein" accept=".txt,.json,text/plain,application/json" hidden></div></div>
+        ${D.msg ? `<div class="advice" id="bk-msg">${esc(D.msg)}</div>` : ''}`;
     } else if (n === 'creator') {
       const C = P.creator;
       html = head('Modo creador') + `<p>Solo lo ves tú: la plataforma confirma que eres el dueño de este juego. Los demás jugadores no pueden abrirlo.</p>
@@ -923,6 +1010,22 @@ class Lobby {
       this.openModal(b.dataset.m);
     } else if (act === 'close') {
       this.closeModal();
+    } else if (act === 'bk-copy') {
+      const t = $('bk-out');
+      t.select();
+      const done = () => this.openModal('backup', { msg: 'Copiado. Pégalo en «Cargar» en el otro iPad o navegador.' });
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done, () => { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); });
+      else { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); }
+    } else if (act === 'bk-file') {
+      const blob = new Blob([Profile.exportCode()], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `faro-de-ambar-progreso-${dayKey()}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    } else if (act === 'bk-load') {
+      this.loadBackup($('bk-in').value, b);
     } else if (act === 'pickmode') {
       P.play.mode = b.dataset.v;
       Profile.save();

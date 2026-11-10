@@ -463,19 +463,67 @@ class UI {
       if (!(sel.length === 1 && sel[0] === core)) return { world: { x: core.x, y: core.y + 1, z: core.z }, text: 'Toca tu Núcleo' };
       return { sel: '[data-act="train"][data-type="builder"]', text: 'Entrena un Constructor' };
     }
+    // v1.3: los 3 pasos de tu documento. 1 Construí: otra Granja y una energía.
+    const at = (e, dy = 0.5) => ({ x: e.x, y: (e.y || 0) + dy, z: e.z });
+    const isSel = (e) => sel.length === 1 && sel[0] === e;
+    if (blds.filter((b) => b.type === 'farm').length < 2) return buildFlow('eco', 'farm', 'Granja', 'Economía');
     if (!blds.some((b) => ['solar', 'wind', 'hydro', 'tidal', 'wave'].includes(b.type))) return buildFlow('energy', 'solar', 'Solar', 'Energía');
+    // 2 Producí: un Cuartel y 3 soldados.
     const bar = blds.find((b) => b.type === 'barracks');
     if (!bar) return buildFlow('prod', 'barracks', 'Cuartel', 'Producción');
-    const combat = mine.filter((u) => u.def.weapon).length;
-    if (combat < 5) {
-      if (!bar.built) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
-      if (!(sel.length === 1 && sel[0] === bar)) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'Toca tu Cuartel' };
-      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${combat} de 5)` };
+    const soldiers = mine.filter((u) => u.cls === 'inf' && u.def.weapon);
+    const inQueue = bar.queue.filter((q) => UNITS[q.type].cls === 'inf' && UNITS[q.type].weapon).length;
+    if (soldiers.length + inQueue < 3) {
+      if (!bar.built) return { world: at(bar), text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
+      if (!isSel(bar)) return { world: at(bar), text: 'Toca tu Cuartel' };
+      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${soldiers.length + inQueue} de 3)` };
     }
+    // 3 Atacá: Puerto, Barcaza, subir a los soldados, cruzar y tomar la isla del bot.
     const foe = g.players.find((q) => q.id !== 0 && q.alive && q.core && q.core.alive);
     if (!foe) return null;
-    if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus tropas' };
-    return { world: { x: foe.core.x, y: foe.core.y + 1, z: foe.core.z }, text: 'Toca el Núcleo enemigo para atacarlo' };
+    const foeComp = g.cells[foe.core.cell].comp;
+    const landed = soldiers.filter((u) => !u.inside && g.cells[u.cell].comp === foeComp);
+    if (landed.length) {
+      if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
+      return { world: at(foe.core, 1), text: 'Toca el Núcleo del bot para tomar su isla' };
+    }
+    const harbor = blds.find((b) => b.type === 'harbor');
+    if (!harbor) return buildFlow('prod', 'harbor', 'Puerto', 'Producción');
+    const barge = mine.find((u) => u.type === 'barge');
+    if (!barge) {
+      if (!harbor.built) return { world: at(harbor), text: 'El Constructor va a la obra: espera a que termine el Puerto' };
+      if (harbor.queue.some((q) => q.type === 'barge')) return { world: at(harbor), text: 'El Puerto fabrica la Barcaza: espera' };
+      if (!isSel(harbor)) return { world: at(harbor), text: 'Toca tu Puerto' };
+      return { sel: '[data-act="train"][data-type="barge"]', text: 'Entrena una Barcaza: lleva tropas por el mar' };
+    }
+    const ashore = soldiers.filter((u) => !u.inside);
+    if (soldiers.length < 3) return { world: at(bar), text: `Espera a tus soldados (${soldiers.length} de 3)` };
+    if (ashore.length) {
+      if (ashore.every((u) => u.state === 'board')) return { world: at(barge, 0.3), text: 'Los soldados suben a la Barcaza: espera' };
+      if (!sel.some((u) => u.kind === 'unit' && u.cls === 'inf' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
+      return { world: at(barge, 0.3), text: 'Toca la Barcaza para subirlos' };
+    }
+    // Todos a bordo: llevar la Barcaza junto a la isla del bot y desembarcar.
+    const c0 = g.cells[barge.cell];
+    const nearFoe = g.cells.some((c) => c.comp === foeComp && TERRAIN[c.t].land && g.map.dist(c, c0) <= 2);
+    if (!nearFoe) {
+      if (barge.path && barge.pathI < barge.path.length) return { world: at(barge, 0.3), text: 'La Barcaza navega hacia la isla del bot: espera' };
+      if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
+      const dest = this.landingCell(g, foe, foeComp);
+      return dest ? { world: { x: dest.x, y: 0.1, z: dest.z }, text: 'Toca el mar junto a la isla del bot para llevarla' } : { text: 'No hay costa libre junto a la isla del bot' };
+    }
+    if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
+    return { sel: '[data-act="unload"]', text: 'Toca «Desembarcar»' };
+  }
+
+  // Casilla de mar junto a la isla del bot, lo más cerca posible de su Núcleo.
+  landingCell(g, foe, foeComp) {
+    if (this._landing && this._landing.g === g && this._landing.pid === foe.id) return this._landing.c;
+    const core = g.cells[foe.core.cell];
+    const c = g.cells.filter((x) => TERRAIN[x.t].water && !x.bld && x.nb.some((ni) => g.cells[ni].comp === foeComp && TERRAIN[g.cells[ni].t].land))
+      .sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core))[0] || null;
+    this._landing = { g, pid: foe.id, c };
+    return c;
   }
 
   updateCoach() {
@@ -1031,6 +1079,7 @@ class UI {
     if (force || sig !== this.selSig) {
       this.selSig = sig;
       panel.hidden = false;
+      panel.classList.toggle('more', !!this.selMore);
       if (first.kind === 'point') panel.innerHTML = this.pointHtml(first);
       else if (first.kind === 'bld') panel.innerHTML = this.buildingHtml(first);
       else if (first.owner === 0) panel.innerHTML = this.unitsHtml(sel);
@@ -1042,10 +1091,11 @@ class UI {
   head(type, color, title, sub, hpId = true) {
     return `<div class="selhead">
       <img class="thumb" src="${Thumbs.get(type, color)}" alt="">
-      <div style="min-width:0"><h3>${title}</h3><p>${sub}</p>
+      <div style="min-width:0"><h3>${title}</h3><p class="sec">${sub}</p>
         ${hpId ? '<div class="hp" id="sel-hpbar"><i id="sel-hp"></i></div><div class="hptext" id="sel-hptext"></div>' : ''}
       </div>
-      <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button>
+      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? 'Menos' : 'Más detalles'}</button>
+      <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button></div>
     </div>`;
   }
 
@@ -1092,8 +1142,8 @@ class UI {
           : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? 'Núcleo nivel 3' : 'Disponible'),
         dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
       ];
-      html += `<div class="coretiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
-      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
+      html += `<div class="coretiles sec">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue sec">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
       const derr = g.domeInvalid(0);
       // v1.0: con el Núcleo en nivel 3, mejorar todo de un clic o dejar las mejoras automáticas.
       if (b.level >= AUTO_UP.coreLevel) {
@@ -1110,7 +1160,7 @@ class UI {
         html += `<div class="upall"><div class="actions">
           <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}</button>
           <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${bi('repeat')}Mejoras automáticas: ${auto ? 'sí' : 'no'}</button></div>
-          <span class="queue">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
+          <span class="queue sec">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
       }
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
@@ -1118,7 +1168,7 @@ class UI {
         const why = b.level < 3 ? 'Necesita el Núcleo en nivel 3.' : next === 3 ? 'Nivel 3: escudo personal para todas tus tropas.'
           : `Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
         html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${bi('dome')}${label} · ${fmt(g.domeCost(0))}</button>
-          <span class="queue" style="flex:1 1 200px">${why}</span></div>`;
+          <span class="queue sec" style="flex:1 1 200px">${why}</span></div>`;
       }
     }
     if (d.produces && b.built) {
@@ -1141,7 +1191,7 @@ class UI {
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
-      html += '<div class="queue" id="sel-queue">' + (b.queue.length
+      html += `<div class="queue ${b.queue.length ? '' : 'sec'}" id="sel-queue">` + (b.queue.length
         ? 'En cola: ' + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Cancelar ${esc(UNITS[q.type].name)}">
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
@@ -1170,7 +1220,7 @@ class UI {
     if (own && b.built && !b.upgrading && b.level < maxLv) {
       // v0.9: antes de pagar, qué vas a ganar con la mejora.
       const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
-      if (prev.length) html += `<div class="nextup"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+      if (prev.length) html += `<div class="nextup sec"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
     }
     if (b.built && !b.upgrading && b.level < maxLv) {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
@@ -1180,7 +1230,7 @@ class UI {
     if (b.type !== 'core') {
       acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
     }
-    if (acts.length) html += `<div class="actions">${acts.join('')}</div>`;
+    if (acts.length) html += `<div class="actions mainacts">${acts.join('')}</div>`;
     return html;
   }
 
@@ -1233,7 +1283,7 @@ class UI {
       acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">${bi('formation')}Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
     }
     acts.push(`<button class="btn" type="button" data-act="stop">${bi('stop')}Detener</button>`);
-    html += `<div class="actions">${acts.join('')}</div>`;
+    html += `<div class="actions mainacts">${acts.join('')}</div>`;
     html += `<div class="actions groupsave"><span class="queue">${bi('group')}Guardar en</span>${[1, 2, 3].map((n) =>
       `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
     return html;
@@ -1337,6 +1387,12 @@ class UI {
       return;
     }
     app.sound.play('click');
+    if (act === 'seldetails') {
+      // v1.3: las partes largas del panel se pliegan; este botón las muestra u oculta.
+      this.selMore = !this.selMore;
+      this.renderSel(true);
+      return;
+    }
     if (act === 'close') {
       app.setSelection([]);
       return;

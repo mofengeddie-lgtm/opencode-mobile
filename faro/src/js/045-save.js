@@ -33,10 +33,36 @@ const Save = {
     return paths;
   },
 
+  // v1.3: guardado más chico y rápido (cada 60 s). El mapa no se guarda: se vuelve a crear con su
+  // semilla al cargar (una suma de control comprueba que sea el mismo). Las casillas solo guardan lo
+  // que no se puede recalcular; los efectos visuales y avisos ya mostrados tampoco se guardan.
+  MAP_STATIC: ['i', 'q', 'r', 'x', 'z', 't', 'h', 'land', 'nb', 'comp', 'bridge'],
+  // Datos de las casillas que se vuelven a poner al cargar: territorio (se recalcula), edificio y punto.
+  CELL_REBUILT: ['owner', 'ownerD', 'ownerId', 'bld', 'point'],
+  GAME_TRANSIENT: ['fx', 'events', 'removed'],
+
+  mapCheck(cells) {
+    let h = 2166136261;
+    for (const c of cells) {
+      const str = `${c.q},${c.r},${c.t},${Math.round(c.h * 100)},${c.land ? 1 : 0},${c.comp},${c.bridge ? 1 : 0};`;
+      for (let k = 0; k < str.length; k++) {
+        h ^= str.charCodeAt(k);
+        h = Math.imul(h, 16777619);
+      }
+    }
+    return h >>> 0;
+  },
+
   serialize(game) {
     const consts = this._consts();
     const ids = new Map();
     const objs = [];
+    const map = game.map;
+    const compact = map instanceof GameMap && map.cells === game.cells;
+    const cellIdx = compact ? new Map(map.cells.map((c, i) => [c, i])) : null;
+    const skipGame = new Set(this.GAME_TRANSIENT);
+    if (compact) skipGame.add('cells');
+    const skipMap = new Set(['cells', 'lookup']);
     const classes = new Map([[Game.prototype, 'Game'], [Bot.prototype, 'Bot'], [GameMap.prototype, 'GameMap'], [MinHeap.prototype, 'MinHeap']]);
     const enc = (v) => {
       if (typeof v === 'function' || v === undefined) return undefined;
@@ -46,6 +72,13 @@ const Save = {
       if (cp) return { $c: cp };
       const known = ids.get(v);
       if (known !== undefined) return { $r: known };
+      if (cellIdx && cellIdx.has(v)) {
+        // Referencia a una casilla: al cargar apunta a la casilla recreada.
+        const cid = objs.length;
+        ids.set(v, cid);
+        objs.push({ cell: cellIdx.get(v) });
+        return { $r: cid };
+      }
       const id = objs.length;
       ids.set(v, id);
       objs.push(null);
@@ -56,13 +89,31 @@ const Save = {
       else if (ArrayBuffer.isView(v)) rec = { t: v.constructor.name, n: v.length };
       else {
         const o = {};
+        const skip = v === game ? skipGame : compact && v === map ? skipMap : null;
         for (const k of Object.keys(v)) {
+          if (skip && skip.has(k)) continue;
           const e = enc(v[k]);
           if (e !== undefined) o[k] = e;
         }
         rec = { o };
         const cls = classes.get(Object.getPrototypeOf(v));
         if (cls) rec.k = cls;
+        if (compact && v === map) {
+          // Datos de casillas que no se recalculan solos (si los hay): se guardan aparte.
+          const fixed = new Set([...this.MAP_STATIC, ...this.CELL_REBUILT]);
+          const extra = [];
+          map.cells.forEach((c, i) => {
+            const ks = Object.keys(c).filter((k) => !fixed.has(k));
+            if (!ks.length) return;
+            const eo = {};
+            for (const k of ks) {
+              const e = enc(c[k]);
+              if (e !== undefined) eo[k] = e;
+            }
+            extra.push([i, eo]);
+          });
+          rec.gen = { seed: map.seed, kind: map.kind, n: map.n, pairs: !!map.pairs, check: this.mapCheck(map.cells), extra };
+        }
       }
       objs[id] = rec;
       return { $r: id };
@@ -80,7 +131,15 @@ const Save = {
     const byPath = this._byPath;
     const classes = { Game, Bot, GameMap, MinHeap };
     const typed = { Float32Array, Int32Array, Uint32Array, Uint8Array, Int16Array, Uint16Array, Float64Array };
+    let fresh = null;
+    const genRec = data.objs.find((r) => r && r.gen);
+    if (genRec) {
+      const g0 = genRec.gen;
+      fresh = new GameMap(g0.seed, g0.kind, g0.n, g0.pairs);
+      if (this.mapCheck(fresh.cells) !== g0.check) throw new Error('El mapa no coincide con esta versión del juego');
+    }
     const made = data.objs.map((r) => {
+      if (r.cell !== undefined) return fresh.cells[r.cell];
       if (r.a) return [];
       if (r.m) return new Map();
       if (r.s) return new Set();
@@ -99,6 +158,7 @@ const Save = {
       return v;
     };
     data.objs.forEach((r, i) => {
+      if (r.cell !== undefined) return;
       const t = made[i];
       if (r.a) r.a.forEach((x) => t.push(dec(x)));
       else if (r.m) r.m.forEach(([k, x]) => t.set(dec(k), dec(x)));
@@ -109,6 +169,18 @@ const Save = {
     if (!(game instanceof Game)) throw new Error('Guardado no válido');
     _nextId = Math.max(_nextId, data.nextId || 1);
     game.events = [];
+    if (!game.fx) game.fx = [];
+    if (!game.removed) game.removed = [];
+    if (genRec) {
+      // Mapa recreado: casillas nuevas, con sus edificios, puntos y datos extra.
+      game.map.cells = fresh.cells;
+      game.map.lookup = fresh.lookup;
+      game.cells = fresh.cells;
+      for (const [ci, eo] of genRec.gen.extra || []) for (const k of Object.keys(eo)) fresh.cells[ci][k] = dec(eo[k]);
+      for (const c of fresh.cells) { c.bld = null; delete c.point; }
+      for (const b of game.buildings) if (b.alive) fresh.cells[b.cell].bld = b;
+      for (const pt of game.points || []) fresh.cells[pt.cell].point = pt;
+    }
     // Los datos de cada edificio y tropa vuelven a apuntar a la configuración actual.
     for (const b of game.buildings) if (BUILDINGS[b.type]) b.def = BUILDINGS[b.type];
     for (const u of game.units) if (UNITS[u.type]) u.def = UNITS[u.type];

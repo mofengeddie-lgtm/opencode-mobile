@@ -1532,7 +1532,13 @@ class Game {
     this.updateRadiation(dt);
     this.updateAutoUpgrade(dt);
     this.recordHistory(dt);
-    if (!this.over) for (const bot of this.bots) bot.update(dt);
+    if (!this.over && this.bots.length) {
+      // Como mucho un bot piensa por paso; el turno rota para que ninguno se quede esperando.
+      const n = this.bots.length;
+      this._botTurn = ((this._botTurn || 0) + 1) % n;
+      let busy = false;
+      for (let k = 0; k < n; k++) busy = this.bots[(this._botTurn + k) % n].update(dt, busy) || busy;
+    }
     if (this.camp) Campaign.update(this, dt);
 
     if (this.units.some((u) => !u.alive)) {
@@ -1561,6 +1567,13 @@ class Game {
     if ((this.players[0].stats.builders || 0) > 0) this.completeObjective('builder');
     if (this.buildings.some((b) => b.owner === 0 && b.def.cat === 'energy' && b.built)) this.completeObjective('energy');
     if (this.points.some((pt) => pt.owner === 0)) this.completeObjective('capture');
+    // v1.3: pasos del tutorial de tu documento.
+    if (this.mode.tutorial) {
+      const done = (t) => this.buildings.filter((b) => b.owner === 0 && b.alive && b.built && t(b)).length;
+      if (done((b) => b.type === 'farm') >= 2 && done((b) => b.def.cat === 'energy') >= 1) this.completeObjective('tut_build');
+      const soldiers = this.units.filter((u) => u.owner === 0 && u.alive && u.cls === 'inf' && u.def.weapon).length;
+      if (done((b) => b.type === 'barracks') >= 1 && soldiers >= 3) this.completeObjective('tut_army');
+    }
   }
 
   // Cúpula (puntos 5 y 6): pide Núcleo nivel 3; sube de nivel 1 a 3.

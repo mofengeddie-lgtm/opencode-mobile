@@ -421,7 +421,7 @@ const MODES = {
   ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3], alliances: true },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
-  tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento.', players: 2, teams: [0, 1], tutorial: true },
+  tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento en otra isla.', players: 2, teams: [0, 1], tutorial: true, coins: 6000 },
 };
 
 const MAPS = {

@@ -733,6 +733,33 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 @media (prefers-reduced-motion: reduce) {
   .toast { animation: none; }
 }
+/* ---------- v1.3: panel de selección compacto y botones de 44 × 44 px (PRD 1.5) ---------- */
+/* Arriba los botones principales; las partes largas, plegadas en «Más detalles». */
+#selpanel { max-height: min(44vh, 380px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+#selpanel > .selhead { order: -2; }
+#selpanel > .mainacts { order: -1; }
+#selpanel:not(.more) .sec { display: none !important; }
+.selhead .headbtns { display: flex; gap: 6px; align-items: center; }
+.btn.seltoggle { min-width: 44px; padding: 0 10px; font-size: 12.5px; }
+@media (max-height: 520px) {
+  /* Celular horizontal: más bajo y sin pasar por encima de la barra de arriba. */
+  #selpanel { max-height: min(56vh, calc(100vh - var(--top) - 66px - var(--bottom))); }
+}
+/* Botones táctiles: 44 × 44 px como mínimo. */
+.btn, .btn.mini, .btn.icon { min-height: 44px !important; }
+.btn.icon { min-width: 44px; width: 44px; }
+.btn.mini { padding: 0 12px; }
+.tab { min-height: 44px !important; }
+.qbtn, .groups .qbtn { min-height: 44px !important; min-width: 44px; }
+#btn-build-close { width: 44px !important; min-height: 44px !important; }
+#btn-mini { width: 44px !important; min-height: 44px !important; top: 0; right: 0; background: rgba(12,21,29,0.55); }
+#btn-obj { min-height: 44px; min-width: 44px; padding: 0 10px; border-radius: 8px; }
+.players { min-height: 44px; align-items: center; }
+.pchip { min-height: 32px; }
+.stat[data-econ] { min-height: 44px; }
+.wheel-opt { min-height: 52px; }
+/* «+0/10 s» no se parte en dos líneas. */
+#energyRate, #income { white-space: nowrap; }
 </style>
 
 <canvas id="gl"></canvas>

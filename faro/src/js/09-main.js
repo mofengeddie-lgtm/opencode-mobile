@@ -25,7 +25,8 @@ const App = {
   groups: { 1: [], 2: [], 3: [] },
   groupTap: { n: 0, t: 0 },
   formation: 'block',
-  saveT: 15,
+  // v1.3: guardado automático cada 60 s (antes 15) y al pausar, salir o cambiar de app.
+  saveT: 60,
   last: 0,
   time: 0,
   miniT: 0,
@@ -197,7 +198,7 @@ const App = {
     this.paused = false;
     this.state = 'play';
     if (this.music) this.music.play('battle');
-    this.saveT = 15;
+    this.saveT = 60;
     this.ui.showScreen('play');
     this.ui.startHud();
     this.sound.unlock();
@@ -288,6 +289,11 @@ const App = {
     if (this.state !== 'play' || !$('brief').hidden) return;
     this.paused = on;
     $('pause').hidden = !on;
+    // Al pausar se guarda (con la partida quieta no se nota el momento del guardado).
+    if (on && this.game && !this.game.over && !this.game.spectating && !this.game.preview) {
+      Save.write(this.game);
+      this.saveT = 60;
+    }
     this.markQuality();
   },
 
@@ -525,7 +531,7 @@ const App = {
         // Guardado automático cada 15 s.
         this.saveT -= dt;
         if (this.saveT <= 0) {
-          this.saveT = 15;
+          this.saveT = 60;
           if (!this.game.over && !this.game.spectating) Save.write(this.game);
         }
         this.ui.update(dt);

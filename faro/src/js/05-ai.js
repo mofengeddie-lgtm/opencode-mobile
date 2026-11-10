@@ -56,13 +56,16 @@ class Bot {
     return this.g.players[this.pid];
   }
 
-  update(dt) {
-    if (!this.p.alive) return;
+  // v1.3: si otro bot ya pensó en este paso (busy), espera al siguiente: así nunca piensan dos
+  // a la vez y el paso más lento de la simulación baja.
+  update(dt, busy = false) {
+    if (!this.p.alive) return false;
     this.t -= dt;
     this.defendT -= dt;
-    if (this.t > 0) return;
+    if (this.t > 0 || busy) return false;
     this.t = this.g.diff.think * (0.8 + Math.random() * 0.4);
     this.think();
+    return true;
   }
 
   targetArmy() {
