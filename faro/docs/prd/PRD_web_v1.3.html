@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="10 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.3</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.3</p>
+  <p class="meta">10 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu PDF «Bugs y mejoras» (29 puntos), tu documento de juego v2 y el PRD 1.5</p>
+  <div class="tiles">
+    <div class="tile"><b>Arreglar</b><span>Los 11 bugs, los 2 problemas de rendimiento y los 4 de interfaz de tu revisión.</span></div>
+    <div class="tile"><b>Seguir tu documento</b><span>Rangos, Liga 3 vs 3, tutorial con Barcaza, Muro barato, temporadas y copia del progreso.</span></div>
+    <div class="tile"><b>Poner en orden</b><span>Tabla de contenido y precios del juego para que la apruebes, y lista de lo que falta decidir.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Que el juego no se rompa ni deje hacer trampa, que vaya fluido en el iPad, que se use bien en el celular y que el juego y tus documentos digan lo mismo.</p>
+
+  <h3>2. Regla para la sección D</h3>
+  <p>Cuando tu documento v2 y un pedido tuyo posterior no coinciden, vale el pedido más nuevo. Por eso se quedan así:</p>
+  <table>
+    <thead><tr><th style="width:30%">Tu documento v2</th><th style="width:30%">Lo que pediste después</th><th>Queda</th></tr></thead>
+    <tbody>
+      <tr><td>«Antiaéreo»</td><td>«se va a llamar AIR DEFENSE» (v0.5)</td><td>AIR DEFENSE</td></tr>
+      <tr><td>Casa de 4 niveles</td><td>«solo nivel 2, que es un apartamento» (v0.9)</td><td>Casa y Apartamento (2 niveles); se corrige el texto de la ayuda</td></tr>
+      <tr><td>Molino</td><td>«lo cambiamos por Eólica, Solar, Hidráulica, Mareomotriz y Undimotriz» (v0.5)</td><td>5 energías</td></tr>
+      <tr><td>Bots de Difícil +15 % (guía RTS)</td><td>«el nivel difícil tiene que ser bien difícil» (v1.0)</td><td>+70 % (medido en la v1.0)</td></tr>
+      <tr><td>Repetidos dan cristales</td><td>«con toda la información que buscaste, agrégalo» (v1.2: planos y fragmentos)</td><td>Fragmentos (con el Taller)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">03 · Plan</div>
+  <h2>Qué se hace con cada punto</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:31%">Tu revisión</th><th>Qué hago en la v1.3</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>«Avanzar atacando» se congela</td><td>Si no hay camino hasta un enemigo, la tropa lo recuerda unos segundos, no lo vuelve a elegir y sigue hacia su destino.</td></tr>
+      <tr><td>2</td><td>Abandonar la partida con rango no resta puntos</td><td>Abandonarla (o empezar otra encima) cuenta como derrota: −15.</td></tr>
+      <tr><td>3</td><td>El misil nuclear destruye lo tuyo</td><td>La explosión solo daña a enemigos, igual que la radiación; ya no cuenta aliados como enemigos eliminados.</td></tr>
+      <tr><td>4</td><td>La Cúpula no frena el misil</td><td>La Cúpula absorbe el daño del misil como el de cualquier ataque de fuera (lo que pase de su vida sí llega).</td></tr>
+      <tr><td>5</td><td>Tropas de tierra sobre el agua</td><td>Una tropa de tierra nunca queda en una casilla de agua: en la costa la formación usa un desplazamiento menor.</td></tr>
+      <tr><td>6</td><td>Trampa en «Construye 12 edificios»</td><td>El edificio cuenta cuando se termina la obra.</td></tr>
+      <tr><td>7</td><td>Demoler pierde la mejora en curso</td><td>Se devuelve también la mejora en curso; la ayuda y el PRD dicen qué devuelve demoler.</td></tr>
+      <tr><td>8</td><td>El primer objetivo se cumple solo</td><td>Pasa a ser «Entrena un Constructor más» y solo cuenta los entrenados.</td></tr>
+      <tr><td>9</td><td>«Aliado» no aparece en la fila de jugadores</td><td>La fila se redibuja cuando cambian los equipos.</td></tr>
+      <tr><td>10</td><td>La ayuda dice «Casa hasta 4»</td><td>La ayuda dice «Casa y Apartamento (nivel 2)», como pediste.</td></tr>
+      <tr><td>11</td><td>El Cuartel dice 9 soldados y entrena 10</td><td>Texto corregido: entrena 10 (el Médico se agregó en la v0.9).</td></tr>
+      <tr><td>12</td><td>Salto al guardar cada 15 s</td><td>Se guarda cada 60 s y al pausar, salir o cambiar de app; el mapa no se guarda (se vuelve a crear con su semilla). Meta: menos de la mitad de tamaño y de tiempo.</td></tr>
+      <tr><td>13</td><td>La IA hace los pasos más lentos</td><td>Cada bot piensa en un momento distinto; como mucho uno por paso.</td></tr>
+      <tr><td>14</td><td>Celular horizontal: el panel tapa casi todo</td><td>Panel bajo y compacto en pantallas bajas, que no pasa sobre la barra de arriba.</td></tr>
+      <tr><td>15</td><td>iPad: el panel tapa el centro</td><td>Panel abajo y más estrecho; las partes largas (mejoras, detalles) plegadas.</td></tr>
+      <tr><td>16</td><td>Botones de menos de 44 × 44 px</td><td>Todos los botones del juego a 44 × 44 px como mínimo.</td></tr>
+      <tr><td>17</td><td>«+0/10 s» se parte</td><td>Ese texto no se parte.</td></tr>
+      <tr><td>18</td><td>Es una página web, no Roblox</td><td>Sigue siendo el prototipo para probar en el iPad; pasar a Roblox Studio es otro proyecto (está en «Por decidir»).</td></tr>
+      <tr><td>19</td><td>El progreso solo vive en ese navegador</td><td>«Copia de tu progreso»: un código o un archivo para guardarlo y llevarlo a otro iPad. Guardar por cuenta necesita servidor (Roblox).</td></tr>
+      <tr><td>20</td><td>El juego es más grande que tu documento</td><td>Este PRD trae la tabla de todo lo que tiene el juego para que decidas qué queda.</td></tr>
+      <tr><td>21</td><td>Precios distintos</td><td>Tabla de precios actual (probada en partidas) para que la apruebes o la cambies.</td></tr>
+      <tr><td>22</td><td>Muro a 150</td><td>Muro a 30, como tu documento y el PRD 1.5.</td></tr>
+      <tr><td>23</td><td>Rangos distintos</td><td>Los 6 rangos de tu documento (Recluta 0, Cabo 300, Sargento 700, Capitán 1.200, Comandante 1.800, Almirante del Faro), solo en la Liga 3 vs 3, desde el nivel 10, la primera derrota en un rango nuevo no baja y al cambiar de temporada bajas 1 rango. La Clasificatoria aparte desaparece.</td></tr>
+      <tr><td>24</td><td>El tutorial no enseña la Barcaza</td><td>Los 3 pasos de tu documento: Construí (otra Granja y una energía), Producí (3 soldados) y Atacá (Barcaza y tomar la isla del bot).</td></tr>
+      <tr><td>25</td><td>Casa, Molino y Tanque ligero</td><td>Casa y energías quedan como pediste (tabla de arriba). El Tanque ligero queda en «Por decidir».</td></tr>
+      <tr><td>26</td><td>Nombres</td><td>«Relámpago» pasa a «Choque exprés». AIR DEFENSE queda (lo pediste).</td></tr>
+      <tr><td>27</td><td>Cofres y pase</td><td>Temporadas de unos 2 meses: el pase vuelve a empezar y la Liga baja 1 rango. Los fragmentos quedan (v1.2).</td></tr>
+      <tr><td>28</td><td>Difícil con mucha ventaja</td><td>Queda +70 % (pediste que fuera bien difícil).</td></tr>
+      <tr><td>29</td><td>Lo que quedó «POR DECIDIR»</td><td>Lista abajo, con mi recomendación.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
+      <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, «Mejorar todo», «Lanzar los 3» y Difícil más fuerte.</td></tr>
+      <tr><td>1.1</td><td>9 nov 2026</td><td>Alianzas, Dúos, Clasificatoria, órdenes a aliados, defensa de punto, música, espectador y gráficas.</td></tr>
+      <tr><td>1.2</td><td>9-10 nov 2026</td><td>Rueda, Mensajes, tabla, colecciones, Taller, mapas nuevos, miniaturas, tutorial que señala y temporadas.</td></tr>
+      <tr><td>1.3</td><td>10 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Cada bug se reproduce primero (que falle con la v1.2) y después se comprueba arreglado. Chromium con tamaño de iPad y de celular, toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>J01</td><td>«Avanzar atacando» con un enemigo inalcanzable cerca: la tropa llega a su destino sin cambiar de estado sin parar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J02</td><td>Abandonar una partida de la Liga 3 vs 3 (o empezar otra encima) resta 15 puntos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J03</td><td>El misil nuclear no daña lo tuyo ni lo de tus aliados, y la Cúpula absorbe su daño.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J04</td><td>En muchas partidas, ninguna tropa de tierra queda en una casilla de agua.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J05</td><td>«Construye 12 edificios» cuenta obras terminadas y demoler devuelve la mejora en curso.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J06</td><td>Primer objetivo, fila «aliado», ayuda de la Casa y texto del Cuartel.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J07</td><td>Guardado más chico y rápido (cada 60 s y al salir), que se carga igual; y el paso más lento de la simulación baja.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J08</td><td>Panel de selección en celular horizontal e iPad, botones de 44 × 44 px y texto de energía en una línea.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J09</td><td>Liga 3 vs 3 con los 6 rangos, nivel 10, primera derrota protegida y cambio de temporada (pase y rango).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J10</td><td>Tutorial de 3 pasos con Barcaza que se puede terminar solo siguiendo las señales.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J11</td><td>Copia del progreso: se guarda y se carga en otro navegador igual.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J12</td><td>Muro a 30 y modo «Choque exprés».</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J13</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>J14</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Por decidir</div>
+  <h2>Lo que tienes que decidir tú</h2>
+  <ul>
+    <li><b>Tamaño del juego (20):</b> tu documento tiene 13 edificios, 18 unidades, 4 modos y 3 mapas; el juego tiene 23, 31, 13 y 7, más la campaña. <i>Mi recomendación:</i> dejarlo todo y aprobar la tabla del PRD final; para Roblox, empezar con lo de tu documento y sumar lo demás después.</li>
+    <li><b>Precios (21):</b> los del juego son más bajos que los de tu documento porque las partidas son más cortas. <i>Recomendación:</i> aprobar los actuales (están probados con bots y campaña) o decirme cuáles cambiar.</li>
+    <li><b>Tanque ligero y precio de la Casa (25):</b> tu documento dice que el Tanque ligero es viejo y que la Casa cuesta 5.000. <i>Recomendación:</i> quitar el Tanque ligero (lo reemplaza el Jeep) y dejar la Casa a 500 para llegar a 240 de comunidad.</li>
+    <li><b>Lo que tu documento dejó «POR DECIDIR» (29):</b> nombre definitivo del juego, nombre del modo principal («Conquista de islas»), «cristales» o «gemas», 1 o 2 lugares para invitar, cómo funciona SALIR y si hay logo en el vestíbulo.</li>
+    <li><b>Roblox (18):</b> cuándo empezar el paso a Roblox Studio con Luau (cuentas, servidores y guardado por cuenta).</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Programar la v1.3, probar cada punto y entregarte el PDF con los resultados y la tabla de contenido y precios.</p>
+</section>
+
+</body>
+</html>
