@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 1.2</p>
-  <p class="meta">9 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «con toda la información que buscaste, agrégalo a nuestro juego»</p>
+  <p class="meta">10 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu pedido «con toda la información que buscaste, agrégalo a nuestro juego»</p>
   <div class="tiles">
     <div class="tile"><b>Controles y equipo</b><span>Rueda de selección del ejército, chat de aliados con mensajes rápidos y tabla de la Clasificatoria.</span></div>
     <div class="tile"><b>Colección</b><span>Dos colecciones de aspectos nuevas, planos y fragmentos en los cofres y un Taller para fabricar.</span></div>
@@ -80,7 +80,7 @@ li { margin-bottom: 3px; }
       <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
       <tr><td>1.0</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, «Mejorar todo», «Lanzar los 3» y Difícil más fuerte.</td></tr>
       <tr><td>1.1</td><td>9 nov 2026</td><td>Alianzas, Dúos, Clasificatoria, órdenes a aliados, defensa de punto, música, espectador y gráficas.</td></tr>
-      <tr><td>1.2</td><td>9 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>1.2</td><td>9-10 nov 2026</td><td>Rueda de selección, Mensajes con aliados, tabla de la Clasificatoria, colecciones «Frente 1940» y «Marea», planos, fragmentos y Taller, mapas «Mesetas de Cobre» y «Dunas Rojas», miniaturas, tutorial que señala y temporadas.</td></tr>
     </tbody>
   </table>
 </section>
@@ -88,36 +88,51 @@ li { margin-bottom: 3px; }
 <section>
   <div class="eyebrow">04 · Pruebas</div>
   <h2>Pruebas de aceptación</h2>
-  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <p>Chromium con tamaño de iPad y toques simulados (incluido mantener pulsado con el dedo), partidas simuladas y todas las pruebas anteriores. Las pruebas encontraron 6 fallos del juego (y un detalle) que se arreglaron antes de aprobarlas (ver Decisiones). Las tablas muestran la última corrida completa, hecha con el juego ya arreglado.</p>
   <table>
     <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>I01</td><td>Rueda de selección: se abre manteniendo pulsado el mapa o con Tab y cada opción elige lo que dice.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I02</td><td>Mensajes: pestañas Todos / Aliados y mensajes rápidos que el aliado contesta.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I03</td><td>Tabla de la Clasificatoria: 21 puestos ordenados por puntos, bots marcados y tu puesto cambia al ganar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I04</td><td>Colecciones «Frente 1940» y «Marea»: 8 aspectos que se ven en los modelos y en la tienda.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I05</td><td>Planos y fragmentos: los cofres los dan, los repetidos dan fragmentos y el Taller fabrica con plano y fragmentos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I06</td><td>Mapas «Mesetas de Cobre» (ventaja de altura: +1 de alcance y visión) y «Dunas Rojas» se generan bien y se pueden jugar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I07</td><td>Miniaturas de los mapas al elegir mapa y en Personalizado.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I08</td><td>Tutorial: el aro y la flecha señalan el paso siguiente y avanzan solos.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I09</td><td>Temporadas: se eligen solas por la fecha y se pueden ver desde la pausa (calabazas y nieve).</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I10</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>I11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>I01</td><td>Rueda de selección: se abre manteniendo pulsado el mapa o con Tab y cada opción elige lo que dice.</td><td><span class="chip ok">Aprobada</span></td><td>mantener pulsado el mapa con el dedo: a los 0,25 s todavía no (true), a los 0,75 s se abre con 8 opciones dentro de la pantalla (Tierra 5, Mar 3, Aire 2, Todo 10, Constructores 2, Grupo 1 0, Grupo 2 0, Grupo 3 0); al deslizar el dedo a «Tierra» y soltar quedan elegidas 5 tropas (land); un toque corto no la abre (true) y arrastrar el mapa tampoco (true); con Tab: Mar → 3 (sea), Aire → 2 (air), Todo → 10, Constructores → 2, Grupo 1 (guardado con 2) → 2; los grupos vacíos salen apagados; Esc la cierra (true)</td></tr>
+<tr><td>I02</td><td>Mensajes: pestañas Todos / Aliados y mensajes rápidos que el aliado contesta.</td><td><span class="chip ok">Aprobada</span></td><td>Dúos (equipos 001122): «Mensajes» se abre desde el marcador; en «Todos» se ven el aliado y el mensaje público de Violeta, pero no el mensaje interno del otro equipo; en «Aliados» solo el aliado; mensajes rápidos: ¡Gracias!, ¡Bien hecho!, ¡Cuidado! (+ ¡Ayuda! y ¡Ataquemos!); al tocar «¡Gracias!» y «¡Cuidado!» salen como «Tú» y Rojo contesta («Rojo (aliado): ¡Visto! Vigilo mi lado.»); en Duelo (sin aliados) no hay botones rápidos y sale la ayuda</td></tr>
+<tr><td>I03</td><td>Tabla de la Clasificatoria: 21 puestos ordenados por puntos, bots marcados y tu puesto cambia al ganar.</td><td><span class="chip ok">Aprobada</span></td><td>21 puestos (20 marcados «bot» + tú), ordenados por puntos y con nombres distintos (primero: Capitán Granito con 1084); con 0 puntos estás en el puesto 21.º; con 446 puntos estás 15.º; después de ganar una Clasificatoria de verdad tienes 471 y subes al 14.º; la partida también dio 12 fragmentos</td></tr>
+<tr><td>I04</td><td>Colecciones «Frente 1940» y «Marea»: 8 aspectos que se ven en los modelos y en la tienda.</td><td><span class="chip ok">Aprobada</span></td><td>en la tienda hay 8 aspectos nuevos con su imagen (Soldados Frente 1940 · Común; Vehículos Frente 1940 · Raro; Barcos Frente 1940 · Raro; Núcleo Frente 1940 · Épico; Soldados Marea · Raro; Vehículos Marea · Raro; Barcos Marea · Épico; Núcleo Marea · Legendario); las miniaturas de soldado, tanque, destructor y Núcleo cambian con cada colección (inf true, veh true, sea true, core true); equipados en la partida: tus soldados usan «frente», tu Núcleo «marea» y los rivales el normal (true)</td></tr>
+<tr><td>I05</td><td>Planos y fragmentos: los cofres los dan, los repetidos dan fragmentos y el Taller fabrica con plano y fragmentos.</td><td><span class="chip ok">Aprobada</span></td><td>50 perfiles nuevos × 8 cofres: 74 % aspectos, 20 % planos y 7 % fragmentos; 52 aspectos repetidos dieron 1050 fragmentos y los paquetes 826; un Cofre de Isla comprado en la tienda (quedan 650 de 1000 cristales) dio el plano «Soldados Selva» con el botón «Ir al Taller»; en el Taller el botón «Fabricar · 60 fragmentos» está apagado con 0 fragmentos («Te faltan 60 fragmentos»); con 67 fragmentos se fabrica: el aspecto pasa a ser tuyo (guardado: true), el plano se gasta y quedan 7 fragmentos</td></tr>
+<tr><td>I06</td><td>Mapas «Mesetas de Cobre» (ventaja de altura: +1 de alcance y visión) y «Dunas Rojas» se generan bien y se pueden jugar.</td><td><span class="chip ok">Aprobada</span></td><td>mesa/conquest: mesetas 91, bases unidas al Faro true, fértil mín. 8 · mesa/ffa: mesetas 80, bases unidas al Faro true, fértil mín. 8 · mesa/duel: mesetas 44, bases unidas al Faro true, fértil mín. 8 · mesa/duos: mesetas 99, bases unidas al Faro true, fértil mín. 9 · mesa/league: mesetas 106, bases unidas al Faro true, fértil mín. 8 · dunes/conquest: dunas 37, bases unidas al Faro true, fértil mín. 8 · dunes/ffa: dunas 28, bases unidas al Faro true, fértil mín. 9 · dunes/duel: dunas 31, bases unidas al Faro true, fértil mín. 10 · dunes/duos: dunas 37, bases unidas al Faro true, fértil mín. 9 · dunes/league: dunas 50, bases unidas al Faro true, fértil mín. 9. Artillero (alcance 3) en la meseta contra uno abajo a 4 casillas: desde arriba llega (true), desde abajo no (true), en terreno llano a la misma distancia no llega (true). mesa: en 8 min los bots tienen 26 edificios y 7 tropas; dunes: en 8 min los bots tienen 28 edificios y 10 tropas</td></tr>
+<tr><td>I07</td><td>Miniaturas de los mapas al elegir mapa y en Personalizado.</td><td><span class="chip ok">Aprobada</span></td><td>«Elige un mapa» muestra 7 mapas, cada uno con su miniatura distinta (Archipiélago Ámbar, Mar abierto, Continente, Bahía Gris, Arrecife Doble, Mesetas de Cobre, Dunas Rojas); tocar «Mesetas de Cobre» lo elige (mesa); en Personalizado hay 7 miniaturas y tocar «Dunas Rojas» la marca y la guarda (dunes)</td></tr>
+<tr><td>I08</td><td>Tutorial: el aro y la flecha señalan el paso siguiente y avanzan solos.</td><td><span class="chip ok">Aprobada</span></td><td>siguiendo solo el aro y el texto, con toques: 19 pasos («Lo tapa un panel: toca este punto del minimapa para centrarlo» → «Toca tu Núcleo» → «Entrena un Constructor» → «Abre la pestaña «Energía»» → «Elige «Solar»» → «Toca una casilla dorada (por ejemplo, esta)» → «Toca «Construir» para poner la obra» → «Toca «Terminar» para salir del modo construir» → «Abre la pestaña «Producción»» → «Elige «Cuartel»» → «Toca una casilla dorada (por ejemplo, esta)» → «Toca «Construir» para poner la obra» → «Toca «Terminar» para salir del modo construir» → «El Constructor va a la obra: espera a que termine el Cuartel» → «Toca tu Cuartel» → «Entrena Artilleros» → «Toca «Ejército» para elegir a tus tropas» → «Está fuera de la pantalla: toca este punto del minimapa para ir allí» → «Toca el Núcleo enemigo para atacarlo»); aro visible en 19 de 19; cada señal estaba en la pantalla; al final 5 de 5 tropas van al Núcleo enemigo</td></tr>
+<tr><td>I09</td><td>Temporadas: se eligen solas por la fecha y se pueden ver desde la pausa (calabazas y nieve).</td><td><span class="chip ok">Aprobada</span></td><td>Por fecha: 14/10: —, 15/10: pumpkin, 31/10: pumpkin, 5/11: pumpkin, 6/11: —, 9/11: —, 9/12: —, 10/12: winter, 25/12: winter, 6/1: winter, 7/1: —. En pantalla: hoy (10 nov) la automática no pone ninguna («Automática: ninguna en esta fecha (Calabazas del 15 oct al 5…»); en la pausa: Calabazas pone 60 calabazas, Invierno pone nieve (true), Ninguna quita todo (true), Automática vuelve a ninguna; la elección se guarda y sigue en la partida siguiente (winter)</td></tr>
+<tr><td>I10</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y nada queda tapado en 5 tamaños.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas anteriores en la v1.2: 62 de 62 bien (v1.1: 12, v1.0: 12, v0.9: 18, v0.8: 10, v0.7: 10). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 4 de 5 (3:08, 3:06, 3:09, 3:10); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:51, 2:53); M5 ganó 2 de 3 (18:22, 20:59); M6 piloto atento ganó 5 de 6 (12:47, 27:26, 26:28, 22:48, 18:45). 5 tamaños con portada, Rangos y tabla, Taller, mapas con miniaturas, Personalizado, Núcleo, AIR DEFENSE, Casa, Transporte, Bombardero, Aeropuerto, rueda (en el centro y en una esquina), Mensajes, pausa con Temporada y Música, marcador, barra de «Construir», tutorial con señales, final con gráficas y espectador: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien</td></tr>
+<tr><td>I11</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip ok">Aprobada</span></td><td>faro.html pesa 2,41 MB (meta: menos de 3,5 MB).</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">05 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Nombres propios:</b> las colecciones, los mapas y las temporadas tienen nombres nuestros; no se usan los nombres del juego de Roblox.</li>
+    <li><b>Nombres propios:</b> las colecciones, los mapas, los comandantes de la tabla y las temporadas tienen nombres nuestros; del juego de Roblox solo se tomaron las mecánicas.</li>
     <li><b>Tabla con bots:</b> sin servidores no hay otros jugadores reales; la tabla dice claramente que son comandantes bot.</li>
-    <li><b>Cofres:</b> los cristales que antes daban los aspectos repetidos ahora se convierten en fragmentos; los precios de los cofres no cambian.</li>
-    <li><b>Ventaja de altura:</b> solo en el mapa nuevo «Mesetas de Cobre», para no cambiar el equilibrio de los mapas que ya existen.</li>
+    <li><b>Cofres:</b> los cristales que antes daban los aspectos repetidos ahora se convierten en fragmentos; los precios de los cofres no cambian. Cuando ya tienes casi todo, los planos que tocarían salen como fragmentos (no hay planos de lo que ya es tuyo).</li>
+    <li><b>Ventaja de altura:</b> solo en «Mesetas de Cobre», para no cambiar el equilibrio de los mapas que ya existían. «Dunas Rojas» usa los colores de desierto; el suelo de los demás mapas sigue siendo el de la v0.6.</li>
+    <li><b>Mensajes rápidos:</b> en el plan puse «¡Voy!» y «¡Defiende!»; quedaron «¡Gracias!», «¡Bien hecho!» y «¡Cuidado!», más «¡Ayuda!» y «¡Ataquemos!» de la v1.1. El PRD ya está corregido.</li>
+    <li><b>Fallos que encontraron las pruebas (arreglados):</b>
+      <ul>
+        <li>Los botones de Temporada de la pausa no hacían nada: habían quedado conectados dentro del botón de música del vestíbulo.</li>
+        <li>El tutorial se trababa: después de tocar «Construir» el juego sigue en modo construir (para poner más), y así tocar el Cuartel no lo elegía. Ahora el tutorial señala «Terminar».</li>
+        <li>Tocar el techo o el cuerpo de un edificio no lo elegía (solo valía su casilla del suelo). Ahora sí, en todo el juego: ayuda mucho en el iPad.</li>
+        <li>El último paso del tutorial («Toca el Núcleo enemigo») señalaba un lugar fuera de la pantalla. Ahora, si el lugar no se ve, el aro marca ese punto en el minimapa.</li>
+        <li>Al empezar el tutorial, mientras la cámara iba hacia tu Núcleo, el aro quedó un momento detrás del panel «Construir», y tocarlo tocaba el panel (empezaba a construir una Bomba de petróleo). Ahora, si un panel tapa el lugar, el aro marca ese punto en el minimapa.</li>
+        <li>En una corrida, la rueda se abrió al arrastrar el mapa: en el navegador de pruebas (muy lento) el aviso del movimiento del dedo llegó después de los 0,45 s. Ahora, si el dedo ya se movía antes de abrirse la rueda, cuenta como arrastre y la rueda se cierra.</li>
+        <li>Detalle: la rueda contaba también los constructores de barco, pero solo elige los de tierra; ahora cuenta igual que elige.</li>
+      </ul></li>
+    <li><b>Tutorial:</b> el juego empieza con un Constructor, así que normalmente el primer paso es «Abre la pestaña Energía». En la prueba se quitó el Constructor para comprobar también los dos primeros pasos (tocar el Núcleo y entrenar uno).</li>
+    <li><b>Temporadas:</b> hoy (10 de noviembre) no toca ninguna; en la pausa puedes poner Calabazas o Invierno para verlas.</li>
+    <li><b>Campaña:</b> los resultados son los mismos que en la v1.1 (las misiones que no se ganan siempre, M3 y M5, ya eran así).</li>
+    <li><b>Tamaño:</b> 2,41 MB (meta: menos de 3,5 MB).</li>
   </ul>
   <h3>Siguiente paso</h3>
-  <p>Programar la v1.2, probar cada parte y entregarte el PDF con los resultados.</p>
+  <p>Jugar la v1.2 en tu iPad: mantener pulsado el mapa para la rueda, mandar mensajes a un aliado en Dúos, mirar la tabla de Rangos, abrir cofres y fabricar en el Taller, jugar «Mesetas de Cobre» y probar el tutorial y las temporadas desde la pausa. Dime qué más quieres.</p>
 </section>
 
 </body>
