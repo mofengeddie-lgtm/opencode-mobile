@@ -67,6 +67,7 @@ class Input {
         this.holdTimer = setTimeout(() => {
           if (this.drag === d0 && !d0.moved && this.pointers.size === 1) {
             d0.mode = 'wheel';
+            d0.wheelAt = performance.now();
             this.app.ui.showWheel(d0.sx, d0.sy);
           }
         }, WHEEL_HOLD_MS);
@@ -113,8 +114,16 @@ class Input {
     }
     if (this.pointers.size !== 1) return;
     if (d.mode === 'wheel') {
-      this.app.ui.hoverWheel(p.x, p.y);
-      return;
+      // Si el dedo ya se movía antes de que se abriera la rueda (el aviso llegó tarde en un cuadro lento),
+      // era un arrastre del mapa: se cierra la rueda y se sigue moviendo la cámara.
+      const early = d.wheelAt && e.timeStamp && e.timeStamp < d.wheelAt;
+      if (early && Math.hypot(p.x - d.sx, p.y - d.sy) > 9) {
+        this.app.ui.hideWheel();
+        d.mode = null;
+      } else {
+        this.app.ui.hoverWheel(p.x, p.y);
+        return;
+      }
     }
     if (!d.moved && Math.hypot(p.x - d.sx, p.y - d.sy) > 9) {
       d.moved = true;

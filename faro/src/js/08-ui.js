@@ -505,7 +505,10 @@ class UI {
     } else if (step.world && app.renderer) {
       const sp = app.renderer.project(step.world.x, step.world.y, step.world.z);
       const onScreen = sp.ok && sp.x > 24 && sp.x < window.innerWidth - 24 && sp.y > 24 && sp.y < window.innerHeight - 24;
-      if (onScreen) rect = { x: sp.x - 30, y: sp.y - 30, w: 60, h: 60, round: true };
+      // ¿Lo tapa un panel? (por ejemplo, el de «Construir»): tocar ahí tocaría el panel, no el mapa.
+      const top = onScreen ? document.elementFromPoint(sp.x, sp.y) : null;
+      const covered = onScreen && !!top && top.id !== 'gl' && top.id !== 'overlay';
+      if (onScreen && !covered) rect = { x: sp.x - 30, y: sp.y - 30, w: 60, h: 60, round: true };
       else {
         // Fuera de la pantalla: el aro señala ese lugar en el minimapa (tocarlo lleva la cámara allí).
         const mm = $('minimap');
@@ -513,7 +516,8 @@ class UI {
           const r = mm.getBoundingClientRect();
           const m = app.renderer.worldToMinimap(mm, step.world.x, step.world.z);
           rect = { x: r.left + clamp(m.x, 0, r.width) - 16, y: r.top + clamp(m.y, 0, r.height) - 16, w: 32, h: 32, round: true };
-          text = 'Está fuera de la pantalla: toca este punto del minimapa para ir allí';
+          text = covered ? 'Lo tapa un panel: toca este punto del minimapa para centrarlo'
+            : 'Está fuera de la pantalla: toca este punto del minimapa para ir allí';
         }
       }
     }
