@@ -407,8 +407,8 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .rankhist li.loss span { color: #ffb4b5; }
 #wheel { position: fixed; inset: 0; z-index: 30; background: rgba(6,10,14,0.35); }
 .wheel-hub { position: absolute; transform: translate(-50%, -50%); width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--muted); background: rgba(12,21,29,0.92); border: 1px solid var(--line); }
-.wheel-opt { position: absolute; transform: translate(-50%, -50%); width: 78px; min-height: 52px; border-radius: 14px; border: 1px solid var(--line); background: rgba(16,26,36,0.95); color: var(--text); display: grid; place-items: center; gap: 0; padding: 4px; cursor: pointer; font: inherit; }
-.wheel-opt b { font-size: 12.5px; }
+.wheel-opt { position: absolute; transform: translate(-50%, -50%); width: 84px; min-height: 52px; border-radius: 14px; border: 1px solid var(--line); background: rgba(16,26,36,0.95); color: var(--text); display: grid; place-items: center; gap: 0; padding: 4px; cursor: pointer; font: inherit; }
+.wheel-opt b { font-size: 12px; white-space: nowrap; }
 .wheel-opt small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .wheel-opt.hot, .wheel-opt:hover:not(:disabled) { border-color: #f2ab38; background: rgba(242,171,56,0.2); }
 .wheel-opt:disabled { opacity: 0.4; cursor: default; }
@@ -428,6 +428,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .ladder li small { font-size: 10px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
 .ladder li em { font-style: normal; color: var(--muted); font-size: 12px; }
 .ladder li strong { text-align: right; font-variant-numeric: tabular-nums; }
+.item.plan .btn { white-space: normal; line-height: 1.2; max-width: 100%; }
 .item.plan img { filter: grayscale(0.6) brightness(0.9); outline: 2px dashed rgba(127,200,255,0.6); outline-offset: -4px; border-radius: 8px; }
 .fragicon { width: 64px; height: 64px; margin: 4px auto; background: conic-gradient(from 30deg, #7fc8ff, #b48cff, #7fc8ff 60%, #ffe08a, #7fc8ff); clip-path: polygon(50% 0, 95% 30%, 80% 100%, 20% 100%, 5% 30%); }
 .mapcard { display: grid; gap: 4px; justify-items: start; }
@@ -10209,7 +10210,8 @@ class UI {
       { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
       { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
     ];
-    const R = 92;
+    // Radio para que las 8 opciones (84 px de ancho) no se pisen entre sí.
+    const R = 122;
     const cx = clamp(x, R + 50, window.innerWidth - R - 50);
     const cy = clamp(y, R + 40, window.innerHeight - R - 40);
     const el = document.createElement('div');

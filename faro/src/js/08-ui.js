@@ -555,7 +555,8 @@ class UI {
       { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
       { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
     ];
-    const R = 92;
+    // Radio para que las 8 opciones (84 px de ancho) no se pisen entre sí.
+    const R = 122;
     const cx = clamp(x, R + 50, window.innerWidth - R - 50);
     const cy = clamp(y, R + 40, window.innerHeight - R - 40);
     const el = document.createElement('div');

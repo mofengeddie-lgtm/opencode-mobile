@@ -48,7 +48,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 - **Mapas nuevos:** «Mesetas de Cobre» (desde una meseta se dispara y se ve 1 casilla más lejos) y
   «Dunas Rojas» (desierto con oasis). Todos los mapas muestran su miniatura al elegir.
 - **Tutorial que señala:** un aro y un texto marcan qué tocar en cada paso; si el lugar está fuera de la
-  pantalla, señala el punto en el minimapa.
+  pantalla o tapado por un panel, señala el punto en el minimapa.
 - **Temporadas:** «Calabazas» (15 oct-5 nov) e «Invierno» (10 dic-6 ene, con nieve), solas según la fecha
   o elegidas en la pausa.
 - **Toques más fáciles:** tocar el cuerpo o el techo de un edificio también lo elige.
