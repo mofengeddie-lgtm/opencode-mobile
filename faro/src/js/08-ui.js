@@ -142,10 +142,10 @@ class UI {
       app.music.setLevel(lv);
       if (lv > 0) app.music.play(app.state === 'play' ? 'battle' : 'lobby');
       this.updateMusicBtns();
-    document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
-    this.updateSeasonBtns();
     });
     this.updateMusicBtns();
+    document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
+    this.updateSeasonBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
         app.sound.toggle();
@@ -423,7 +423,18 @@ class UI {
   }
 
   // ---------- tutorial que señala qué tocar (v1.2) ----------
+  // Si sigues en modo construir (la obra ya está puesta y el modo sigue para poner más), primero se sale de él:
+  // si no, tocar un edificio o una tropa no la elige.
   coachStep(g) {
+    const step = this.coachStepRaw(g);
+    const p = this.app.input.placement;
+    if (step && p && !step.place) {
+      return { sel: '#btn-place-cancel', text: p.placed ? 'Toca «Terminar» para salir del modo construir' : 'Toca «Cancelar» para salir de este modo' };
+    }
+    return step;
+  }
+
+  coachStepRaw(g) {
     const app = this.app;
     const me = g.players[0];
     const mine = g.units.filter((u) => u.owner === 0 && u.alive);
@@ -439,9 +450,9 @@ class UI {
       if (p && p.kind === 'build' && p.btype === type) {
         if (p.cell < 0) {
           const c = [...(p.valid || [])].map((i) => g.cells[i]).sort((a, b) => g.map.dist(a, g.cells[core.cell]) - g.map.dist(b, g.cells[core.cell]))[0];
-          return c ? { world: { x: c.x, y: c.h, z: c.z }, text: 'Toca una casilla dorada (por ejemplo, esta)' } : { text: 'No quedan casillas libres' };
+          return c ? { world: { x: c.x, y: c.h, z: c.z }, text: 'Toca una casilla dorada (por ejemplo, esta)', place: true } : { text: 'No quedan casillas libres', place: true };
         }
-        return { sel: '#btn-place-ok', text: 'Toca «Construir» para poner la obra' };
+        return { sel: '#btn-place-ok', text: 'Toca «Construir» para poner la obra', place: true };
       }
       if (!panelOpen) return { sel: '#btn-build', text: 'Abre «Construir»' };
       if (this.tab !== tab) return { sel: `#btabs [data-tab="${tab}"]`, text: `Abre la pestaña «${tabName}»` };
@@ -523,7 +534,7 @@ class UI {
       { k: 'sea', label: 'Mar', n: count((u) => u.def.weapon && u.mover === 'sea') },
       { k: 'air', label: 'Aire', n: count((u) => u.def.weapon && u.mover === 'air') },
       { k: 'all', label: 'Todo', n: count((u) => u.def.weapon) },
-      { k: 'builders', label: 'Constructores', n: count((u) => u.def.builds) },
+      { k: 'builders', label: 'Constructores', n: count((u) => u.def.builds === 'land') },
       { k: 'g1', label: 'Grupo 1', n: (app.groups[1] || []).filter((u) => u.alive).length },
       { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
       { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
