@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.1 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.2 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -21,6 +21,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Seleccionar | Toca una tropa o un edificio | Clic |
 | Todas las tropas de un tipo | Doble toque | Doble clic |
 | Varias tropas | Botón «Recuadro» y arrastra | Mayús + arrastrar |
+| Rueda de selección | Mantén pulsado el mapa y elige (Tierra, Mar, Aire, Todo, Constructores, grupos) | Tab |
 | Grupos 1, 2 y 3 | «Guardar en 1/2/3» y botones 1-2-3 junto al minimapa (dos toques: ir) | Número elige; Ctrl, Cmd o Mayús + número guarda |
 | Avanzar atacando | Botón en el panel de tropas y luego toca el destino | F y clic |
 | Constructores | Botón junto al minimapa (primero los que no trabajan) | C |
@@ -32,6 +33,25 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.2
+
+- **Rueda de selección:** mantén pulsado el mapa (o la tecla Tab) y elige Tierra, Mar, Aire, Todo,
+  Constructores o un grupo; puedes soltar el dedo sobre la opción.
+- **Mensajes:** ventana con pestañas Todos / Aliados y mensajes rápidos («¡Gracias!», «¡Bien hecho!»,
+  «¡Cuidado!», «¡Ayuda!», «¡Ataquemos!»); los bots aliados contestan. Se abre desde el marcador o tocando
+  los mensajes de la esquina.
+- **Tabla de la Clasificatoria:** tú y 20 comandantes bot (marcados como bots), ordenados por puntos.
+- **Colecciones nuevas:** «Frente 1940» y «Marea» (soldados, vehículos, barcos y Núcleo).
+- **Planos, fragmentos y Taller:** un cofre da un aspecto, un plano o fragmentos; los repetidos dan
+  fragmentos; en el Taller, plano + fragmentos = aspecto.
+- **Mapas nuevos:** «Mesetas de Cobre» (desde una meseta se dispara y se ve 1 casilla más lejos) y
+  «Dunas Rojas» (desierto con oasis). Todos los mapas muestran su miniatura al elegir.
+- **Tutorial que señala:** un aro y un texto marcan qué tocar en cada paso; si el lugar está fuera de la
+  pantalla, señala el punto en el minimapa.
+- **Temporadas:** «Calabazas» (15 oct-5 nov) e «Invierno» (10 dic-6 ene, con nieve), solas según la fecha
+  o elegidas en la pausa.
+- **Toques más fáciles:** tocar el cuerpo o el techo de un edificio también lo elige.
 
 ## Novedades de la v1.1
 
