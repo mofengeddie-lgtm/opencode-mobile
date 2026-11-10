@@ -468,8 +468,8 @@ class UI {
     if (!bar) return buildFlow('prod', 'barracks', 'Cuartel', 'Producción');
     const combat = mine.filter((u) => u.def.weapon).length;
     if (combat < 5) {
-      if (!bar.built) return { world: { x: bar.x, y: bar.y + 1, z: bar.z }, text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
-      if (!(sel.length === 1 && sel[0] === bar)) return { world: { x: bar.x, y: bar.y + 1, z: bar.z }, text: 'Toca tu Cuartel' };
+      if (!bar.built) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
+      if (!(sel.length === 1 && sel[0] === bar)) return { world: { x: bar.x, y: bar.y + 0.5, z: bar.z }, text: 'Toca tu Cuartel' };
       return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${combat} de 5)` };
     }
     const foe = g.players.find((q) => q.id !== 0 && q.alive && q.core && q.core.alive);
@@ -495,6 +495,7 @@ class UI {
       document.body.appendChild(el);
     }
     let rect = null;
+    let text = step.text;
     if (step.sel) {
       const t = document.querySelector(step.sel);
       if (t && t.getClientRects().length > 0) {
@@ -503,19 +504,30 @@ class UI {
       }
     } else if (step.world && app.renderer) {
       const sp = app.renderer.project(step.world.x, step.world.y, step.world.z);
-      if (sp.ok) rect = { x: sp.x - 30, y: sp.y - 30, w: 60, h: 60, round: true };
+      const onScreen = sp.ok && sp.x > 24 && sp.x < window.innerWidth - 24 && sp.y > 24 && sp.y < window.innerHeight - 24;
+      if (onScreen) rect = { x: sp.x - 30, y: sp.y - 30, w: 60, h: 60, round: true };
+      else {
+        // Fuera de la pantalla: el aro señala ese lugar en el minimapa (tocarlo lleva la cámara allí).
+        const mm = $('minimap');
+        if (mm && mm.getClientRects().length > 0) {
+          const r = mm.getBoundingClientRect();
+          const m = app.renderer.worldToMinimap(mm, step.world.x, step.world.z);
+          rect = { x: r.left + clamp(m.x, 0, r.width) - 16, y: r.top + clamp(m.y, 0, r.height) - 16, w: 32, h: 32, round: true };
+          text = 'Está fuera de la pantalla: toca este punto del minimapa para ir allí';
+        }
+      }
     }
     el.hidden = false;
     const ring = el.querySelector('.coach-ring');
     const tip = el.querySelector('.coach-tip');
     ring.hidden = !rect;
     if (rect) Object.assign(ring.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px`, borderRadius: rect.round ? '50%' : '12px' });
-    tip.textContent = step.text;
+    tip.textContent = text;
     const tx = rect ? clamp(rect.x + rect.w / 2 - 110, 8, window.innerWidth - 228) : window.innerWidth / 2 - 110;
     const below = rect ? rect.y + rect.h + 8 : 120;
     const ty = rect && below + 50 > window.innerHeight ? rect.y - 52 : below;
     Object.assign(tip.style, { left: `${tx}px`, top: `${ty}px` });
-    this.coachText = step.text;
+    this.coachText = text;
   }
 
   // ---------- rueda de selección del ejército (v1.2) ----------

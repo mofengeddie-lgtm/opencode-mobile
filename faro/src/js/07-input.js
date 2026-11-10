@@ -290,7 +290,7 @@ class Input {
     const mine = app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
     const unit = this.r.pickUnit(x, y);
     const cell = this.r.pickCell(x, y);
-    const bld = cell && cell.bld && cell.bld.alive ? cell.bld : null;
+    const bld = cell && cell.bld && cell.bld.alive ? cell.bld : (!unit ? this.r.pickBuilding(x, y) : null);
     const point = !unit && !bld && cell && cell.point ? cell.point : null;
     const target = unit || bld;
     const now = performance.now();

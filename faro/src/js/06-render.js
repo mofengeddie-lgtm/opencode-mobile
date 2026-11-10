@@ -115,6 +115,7 @@ class Renderer {
     this.seasonGroup = new THREE.Group();
     this.scene.add(this.seasonGroup);
     this.snow = null;
+    this.pumpkins = 0;
     // Suelo: en invierno, la tierra se aclara y las montañas quedan nevadas.
     if (!this.baseColors0) this.baseColors0 = this.baseColors.map((c) => c.clone());
     const white = new THREE.Color(0xf4f8fb);
@@ -1185,6 +1186,24 @@ class Renderer {
     return best;
   }
 
+  // v1.2: tocar el cuerpo o el techo de un edificio también lo elige (antes solo valía su casilla del suelo).
+  // Solo cuenta la zona entre la base y el techo, para no robar los toques al suelo de delante.
+  pickBuilding(sx, sy) {
+    let best = null;
+    let bd = Infinity;
+    const half = Math.max(16, 380 / this.cam.dist);
+    for (const b of this.game.buildings) {
+      if (!b.alive) continue;
+      const base = this.project(b.x, b.y, b.z);
+      const top = this.project(b.x, b.y + (b.type === 'wall' ? 0.6 : 1.15), b.z);
+      if (!base.ok || !top.ok) continue;
+      if (sy > base.y + 4 || sy < top.y - 8 || Math.abs(sx - base.x) > half) continue;
+      const d = Math.abs(sx - base.x) + Math.abs(sy - (base.y + top.y) / 2) * 0.5;
+      if (d < bd) { bd = d; best = b; }
+    }
+    return best;
+  }
+
   unitsInRect(x1, y1, x2, y2, filter) {
     const lx = Math.min(x1, x2);
     const hx = Math.max(x1, x2);
@@ -1556,6 +1575,12 @@ class Renderer {
       ctx.closePath();
       ctx.stroke();
     }
+  }
+
+  worldToMinimap(canvas, x, z) {
+    const T = this.minimapTransform(canvas.width);
+    const k = canvas.width / canvas.clientWidth;
+    return { x: (x * T.s + T.ox) / k, y: (z * T.s + T.oz) / k };
   }
 
   minimapToWorld(canvas, mx, my) {
