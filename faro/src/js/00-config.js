@@ -148,7 +148,7 @@ const BUILDINGS = {
   barracks: {
     name: 'Cuartel', cat: 'prod', cost: 1000, hp: 900, build: 10, on: 'land', limit: 3, builtBy: 'land',
     produces: ['builder', 'engineer', 'rifle', 'shotgun', 'ranger', 'sniper', 'breaker', 'hunter', 'rocket', 'medic'],
-    desc: 'Entrena los 9 soldados, del Constructor al Cohetero.',
+    desc: 'Entrena los 10 soldados: del Constructor al Cohetero, y el Médico.',
   },
   factory: {
     fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 2, builtBy: 'land',
@@ -188,7 +188,7 @@ const BUILDINGS = {
     desc: 'Misiles de largo alcance contra aeronaves. Nivel 4 (solo 3 de tus 6): lanza el misil nuclear.',
   },
   wall: {
-    name: 'Muro', cat: 'def', cost: 150, hp: 1500, build: 3, on: 'land', limit: 40, builtBy: 'land',
+    name: 'Muro', cat: 'def', cost: 30, hp: 1500, build: 3, on: 'land', limit: 40, builtBy: 'land',
     desc: 'Muralla que bloquea a las tropas enemigas y se une con los muros vecinos. Las tuyas pasan.',
   },
   hospital: {
@@ -412,10 +412,11 @@ const MODES = {
   fog: { name: 'Islas en la niebla', desc: 'Solo ves lo que está cerca de tus tropas y edificios.', players: 6, teams: [0, 1, 2, 3, 4, 5], fog: true, lobby: true, alliances: true },
   turbo: { name: 'Turbo ×2', desc: 'Monedas y tropas salen el doble de rápido.', players: 6, teams: [0, 1, 2, 3, 4, 5], speed: 2, lobby: true, alliances: true },
   duos: { name: 'Dúos', desc: '3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.', players: 6, teams: [0, 0, 1, 1, 2, 2], lobby: true, duos: true },
-  ranked: { name: 'Clasificatoria', desc: '3 vs 3 por puntos: gana para subir de rango.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, ranked: true },
-  league: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3. Tus aliados son bots.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, minLevel: 10 },
+  // v1.3: la Clasificatoria aparte (v1.1) ya no se elige; queda para abrir partidas guardadas antes.
+  ranked: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3 con aliados bots. Da puntos de rango.', players: 6, teams: [0, 0, 0, 1, 1, 1], ranked: true },
+  league: { name: 'Liga 3 vs 3', desc: 'Dos equipos de 3 con aliados bots. Da puntos de rango: ganar +25, perder −15.', players: 6, teams: [0, 0, 0, 1, 1, 1], lobby: true, minLevel: 10, ranked: true },
   king: { name: 'Rey del Faro', desc: 'Mantén el Faro 3 min en total.', players: 4, teams: [0, 1, 2, 3], king: true, lobby: true },
-  blitz: { name: 'Relámpago', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true, alliances: true },
+  blitz: { name: 'Choque exprés', desc: '6.000 monedas y ritmo ×2.', players: 4, teams: [0, 1, 2, 3], coins: 6000, energy: 150, speed: 2, lobby: true, alliances: true },
   duel: { name: 'Duelo 1 vs 1', desc: 'Tú contra 1 rival', players: 2, teams: [0, 1] },
   ffa: { name: 'Todos contra todos', desc: '4 imperios, gana el último', players: 4, teams: [0, 1, 2, 3], alliances: true },
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
@@ -551,7 +552,7 @@ const CAMPAIGN = [
 const CAMPAIGN_STAR_CRYSTALS = 20;
 
 const OBJECTIVES = [
-  { id: 'builder', text: 'Entrena un Constructor en el Núcleo' },
+  { id: 'builder', text: 'Entrena un Constructor más en el Núcleo' },
   { id: 'energy', text: 'Construye una energía (Solar o Eólica)' },
   { id: 'barracks', text: 'Construye un Cuartel' },
   { id: 'army', text: 'Ten 5 tropas de combate' },

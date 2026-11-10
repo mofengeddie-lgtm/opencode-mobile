@@ -176,13 +176,30 @@ function cssColor(c) {
 // Trazo de cada imperio en las gráficas del final (además del color): Tú, línea continua.
 const HIST_DASH = ['', '7 4', '2 4', '10 3 2 3', '4 3', '1 3'];
 
-// Clasificatoria (v1.1): 10 rangos propios, 100 puntos cada uno. Ganar suma 25 y perder resta 15.
-const RANKS = ['Bronce I', 'Bronce II', 'Bronce III', 'Plata I', 'Plata II', 'Plata III', 'Oro I', 'Oro II', 'Oro III', 'Ámbar'];
-const RANK_STEP = 100;
+// Rangos (v1.3, como tu documento de juego v2): 6 rangos propios, solo en la Liga 3 vs 3 y desde el
+// nivel 10. Ganar suma 25 y perder resta 15. Almirante del Faro: en Roblox serán los 50 mejores; aquí,
+// sin servidores, desde 2.400 puntos.
+const RANKS = ['Recluta', 'Cabo', 'Sargento', 'Capitán', 'Comandante', 'Almirante del Faro'];
+const RANK_MIN = [0, 300, 700, 1200, 1800, 2400];
+const RANK_ICONS = ['R', 'C', 'S', 'Cp', 'Cm', 'A'];
 const RANK_WIN = 25;
 const RANK_LOSS = 15;
-const RANK_COLORS = ['#b87333', '#b87333', '#b87333', '#c0c7cf', '#c0c7cf', '#c0c7cf', '#f2c94c', '#f2c94c', '#f2c94c', '#f2ab38'];
-// Tabla de la Clasificatoria (v1.2): 20 comandantes bot con nombres propios. Sus puntos salen de tu
+const RANK_COLORS = ['#8a9aa6', '#b87333', '#c0c7cf', '#f2c94c', '#7fc8ff', '#f2ab38'];
+const RANKED_MODE = 'league';
+const RANKED_LEVEL = 10;
+// Temporadas (v1.3): de unos 2 meses. La 1 es noviembre-diciembre de 2026. Al empezar una nueva,
+// el pase vuelve a empezar y bajas 1 rango (no a cero).
+const SEASON_START = { y: 2026, m: 10 };
+const SEASON_MONTHS = 2;
+function seasonOf(d = new Date()) {
+  const months = (d.getFullYear() - SEASON_START.y) * 12 + d.getMonth() - SEASON_START.m;
+  const no = Math.max(0, Math.floor(months / SEASON_MONTHS)) + 1;
+  const m0 = SEASON_START.m + (no - 1) * SEASON_MONTHS;
+  const start = new Date(SEASON_START.y, m0, 1);
+  const end = new Date(SEASON_START.y, m0 + SEASON_MONTHS, 1);
+  return { no, start, end };
+}
+// Tabla de la Liga 3 vs 3 (v1.2): 20 comandantes bot con nombres propios. Sus puntos salen de tu
 // semilla y se mueven un poco con cada partida que juegas (no son jugadores reales).
 const LADDER_NAMES = ['Capitana Brisa', 'Coronel Basalto', 'Almirante Coral', 'Sargento Pino', 'Mariscal Ceniza', 'Teniente Ámbar',
   'Comandante Niebla', 'Capitán Granito', 'General Duna', 'Cabo Relámpago', 'Comodoro Marea', 'Brigadier Roble', 'Capitana Aurora',
@@ -191,7 +208,7 @@ function ladderRows(P) {
   const rng = mulberry32((P.seed || 1) + 4242);
   const games = (P.ranked && P.ranked.games) || 0;
   const rows = LADDER_NAMES.map((name, i) => {
-    const base = Math.round(80 + rng() * 1050);
+    const base = Math.round(60 + rng() * 2550);
     const drift = Math.round(Math.sin((games + 1) * 0.7 + i) * 18 + games * (rng() * 6 - 1));
     return { name, points: Math.max(0, base + drift), bot: true };
   });
@@ -199,14 +216,16 @@ function ladderRows(P) {
   return rows.sort((a, b) => b.points - a.points || (a.me ? -1 : 1)).map((r, i) => ({ ...r, pos: i + 1 }));
 }
 function rankIndex(points) {
-  return Math.min(RANKS.length - 1, Math.floor(Math.max(0, points) / RANK_STEP));
+  let i = 0;
+  while (i + 1 < RANK_MIN.length && Math.max(0, points) >= RANK_MIN[i + 1]) i++;
+  return i;
 }
 function rankName(points) {
   return RANKS[rankIndex(points)];
 }
-// Desde Oro, los rivales de la Clasificatoria juegan en Difícil.
+// Desde Sargento, los rivales de la Liga 3 vs 3 juegan en Difícil.
 function rankedDifficulty(points) {
-  return rankIndex(points) >= 6 ? 'hard' : 'normal';
+  return rankIndex(points) >= 2 ? 'hard' : 'normal';
 }
 
 const Profile = {
@@ -225,8 +244,9 @@ const Profile = {
       custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
-      ranked: { points: 0, best: 0, games: 0, wins: 0, history: [] },
+      ranked: { points: 0, best: 0, games: 0, wins: 0, history: [], shield: false },
       fragments: 0, plans: {},
+      season: { no: 0, passXp: 0, notice: null },
     };
   },
 
@@ -243,6 +263,8 @@ const Profile = {
     } catch (err) {
       this.memoryOnly = true;
     }
+    // v1.3: la Clasificatoria aparte pasa a ser la Liga 3 vs 3.
+    if (d.play.mode === 'ranked') d.play.mode = RANKED_MODE;
     if (!MODES[d.play.mode] || !MODES[d.play.mode].lobby) d.play.mode = 'conquest';
     if (!MAPS[d.play.mapKind]) d.play.mapKind = 'archipelago';
     if (!DIFFICULTY[d.play.difficulty]) d.play.difficulty = 'normal';
@@ -263,13 +285,47 @@ const Profile = {
     return 1 + Math.floor(xp / LEVEL_XP);
   },
 
+  // XP: el nivel cuenta toda la XP; el pase, solo la de esta temporada.
+  addXp(n) {
+    this.data.xp += n;
+    this.data.season.passXp = (this.data.season.passXp || 0) + n;
+  },
+
+  now() {
+    return new Date();
+  },
+
+  // Al empezar una temporada nueva: el pase vuelve a empezar y la Liga baja 1 rango (no a cero).
+  checkSeason() {
+    const P = this.data;
+    const cur = seasonOf(this.now()).no;
+    if (!P.season.no) {
+      // Perfiles de antes de la v1.3: se quedan con lo que llevaban en el pase.
+      P.season.no = cur;
+      P.season.passXp = P.xp;
+      return false;
+    }
+    if (P.season.no >= cur) return false;
+    const R = P.ranked;
+    const from = rankName(R.points);
+    const idx = rankIndex(R.points);
+    R.points = RANK_MIN[Math.max(0, idx - 1)];
+    R.shield = false;
+    P.pass = {};
+    P.season.passXp = 0;
+    P.season.notice = { no: cur, from, to: rankName(R.points) };
+    P.season.no = cur;
+    return true;
+  },
+
   passTier() {
-    return Math.min(PASS_TIERS, Math.floor(this.data.xp / PASS_TIER_XP));
+    return Math.min(PASS_TIERS, Math.floor((this.data.season.passXp || 0) / PASS_TIER_XP));
   },
 
   // Cambio de día o de semana: misiones nuevas y racha del premio diario.
   refresh() {
     const P = this.data;
+    this.checkSeason();
     const today = dayKey();
     const M = P.missions;
     if (M.day !== today) {
@@ -418,8 +474,8 @@ class Lobby {
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'continent', difficulty: 'easy' };
     // Campaña: el fondo del vestíbulo sigue con la isla de «Jugar»; cada misión trae su propio mapa.
-    // Clasificatoria: la dificultad la pone tu rango.
-    if (P.play.mode === 'ranked') return { mode: 'ranked', mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
+    // Liga 3 vs 3 (con rango): la dificultad la pone tu rango.
+    if (MODES[P.play.mode] && MODES[P.play.mode].ranked) return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: rankedDifficulty(P.ranked.points) };
     return { mode: P.play.mode, mapKind: P.play.mapKind, difficulty: P.play.difficulty };
   }
 
@@ -453,6 +509,15 @@ class Lobby {
     if (this.view === 'shop') body.innerHTML = this.shopHtml();
     else if (this.view === 'inv') body.innerHTML = this.invHtml();
     else body.innerHTML = this.leftHtml() + `<div class="lmain">${this.mainHtml()}</div>` + this.sideHtml();
+    // v1.3: aviso (una vez) de que empezó una temporada nueva.
+    const note = P.season && P.season.notice;
+    if (note && !this.modal) {
+      P.season.notice = null;
+      Profile.save();
+      this.openModal('info', { title: `Empieza la Temporada ${note.no}`,
+        text: `El Pase del Faro vuelve a empezar desde el nivel 1. En la Liga 3 vs 3 bajas 1 rango: de ${note.from} a ${note.to}.` });
+      return;
+    }
     if (this.modal) this.renderModal();
   }
 
@@ -516,7 +581,7 @@ class Lobby {
           <button class="btn gold" type="button" data-act="play" id="btn-play">Play</button>
           <button class="btn" type="button" data-act="modal" data-m="maps">Mapa</button>
         </div>
-        ${P.play.mode === 'ranked' ? `<p class="queue">Clasificatoria · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
+        ${MODES[P.play.mode] && MODES[P.play.mode].ranked ? `<p class="queue">Liga 3 vs 3 · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
           : `<div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
         <div class="row"><button class="btn" type="button" data-act="reroll">Otra isla</button></div>
       </section>
@@ -602,28 +667,36 @@ class Lobby {
     </section>`;
   }
 
-  // Clasificatoria (v1.1): tu rango, el camino de los 10 rangos y tus últimas partidas.
+  // Rangos (v1.3): tu rango, los 6 rangos de tu documento, la temporada, la tabla y tus partidas.
   ranksHtml() {
-    const R = this.P.ranked;
+    const P = this.P;
+    const R = P.ranked;
     const idx = rankIndex(R.points);
-    const inRank = R.points - idx * RANK_STEP;
     const top = idx === RANKS.length - 1;
-    const pct = top ? 100 : Math.round((inRank / RANK_STEP) * 100);
-    const ladder = RANKS.map((n, i) => `<li class="${i === idx ? 'on' : i < idx ? 'past' : ''}"><i style="background:${RANK_COLORS[i]}"></i>${n}<small>${i * RANK_STEP}</small></li>`).join('');
-    const hist = (R.history || []).slice(0, 8).map((h) => `<li class="${h.win ? 'win' : 'loss'}"><b>${h.win ? 'Victoria' : 'Derrota'}</b><span>${h.delta >= 0 ? '+' : ''}${h.delta}</span><small>${esc(h.rank)} · ${prettyDate(h.day)}</small></li>`).join('');
+    const lo = RANK_MIN[idx];
+    const hi = top ? lo : RANK_MIN[idx + 1];
+    const pct = top ? 100 : Math.round(((R.points - lo) / (hi - lo)) * 100);
+    const ladder = RANKS.map((n, i) => `<li class="${i === idx ? 'on' : i < idx ? 'past' : ''}"><i style="background:${RANK_COLORS[i]}"></i>${n}<small>${fmt(RANK_MIN[i])}</small></li>`).join('');
+    const hist = (R.history || []).slice(0, 8).map((h) => `<li class="${h.win ? 'win' : 'loss'}"><b>${h.win ? 'Victoria' : h.forfeit ? 'Abandono' : 'Derrota'}</b><span>${h.delta >= 0 ? '+' : ''}${h.delta}</span><small>${esc(h.rank)} · ${prettyDate(h.day)}</small></li>`).join('');
     const diff = DIFFICULTY[rankedDifficulty(R.points)].name;
+    const S = seasonOf(Profile.now());
+    const ends = `${S.end.getDate()} de ${MONTHS[S.end.getMonth()]}`;
+    const lv = Profile.level();
+    const locked = lv < RANKED_LEVEL && !Creator.active();
     return `<section class="lcard panel ranked">
-        <div class="rankhead"><div class="rankbadge" style="--rk:${RANK_COLORS[idx]}"><b>${RANKS[idx].split(' ')[0][0]}</b></div>
-          <div><small>Tu rango</small><h2 id="rank-name">${RANKS[idx]}</h2><span>${R.points} puntos · mejor: ${rankName(R.best || 0)}</span></div></div>
+        <div class="rankhead"><div class="rankbadge" style="--rk:${RANK_COLORS[idx]}"><b>${RANK_ICONS[idx]}</b></div>
+          <div><small>Tu rango · Temporada ${S.no}</small><h2 id="rank-name">${RANKS[idx]}</h2><span>${fmt(R.points)} puntos · mejor: ${rankName(R.best || 0)}</span></div></div>
         <div class="rankbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
-        <p class="queue">${top ? 'Estás en el rango más alto.' : `${RANK_STEP - inRank} puntos para ${RANKS[idx + 1]}.`} Partida 3 vs 3 con aliados bots; rivales en ${diff}. Ganar: +${RANK_WIN} · perder: −${RANK_LOSS}.</p>
-        <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked">Jugar Clasificatoria</button></div>
+        <p class="queue">${top ? 'Estás en el rango más alto.' : `${fmt(hi - R.points)} puntos para ${RANKS[idx + 1]}.`} Solo cuentan las partidas de la Liga 3 vs 3 (aliados bots; rivales en ${diff}). Ganar: +${RANK_WIN} · perder o abandonar: −${RANK_LOSS}.</p>
+        <p class="queue" id="rank-rules">${R.shield ? '<b>Protección activa:</b> acabas de subir, tu primera derrota no te baja de rango. ' : 'Recién llegado a un rango, la primera derrota no te baja. '}La temporada termina el ${ends}: entonces bajas 1 rango (no a cero) y el pase vuelve a empezar.</p>
+        <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked" ${locked ? 'aria-disabled="true"' : ''}>Jugar Liga 3 vs 3</button>${locked ? `<small class="lockmsg">Desde nivel ${RANKED_LEVEL} (tienes ${lv})</small>` : ''}</div>
       </section>
-      <section class="lcard panel"><h3>Los 10 rangos</h3><ol class="ranklist">${ladder}</ol></section>
-      <section class="lcard panel"><h3>Tabla de la Clasificatoria</h3>
+      <section class="lcard panel"><h3>Los 6 rangos</h3><ol class="ranklist">${ladder}</ol>
+        <p class="queue">Almirante del Faro: en Roblox serán los 50 mejores; aquí, sin servidores, desde ${fmt(RANK_MIN[5])} puntos.</p></section>
+      <section class="lcard panel"><h3>Tabla de la Liga 3 vs 3</h3>
         <p class="queue">Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.</p>
-        <ol class="ladder" id="ladder">${ladderRows(this.P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
-      <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Clasificatoria.</p>'}</section>`;
+        <ol class="ladder" id="ladder">${ladderRows(P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
+      <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Liga 3 vs 3.</p>'}</section>`;
   }
 
   sideHtml() {
@@ -744,7 +817,8 @@ class Lobby {
         tiers.push(`<div class="tier ${reached ? 'reached' : ''} ${claimed ? 'claimed' : ''}"><b>${t}</b><span>${r.text}</span>
           ${claimed ? '<small>Reclamado</small>' : reached ? `<button class="mini-btn" type="button" data-act="passclaim" data-v="${t}">Reclamar</button>` : `<small>${fmt(t * PASS_TIER_XP)} XP</small>`}</div>`);
       }
-      html = head('Pase del Faro') + `<p>Pista gratis de ${PASS_TIERS} niveles. Cada ${PASS_TIER_XP} XP subes un nivel del pase. Llevas ${fmt(P.xp)} XP (nivel ${tier}).</p>
+      const S = seasonOf(Profile.now());
+      html = head(`Pase del Faro · Temporada ${S.no}`) + `<p>Pista gratis de ${PASS_TIERS} niveles. Cada ${PASS_TIER_XP} XP subes un nivel del pase. Esta temporada llevas ${fmt(P.season.passXp || 0)} XP (nivel ${tier}). Termina el ${S.end.getDate()} de ${MONTHS[S.end.getMonth()]}: entonces el pase vuelve a empezar.</p>
         ${Profile.passClaimable() ? '<div class="row"><button class="btn gold" type="button" data-act="passall">Reclamar todo</button></div>' : ''}
         <div class="tiers">${tiers.join('')}</div>`;
     } else if (n === 'missions') {
@@ -825,7 +899,11 @@ class Lobby {
       this.syncOpts();
       app.startGame();
     } else if (act === 'ranked') {
-      this.P.play.mode = 'ranked';
+      if (Profile.level() < RANKED_LEVEL && !Creator.active()) {
+        this.openModal('info', { title: 'Liga 3 vs 3', text: `La Liga 3 vs 3 se abre en el nivel ${RANKED_LEVEL}. Ahora estás en el nivel ${Profile.level()}: juega otras partidas para subir.` });
+        return;
+      }
+      this.P.play.mode = RANKED_MODE;
       Profile.save();
       this.sub = 'main';
       this.syncOpts();
@@ -903,7 +981,7 @@ class Lobby {
   give(r) {
     const P = this.P;
     if (r.crystals) P.crystals += r.crystals;
-    if (r.xp) P.xp += r.xp;
+    if (r.xp) Profile.addXp(r.xp);
     if (r.chest) return this.openChest(r.chest, true);
     return null;
   }
@@ -1043,6 +1121,40 @@ class Lobby {
     return result;
   }
 
+  // ---------- Liga 3 vs 3 (v1.3) ----------
+  // Gana +25, pierde −15. Recién llegado a un rango, la primera derrota no te baja de él.
+  rankedResult(win, forfeit = false) {
+    const R = this.P.ranked;
+    const before = R.points;
+    const idx0 = rankIndex(before);
+    let delta = win ? RANK_WIN : -Math.min(RANK_LOSS, before);
+    let saved = false;
+    if (!win && R.shield && rankIndex(before + delta) < idx0) {
+      delta = RANK_MIN[idx0] - before;
+      saved = true;
+    }
+    if (!win) R.shield = false;
+    R.points = Math.max(0, before + delta);
+    if (rankIndex(R.points) > idx0) R.shield = true;
+    R.best = Math.max(R.best || 0, R.points);
+    R.games = (R.games || 0) + 1;
+    if (win) R.wins = (R.wins || 0) + 1;
+    R.history = [{ day: dayKey(), win, delta, rank: rankName(R.points), forfeit }, ...(R.history || [])].slice(0, 12);
+    Profile.save();
+    return { before, after: R.points, delta, from: rankName(before), to: rankName(R.points), saved, forfeit };
+  }
+
+  rankedLine(r) {
+    return `Liga 3 vs 3${r.forfeit ? ' (abandonada)' : ''}: ${r.delta >= 0 ? '+' : ''}${r.delta} puntos · ${r.from === r.to ? r.to : `${r.from} → ${r.to}`}${r.saved ? ' · protección de rango: no bajaste' : ''}`;
+  }
+
+  // Abandonar una partida de la Liga (o empezar otra encima) cuenta como derrota.
+  forfeitRanked() {
+    const r = this.rankedResult(false, true);
+    this.app.ui.toast(this.rankedLine(r), 'bad');
+    return r;
+  }
+
   // ---------- final de partida ----------
   finish(game) {
     if (game.rewarded) return game.reward || null;
@@ -1123,20 +1235,12 @@ class Lobby {
         P.campaign.stars[m.id] = got;
       }
     }
-    // Clasificatoria: puntos y rango.
+    // Liga 3 vs 3: puntos y rango.
     if (game.mode.ranked && !game.opts.custom) {
-      const R = P.ranked;
-      const before = R.points;
-      const delta = win ? RANK_WIN : -Math.min(RANK_LOSS, R.points);
-      R.points = Math.max(0, R.points + delta);
-      R.best = Math.max(R.best || 0, R.points);
-      R.games = (R.games || 0) + 1;
-      if (win) R.wins = (R.wins || 0) + 1;
-      R.history = [{ day: dayKey(), win, delta, rank: rankName(R.points) }, ...(R.history || [])].slice(0, 12);
-      out.ranked = { before, after: R.points, delta, from: rankName(before), to: rankName(R.points) };
-      out.lines.push(`Clasificatoria: ${delta >= 0 ? '+' : ''}${delta} puntos · ${out.ranked.from === out.ranked.to ? out.ranked.to : `${out.ranked.from} → ${out.ranked.to}`}`);
+      out.ranked = this.rankedResult(win);
+      out.lines.push(this.rankedLine(out.ranked));
     }
-    P.xp += out.xp;
+    Profile.addXp(out.xp);
     P.crystals += out.crystals;
     out.level = Profile.level();
     out.levelUp = out.level > lv0;

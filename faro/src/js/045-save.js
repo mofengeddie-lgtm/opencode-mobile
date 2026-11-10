@@ -127,6 +127,7 @@ const Save = {
       alive: game.players.filter((p) => p.alive).length, players: game.players.length,
       units: game.units.filter((u) => u.owner === 0 && u.alive).length, coins: Math.round(me.coins),
       savedAt: Date.now(), creator: !!game.creator,
+      ranked: !!(game.mode.ranked && !game.opts.custom),
     };
   },
 

@@ -590,7 +590,8 @@ class Game {
     p.energy -= def.energyCost || 0;
     const b = this.addBuilding(pid, type, ci);
     if (rot !== undefined) b.rot = rot;
-    p.stats.built++;
+    // v1.3: el edificio cuenta para las misiones cuando se termina la obra (no al colocarlo).
+    if (b.built) p.stats.built++;
     this.emit('sound', { name: 'place', pid });
     if (!this.assignSite(b) && pid === 0) this.warnNoBuilder(b);
     return null;
@@ -693,6 +694,9 @@ class Game {
       p.energy += UNITS[q.type].energy || 0;
     }
     b.queue = [];
+    // v1.3: la mejora en curso se devuelve entera (se pagó y no llegó a terminarse).
+    if (b.upgrading && b.upgrading.paid) p.coins += b.upgrading.paid;
+    b.upgrading = null;
     b.alive = false;
     const c = this.cells[b.cell];
     if (c.bld === b) c.bld = null;
@@ -826,8 +830,9 @@ class Game {
     const err = this.upgradeInvalid(b);
     if (err) return err;
     const p = this.players[b.owner];
-    p.coins -= this.upgradeCost(b);
-    b.upgrading = { level: b.level + 1, progress: 0 };
+    const paid = this.upgradeCost(b);
+    p.coins -= paid;
+    b.upgrading = { level: b.level + 1, progress: 0, paid };
     p.stats.upgrades++;
     this.emit('sound', { name: 'place', pid: b.owner });
     if (!this.assignSite(b) && b.owner === 0) this.warnNoBuilder(b);
@@ -1055,7 +1060,18 @@ class Game {
       let oz = z - dc.z;
       const ol = Math.hypot(ox, oz);
       if (ol > 0.7) { ox *= 0.7 / ol; oz *= 0.7 / ol; }
-      if (u.mover !== 'air') { u.offX = ox; u.offZ = oz; }
+      // v1.3: si con ese desplazamiento la tropa quedaría sobre una casilla que no puede pisar
+      // (agua para las de tierra, tierra para los barcos), se queda más cerca del centro.
+      if (u.mover !== 'air') {
+        const over = this.map.atWorld(dc.x + ox, dc.z + oz);
+        if (over && over.i !== dest && !this.passable(over, u.mover, u.owner)) {
+          const k = Math.min(1, 0.33 / (Math.hypot(ox, oz) || 1));
+          ox *= k;
+          oz *= k;
+        }
+        u.offX = ox;
+        u.offZ = oz;
+      }
     });
     return { slots, face: Math.atan2(dx, dz) };
   }
@@ -1161,8 +1177,12 @@ class Game {
     const snipe = extraTiles === 0 && this.players[a.owner].snipe;
     let best = null;
     let bs = Infinity;
+    // v1.3: enemigos a los que esta tropa no encontró camino hace poco: no los vuelve a perseguir
+    // (si no, en «Avanzar atacando» cambiaba de estado en cada paso y no se movía).
+    const unreach = extraTiles > 0 && a.unreach ? a.unreach : null;
     const check = (t) => {
       if (!t.alive || t.owner === a.owner || t === exclude) return;
+      if (unreach && (unreach[t.id] || 0) > this.time && !this.inRange(a, w, t, 0)) return;
       const dx = t.x - a.x;
       const dz = t.z - a.z;
       if (Math.abs(dx) > maxD || Math.abs(dz) > maxD) return;
@@ -1263,7 +1283,7 @@ class Game {
     if (this.fights.length > 40) this.fights.shift();
   }
 
-  damage(t, dmg, src, srcEnt) {
+  damage(t, dmg, src, srcEnt, nuke = false) {
     if (!t.alive || dmg <= 0) return;
     if (srcEnt) this.noteFight(t);
     // v1.1: quién atacó a quién (para las alianzas).
@@ -1287,10 +1307,12 @@ class Game {
       if (dmg <= 0) return;
     }
     // Cúpula: absorbe el daño de barcos, aeronaves y lanzamisiles cerca del Núcleo.
-    if (srcEnt && (srcEnt.cls === 'ship' || srcEnt.cls === 'sub' || srcEnt.cls === 'air' || srcEnt.type === 'arty') &&
+    // v1.3: también el del misil nuclear; lo que pase de la vida de la Cúpula sí llega.
+    if (((srcEnt && (srcEnt.cls === 'ship' || srcEnt.cls === 'sub' || srcEnt.cls === 'air' || srcEnt.type === 'arty')) || nuke) &&
       this.domeCovers(t.owner, t)) {
       const dome = this.players[t.owner].dome;
-      dome.hp -= dmg;
+      const took = nuke ? Math.min(dome.hp, dmg) : dmg;
+      dome.hp -= took;
       dome.lastHit = this.time;
       if (dome.hp <= 0) {
         dome.hp = 0;
@@ -1299,7 +1321,8 @@ class Game {
         if (t.owner === 0) this.emit('toast', { text: `La Cúpula se rompió. Vuelve en ${DOME.recover} s`, kind: 'bad' });
         for (const u of this.units) if (u.owner === t.owner) u.shield = 0;
       }
-      return;
+      dmg -= took;
+      if (dmg <= 0) return;
     }
     // Escudo propio del edificio (v0.9).
     if (t.kind === 'bld' && t.shield > 0) {
@@ -1534,7 +1557,8 @@ class Game {
     if (this.buildings.some((b) => b.owner === 0 && b.type === 'barracks' && b.built)) this.completeObjective('barracks');
     const army = this.units.filter((u) => u.owner === 0 && u.def.weapon).length;
     if (army >= 5) this.completeObjective('army');
-    if (this.units.some((u) => u.owner === 0 && u.def.builds)) this.completeObjective('builder');
+    // v1.3: ya empiezas con un Constructor; el objetivo es entrenar otro.
+    if ((this.players[0].stats.builders || 0) > 0) this.completeObjective('builder');
     if (this.buildings.some((b) => b.owner === 0 && b.def.cat === 'energy' && b.built)) this.completeObjective('energy');
     if (this.points.some((pt) => pt.owner === 0)) this.completeObjective('capture');
   }
@@ -1735,6 +1759,7 @@ class Game {
       if (b.progress >= 1) {
         b.progress = 1;
         b.built = true;
+        this.players[b.owner].stats.built++;
         this.resetShield(b);
         this.emit('built', { b });
         if (b.owner === 0) {
@@ -1840,7 +1865,9 @@ class Game {
     const def = UNITS[type];
     const ci = this.freeCellsNear(b.cell, def.mover, b.owner, 1)[0];
     const u = this.addUnit(b.owner, type, ci);
-    this.players[b.owner].stats.trained++;
+    const st = this.players[b.owner].stats;
+    st.trained++;
+    if (def.builds === 'land') st.builders = (st.builders || 0) + 1;
     if (b.rally >= 0) this.orderMove([u], b.rally, !!def.weapon);
     if (b.owner === 0) this.emit('sound', { name: 'ready' });
     this.emit('spawned', { u, b });
@@ -1877,7 +1904,9 @@ class Game {
     if (d > 0.01) u.moveYaw = Math.atan2(dx, dz);
     u.moving = true;
     const nc = this.map.atWorld(u.x, u.z);
-    if (nc) u.cell = nc.i;
+    // v1.3: una tropa de tierra no pasa a «estar» en una casilla de agua (ni un barco en tierra)
+    // aunque corte camino por el borde.
+    if (nc && (u.mover === 'air' || TERRAIN[nc.t][u.mover === 'land' ? 'land' : 'water'])) u.cell = nc.i;
     return u.pathI >= u.path.length;
   }
 
@@ -1986,6 +2015,11 @@ class Game {
           u.repathT = 1.0;
           this.setPath(u, t.cell);
           if (!u.path.length && u.mover !== 'air') {
+            // Sin camino: se recuerda 6 s para no volver a elegirlo enseguida.
+            const un = u.unreach || (u.unreach = {});
+            for (const k of Object.keys(un)) if (un[k] <= this.time) delete un[k];
+            un[t.id] = this.time + 6;
+            if (u.aggroTarget === t) u.aggroTarget = null;
             u.target = null;
             u.state = u.resume >= 0 ? 'amove' : 'idle';
             if (u.resume >= 0) this.setPath(u, u.resume);
@@ -2184,7 +2218,6 @@ class Game {
     p.coins -= BUILDINGS.outpost.cost;
     u.alive = false;
     this.addBuilding(u.owner, 'outpost', u.foundCell);
-    p.stats.built++;
     if (u.owner === 0) {
       this.emit('toast', { text: 'Puesto avanzado fundado', kind: 'good' });
       this.emit('sound', { name: 'place' });
@@ -2343,9 +2376,11 @@ class Game {
     this.emit('sound', { name: 'bigboom', x: p.tx, z: p.tz });
     const hits = [...this.units.filter((u) => u.alive && !u.inside), ...this.buildings.filter((b) => b.alive)];
     for (const t of hits) {
+      // v1.3: solo daña a los enemigos de quien lo lanzó (igual que la radiación).
+      if (!this.isEnemy(p.owner, t.owner)) continue;
       const d = Math.hypot(t.x - p.tx, t.z - p.tz);
       if (d > R) continue;
-      this.damage(t, p.dmg * (1 - (d / R) * 0.6), p.owner, null);
+      this.damage(t, p.dmg * (1 - (d / R) * 0.6), p.owner, null, true);
     }
     // v1.0: queda 1 minuto de radiación que sigue quemando a los enemigos de quien lo lanzó.
     if (!this.radZones) this.radZones = [];

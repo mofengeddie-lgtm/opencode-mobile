@@ -1621,7 +1621,8 @@ class UI {
     }
     $('stat-pop').classList.toggle('full', p.popUsed >= p.popCap);
     $('clock').textContent = fmtTime(g.time);
-    const sig = g.players.map((pl) => pl.alive).join(',');
+    // v1.3: también cambia con las alianzas (equipos), no solo cuando alguien cae.
+    const sig = g.players.map((pl) => `${pl.alive}:${pl.team}`).join(',');
     if (sig !== this.playersSig) {
       this.playersSig = sig;
       const myTeam = p.team;

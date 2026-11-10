@@ -156,13 +156,27 @@ const App = {
     this.startGame();
   },
 
-  startGame() {
-    clearTimeout(this.endTimer);
-    if (this.game && this.game.over && !this.game.preview) this.lobby.finish(this.game);
-    this.input.cancelPlacement();
-    this.input.boxMode = false;
+  // v1.3: una partida de la Liga 3 vs 3 que se deja sin terminar (abandonarla o empezar otra encima)
+  // cuenta como derrota.
+  dropUnfinished() {
+    const g = this.suspended || (this.game && !this.game.preview && !this.game.over && this.state === 'play' ? this.game : null);
+    let ranked = false;
+    if (g) ranked = !g.over && !g.spectating && g.mode.ranked && !g.opts.custom;
+    else {
+      const meta = Save.peek();
+      ranked = !!(meta && meta.ranked);
+    }
+    if (ranked) this.lobby.forfeitRanked();
     this.suspended = null;
     Save.clear();
+  },
+
+  startGame() {
+    clearTimeout(this.endTimer);
+    if (this.game && (this.game.over || this.game.spectating) && !this.game.preview) this.lobby.finish(this.game);
+    this.input.cancelPlacement();
+    this.input.boxMode = false;
+    this.dropUnfinished();
     this.game = new Game(this.gameOpts());
     this.enterGame();
     if (this.game.camp) {
@@ -263,8 +277,7 @@ const App = {
   },
 
   abandonGame() {
-    this.suspended = null;
-    Save.clear();
+    this.dropUnfinished();
     if (this.opts.mission) this.opts = { ...this.lobby.optsFor('main') };
     this.opts.seed = (Math.random() * 1e9) | 0;
     this.makePreview();
