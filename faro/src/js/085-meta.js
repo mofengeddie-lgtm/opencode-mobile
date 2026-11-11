@@ -837,6 +837,37 @@ class Lobby {
   }
 
   // ---------- ventanas ----------
+  // Descarga la copia como archivo. En el enlace publicado se usa el permiso de descargas del visor
+  // (te pide confirmar); abierto como archivo suelto, la descarga normal del navegador.
+  async saveBackupFile() {
+    const filename = `faro-de-ambar-progreso-${dayKey()}.txt`;
+    const data = Profile.exportCode();
+    if (window.claude && typeof window.claude.use === 'function') {
+      let dl = null;
+      try { dl = await window.claude.use('downloads'); } catch (err) { dl = null; }
+      if (!dl) {
+        this.openModal('backup', { msg: 'Aquí no se puede descargar el archivo: usa «Copiar» y guarda el texto.' });
+        return;
+      }
+      try {
+        await dl.save({ filename, data });
+        this.openModal('backup', { msg: 'Archivo guardado. En el otro iPad, usa «Elegir archivo».' });
+      } catch (err) {
+        const code = err && err.code;
+        if (code === 'declined') return;
+        this.openModal('backup', { msg: code === 'rate_limited' ? 'Espera un momento y vuelve a tocar «Descargar archivo».'
+          : 'Aquí no se puede descargar el archivo: usa «Copiar» y guarda el texto.' });
+      }
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'text/plain' }));
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
   // Carga una copia: primero avisa que reemplaza el progreso (toca otra vez para confirmar).
   loadBackup(code, btn) {
     const r = Profile.importCode(code);
@@ -1017,13 +1048,7 @@ class Lobby {
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done, () => { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); });
       else { try { document.execCommand('copy'); } catch (err) { /* nada */ } done(); }
     } else if (act === 'bk-file') {
-      const blob = new Blob([Profile.exportCode()], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `faro-de-ambar-progreso-${dayKey()}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      this.saveBackupFile();
     } else if (act === 'bk-load') {
       this.loadBackup($('bk-in').value, b);
     } else if (act === 'pickmode') {
