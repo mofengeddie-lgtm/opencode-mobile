@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.2 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.3 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -33,6 +33,34 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.3
+
+Los 29 puntos de la revisión «Bugs y mejoras»:
+
+- **Bugs arreglados:**
+  - «Avanzar atacando» ya no se congela con enemigos inalcanzables.
+  - Abandonar la Liga cuenta como derrota.
+  - El misil nuclear no daña lo tuyo ni a tus aliados, y la Cúpula lo frena.
+  - Ninguna tropa de tierra queda sobre el agua.
+  - «Construye 12 edificios» cuenta obras terminadas.
+  - Demoler devuelve la mejora en curso.
+  - El primer objetivo, la fila «aliado» y los textos de la Casa y del Cuartel ya están bien.
+- **Más fluido:**
+  - El guardado es unas 6-8 veces más chico, se hace cada minuto y al pausar o cambiar de app.
+  - Los bots piensan por turnos (nunca dos en el mismo paso).
+- **Interfaz:**
+  - Panel de selección compacto: los botones principales arriba y «Más detalles» para el resto.
+  - En el celular el panel ya no tapa la barra de arriba, y en el iPad deja libre el centro.
+  - Todos los botones del juego miden 44 × 44 px como mínimo.
+- **Como el documento de juego v2:**
+  - 6 rangos (Recluta, Cabo, Sargento, Capitán, Comandante y Almirante del Faro), solo en la Liga 3 vs 3 y desde el nivel 10.
+  - Recién llegado a un rango, la primera derrota no te baja.
+  - Temporadas de 2 meses: el pase vuelve a empezar y la Liga baja 1 rango.
+  - Tutorial de 3 pasos con Puerto y Barcaza para tomar la isla del bot.
+  - Muro a 30.
+  - El modo «Relámpago» ahora se llama «Choque exprés».
+- **Copia de tu progreso:** un código o un archivo para llevar tu nivel, cristales, aspectos y rango a otro iPad.
 
 ## Novedades de la v1.2
 

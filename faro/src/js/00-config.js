@@ -10,7 +10,7 @@ function terrainColor(mapKind, t) {
   return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
 }
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.2';
+const GAME_VERSION = '1.3';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
