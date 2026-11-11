@@ -9826,6 +9826,9 @@ const BTN_ICON = {
   amove: '<circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
   formation: '<path d="M4 8h3M10.5 8h3M17 8h3M4 15h3M10.5 15h3M17 15h3"/>',
   stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+  // v1.3: «Más detalles» (lista) y «Menos» (flecha arriba).
+  more: '<path d="M5 7h14M5 12h14M5 17h9"/>',
+  less: '<path d="M6 15l6-6 6 6"/>',
   upgrade: '<path d="M12 19V6M6 11l6-6 6 6"/><path d="M6 20h12"/>',
   demolish: '<path d="M5 5l14 14M19 5 5 19"/>',
   rally: '<path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/>',
@@ -10902,7 +10905,7 @@ class UI {
       <div style="min-width:0"><h3>${title}</h3><p class="sec">${sub}</p>
         ${hpId ? '<div class="hp" id="sel-hpbar"><i id="sel-hp"></i></div><div class="hptext" id="sel-hptext"></div>' : ''}
       </div>
-      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? 'Menos' : 'Más detalles'}</button>
+      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? `${bi('less')}Menos` : `${bi('more')}Más detalles`}</button>
       <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button></div>
     </div>`;
   }
