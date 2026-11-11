@@ -112,7 +112,14 @@ const Save = {
             }
             extra.push([i, eo]);
           });
-          rec.gen = { seed: map.seed, kind: map.kind, n: map.n, pairs: !!map.pairs, check: this.mapCheck(map.cells), extra };
+          // La suma de control se calcula una vez por mapa (sus casillas fijas no cambian en la partida).
+          if (!this._checks) this._checks = new WeakMap();
+          let check = this._checks.get(map);
+          if (check === undefined) {
+            check = this.mapCheck(map.cells);
+            this._checks.set(map, check);
+          }
+          rec.gen = { seed: map.seed, kind: map.kind, n: map.n, pairs: !!map.pairs, check, extra };
         }
       }
       objs[id] = rec;
