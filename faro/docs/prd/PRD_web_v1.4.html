@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="12 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.4</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.4</p>
+  <p class="meta">12 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «¿tienes nuevas ideas para mejorar?», tu documento de juego v2 y lo que vi al probar la v1.3</p>
+  <div class="tiles">
+    <div class="tile"><b>Mandar mejor</b><span>Patrullar, mantener posición, tropas veteranas, reparación sola y producción continua.</span></div>
+    <div class="tile"><b>Volver cada día</b><span>Logros con insignias, Top jugadores de tu documento y un desafío nuevo cada semana.</span></div>
+    <div class="tile"><b>Tu iPad</b><span>Ahorro de batería, colores para daltonismo y letra más grande.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>La v1.3 dejó el juego estable y ordenado. La v1.4 suma cosas que se notan al jugar: más control sobre el ejército, más motivos para volver y opciones para jugar cómodo en el iPad. Todo con nombres, arte y reglas propias.</p>
+
+  <h3>2. De dónde sale cada idea</h3>
+  <table>
+    <thead><tr><th style="width:30%">Lo que vi</th><th>Idea para la v1.4</th></tr></thead>
+    <tbody>
+      <tr><td>Las tropas solo tienen «mover», «atacar», «avanzar atacando» y «detener».</td><td><b>Patrullar</b> entre dos puntos y <b>Mantener posición</b> (disparan sin salir a perseguir). Es lo básico de un juego de estrategia y ayuda a defender.</td></tr>
+      <tr><td>Una tropa que sobrevive muchas peleas es igual que una nueva.</td><td><b>Tropas veteranas:</b> con eliminaciones ganan hasta 3 estrellas (más vida y daño). Da ganas de cuidar al ejército.</td></tr>
+      <tr><td>Para reparar hay que elegir el Constructor y tocar el edificio.</td><td><b>Reparación sola:</b> los Constructores e Ingenieros libres reparan solos lo dañado cerca (se puede apagar).</td></tr>
+      <tr><td>Entrenar siempre lo mismo obliga a tocar «Repetir» una y otra vez.</td><td><b>Producción continua:</b> un interruptor por edificio que sigue entrenando la última tropa mientras alcance el dinero y la comunidad.</td></tr>
+      <tr><td>Hay una sola insignia («Primer Faro»).</td><td><b>Logros:</b> 12 logros propios con insignia y cristales (por ejemplo, ganar sin perder un edificio, tomar el Faro 3 veces, cruzar el mar con la Barcaza).</td></tr>
+      <tr><td>«Top jugadores» está apagado; tu documento lo describe en la pág. 20.</td><td><b>Top jugadores:</b> pestañas Liga 3 vs 3, Victorias e Islas tomadas, con oro, plata y bronce para los 3 primeros y tu fila siempre visible abajo. Sin servidores, los demás son comandantes bot (dice «bot»).</td></tr>
+      <tr><td>Las partidas rápidas son siempre al azar.</td><td><b>Desafío semanal:</b> el mismo mapa y las mismas reglas toda la semana (por ejemplo, «sin Fábrica» o «solo barcos»); guarda tu mejor tiempo y da un premio la primera vez.</td></tr>
+      <tr><td>En partidas largas el iPad se calienta y gasta batería.</td><td><b>Ahorro de batería:</b> opción de 30 cuadros por segundo y menos efectos.</td></tr>
+      <tr><td>Dos colores de jugador se confunden con daltonismo (lo vi al hacer las gráficas de la v1.1).</td><td><b>Colores para daltonismo</b> (colores de jugador que se distinguen y marcas con forma en el minimapa) y <b>letra más grande</b>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
+      <tr><td>1.0-1.1</td><td>9 nov 2026</td><td>Botón «Construir», comunidad 240, radiación, alianzas, Dúos, música, espectador y gráficas.</td></tr>
+      <tr><td>1.2</td><td>9-10 nov 2026</td><td>Rueda, Mensajes, colecciones, Taller, mapas nuevos, tutorial que señala y temporadas.</td></tr>
+      <tr><td>1.3</td><td>10-11 nov 2026</td><td>Los 29 puntos de tu revisión: bugs, guardado, panel compacto, rangos y tutorial de tu documento.</td></tr>
+      <tr><td>1.4</td><td>12 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Detalle</div>
+  <h2>Cómo funciona cada cosa</h2>
+  <h3>A. Mandar mejor a tu ejército</h3>
+  <ul>
+    <li><b>Patrullar:</b> eliges tropas, tocas «Patrullar» y luego un punto; van y vuelven entre donde estaban y ese punto, peleando con lo que encuentren.</li>
+    <li><b>Mantener posición:</b> las tropas se quedan quietas y solo disparan a lo que tienen a tiro (no salen a perseguir ni las arrastran los cebos).</li>
+    <li><b>Veteranas:</b> 1 estrella con 3 eliminaciones, 2 con 8 y 3 con 15. Cada estrella da +10 % de vida máxima y +8 % de daño. Las estrellas se ven sobre la barra de vida y en la ficha. Los bots también tienen veteranas.</li>
+    <li><b>Reparación sola:</b> un Constructor o Ingeniero sin trabajo repara edificios tuyos dañados a 4 casillas o menos. Se apaga con un interruptor en su ficha.</li>
+    <li><b>Producción continua:</b> interruptor «Siempre» en Cuartel, Fábrica, Puerto, Helipuerto y Aeropuerto. Si falta dinero o comunidad, espera sin gastar.</li>
+  </ul>
+  <h3>B. Más motivos para volver</h3>
+  <ul>
+    <li><b>Logros (12):</b> cada uno con su insignia, una barra de avance y cristales al lograrlo. Se ven en el Inventario.</li>
+    <li><b>Top jugadores:</b> como la pág. 20 de tu documento, por temporada. Tú y comandantes bot; tu fila siempre se ve abajo.</li>
+    <li><b>Desafío semanal:</b> cambia los lunes. Mapa, semilla y una regla especial fijos; ganar la primera vez da cristales; el vestíbulo muestra tu mejor tiempo.</li>
+  </ul>
+  <h3>C. Para jugar cómodo en el iPad</h3>
+  <ul>
+    <li><b>Ahorro de batería:</b> en la pausa; limita a 30 cuadros por segundo y baja las partículas.</li>
+    <li><b>Daltonismo:</b> cambia los colores de los jugadores por unos que se distinguen y pone una forma distinta a cada jugador en el minimapa y las gráficas.</li>
+    <li><b>Letra más grande:</b> agranda los textos de los paneles sin que se tapen (se prueba en los 5 tamaños).</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y de celular, toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>K01</td><td>Patrullar: las tropas van y vuelven entre dos puntos y pelean en el camino.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K02</td><td>Mantener posición: no persiguen a un enemigo que se aleja, pero disparan a lo que tienen a tiro.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K03</td><td>Veteranas: las estrellas llegan con 3, 8 y 15 eliminaciones y suben vida y daño lo dicho.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K04</td><td>Reparación sola: un Constructor libre repara un edificio dañado cercano; con el interruptor apagado, no.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K05</td><td>Producción continua: el edificio sigue entrenando y se detiene sin gastar cuando falta dinero o comunidad.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K06</td><td>Logros: los 12 se cumplen con su condición, dan su insignia y sus cristales una sola vez.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K07</td><td>Top jugadores: 3 pestañas ordenadas, tu fila siempre visible y medallas en los 3 primeros.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K08</td><td>Desafío semanal: el mismo mapa y regla en toda la semana, cambia el lunes, guarda el mejor tiempo y premia una vez.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K09</td><td>Ahorro de batería: el juego se queda cerca de 30 cuadros por segundo y con menos partículas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K10</td><td>Daltonismo y letra grande: los colores se distinguen (comprobado con simulación de daltonismo) y nada se tapa en 5 tamaños.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K11</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y los bots no se vuelven más fáciles ni más difíciles por las estrellas.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>K12</td><td>El juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Nombres y arte propios:</b> logros, desafíos e insignias con nombres nuestros.</li>
+    <li><b>Sin servidores:</b> Top jugadores y el desafío semanal usan comandantes bot marcados como bots; en Roblox serán jugadores reales.</li>
+    <li><b>Equilibrio:</b> las estrellas también las ganan los bots; se mide con partidas simuladas que la Difícil no se vuelva más fácil ni la Fácil más difícil.</li>
+    <li><b>Lo que sigue pendiente de la v1.3 no se cambia sin tu respuesta:</b> la tabla de precios, el tamaño del juego, el Tanque ligero y el precio de la Casa, y lo que tu documento dejó «POR DECIDIR».</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Si te gustan estas ideas (o quieres quitar o cambiar alguna), programo la v1.4, pruebo cada punto y te entrego el PDF con los resultados.</p>
+</section>
+
+</body>
+</html>
