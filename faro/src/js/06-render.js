@@ -1248,6 +1248,20 @@ class Renderer {
         ctx.fillStyle = SHIELD_CSS(ks);
         ctx.fillRect(x, y - 4, w * ks, 2);
       }
+      // v1.4: estrellas de las tropas veteranas, encima de la barra.
+      if (e.vet) {
+        ctx.font = '700 10px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        const txt = '★'.repeat(e.vet);
+        const ty = y - (e.shieldMax > 0 ? 6 : 2);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(12,16,22,0.85)';
+        ctx.strokeText(txt, s.x, ty);
+        ctx.fillStyle = '#ffd36a';
+        ctx.fillText(txt, s.x, ty);
+        ctx.textBaseline = 'alphabetic';
+      }
     };
     // Progreso de captura sobre el Faro y las Banderas.
     for (const pt of g.points) {
@@ -1441,7 +1455,7 @@ class Renderer {
     for (const u of g.units) {
       if (!u.alive || u.inside) continue;
       if (!u.visible && g.players[u.owner].team !== myTeam) continue;
-      if (u.hp < u.maxHp || sel.has(u) || (u.shieldMax > 0 && u.shield < u.shieldMax)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
+      if (u.hp < u.maxHp || sel.has(u) || u.vet || (u.shieldMax > 0 && u.shield < u.shieldMax)) bar(u, u.cls === 'inf' ? 22 : 30, u.mover === 'air' ? 0.7 : u.cls === 'inf' ? 0.8 : 0.75);
       // Helicópteros y aviones (v0.9): icono mientras disparan o lanzan misiles.
       if (u.mover === 'air' && g.time - (u.lastShot || -99) < 0.6) {
         const s = this.project(u.x, u.y + 1.15, u.z);

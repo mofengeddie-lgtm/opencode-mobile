@@ -1091,7 +1091,38 @@ class Game {
       u.state = attackMove ? 'amove' : 'move';
       u.resume = attackMove ? dest : -1;
       u.leashCell = -1;
+      u.patrol = null;
       this.setPath(u, dest);
+    }
+  }
+
+  // v1.4: patrullar entre donde están y el punto elegido.
+  orderPatrol(units, ci) {
+    const alive = units.filter((u) => u.alive && !u.inside && u.def.weapon);
+    this.orderMove(alive, ci, true);
+    for (const u of alive) {
+      const dest = u.path.length ? u.path[u.path.length - 1] : ci;
+      u.patrol = { a: u.cell, b: dest, leg: 1, laps: 0 };
+      u.state = 'patrol';
+      u.resume = -1;
+    }
+    return alive.length;
+  }
+
+  // v1.4: «Mantener posición»: se quedan quietas y solo disparan a lo que tienen a tiro.
+  setHold(units, on) {
+    for (const u of units) {
+      if (!u.alive || !u.def.weapon) continue;
+      u.hold = !!on;
+      if (on) {
+        u.patrol = null;
+        if (u.state === 'attack' || u.state === 'amove') {
+          u.state = 'idle';
+          u.path = [];
+          u.target = null;
+          u.resume = -1;
+        }
+      }
     }
   }
 
@@ -1099,6 +1130,7 @@ class Game {
     for (const u of units) {
       if (!u.alive) continue;
       u.faceYaw = null;
+      u.patrol = null;
       const w = u.def.weapon;
       if (!w || !this.canAttack(u, w, target)) continue;
       u.state = 'attack';
@@ -1121,6 +1153,7 @@ class Game {
 
   orderStop(units) {
     for (const u of units) {
+      u.patrol = null;
       u.state = 'idle';
       u.path = [];
       u.target = null;
@@ -1217,7 +1250,7 @@ class Game {
   fire(a, w, t, gun = 0) {
     if (a.def.stealth) a.lastShot = this.time;
     const mult = t.kind === 'bld' ? w.mult.bld || 0 : w.mult[t.cls] || 0;
-    const dmg = w.dmg * mult;
+    const dmg = w.dmg * mult * (1 + (a.vet || 0) * VETERAN.dmg);
     let sx = a.x;
     const sy = this.muzzleY(a) + (gun && a.type === 'turret' ? 0.05 : 0);
     let sz = a.z;
@@ -1367,7 +1400,53 @@ class Game {
       const lines = PERSONALITIES[victim.persona].lines.provoked;
       this.say(t.owner, lines[Math.floor(Math.random() * lines.length)], { toMe: true, force: true });
     }
-    if (t.hp <= 0) this.kill(t, src);
+    if (t.hp <= 0) {
+      if (srcEnt && srcEnt.kind === 'unit' && srcEnt.alive && this.isEnemy(srcEnt.owner, t.owner)) this.creditKill(srcEnt, t);
+      this.kill(t, src);
+    }
+  }
+
+  // v1.4: eliminaciones de cada tropa y sus estrellas (veteranas).
+  creditKill(u, t) {
+    u.kills = (u.kills || 0) + 1;
+    const st = this.players[u.owner].stats;
+    if (t.kind === 'unit' && t.mover === 'air') st.airKills = (st.airKills || 0) + 1;
+    const stars = VETERAN.kills.filter((k) => u.kills >= k).length;
+    if (stars > (u.vet || 0)) {
+      const before = 1 + (u.vet || 0) * VETERAN.hp;
+      const after = 1 + stars * VETERAN.hp;
+      const add = u.maxHp * (after / before - 1);
+      u.maxHp += add;
+      u.hp += add;
+      u.vet = stars;
+      st.bestVet = Math.max(st.bestVet || 0, stars);
+      this.fx.push({ k: 'heal', x: u.x, y: u.y + 0.6, z: u.z });
+      if (u.owner === 0) this.emit('toast', { text: `${u.def.name}: ${'★'.repeat(stars)} veterano (${u.kills} eliminaciones)`, kind: 'good', x: u.x, z: u.z });
+    }
+  }
+
+  // v1.4: un Constructor o Ingeniero libre repara solo los edificios dañados cercanos.
+  autoRepairScan(u, dt) {
+    const p = this.players[u.owner];
+    if (!p.human || p.autoRepair === false) return;
+    u.repScanT = (u.repScanT || 0) - dt;
+    if (u.repScanT > 0) return;
+    u.repScanT = AUTO_REPAIR.every;
+    const uc = this.cells[u.cell];
+    let best = null;
+    let bd = Infinity;
+    for (const b of this.buildings) {
+      if (!b.alive || !b.built || b.owner !== u.owner || b.hp >= b.maxHp * 0.98 || b.upgrading) continue;
+      const d = this.map.dist(uc, this.cells[b.cell]);
+      if (d > AUTO_REPAIR.range) continue;
+      if (this.units.some((x) => x !== u && x.alive && x.state === 'repair' && x.repairTarget === b)) continue;
+      if (d < bd) { bd = d; best = b; }
+    }
+    if (best && bd > 1) {
+      this.orderRepair([u], best);
+      u.autoRep = true;
+      p.stats.autoRepairs = (p.stats.autoRepairs || 0) + 1;
+    }
   }
 
   kill(e, killer) {
@@ -1794,6 +1873,17 @@ class Game {
         this.spawnFrom(b, q.type);
       }
     }
+    // v1.4: producción continua: con la cola vacía vuelve a poner la última tropa si alcanza el dinero,
+    // la energía y la comunidad; si no, espera sin gastar.
+    if (b.loop && b.lastType && !b.queue.length) {
+      b.loopT = (b.loopT || 0) - dt;
+      if (b.loopT <= 0) {
+        b.loopT = LOOP_TRAIN.every;
+        const err = this.enqueue(b, b.lastType);
+        b.loopWait = err || null;
+        if (!err) this.players[b.owner].stats.looped = (this.players[b.owner].stats.looped || 0) + 1;
+      }
+    }
     const w = this.weaponOf(b);
     if (w) {
       b.cd -= dt;
@@ -1952,7 +2042,8 @@ class Game {
       if (u.scanT <= 0) {
         u.scanT = 0.25 + Math.random() * 0.1;
         u.autoTarget = this.acquire(u, w, 0);
-        u.aggroTarget = !u.autoTarget && (u.state === 'idle' || u.state === 'amove') ? this.acquire(u, w, 2) : null;
+        // v1.4: «Mantener posición» no sale a perseguir; «Patrullar» pelea como «Avanzar atacando».
+        u.aggroTarget = !u.autoTarget && !u.hold && (u.state === 'idle' || u.state === 'amove' || u.state === 'patrol') ? this.acquire(u, w, 2) : null;
       }
       if (u.target && u.target.alive && this.inRange(u, w, u.target)) ft = u.target;
       else if (u.autoTarget && u.autoTarget.alive && this.inRange(u, w, u.autoTarget)) ft = u.autoTarget;
@@ -1976,7 +2067,10 @@ class Game {
 
     switch (u.state) {
       case 'idle':
-        if (u.def.repairs) this.repairAround(u, dt);
+        if (u.def.repairs) {
+          this.repairAround(u, dt);
+          this.autoRepairScan(u, dt);
+        }
         if (u.aggroTarget && u.aggroTarget.alive && u.def.weapon) {
           u.state = 'attack';
           u.target = u.aggroTarget;
@@ -1988,6 +2082,26 @@ class Game {
       case 'move':
         if (this.followPath(u, dt)) u.state = 'idle';
         break;
+      case 'patrol': {
+        // v1.4: va y vuelve entre dos puntos, peleando con lo que encuentra.
+        if (ft) break;
+        if (u.aggroTarget && u.aggroTarget.alive) {
+          u.state = 'attack';
+          u.target = u.aggroTarget;
+          u.repathT = 0;
+          u.leashCell = -1;
+          break;
+        }
+        const P = u.patrol;
+        if (!P) { u.state = 'idle'; break; }
+        if (this.followPath(u, dt)) {
+          P.leg = 1 - P.leg;
+          P.laps = (P.laps || 0) + 1;
+          this.setPath(u, P.leg ? P.b : P.a);
+          if (!u.path.length) { u.state = 'idle'; u.patrol = null; }
+        }
+        break;
+      }
       case 'amove':
         if (ft) break;
         if (u.aggroTarget && u.aggroTarget.alive) {
@@ -2008,7 +2122,10 @@ class Game {
           (u.leashCell >= 0 && this.map.dist(this.cells[u.cell], this.cells[u.leashCell]) > 5);
         if (lost) {
           u.target = null;
-          if (u.resume >= 0) {
+          if (u.patrol) {
+            u.state = 'patrol';
+            this.setPath(u, u.patrol.leg ? u.patrol.b : u.patrol.a);
+          } else if (u.resume >= 0) {
             u.state = 'amove';
             this.setPath(u, u.resume);
           } else {
@@ -2034,6 +2151,11 @@ class Game {
             un[t.id] = this.time + 6;
             if (u.aggroTarget === t) u.aggroTarget = null;
             u.target = null;
+            if (u.patrol) {
+              u.state = 'patrol';
+              this.setPath(u, u.patrol.leg ? u.patrol.b : u.patrol.a);
+              break;
+            }
             u.state = u.resume >= 0 ? 'amove' : 'idle';
             if (u.resume >= 0) this.setPath(u, u.resume);
             break;

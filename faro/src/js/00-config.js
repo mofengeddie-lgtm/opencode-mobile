@@ -50,6 +50,11 @@ const KING_TIME = 180;
 const EMERGENCY = { at: 0.25, time: 20 };
 const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
+// v1.4: tropas veteranas. Estrellas por eliminaciones; cada estrella da +10 % de vida máxima y +8 % de daño.
+const VETERAN = { kills: [3, 8, 15], hp: 0.10, dmg: 0.08 };
+// v1.4: reparación sola (Constructores e Ingenieros libres) y producción continua.
+const AUTO_REPAIR = { range: 4, every: 1.5 };
+const LOOP_TRAIN = { every: 0.5 };
 const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flight: 9,
   // v1.0: 1 minuto de radiación donde cae; quema por segundo esta parte de la vida máxima de los enemigos.
   // El Núcleo se quema más despacio, para que un solo misil no decida la partida.

@@ -268,15 +268,17 @@ class Input {
   }
 
   // ---------- avanzar atacando ----------
-  armAttackMove() {
+  // mode: true = «Avanzar atacando»; 'patrol' = «Patrullar» (v1.4).
+  armAttackMove(mode = true) {
     const armed = this.app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive && e.def.weapon);
     if (!armed.length) {
       this.app.ui.toast('Elige primero tropas que puedan pelear', 'bad');
       return false;
     }
-    this.amoveArm = true;
+    this.amoveArm = mode;
     this.app.ui.selSig = '';
-    this.app.ui.toast('Toca el destino: avanzarán peleando con todo lo que encuentren');
+    this.app.ui.toast(mode === 'patrol' ? 'Toca el otro punto: irán y volverán entre aquí y allí, peleando en el camino'
+      : 'Toca el destino: avanzarán peleando con todo lo que encuentren');
     return true;
   }
 
@@ -307,6 +309,13 @@ class Input {
     this.lastTap = { t: now, x, y, id: target ? target.id : -1 };
 
     // Avanzar atacando: a ese lugar, peleando en el camino (sobre un enemigo, se ataca directo).
+    if (amove === 'patrol' && mine.length && cell) {
+      const n = g.orderPatrol(mine, cell.i);
+      this.r.addMoveMarker(cell.i, 0xffd166);
+      app.ui.toast(n ? `${n === 1 ? 'Patrulla' : `${n} tropas patrullan`} entre aquí y allí` : 'Esas tropas no pueden patrullar', n ? 'info' : 'bad');
+      app.sound.play('order');
+      return;
+    }
     if (amove && mine.length && cell && !(target && g.isEnemy(target.owner, 0))) {
       g.orderMove(mine, cell.i, true, app.formation);
       this.r.addMoveMarker(cell.i, 0xff6060);

@@ -20,6 +20,10 @@ const BTN_ICON = {
   stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
   // v1.3: «Más detalles» (lista) y «Menos» (flecha arriba).
   more: '<path d="M5 7h14M5 12h14M5 17h9"/>',
+  // v1.4: patrullar (ida y vuelta), mantener posición (ancla), reparar, siempre (bucle).
+  patrol: '<path d="M4 9h13l-3-3M20 15H7l3 3"/>',
+  hold: '<circle cx="12" cy="5" r="2"/><path d="M12 7v13M6 14a6 6 0 0 0 12 0M4 12h3M17 12h3"/>',
+  wrench: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/>',
   less: '<path d="M6 15l6-6 6 6"/>',
   upgrade: '<path d="M12 19V6M6 11l6-6 6 6"/><path d="M6 20h12"/>',
   demolish: '<path d="M5 5l14 14M19 5 5 19"/>',
@@ -1056,7 +1060,7 @@ class UI {
     } else if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level}` +
         `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
-        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}`;
+        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}|${first.loop ? 1 : 0}${first.loopWait || ''}`;
       if (first.def.produces) {
         sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
       }
@@ -1075,7 +1079,8 @@ class UI {
       }
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
-        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}`;
+        sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}` +
+        `|${sel.map((u) => `${u.patrol ? 'p' : ''}${u.hold ? 'h' : ''}${u.vet || 0}:${u.kills || 0}`).join(',')}|${g.players[0].autoRepair !== false}`;
       // Aviones (v1.0): estado, bombas y si el bombardero está oculto.
       for (const u of sel) if (u.def.plane) sig += `|${this.planeState(u)}${u.type === 'bomber' ? Math.ceil(Math.max(0, u.cd || 0)) + (g.time - (u.lastShot || -99) < 3 ? 'v' : 'o') : ''}`;
     }
@@ -1190,7 +1195,9 @@ class UI {
         const lu = UNITS[b.lastType];
         html += `<div class="actions repeat"><span class="queue">Última: <b>${esc(lu.name)}</b></span>
           <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">${bi('repeat')}Repetir · ${fmt(lu.cost)}</button>
-          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">${bi('repeat')}×5 · ${fmt(lu.cost * 5)}</button></div>`;
+          <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">${bi('repeat')}×5 · ${fmt(lu.cost * 5)}</button>
+          <button class="btn ${b.loop ? 'good' : ''}" type="button" data-act="loop" id="btn-loop" aria-pressed="${!!b.loop}" title="Sigue entrenando la última tropa mientras alcance el dinero y la comunidad">${bi('repeat')}Siempre: ${b.loop ? 'sí' : 'no'}</button></div>`;
+        if (b.loop && b.loopWait && !b.queue.length) html += `<div class="queue" id="loop-wait">Esperando: ${esc(b.loopWait)}</div>`;
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
@@ -1241,8 +1248,10 @@ class UI {
     const counts = new Map();
     for (const u of sel) counts.set(u.type, (counts.get(u.type) || 0) + 1);
     const first = sel[0];
-    const title = sel.length === 1 ? esc(first.def.name) : `${sel.length} tropas`;
-    const sub = sel.length === 1 ? esc(first.def.desc) : 'Toca un destino para moverlas o un enemigo para atacarlo.';
+    const stars = (u) => (u.vet ? ` <span class="vetstars" title="Veterana: ${u.kills} eliminaciones">${'★'.repeat(u.vet)}</span>` : '');
+    const vets = sel.filter((u) => u.vet).length;
+    const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${sel.length} tropas${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
+    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` (próxima estrella con ${VETERAN.kills[first.vet || 0]})` : ''}` : '') : 'Toca un destino para moverlas o un enemigo para atacarlo.';
     let html = this.head(first.type, PLAYER_COLORS[0], title, sub);
     if (counts.size > 1) {
       html += '<div class="chips">' + [...counts.entries()].map(([t, n]) =>
@@ -1280,7 +1289,18 @@ class UI {
     }
     const app = this.app;
     if (sel.some((u) => u.def.weapon)) {
-      acts.push(`<button class="btn ${app.input.amoveArm ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${bi('amove')}${app.input.amoveArm ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+      const arm = app.input.amoveArm;
+      acts.push(`<button class="btn ${arm === true ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${bi('amove')}${arm === true ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+      // v1.4: patrullar y mantener posición.
+      const patrolling = sel.some((u) => u.patrol);
+      acts.push(`<button class="btn ${arm === 'patrol' || patrolling ? 'gold' : ''}" type="button" data-act="patrol" id="btn-patrol" title="Van y vuelven entre aquí y el punto que toques, peleando en el camino">${bi('patrol')}${arm === 'patrol' ? 'Toca el otro punto…' : patrolling ? 'Patrullando' : 'Patrullar'}</button>`);
+      const holding = sel.filter((u) => u.def.weapon).every((u) => u.hold);
+      acts.push(`<button class="btn ${holding ? 'gold' : ''}" type="button" data-act="hold" id="btn-hold" aria-pressed="${holding}" title="Se quedan quietas y solo disparan a lo que tienen a tiro">${bi('hold')}Mantener posición: ${holding ? 'sí' : 'no'}</button>`);
+    }
+    if (sel.some((u) => u.def.repairs)) {
+      // v1.4: los Constructores e Ingenieros libres reparan solos lo dañado cerca.
+      const on = this.app.game.players[0].autoRepair !== false;
+      acts.push(`<button class="btn ${on ? 'good' : ''}" type="button" data-act="autorep" id="btn-autorep" aria-pressed="${on}" title="Los Constructores e Ingenieros sin trabajo reparan solos los edificios dañados a ${AUTO_REPAIR.range} casillas">${bi('wrench')}Reparación sola: ${on ? 'sí' : 'no'}</button>`);
     }
     if (sel.length > 1) {
       acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">${bi('formation')}Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
@@ -1503,8 +1523,30 @@ class UI {
       }
       this.renderSel(true);
     } else if (act === 'amove') {
-      if (app.input.amoveArm) app.input.disarmAttackMove();
+      if (app.input.amoveArm === true) app.input.disarmAttackMove();
       else app.input.armAttackMove();
+      this.renderSel(true);
+    } else if (act === 'patrol') {
+      const us = sel.filter((x) => x.kind === 'unit' && x.def.weapon);
+      if (app.input.amoveArm === 'patrol') app.input.disarmAttackMove();
+      else if (us.some((u) => u.patrol)) { g.orderStop(us); this.toast('Dejaron de patrullar'); }
+      else app.input.armAttackMove('patrol');
+      this.renderSel(true);
+    } else if (act === 'hold') {
+      const us = sel.filter((x) => x.kind === 'unit' && x.def.weapon);
+      const on = !us.every((u) => u.hold);
+      g.setHold(us, on);
+      this.toast(on ? 'Mantienen la posición: solo disparan a lo que tienen a tiro' : 'Vuelven a perseguir a los enemigos cercanos');
+      this.renderSel(true);
+    } else if (act === 'autorep') {
+      const p = g.players[0];
+      p.autoRepair = p.autoRepair === false;
+      this.toast(p.autoRepair ? 'Los constructores libres repararán solos' : 'Reparación sola apagada');
+      this.renderSel(true);
+    } else if (act === 'loop') {
+      b.loop = !b.loop;
+      b.loopT = 0;
+      if (b.loop) this.toast(`${b.def.name}: sigue entrenando ${UNITS[b.lastType].name} mientras alcance el dinero`, 'good');
       this.renderSel(true);
     } else if (act === 'formation') {
       app.toggleFormation();
