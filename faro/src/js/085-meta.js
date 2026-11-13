@@ -706,7 +706,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Tutorial con Barcaza', 'Liga 3 vs 3', 'Copia del progreso', 'Panel compacto', this.app.season() ? `Temporada: ${SEASONS[this.app.season()].name}` : 'Temporadas'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Patrullar', 'Tropas veteranas', 'Logros', 'Desafío semanal', this.app.season() ? `Temporada: ${SEASONS[this.app.season()].name}` : 'Temporadas'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
       </section>
       <section class="lcard panel">

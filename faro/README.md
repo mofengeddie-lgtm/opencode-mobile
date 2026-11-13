@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.3 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.4 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -22,6 +22,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 | Todas las tropas de un tipo | Doble toque | Doble clic |
 | Varias tropas | Botón «Recuadro» y arrastra | Mayús + arrastrar |
 | Rueda de selección | Mantén pulsado el mapa y elige (Tierra, Mar, Aire, Todo, Constructores, grupos) | Tab |
+| Patrullar / mantener posición | Botones «Patrullar» (y luego toca el otro punto) y «Mantener posición» en el panel de tropas | Igual |
 | Grupos 1, 2 y 3 | «Guardar en 1/2/3» y botones 1-2-3 junto al minimapa (dos toques: ir) | Número elige; Ctrl, Cmd o Mayús + número guarda |
 | Avanzar atacando | Botón en el panel de tropas y luego toca el destino | F y clic |
 | Constructores | Botón junto al minimapa (primero los que no trabajan) | C |
@@ -33,6 +34,23 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.4
+
+- **Mandar mejor a tu ejército:**
+  - **Patrullar:** van y vuelven entre dos puntos, peleando en el camino.
+  - **Mantener posición:** se quedan quietas y solo disparan a lo que tienen a tiro.
+  - **Tropas veteranas:** 1, 2 y 3 estrellas con 3, 8 y 15 eliminaciones. Cada estrella da +10 % de vida y +8 % de daño. Los bots también las ganan.
+  - **Reparación sola:** los Constructores e Ingenieros libres reparan lo dañado a 4 casillas. Se puede apagar.
+  - **Producción continua:** el botón «Siempre» sigue entrenando la última tropa mientras alcance el dinero y la comunidad.
+- **Más motivos para volver:**
+  - **12 logros** con insignia y cristales; se ven en el Inventario.
+  - **Top jugadores** (documento, pág. 20) con pestañas Liga 3 vs 3, Victorias e Islas tomadas. Tu fila siempre se ve. Los demás son comandantes bot.
+  - **Desafío semanal:** mapa, semilla y regla fijos toda la semana. Cambia el lunes y la primera victoria da 150 cristales.
+- **Para tu iPad** (en la pausa):
+  - **Ahorro de batería:** unos 30 cuadros por segundo y menos partículas.
+  - **Colores para daltonismo:** elegidos con simulación de los 3 tipos de daltonismo, con una forma por jugador en el minimapa.
+  - **Letra grande.**
 
 ## Novedades de la v1.3
 
