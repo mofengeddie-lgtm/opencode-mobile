@@ -16,7 +16,22 @@ Pedido explícito del usuario: **cada versión del juego empieza con un PRD y te
 4. Nunca marques «Aprobada» una prueba que no se ejecutó. Las pruebas en navegador no sustituyen
    una prueba en un iPad físico: dilo.
 
+## Regla obligatoria: documento completo en cada mejora (desde la v1.6)
+
+Pedido explícito del usuario: **un documento completo del juego, desde la primera versión, con todos
+los archivos y el código, que se amplía cada vez que hay una mejora.** Es aparte del PRD/PDF.
+
+1. Agrega las mejoras y partes importantes de la versión en `docs/documento/registro.md`.
+2. Vuelve a generarlo: `python3 faro/docs/documento/build_documento.py` y
+   `node faro/docs/pdf.cjs faro/docs/documento/Documento_Completo_Faro_de_Ambar.html`.
+3. Si agregas archivos de código o herramientas, súmalos a `CODE_FILES` en `build_documento.py`.
+   Las pruebas van en `tests/` (el documento las lista).
+
 ## Fuentes del usuario
+
+- `docs/roblox/PRD_Faro_de_Ambar_v1_6.md` (13 nov 2026): PRD y plan de inicio para Roblox escrito por
+  el usuario (5 etapas). El desarrollo en Roblox empieza solo cuando el usuario lo indique.
+  `docs/roblox/build_prd_roblox.py` arma su PDF con las capturas de `docs/img/`.
 
 - `PRD_Faro_de_Ambar_v1_5.pdf` (6 nov 2026): PRD maestro para Roblox. Sus cifras marcadas como
   EJEMPLO no son precios aprobados.
