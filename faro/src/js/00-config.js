@@ -17,6 +17,8 @@ const START_ENERGY = 60;
 const START_UNITS = ['builder'];
 // Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
 const MAX_POP = 240;
+// v1.5: desde esta distancia de cámara, cada tropa muestra un icono de su tipo.
+const UNIT_ICON_DIST = 34;
 // v1.2: tiempo que hay que mantener pulsado el mapa para abrir la rueda de selección.
 const WHEEL_HOLD_MS = 450;
 // v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.

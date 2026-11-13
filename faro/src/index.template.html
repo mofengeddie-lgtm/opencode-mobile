@@ -736,8 +736,10 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 /* ---------- v1.3: panel de selección compacto y botones de 44 × 44 px (PRD 1.5) ---------- */
 /* Arriba los botones principales; las partes largas, plegadas en «Más detalles». */
 #selpanel { max-height: min(44vh, 380px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
-#selpanel > .selhead { order: -2; }
-#selpanel > .mainacts { order: -1; }
+#selpanel > .selhead { order: -3; }
+#selpanel > .mainacts { order: -2; }
+/* v1.5: la cola y lo que cambia al mejorar, justo debajo de los botones (no tapados por las tarjetas). */
+#selpanel > #sel-queue, #selpanel > .nextup { order: -1; }
 #selpanel:not(.more) .sec { display: none !important; }
 .selhead .headbtns { display: flex; gap: 6px; align-items: center; }
 .btn.seltoggle { min-width: 44px; padding: 0 10px; font-size: 12.5px; }
@@ -792,14 +794,38 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .seg3.a11y, body.bigtext .seg3.a11y { grid-template-columns: minmax(0, 1fr); }
 /* «+0/10 s» no se parte en dos líneas. */
 #energyRate, #income { white-space: nowrap; }
+/* v1.5: la fila de jugadores no se parte en dos líneas; si falta lugar, los nombres se acortan. */
+.players { flex-wrap: nowrap; min-width: 0; flex: 0 1 auto; gap: 4px; }
+.pchip { min-width: 42px; flex: 0 1 auto; padding: 4px 7px 4px 5px; gap: 5px; }
+.pchip span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* ---------- v1.5: fichas de edificios y tropas ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); overflow-x: visible; touch-action: auto; }
+.card { width: auto; min-width: 0; }
+.card b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+#sel-queue { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.qhead { width: 100%; }
+.qitem { width: 44px; height: 44px; }
+.qx { position: absolute; top: 1px; right: 2px; width: 15px; height: 15px; border-radius: 50%; background: rgba(12,16,22,0.85); color: #ffb4b5; font-size: 12px; line-height: 15px; font-weight: 700; text-align: center; }
+.qnote { font-size: 11.5px; color: var(--muted); flex: 1 1 140px; }
+.unittiles { grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); }
+.vsline { display: flex; flex-wrap: wrap; gap: 6px; }
+.vs { font-size: 12px; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); }
+.vs.good { border-color: rgba(94,224,122,0.45); }
+.vs.good b { color: #8ff0a4; }
+.vs.bad { border-color: rgba(240,88,90,0.45); }
+.vs.bad b { color: #ffb4b5; }
+.vs.muted b { color: var(--muted); }
+button.chip { cursor: pointer; font: inherit; color: inherit; min-height: 44px; }
+button.chip:hover { background: var(--raise-2); }
 /* ---------- v1.5: portada nueva ---------- */
+.lobby .seg button, .lmenu button { min-height: 44px; }
 .lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
 .lmenu button { gap: 8px; }
 .lmenu .lm-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .lmenu small { white-space: nowrap; flex: none; }
 .cover.hero { min-height: 300px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; }
 .cover.hero .cover-text { max-width: none; padding: 20px 22px; }
-.cover.hero .cover-text h2 { font-size: 44px; }
+.cover.hero .cover-text h2 { font-size: clamp(28px, 3vw, 42px); white-space: nowrap; }
 .hero-play { position: relative; z-index: 2; display: grid; gap: 8px; justify-items: end; padding: 18px 20px; }
 .hero-btn { min-height: 64px; min-width: 210px; padding: 0 26px; font-family: var(--font-display); font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(242,171,56,0.35), 0 2px 0 rgba(0,0,0,0.25); }
 .hero-btn svg { width: 22px; height: 22px; flex: none; }

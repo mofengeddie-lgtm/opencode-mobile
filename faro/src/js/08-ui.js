@@ -924,6 +924,46 @@ class UI {
   }
 
   // ---------- ficha de unidad ----------
+  // v1.5: «la próxima en 3 s · todo en 12 s» (o por qué no avanza).
+  queueTimeText(b) {
+    const g = this.app.game;
+    if (!b.queue.length) return '';
+    const rate = g.prodRate(b);
+    if (!(rate > 0)) return 'parada: falta energía';
+    const q = b.queue[0];
+    const first = Math.max(0, (UNITS[q.type].build - q.t) / rate);
+    let total = first;
+    for (let i = 1; i < b.queue.length; i++) total += UNITS[b.queue[i].type].build / rate;
+    const f = (x) => (x < 60 ? `${Math.ceil(x)} s` : fmtTime(x));
+    return b.queue.length > 1 ? `la próxima en ${f(first)} · todas en ${f(total)}` : `lista en ${f(first)}`;
+  }
+
+  // v1.5: ficha de una tropa: vida, daño, alcance, velocidad y contra qué es buena o mala.
+  unitTilesHtml(u) {
+    const d = u.def;
+    const w = d.weapon;
+    const tiles = [['Vida máxima', fmt(u.maxHp), u.vet ? 'gold' : '']];
+    if (w) {
+      const mult = 1 + (u.vet || 0) * VETERAN.dmg;
+      tiles.push(['Daño/s', fmt((w.dmg * mult) / w.cd), u.vet ? 'gold' : '']);
+      tiles.push(['Alcance', `${w.range} casillas`, '']);
+    }
+    tiles.push(['Velocidad', d.speed.toLocaleString('es-ES'), '']);
+    let html = `<div class="coretiles unittiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
+    if (w) {
+      const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
+      const strong = cls.filter((c) => (w.mult[c] || 0) >= 1.2).map((c) => CAT_NAMES[c]);
+      const weak = cls.filter((c) => w.mult[c] > 0 && w.mult[c] <= 0.5).map((c) => CAT_NAMES[c]);
+      const none = cls.filter((c) => !(w.mult[c] > 0)).map((c) => CAT_NAMES[c]);
+      const line = [];
+      if (strong.length) line.push(`<span class="vs good">Fuerte contra: <b>${strong.join(', ')}</b></span>`);
+      if (weak.length) line.push(`<span class="vs bad">Débil contra: <b>${weak.join(', ')}</b></span>`);
+      if (none.length) line.push(`<span class="vs muted">No ataca a: <b>${none.join(', ')}</b></span>`);
+      if (line.length) html += `<div class="vsline">${line.join('')}</div>`;
+    }
+    return html;
+  }
+
   statsHtml(type) {
     const u = UNITS[type];
     const w = u.weapon;
@@ -1218,10 +1258,12 @@ class UI {
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
+      // v1.5: la cola dice cuánto falta y cada tropa tiene su «×» para quitarla (devuelve el dinero).
       html += `<div class="queue ${b.queue.length ? '' : 'sec'}" id="sel-queue">` + (b.queue.length
-        ? 'En cola: ' + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Cancelar ${esc(UNITS[q.type].name)}">
-            <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i></button>`).join('')
-        : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha. Toca la cola para cancelar.') + '</div>';
+        ? `<span class="qhead">En cola · <b id="sel-qtime">${this.queueTimeText(b)}</b></span>` + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Quitar ${esc(UNITS[q.type].name)} (te devuelve ${fmt(UNITS[q.type].cost)})" aria-label="Quitar ${esc(UNITS[q.type].name)}">
+            <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i><span class="qx" aria-hidden="true">×</span></button>`).join('') +
+          '<span class="qnote">Toca una para quitarla: te devuelve el dinero.</span>'
+        : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha.') + '</div>';
     }
     if (b.built && d.weapon && (b.type === 'aadef' || b.type === 'turret')) html += this.radarHtml(b);
     if (b.type === 'aadef' && b.built && b.level >= 4) {
@@ -1247,7 +1289,7 @@ class UI {
     if (own && b.built && !b.upgrading && b.level < maxLv) {
       // v0.9: antes de pagar, qué vas a ganar con la mejora.
       const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
-      if (prev.length) html += `<div class="nextup sec"><small>Al mejorar a ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+      if (prev.length) html += `<div class="nextup"><small>Nivel ${b.level} → ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
     }
     if (b.built && !b.upgrading && b.level < maxLv) {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
@@ -1270,9 +1312,11 @@ class UI {
     const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${sel.length} tropas${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
     const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` (próxima estrella con ${VETERAN.kills[first.vet || 0]})` : ''}` : '') : 'Toca un destino para moverlas o un enemigo para atacarlo.';
     let html = this.head(first.type, PLAYER_COLORS[0], title, sub);
+    if (sel.length === 1) html += this.unitTilesHtml(first);
     if (counts.size > 1) {
+      // v1.5: tocar un tipo deja elegidas solo esas tropas.
       html += '<div class="chips">' + [...counts.entries()].map(([t, n]) =>
-        `<span class="chip"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</span>`).join('') + '</div>';
+        `<button class="chip" type="button" data-act="seltype" data-type="${t}" title="Elegir solo ${esc(UNITS[t].name)}"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</button>`).join('') + '</div>';
     }
     const acts = [];
     // Transportes (Barcaza, Lancha, Jeep, Transporte blindado) y hangar del Portaaviones.
@@ -1412,6 +1456,8 @@ class UI {
       const q = first.queue[0];
       const bar0 = document.querySelector('#sel-queue .qitem i');
       if (bar0) bar0.style.width = Math.min(100, (q.t / UNITS[q.type].build) * 100) + '%';
+      const qt = $('sel-qtime');
+      if (qt) qt.textContent = this.queueTimeText(first);
     }
   }
 
@@ -1446,6 +1492,9 @@ class UI {
         app.sound.play('error');
       }
       this.renderSel(true);
+    } else if (act === 'seltype') {
+      const keep = this.app.selection.filter((e) => e.kind === 'unit' && e.type === btn.dataset.type);
+      if (keep.length) this.app.setSelection(keep);
     } else if (act === 'cancel') {
       g.cancelQueue(b, Number(btn.dataset.idx));
       this.renderSel(true);

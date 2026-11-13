@@ -774,6 +774,19 @@ class Renderer {
       if (v.crystal) {
         v.crystal.rotation.y = time * 0.8;
         v.crystal.position.y = (v.crystalBaseY || 1.35) + Math.sin(time * 1.6) * 0.08;
+        // v1.5: aro de luz del color del jugador que gira alrededor del cristal del Núcleo.
+        if (b.type === 'core') {
+          if (!v.halo) {
+            const hm = new THREE.MeshBasicMaterial({ color: PLAYER_COLORS[b.owner], transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending });
+            v.halo = new THREE.Mesh(new THREE.TorusGeometry(0.36 + 0.05 * b.level, 0.022, 6, 32), hm);
+            v.halo2 = new THREE.Mesh(new THREE.TorusGeometry(0.3 + 0.05 * b.level, 0.016, 6, 32), hm);
+            v.group.add(v.halo, v.halo2);
+          }
+          v.halo.position.y = v.crystal.position.y;
+          v.halo2.position.y = v.crystal.position.y;
+          v.halo.rotation.set(1.15, time * 1.4, 0);
+          v.halo2.rotation.set(-1.0, -time * 1.1, 0.4);
+        }
       }
     }
     this.smokingCount = smoking;
@@ -958,6 +971,161 @@ class Renderer {
   }
 
   // ---------- rayo ámbar al cielo sobre cada Núcleo (documento pág. 13) ----------
+  // ---------- v1.5: de quién es cada cosa y qué nivel tiene ----------
+  // Banderín del color del jugador y marcas de nivel (doradas) en cada edificio; anillo del color del
+  // jugador bajo cada tropa. Todo con mallas instanciadas: pocas llamadas de dibujo aunque haya cientos.
+  buildMarks() {
+    const N = 700;
+    const pole = new THREE.CylinderGeometry(0.018, 0.022, 0.66, 5);
+    pole.translate(0, 0.33, 0);
+    this.flagPoles = new THREE.InstancedMesh(pole, new THREE.MeshLambertMaterial({ color: 0x59616b }), N);
+    const flag = new THREE.PlaneGeometry(0.3, 0.18, 3, 1);
+    flag.translate(0.15, 0.55, 0);
+    this.flags = new THREE.InstancedMesh(flag, new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }), N);
+    const pip = new THREE.OctahedronGeometry(0.075, 0);
+    pip.scale(1, 0.6, 1);
+    this.levelPips = new THREE.InstancedMesh(pip, new THREE.MeshLambertMaterial({ color: 0xffcf3a, emissive: 0x4a3200 }), N * 2);
+    const ring = new THREE.RingGeometry(0.74, 1, 22);
+    ring.rotateX(-Math.PI / 2);
+    this.unitRings = new THREE.InstancedMesh(ring, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false }), 1200);
+    this.unitRings.renderOrder = 2;
+    // El color por instancia se crea con el tamaño que tiene la malla en ese momento: antes de vaciarla.
+    this.flags.setColorAt(0, new THREE.Color(1, 1, 1));
+    this.unitRings.setColorAt(0, new THREE.Color(1, 1, 1));
+    for (const m of [this.flagPoles, this.flags, this.levelPips, this.unitRings]) {
+      m.frustumCulled = false;
+      m.count = 0;
+      this.scene.add(m);
+    }
+    this.flags.castShadow = true;
+    this.markColor = new THREE.Color();
+    this.markMat = new THREE.Matrix4();
+    this.markQuat = new THREE.Quaternion();
+    this.markPos = new THREE.Vector3();
+    this.markScale = new THREE.Vector3();
+    this.markEuler = new THREE.Euler();
+  }
+
+  updateMarks(time) {
+    if (!this.flags) this.buildMarks();
+    const g = this.game;
+    const M = this.markMat;
+    const Q = this.markQuat;
+    const P = this.markPos;
+    const S = this.markScale;
+    const E = this.markEuler;
+    const col = this.markColor;
+    let nf = 0;
+    let np = 0;
+    for (const b of g.buildings) {
+      if (!b.alive || b.type === 'wall' || b.type === 'core') continue;
+      const v = this.vis.get(b.id);
+      if (!v || !v.group.visible) continue;
+      if (nf >= 700) break;
+      // Esquina de la casilla (detrás y a la derecha, mirando desde la cámara de siempre).
+      const a = Math.PI / 6 + Math.PI / 3 * 4;
+      const cx = b.x + Math.sin(a) * 0.74;
+      const cz = b.z + Math.cos(a) * 0.74;
+      const k = b.built ? 1 : 0.6;
+      P.set(cx, b.y, cz);
+      S.set(1, k, 1);
+      Q.identity();
+      M.compose(P, Q, S);
+      this.flagPoles.setMatrixAt(nf, M);
+      E.set(0, 0.6 + Math.sin(time * 2.6 + b.id) * 0.18, 0);
+      Q.setFromEuler(E);
+      S.set(1, k, 1);
+      M.compose(P, Q, S);
+      this.flags.setMatrixAt(nf, M);
+      col.setHex(PLAYER_COLORS[b.owner]);
+      this.flags.setColorAt(nf, col);
+      nf++;
+      // Marcas de nivel: una por nivel, al pie del banderín (solo en lo que se puede mejorar).
+      if (b.def.maxLevel > 1 && b.built) {
+        for (let i = 0; i < b.level && np < 1400; i++) {
+          const aa = a - 0.42 - i * 0.2;
+          P.set(b.x + Math.sin(aa) * 0.8, b.y + 0.07, b.z + Math.cos(aa) * 0.8);
+          E.set(0, time * 0.8 + i, 0);
+          Q.setFromEuler(E);
+          S.set(1, 1, 1);
+          M.compose(P, Q, S);
+          this.levelPips.setMatrixAt(np++, M);
+        }
+      }
+    }
+    this.flagPoles.count = nf;
+    this.flags.count = nf;
+    this.levelPips.count = np;
+    this.flagPoles.instanceMatrix.needsUpdate = true;
+    this.flags.instanceMatrix.needsUpdate = true;
+    if (this.flags.instanceColor) this.flags.instanceColor.needsUpdate = true;
+    this.levelPips.instanceMatrix.needsUpdate = true;
+    // Anillo del color del jugador bajo cada tropa (los aviones, en el suelo debajo de ellos).
+    let nr = 0;
+    Q.identity();
+    for (const u of g.units) {
+      if (!u.alive || u.inside || nr >= 1200) continue;
+      const v = this.vis.get(u.id);
+      if (!v || !v.group.visible) continue;
+      const r = u.cls === 'inf' ? 0.27 : u.mover === 'sea' ? 0.56 : u.mover === 'air' ? 0.36 : 0.44;
+      const c = g.cells[u.cell];
+      const gy = u.mover === 'sea' ? 0.04 : u.mover === 'air' ? (c ? Math.max(0.04, c.h + 0.03) : 0.04) : (c ? c.h + 0.03 : u.y + 0.03);
+      const x = u.def.plane ? v.group.position.x : u.x;
+      const z = u.def.plane ? v.group.position.z : u.z;
+      P.set(x, gy, z);
+      S.set(r, 1, r);
+      M.compose(P, Q, S);
+      this.unitRings.setMatrixAt(nr, M);
+      col.setHex(PLAYER_COLORS[u.owner]);
+      this.unitRings.setColorAt(nr, col);
+      nr++;
+    }
+    this.unitRings.count = nr;
+    this.unitRings.instanceMatrix.needsUpdate = true;
+    if (this.unitRings.instanceColor) this.unitRings.instanceColor.needsUpdate = true;
+    this.marksShown = { flags: nf, pips: np, rings: nr };
+  }
+
+  // v1.5: icono del tipo de tropa cuando la cámara está lejos (las tropas se ven chicas).
+  drawUnitIcons(ctx) {
+    const g = this.game;
+    const myTeam = g.players[0].team;
+    let n = 0;
+    for (const u of g.units) {
+      if (!u.alive || u.inside || n >= 260) continue;
+      if (!u.visible && g.players[u.owner].team !== myTeam) continue;
+      const s = this.project(u.x, u.y + (u.mover === 'air' ? 0.9 : 0.75), u.z);
+      if (!s.ok || s.x < -12 || s.y < -12 || s.x > this.width + 12 || s.y > this.height + 12) continue;
+      n++;
+      const x = s.x;
+      const y = s.y;
+      ctx.fillStyle = hexColor(PLAYER_COLORS[u.owner]);
+      ctx.strokeStyle = 'rgba(12,16,22,0.85)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      if (u.cls === 'inf') {
+        ctx.arc(x, y - 2.6, 1.7, 0, Math.PI * 2);
+        ctx.rect(x - 1.6, y - 0.6, 3.2, 4.2);
+      } else if (u.mover === 'air') {
+        ctx.moveTo(x, y - 4.5); ctx.lineTo(x + 4.5, y + 2); ctx.lineTo(x, y + 0.5); ctx.lineTo(x - 4.5, y + 2); ctx.closePath();
+      } else if (u.mover === 'sea') {
+        ctx.moveTo(x - 4.5, y - 0.5); ctx.lineTo(x + 4.5, y - 0.5); ctx.lineTo(x + 2.8, y + 3); ctx.lineTo(x - 2.8, y + 3); ctx.closePath();
+        ctx.rect(x - 1, y - 3.5, 2.5, 3);
+      } else {
+        ctx.rect(x - 3.8, y - 1.2, 7.6, 3.8);
+        ctx.rect(x - 1.6, y - 3.6, 3.2, 2.4);
+        ctx.rect(x + 1.6, y - 2.9, 3.4, 1.1);
+      }
+      ctx.fill();
+    }
+    this.unitIcons = n;
+  }
+
   updateSkyBeams(time) {
     const g = this.game;
     if (!this.skyBeams) {
@@ -979,6 +1147,11 @@ class Renderer {
       if (!beam.visible) return;
       beam.position.set(c.x, c.y + 1.2, c.z);
       beam.material.opacity = 0.18 + Math.sin(time * 2 + i) * 0.05;
+      // v1.5: el rayo tiene el color del jugador.
+      if (beam.userData.col !== p.color) {
+        beam.userData.col = p.color;
+        beam.material.color.setHex(p.color).lerp(new THREE.Color(0xffffff), 0.25);
+      }
     });
   }
 
@@ -1165,6 +1338,13 @@ class Renderer {
         ctx.fillStyle = '#f5c542';
         ctx.fillRect(x, y, w * e.progress, 4);
         return;
+      }
+      // v1.5: barra de la mejora (celeste) debajo de la de vida.
+      if (e.kind === 'bld' && e.upgrading) {
+        ctx.fillStyle = 'rgba(12,16,22,0.75)';
+        ctx.fillRect(x - 1, y + 5, w + 2, 4);
+        ctx.fillStyle = '#7dd3ff';
+        ctx.fillRect(x, y + 6, w * clamp(e.upgrading.progress, 0, 1), 2);
       }
       const k = clamp(e.hp / e.maxHp, 0, 1);
       ctx.fillStyle = k > 0.55 ? '#5ee07a' : k > 0.28 ? '#f2c94c' : '#ef5350';
@@ -1378,10 +1558,37 @@ class Renderer {
       ctx.textBaseline = 'alphabetic';
     }
     this.prodBadges = g.buildings.filter((bl) => bl.alive && bl.owner === 0 && bl.queue.length).length;
+    // v1.5: aviso de «parado» sobre tus edificios que entrenan y llevan un rato sin nada en cola.
+    let idle = 0;
+    for (const bl of g.buildings) {
+      const idleMap = this.idleSince || (this.idleSince = new Map());
+      if (!bl.alive || bl.owner !== 0 || bl.type === 'core' || !bl.def.produces || !bl.built || bl.queue.length || bl.loop) { idleMap.delete(bl.id); continue; }
+      if (!idleMap.has(bl.id)) idleMap.set(bl.id, g.time);
+      if (g.time - idleMap.get(bl.id) < 6) continue;
+      const s = this.project(bl.x, bl.y + 1.55, bl.z);
+      if (!s.ok || s.x < -30 || s.y < -30 || s.x > this.width + 30 || s.y > this.height + 30) continue;
+      idle++;
+      ctx.fillStyle = 'rgba(12,16,22,0.78)';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#cfd8e0';
+      ctx.font = '700 9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('z', s.x - 3, s.y + 2);
+      ctx.font = '700 11px system-ui, sans-serif';
+      ctx.fillText('z', s.x + 2.5, s.y - 2);
+      ctx.textBaseline = 'alphabetic';
+    }
+    this.idleBadges = idle;
     const recent = g.time - 4;
     for (const b of g.buildings) {
       if (!b.alive) continue;
-      if (b.hp < b.maxHp || !b.built || sel.has(b) || b.lastHit > recent || b.shield < b.shieldMax) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 2.0 : 1.15);
+      if (b.hp < b.maxHp || !b.built || b.upgrading || sel.has(b) || b.lastHit > recent || b.shield < b.shieldMax) bar(b, b.type === 'core' ? 56 : 40, b.type === 'core' ? 1.75 + 0.3 * b.level : 1.15);
     }
     for (const u of g.units) {
       if (!u.alive || u.inside) continue;
@@ -1409,6 +1616,9 @@ class Renderer {
         this.airShotIcons = (this.airShotIcons || 0) + 1;
       }
     }
+    // v1.5: con la cámara lejos, un icono por tropa (persona, vehículo, barco o avión) con su color.
+    this.unitIcons = 0;
+    if (this.cam.dist >= UNIT_ICON_DIST) this.drawUnitIcons(ctx);
     if (this.nukeFlashT > 0) {
       ctx.fillStyle = `rgba(255,248,225,${Math.min(0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
       ctx.fillRect(0, 0, this.width, this.height);
@@ -1576,6 +1786,7 @@ class Renderer {
     if (this.placeMesh.count) this.placeMesh.material.opacity = 0.32 + Math.sin(time * 4) * 0.14;
     this.consumeFx();
     this.syncEntities(dt, time);
+    this.updateMarks(time);
     this.updateFx(dt);
     this.updateLasers(dt);
     this.updatePoints(time);
