@@ -86,6 +86,15 @@ const TUTORIAL_STEPS = [
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
 const MAP_THUMBS = {};
+// v1.6: lo que trae esta versión (ventana «Acerca de»).
+const ABOUT_NEWS = [
+  'Pantalla de carga con el avance real y «Reintentar» si algo falla.',
+  'Paneles y ventanas que entran con un movimiento suave.',
+  'Cada tarjeta dice por qué no se puede construir o entrenar (faltan monedas, energía, límite o comunidad).',
+  'Al colocar una defensa se ve su alcance antes de pagar.',
+  'Esta ventana, con la versión y los créditos.',
+];
+
 // v1.5: iconos dibujados del vestíbulo (antes eran letras sueltas).
 const LOBBY_ICONS = (() => {
   const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
@@ -100,6 +109,7 @@ const LOBBY_ICONS = (() => {
     codes: svg('<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2.5 2.5M14 9l2 2"/>'),
     backup: svg('<path d="M4 8h13l-3-3M20 16H7l3 3"/>'),
     creator: svg('<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z"/>'),
+    about: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'),
   };
 })();
 
@@ -875,6 +885,7 @@ class Lobby {
       ${btn('daily', LOBBY_ICONS.daily, 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
       ${btn('codes', LOBBY_ICONS.codes, 'Códigos', 'Canjea un código', '')}
       ${btn('backup', LOBBY_ICONS.backup, 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
+      ${btn('about', LOBBY_ICONS.about, 'Acerca de', `Versión ${GAME_VERSION} y créditos`, '')}
       ${Creator.owner ? btn('creator', LOBBY_ICONS.creator, 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
     </aside>`;
   }
@@ -1005,7 +1016,18 @@ class Lobby {
     const head = (t) => `<header><h2>${t}</h2><button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button></header>`;
     let html = '';
     const n = this.modal;
-    if (n === 'modes') {
+    if (n === 'about') {
+      // v1.6: versión, novedades y créditos.
+      html = head('Acerca de Faro de Ámbar') + `<p><span class="about-ver">Versión ${GAME_VERSION}</span> · prototipo web de un juego de estrategia sobre islas de hexágonos, hecho para jugar en el iPad.</p>
+        <h3>Novedades de esta versión</h3>
+        <ul class="about-news">${ABOUT_NEWS.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+        <h3>Créditos</h3>
+        <div class="about-credits"><span>Modelos 3D hechos con Blender para este juego.</span>
+          <span>Cielo de ambiente: Poly Haven (CC0).</span>
+          <span>Caminar y correr: CMU Graphics Lab Motion Capture Database.</span>
+          <span>Motor 3D: three.js r128.</span></div>
+        <div class="row"><button class="btn gold" type="button" data-act="close">Cerrar</button></div>`;
+    } else if (n === 'modes') {
       const lv = Profile.level();
       html = head('Elige un modo') + `<div class="mode-cards">${Object.entries(MODES).filter(([, m]) => m.lobby).map(([k, m]) => {
         const locked = m.minLevel && lv < m.minLevel && !Creator.active();

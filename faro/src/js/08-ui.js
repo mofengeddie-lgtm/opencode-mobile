@@ -924,6 +924,14 @@ class UI {
   }
 
   // ---------- ficha de unidad ----------
+  // v1.6: por qué no se puede entrenar esta tropa ahora (vacío si se puede).
+  trainWhy(p, u) {
+    if (p.coins < u.cost) return `Faltan ${fmt(Math.ceil(u.cost - p.coins))} monedas`;
+    if (p.energy < (u.energy || 0)) return `Faltan ${fmt(Math.ceil(u.energy - p.energy))} de energía`;
+    if (p.popUsed + u.pop > p.popCap) return 'Comunidad llena: construye Casas';
+    return '';
+  }
+
   // v1.5: «la próxima en 3 s · todo en 12 s» (o por qué no avanza).
   queueTimeText(b) {
     const g = this.app.game;
@@ -1060,6 +1068,7 @@ class UI {
         <img src="${Thumbs.get(k, PLAYER_COLORS[0])}" alt="">
         <div class="top"><b>${esc(d.name)}</b><span class="costs"><span class="cost">${fmt(d.cost)}</span>${d.energyCost ? `<span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}</span></div>
         <div class="desc">${esc(d.desc)}<span data-count="${k}"></span></div>
+        <small class="why" data-why="${k}"></small>
       </button>`;
     }).join('');
     this.buildSig = '';
@@ -1083,12 +1092,16 @@ class UI {
       const limit = g.limitFor(0, k);
       const maxed = limit && n >= limit;
       const act = placing && placing.kind === 'build' && placing.btype === k;
-      states.push([el, k, d, n, poor, maxed, act, poorE, limit]);
-      sig += `${k}${n}${poor}${maxed}${act}${poorE}${limit}|`;
+      // v1.6: el motivo, con el número exacto (cambia con las monedas y la energía).
+      const why = maxed ? `Límite: ${n} de ${limit}` : poor ? `Faltan ${fmt(Math.ceil(d.cost - p.coins))} monedas` : poorE ? `Faltan ${fmt(Math.ceil(d.energyCost - p.energy))} de energía` : '';
+      states.push([el, k, d, n, poor, maxed, act, poorE, limit, why]);
+      sig += `${k}${n}${poor}${maxed}${act}${poorE}${limit}${why}|`;
     });
     if (!force && sig === this.buildSig) return;
     this.buildSig = sig;
-    for (const [el, k, d, n, poor, maxed, act, poorE, limit] of states) {
+    for (const [el, k, d, n, poor, maxed, act, poorE, limit, why] of states) {
+      const w = el.querySelector('.why');
+      if (w && w.textContent !== why) w.textContent = why;
       el.classList.toggle('poor', poor);
       el.classList.toggle('poorE', poorE);
       el.classList.toggle('maxed', !!maxed);
@@ -1245,6 +1258,7 @@ class UI {
           <img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">
           <b>${esc(u.name)}</b>
           <div class="meta"><span class="cost">${fmt(u.cost)}</span>${u.energy ? `<span class="ecost">${ICON.bolt}${u.energy}</span>` : ''}<span>${ICON.pop}${u.pop}</span></div>
+          <small class="why" data-why="${t}">${esc(this.trainWhy(pl, u))}</small>
         </button>`;
       }).join('') + '</div>';
       if (b.lastType && d.produces.includes(b.lastType)) {
@@ -1451,6 +1465,15 @@ class UI {
       hp.style.width = (k * 100).toFixed(1) + '%';
       hp.style.background = k > 0.55 ? 'var(--good)' : k > 0.28 ? '#f2c94c' : 'var(--bad)';
       $('sel-hptext').textContent = `${fmt(cur)} / ${fmt(max)}`;
+    }
+    // v1.6: el motivo de cada tarjeta de tropa se actualiza con las monedas, la energía y la comunidad.
+    if (first.kind === 'bld' && first.owner === 0) {
+      const pl = this.app.game.players[0];
+      document.querySelectorAll('#selpanel .card[data-type]').forEach((c) => {
+        const w = c.querySelector('.why');
+        const t = this.trainWhy(pl, UNITS[c.dataset.type]);
+        if (w && w.textContent !== t) w.textContent = t;
+      });
     }
     if (first.kind === 'bld' && first.queue.length) {
       const q = first.queue[0];

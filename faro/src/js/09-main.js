@@ -34,6 +34,13 @@ const App = {
 
   init(hotData) {
     window.FARO = this;
+    const boot = window.FaroBoot || { set() {}, fail() {}, finish() {} };
+    // v1.6: sin el motor 3D (sin conexión o bloqueado) no se puede jugar: se dice y se ofrece reintentar.
+    if (typeof THREE === 'undefined') {
+      boot.fail('No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».');
+      return;
+    }
+    boot.set('engine', 1, 'Preparando el 3D…');
     this.canvas = $('gl');
     this.overlay = $('overlay');
     try {
@@ -50,6 +57,7 @@ const App = {
     } catch (err) { /* sin almacenamiento */ }
     applyPalette(this.cvd);
     document.body.classList.toggle('bigtext', !!this.bigText);
+    document.body.classList.toggle('battery', !!this.battery);
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -62,8 +70,7 @@ const App = {
     try {
       this.gl = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, powerPreference: 'high-performance' });
     } catch (err) {
-      document.body.insertAdjacentHTML('beforeend',
-        '<div class="screen"><div class="dialog panel"><h2>Sin 3D</h2><p>Tu navegador no pudo iniciar WebGL. Prueba con Safari o Chrome actualizados.</p></div></div>');
+      boot.fail('Tu navegador no pudo iniciar el 3D (WebGL). Prueba con Safari o Chrome actualizados.');
       return;
     }
     Thumbs.init();
@@ -73,7 +80,13 @@ const App = {
     this.sound.onUnlock = () => this.music.play(this.state === 'play' ? 'battle' : 'lobby');
     this.sound.onToggle = () => { if (this.sound.on) this.music.play(this.state === 'play' ? 'battle' : 'lobby'); else this.music.stop(); this.music.refreshVolume(); };
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
-    this.ready = Promise.all([loadGLBModels().catch(() => 0), loadEnvMap(this.gl).catch(() => null)]).then(([n]) => {
+    const nModels = typeof FARO_GLB !== 'undefined' ? Object.keys(FARO_GLB).length : 0;
+    boot.set('models', 0, 'Modelos 3D…', THREE.GLTFLoader ? `0 de ${nModels}` : 'Sin el cargador de modelos: se usan los modelos simples');
+    const models = loadGLBModels((k, n) => boot.set('models', k / n, 'Modelos 3D…', `${k} de ${n}`)).catch(() => 0);
+    const sky = loadEnvMap(this.gl).catch(() => null).then((x) => { boot.set('sky', 1, 'Cielo y luz…'); return x; });
+    this.ready = Promise.all([models, sky]).then(([n]) => {
+      if (!n) boot.set('models', 1, 'Modelos 3D…', 'Se usan los modelos simples');
+      boot.set('profile', 0.5, 'Tu perfil…');
       this.modelCount = n;
       this.ui = new UI(this);
       this.input = new Input(this);
@@ -81,6 +94,8 @@ const App = {
       this.makePreview();
       this.ui.showScreen('menu');
       this.loaded = true;
+      boot.set('profile', 1, 'Tu perfil…');
+      boot.finish();
       // Modo creador: solo si la plataforma confirma que quien abre el juego es su dueño.
       Creator.detect().then(() => this.lobby.render());
     });
@@ -118,6 +133,7 @@ const App = {
   // v1.4: ahorro de batería: 30 cuadros por segundo, calidad «más fluido» y menos partículas.
   setBattery(on) {
     this.battery = !!on;
+    document.body.classList.toggle('battery', this.battery);
     try { localStorage.setItem('faro-battery', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
     if (this.renderer) {
       this.renderer.applyQuality(on ? 'low' : this.quality);

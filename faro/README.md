@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.5 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.6 · PRD y PDF en `docs/prd/` · documento completo en `docs/documento/`.
 
 ## Cómo jugar
 
@@ -34,6 +34,15 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.6
+
+- **Pantalla de carga:** logo, la fase real (3D, modelos 3D contados, cielo, tu perfil) y una barra que avanza con lo que terminó. Si algo falla, dice el motivo y ofrece «Reintentar».
+- **Transiciones suaves:** la ficha, el panel de construir y las ventanas entran con un movimiento corto; los botones responden al toque. Sin animación con «Reducir movimiento» o con el ahorro de batería.
+- **Motivo junto a la acción:** cada tarjeta dice «Faltan N monedas», «Faltan N de energía», «Límite: 6 de 6» o «Comunidad llena».
+- **Alcance al colocar:** al elegir dónde va una Torreta, Torreta chica o AIR DEFENSE se ve su alcance (con la ventaja de la meseta) antes de pagar.
+- **«Acerca de»** en el vestíbulo: versión, novedades y créditos.
+- **Documentos:** documento completo del proyecto con todo el código (`docs/documento/`), el PRD Roblox v1.6 del usuario con sus imágenes (`docs/roblox/`) y las pruebas en `tests/`.
 
 ## Novedades de la v1.5
 

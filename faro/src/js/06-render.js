@@ -664,6 +664,7 @@ class Renderer {
     }
     if (!type || ci < 0) {
       if (this.ghost) this.ghost.group.visible = false;
+      if (this.ghostRange) this.ghostRange.visible = false;
       return;
     }
     if (!this.ghost) {
@@ -695,6 +696,23 @@ class Renderer {
     gh.group.position.set(c.x, c.h, c.z);
     gh.group.rotation.y = rot;
     for (const mesh of gh.parts) mesh.material = valid ? gh.okMat : gh.badMat;
+    // v1.6: alcance de la defensa antes de ponerla (con la ventaja de altura de las mesetas).
+    const w = BUILDINGS[type] && BUILDINGS[type].weapon;
+    if (w) {
+      if (!this.ghostRange) {
+        this.ghostRange = new THREE.Mesh(new THREE.RingGeometry(0.96, 1, 72).rotateX(-Math.PI / 2),
+          new THREE.MeshBasicMaterial({ color: 0xffd36a, transparent: true, opacity: 0.85, depthWrite: false }));
+        this.ghostRange.renderOrder = 6;
+        this.scene.add(this.ghostRange);
+      }
+      const hb = w.range >= 2 && TERRAIN[c.t].highGround ? 1 : 0;
+      const R = (w.range + hb) * SQ3 + 0.75;
+      this.ghostRange.visible = true;
+      this.ghostRange.scale.setScalar(R);
+      this.ghostRange.userData = { radius: R, range: w.range + hb, type };
+      this.ghostRange.position.set(c.x, c.h + 0.07, c.z);
+      this.ghostRange.material.color.set(valid ? 0xffd36a : 0xff6b6b);
+    } else if (this.ghostRange) this.ghostRange.visible = false;
     this.hoverMesh.material.color.set(valid ? 0x8dffb0 : 0xff6b6b);
     this.setHover(ci);
   }

@@ -479,11 +479,15 @@ function _readGLB(name, gltf) {
 }
 
 // Carga todos los modelos. Si falta el cargador o algo falla, el juego usa los modelos de código.
-function loadGLBModels() {
+// v1.6: onProgress(listos, total) para la pantalla de carga.
+function loadGLBModels(onProgress) {
   if (typeof FARO_GLB === 'undefined' || !THREE.GLTFLoader) return Promise.resolve(0);
   const loader = new THREE.GLTFLoader();
   const names = Object.keys(FARO_GLB);
-  return Promise.all(names.map((name) => new Promise((resolve) => {
+  let done = 0;
+  const tick = () => { done++; if (onProgress) onProgress(done, names.length); };
+  return Promise.all(names.map((name) => new Promise((resolve0) => {
+    const resolve = () => { tick(); resolve0(); };
     try {
       loader.parse(_b64ToBuffer(FARO_GLB[name]), '', (gltf) => {
         try { _readGLB(name, gltf); } catch (err) { console.warn('[Modelos] No se pudo leer', name, err); }
