@@ -822,6 +822,8 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .vs.muted b { color: var(--muted); }
 button.chip { cursor: pointer; font: inherit; color: inherit; min-height: 44px; }
 button.chip:hover { background: var(--raise-2); }
+/* v1.5: en pantallas bajas, «¡A jugar!» queda fijo al pie de la ficha de la misión (antes quedaba escondido abajo). */
+.brief .brief-go { position: sticky; bottom: -22px; margin: 0 -22px -22px; padding: 12px 22px 14px; background: var(--panel-solid); border-top: 1px solid var(--line); z-index: 1; }
 /* ---------- v1.5: portada nueva ---------- */
 .lobby .seg button, .lmenu button { min-height: 44px; }
 .lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
@@ -8967,6 +8969,7 @@ class Renderer {
     const g = this.game;
     const sel = new Set(selection);
     const myTeam = g.players[0].team;
+    this.upBars = 0;
     const bar = (e, w, hTop) => {
       const s = this.project(e.x, e.y + hTop, e.z);
       if (!s.ok || s.x < -40 || s.y < -40 || s.x > this.width + 40 || s.y > this.height + 40) return;
@@ -8981,6 +8984,7 @@ class Renderer {
       }
       // v1.5: barra de la mejora (celeste) debajo de la de vida.
       if (e.kind === 'bld' && e.upgrading) {
+        this.upBars++;
         ctx.fillStyle = 'rgba(12,16,22,0.75)';
         ctx.fillRect(x - 1, y + 5, w + 2, 4);
         ctx.fillStyle = '#7dd3ff';
@@ -10411,7 +10415,7 @@ class UI {
           ${m.stars.map((s) => `<li><b>★ ${esc(Campaign.starText(s))}</b></li>`).join('')}</ul></div>
       </div>
       <p class="tip"><b>Consejo:</b> ${esc(m.tip)}</p>
-      <div class="row"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
+      <div class="row brief-go"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
         <button class="btn" type="button" id="btn-brief-menu">Vestíbulo</button></div>
     </div>`;
     el.hidden = false;

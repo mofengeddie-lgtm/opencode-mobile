@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.4 · PRD y PDF en `docs/prd/`.
+**Versión actual:** 1.5 · PRD y PDF en `docs/prd/`.
 
 ## Cómo jugar
 
@@ -34,6 +34,20 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.5
+
+- **Sin decoraciones de temporada:** ya no hay calabazas ni nieve por la fecha. Las temporadas de la Liga y del Pase siguen.
+- **Portada nueva:** la imagen grande con el botón JUGAR adentro, el modo con la miniatura del mapa, iconos dibujados y tus números en fichas.
+- **Núcleo nuevo (Blender):** una ciudadela con una torre central que crece en cada nivel, franjas y techos del color del jugador y un aro de luz que gira alrededor del cristal. El rayo del cielo tiene el color del jugador.
+- **Edificios:** banderín del color del dueño, marcas doradas de nivel, barra celeste mientras se mejoran y aviso «zz» si un edificio que entrena se queda sin cola.
+- **Fichas:** la cola dice cuánto falta y cada tropa tiene su «×» para quitarla (devuelve el dinero); lo que cambia al mejorar se ve siempre; las tarjetas de tropas ya no se cortan.
+- **Tropas:** anillo del color del jugador debajo de cada una, icono de su tipo al alejar la cámara, ficha con vida, daño, alcance, velocidad y contra qué es fuerte o débil; con varias elegidas, tocar un tipo deja solo esas.
+- **Errores arreglados (caza de errores):**
+  - Dúos en el mapa Arrecife Doble no se podía empezar.
+  - Un Constructor o Ingeniero mandado a reparar un edificio rodeado se quedaba esperando para siempre.
+  - «Avanzar atacando» podía quedar quieto viendo enemigos al otro lado del agua.
+  - La fila de jugadores de arriba se partía en dos líneas en el iPad.
 
 ## Novedades de la v1.4
 

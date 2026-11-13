@@ -90,7 +90,7 @@ class UI {
           ${m.stars.map((s) => `<li><b>★ ${esc(Campaign.starText(s))}</b></li>`).join('')}</ul></div>
       </div>
       <p class="tip"><b>Consejo:</b> ${esc(m.tip)}</p>
-      <div class="row"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
+      <div class="row brief-go"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
         <button class="btn" type="button" id="btn-brief-menu">Vestíbulo</button></div>
     </div>`;
     el.hidden = false;

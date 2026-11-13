@@ -1327,6 +1327,7 @@ class Renderer {
     const g = this.game;
     const sel = new Set(selection);
     const myTeam = g.players[0].team;
+    this.upBars = 0;
     const bar = (e, w, hTop) => {
       const s = this.project(e.x, e.y + hTop, e.z);
       if (!s.ok || s.x < -40 || s.y < -40 || s.x > this.width + 40 || s.y > this.height + 40) return;
@@ -1341,6 +1342,7 @@ class Renderer {
       }
       // v1.5: barra de la mejora (celeste) debajo de la de vida.
       if (e.kind === 'bld' && e.upgrading) {
+        this.upBars++;
         ctx.fillStyle = 'rgba(12,16,22,0.75)';
         ctx.fillRect(x - 1, y + 5, w + 2, 4);
         ctx.fillStyle = '#7dd3ff';

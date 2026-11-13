@@ -817,6 +817,8 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .vs.muted b { color: var(--muted); }
 button.chip { cursor: pointer; font: inherit; color: inherit; min-height: 44px; }
 button.chip:hover { background: var(--raise-2); }
+/* v1.5: en pantallas bajas, «¡A jugar!» queda fijo al pie de la ficha de la misión (antes quedaba escondido abajo). */
+.brief .brief-go { position: sticky; bottom: -22px; margin: 0 -22px -22px; padding: 12px 22px 14px; background: var(--panel-solid); border-top: 1px solid var(--line); z-index: 1; }
 /* ---------- v1.5: portada nueva ---------- */
 .lobby .seg button, .lmenu button { min-height: 44px; }
 .lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
