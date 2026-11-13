@@ -51,6 +51,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
   - **Ahorro de batería:** unos 30 cuadros por segundo y menos partículas.
   - **Colores para daltonismo:** elegidos con simulación de los 3 tipos de daltonismo, con una forma por jugador en el minimapa.
   - **Letra grande.**
+- **Arreglo:** si los soldados no pueden llegar a la orilla junto a la Barcaza (lejos de la costa o con la orilla ocupada por edificios), la Barcaza va a buscarlos. Antes esperaban para siempre.
 
 ## Novedades de la v1.3
 

@@ -4097,6 +4097,34 @@ class Game {
     }
   }
 
+  // v1.4: la tropa que va a subir no llega al transporte (la orilla junto a él está tapada por
+  // edificios, o el transporte está lejos de la costa): si el transporte está quieto, va a buscarla
+  // a la orilla libre más cercana a la tropa.
+  callTransport(u, t) {
+    if (t.owner !== u.owner || t.inside || t.mover === 'air' || !t.alive) return false;
+    if (t.state !== 'idle' || (t.path && t.pathI < t.path.length)) return false;
+    if ((t.pickupT || 0) > this.time) return false;
+    t.pickupT = this.time + 5;
+    const uc = this.cells[u.cell];
+    const tc = this.cells[t.cell];
+    let best = -1;
+    let bd = Infinity;
+    for (const off of SPIRAL) {
+      if (off.d > 6 || off.d * 4 > bd) break;
+      const n = this.map.get(uc.q + off.q, uc.r + off.r);
+      if (!n || n.comp !== uc.comp || !this.passable(n, u.mover, u.owner)) continue;
+      for (const si of n.nb) {
+        const s = this.cells[si];
+        if (s.comp !== tc.comp || (si !== t.cell && !this.passable(s, t.mover, t.owner))) continue;
+        const d = off.d * 4 + this.map.dist(s, tc) * 0.01;
+        if (d < bd) { bd = d; best = si; }
+      }
+    }
+    if (best < 0 || best === t.cell) return false;
+    this.orderMove([t], best);
+    return true;
+  }
+
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
     if (this.cargoSlots(t) + need > (t.def.capacity || t.def.hangar)) {
@@ -5384,6 +5412,8 @@ class Game {
         if (u.repathT <= 0) {
           u.repathT = 1;
           this.setPath(u, t.cell);
+          // Ya está lo más cerca que puede llegar a pie: que el transporte venga a buscarla.
+          if (!u.path.length) this.callTransport(u, t);
         }
         this.followPath(u, dt);
         break;
@@ -10639,6 +10669,7 @@ class UI {
       el.setAttribute('aria-live', 'polite');
       el.innerHTML = '<div class="coach-ring"></div><div class="coach-tip"></div>';
       document.body.appendChild(el);
+      this._tipKey = null;
     }
     let rect = null;
     let text = step.text;
@@ -10672,10 +10703,19 @@ class UI {
     const tip = el.querySelector('.coach-tip');
     ring.hidden = !rect;
     if (rect) Object.assign(ring.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px`, borderRadius: rect.round ? '50%' : '12px' });
-    tip.textContent = text;
-    const tx = rect ? clamp(rect.x + rect.w / 2 - 110, 8, window.innerWidth - 228) : window.innerWidth / 2 - 110;
+    // v1.4: se mide el texto de verdad (con «Letra grande» es más ancho y más alto).
+    const tipKey = text + document.body.classList.contains('bigtext');
+    if (this._tipKey !== tipKey || tip.textContent !== text) {
+      tip.textContent = text;
+      this._tipKey = tipKey;
+      this._tipSize = { w: tip.offsetWidth || 220, h: tip.offsetHeight || 44 };
+    }
+    const { w: tw, h: th } = this._tipSize;
+    const W = window.innerWidth;
+    const Hh = window.innerHeight;
+    const tx = rect ? clamp(rect.x + rect.w / 2 - tw / 2, 8, W - tw - 8) : W / 2 - tw / 2;
     const below = rect ? rect.y + rect.h + 8 : 120;
-    const ty = rect && below + 50 > window.innerHeight ? rect.y - 52 : below;
+    const ty = clamp(rect && below + th + 8 > Hh ? rect.y - th - 8 : below, 8, Math.max(8, Hh - th - 8));
     Object.assign(tip.style, { left: `${tx}px`, top: `${ty}px` });
     this.coachText = text;
   }

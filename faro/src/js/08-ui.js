@@ -567,6 +567,7 @@ class UI {
       el.setAttribute('aria-live', 'polite');
       el.innerHTML = '<div class="coach-ring"></div><div class="coach-tip"></div>';
       document.body.appendChild(el);
+      this._tipKey = null;
     }
     let rect = null;
     let text = step.text;
@@ -600,10 +601,19 @@ class UI {
     const tip = el.querySelector('.coach-tip');
     ring.hidden = !rect;
     if (rect) Object.assign(ring.style, { left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px`, borderRadius: rect.round ? '50%' : '12px' });
-    tip.textContent = text;
-    const tx = rect ? clamp(rect.x + rect.w / 2 - 110, 8, window.innerWidth - 228) : window.innerWidth / 2 - 110;
+    // v1.4: se mide el texto de verdad (con «Letra grande» es más ancho y más alto).
+    const tipKey = text + document.body.classList.contains('bigtext');
+    if (this._tipKey !== tipKey || tip.textContent !== text) {
+      tip.textContent = text;
+      this._tipKey = tipKey;
+      this._tipSize = { w: tip.offsetWidth || 220, h: tip.offsetHeight || 44 };
+    }
+    const { w: tw, h: th } = this._tipSize;
+    const W = window.innerWidth;
+    const Hh = window.innerHeight;
+    const tx = rect ? clamp(rect.x + rect.w / 2 - tw / 2, 8, W - tw - 8) : W / 2 - tw / 2;
     const below = rect ? rect.y + rect.h + 8 : 120;
-    const ty = rect && below + 50 > window.innerHeight ? rect.y - 52 : below;
+    const ty = clamp(rect && below + th + 8 > Hh ? rect.y - th - 8 : below, 8, Math.max(8, Hh - th - 8));
     Object.assign(tip.style, { left: `${tx}px`, top: `${ty}px` });
     this.coachText = text;
   }

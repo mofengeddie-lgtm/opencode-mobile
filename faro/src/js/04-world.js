@@ -970,6 +970,34 @@ class Game {
     }
   }
 
+  // v1.4: la tropa que va a subir no llega al transporte (la orilla junto a él está tapada por
+  // edificios, o el transporte está lejos de la costa): si el transporte está quieto, va a buscarla
+  // a la orilla libre más cercana a la tropa.
+  callTransport(u, t) {
+    if (t.owner !== u.owner || t.inside || t.mover === 'air' || !t.alive) return false;
+    if (t.state !== 'idle' || (t.path && t.pathI < t.path.length)) return false;
+    if ((t.pickupT || 0) > this.time) return false;
+    t.pickupT = this.time + 5;
+    const uc = this.cells[u.cell];
+    const tc = this.cells[t.cell];
+    let best = -1;
+    let bd = Infinity;
+    for (const off of SPIRAL) {
+      if (off.d > 6 || off.d * 4 > bd) break;
+      const n = this.map.get(uc.q + off.q, uc.r + off.r);
+      if (!n || n.comp !== uc.comp || !this.passable(n, u.mover, u.owner)) continue;
+      for (const si of n.nb) {
+        const s = this.cells[si];
+        if (s.comp !== tc.comp || (si !== t.cell && !this.passable(s, t.mover, t.owner))) continue;
+        const d = off.d * 4 + this.map.dist(s, tc) * 0.01;
+        if (d < bd) { bd = d; best = si; }
+      }
+    }
+    if (best < 0 || best === t.cell) return false;
+    this.orderMove([t], best);
+    return true;
+  }
+
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
     if (this.cargoSlots(t) + need > (t.def.capacity || t.def.hangar)) {
@@ -2257,6 +2285,8 @@ class Game {
         if (u.repathT <= 0) {
           u.repathT = 1;
           this.setPath(u, t.cell);
+          // Ya está lo más cerca que puede llegar a pie: que el transporte venga a buscarla.
+          if (!u.path.length) this.callTransport(u, t);
         }
         this.followPath(u, dt);
         break;
