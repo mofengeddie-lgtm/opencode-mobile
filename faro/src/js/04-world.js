@@ -26,6 +26,8 @@ class Game {
     this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.fog = !!(opts.fog || mode.fog);
     this.creator = !!opts.creator;
+    // v1.4: regla especial del desafío semanal ('nofactory', 'noair'...).
+    this.rule = opts.rule || null;
     this.elimOrder = [];
     this._assignT = 0;
     this.time = 0;
@@ -54,7 +56,7 @@ class Game {
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
         id: i, team: mode.teams[i], team0: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
-        coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
+        coins: (i === 0 && opts.startCoins) || mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
         human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
         emergencyUsed: false, dome: null,
         stats: { built: 0, trained: 0, lost: 0, kills: 0, earned: 0, captures: 0, upgrades: 0, hitBy: {} },
@@ -550,6 +552,11 @@ class Game {
     const c = this.cells[ci];
     const p = this.players[pid];
     if (!c) return 'Casilla no válida';
+    // v1.4: reglas del desafío semanal (solo para ti).
+    if (pid === 0 && this.rule) {
+      if (this.rule === 'nofactory' && type === 'factory') return 'Desafío: sin Fábrica';
+      if (this.rule === 'noair' && (type === 'helipad' || type === 'airport')) return 'Desafío: sin Helipuerto ni Aeropuerto';
+    }
     // Las estructuras de mar se ponen en su lugar del mar aunque esté fuera de tu territorio (punto 15).
     if (def.sea) {
       if (c.owner >= 0 && c.owner !== pid && this.isEnemy(c.owner, pid)) return 'Es territorio enemigo';
@@ -1006,6 +1013,12 @@ class Game {
     const out = t.cargo;
     t.cargo = [];
     if (t.owner === 0) this.emit('sound', { name: 'order' });
+    // v1.4: desembarco en otra isla (para el logro «Lobo de mar»).
+    const home = this.players[t.owner].core && this.cells[this.players[t.owner].core.cell];
+    if (t.mover === 'sea' && home && out.some((u) => u.mover === 'land' && this.cells[u.cell].comp !== home.comp)) {
+      const st = this.players[t.owner].stats;
+      st.landings = (st.landings || 0) + 1;
+    }
     return out;
   }
 
@@ -1457,6 +1470,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.kind === 'bld') this.players[e.owner].stats.lostBld = (this.players[e.owner].stats.lostBld || 0) + 1;
     if (e.kind === 'bld' && e.owner === 0 && this.camp && !this.over) this.camp.lostBld++;
     if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
@@ -1741,6 +1755,7 @@ class Game {
             pt.prog = 1;
             pt.owner = pid;
             this.players[pid].stats.captures++;
+            if (pt.type === 'faro') this.players[pid].stats.faro = (this.players[pid].stats.faro || 0) + 1;
             this.territoryDirty = true;
             this.refreshEconomy();
             const what = pt.type === 'faro' ? 'el Faro' : 'una Bandera';

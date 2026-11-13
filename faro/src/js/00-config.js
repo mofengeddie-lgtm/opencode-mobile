@@ -50,6 +50,8 @@ const KING_TIME = 180;
 const EMERGENCY = { at: 0.25, time: 20 };
 const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
+// v1.4: ahorro de batería (unos 30 cuadros por segundo y menos partículas).
+const BATTERY = { minFrameMs: 31, fx: 0.3 };
 // v1.4: tropas veteranas. Estrellas por eliminaciones; cada estrella da +10 % de vida máxima y +8 % de daño.
 const VETERAN = { kills: [3, 8, 15], hp: 0.10, dmg: 0.08 };
 // v1.4: reparación sola (Constructores e Ingenieros libres) y producción continua.
@@ -84,6 +86,21 @@ const TERRAIN = {
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
 const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
+// v1.4: colores para daltonismo (paleta de Okabe e Ito, que se distingue con los tres tipos de
+// daltonismo) y formas distintas para cada jugador en el minimapa.
+const BASE_COLORS = PLAYER_COLORS.slice();
+const BASE_NAMES = PLAYER_NAMES.slice();
+const CVD_COLORS = [0x0072b2, 0xd55e00, 0xe69f00, 0xcc79a7, 0xf0e442, 0x56b4e9];
+const CVD_NAMES = ['Tú', 'Bermellón', 'Naranja', 'Malva', 'Amarillo', 'Celeste'];
+const PLAYER_SHAPES = ['circle', 'square', 'triangle', 'diamond', 'star', 'cross'];
+function applyPalette(cvd) {
+  const cols = cvd ? CVD_COLORS : BASE_COLORS;
+  const names = cvd ? CVD_NAMES : BASE_NAMES;
+  for (let i = 0; i < PLAYER_COLORS.length; i++) {
+    PLAYER_COLORS[i] = cols[i];
+    PLAYER_NAMES[i] = names[i];
+  }
+}
 
 // Multiplicadores de daño por tipo de objetivo:
 // inf = infantería, veh = vehículo, ship = barco, sub = submarino, air = aéreo, bld = edificio.

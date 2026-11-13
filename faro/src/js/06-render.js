@@ -1543,10 +1543,18 @@ class Renderer {
       ctx.fill();
       ctx.stroke();
     }
+    // v1.4: con «Colores para daltonismo», cada jugador tiene además su forma (Núcleo y tropas).
+    const cvd = !!(window.FARO && window.FARO.cvd);
     for (const bl of g.buildings) {
       ctx.fillStyle = hexColor(PLAYER_COLORS[bl.owner]);
       const x = T.ox + bl.x * T.s;
       const y = T.oz + bl.z * T.s;
+      if (cvd && bl.type === 'core') {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        minimapShape(ctx, PLAYER_SHAPES[bl.owner], x, y, 6.5);
+        continue;
+      }
       const s = bl.type === 'core' ? 7 : 4;
       ctx.fillRect(x - s / 2, y - s / 2, s, s);
       if (bl.type === 'core') {
@@ -1558,6 +1566,12 @@ class Renderer {
     for (const u of g.units) {
       if (u.inside || (!u.visible && g.players[u.owner].team !== myTeam)) continue;
       ctx.fillStyle = hexColor(PLAYER_COLORS[u.owner]);
+      if (cvd) {
+        ctx.strokeStyle = 'rgba(10,14,20,0.8)';
+        ctx.lineWidth = 0.8;
+        minimapShape(ctx, PLAYER_SHAPES[u.owner], T.ox + u.x * T.s, T.oz + u.z * T.s, 2.6);
+        continue;
+      }
       ctx.beginPath();
       ctx.arc(T.ox + u.x * T.s, T.oz + u.z * T.s, 1.8, 0, Math.PI * 2);
       ctx.fill();
@@ -1646,4 +1660,27 @@ class Renderer {
     this.overlayHalf = g.units.length > (this.quality === 'high' ? 120 : 40);
     if (!this.overlayHalf || this.ovFrame % 2 === 0) this.drawOverlay(selection);
   }
+}
+
+// v1.4: forma de cada jugador en el minimapa (modo para daltonismo).
+function minimapShape(ctx, shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === 'square') ctx.rect(x - r * 0.85, y - r * 0.85, r * 1.7, r * 1.7);
+  else if (shape === 'triangle') { ctx.moveTo(x, y - r); ctx.lineTo(x + r, y + r * 0.8); ctx.lineTo(x - r, y + r * 0.8); ctx.closePath(); }
+  else if (shape === 'diamond') { ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath(); }
+  else if (shape === 'star') {
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      const rr = i % 2 ? r * 0.45 : r;
+      if (i) ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); else ctx.moveTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+    }
+    ctx.closePath();
+  } else if (shape === 'cross') {
+    const t = r * 0.38;
+    ctx.moveTo(x - t, y - r); ctx.lineTo(x + t, y - r); ctx.lineTo(x + t, y - t); ctx.lineTo(x + r, y - t); ctx.lineTo(x + r, y + t);
+    ctx.lineTo(x + t, y + t); ctx.lineTo(x + t, y + r); ctx.lineTo(x - t, y + r); ctx.lineTo(x - t, y + t); ctx.lineTo(x - r, y + t);
+    ctx.lineTo(x - r, y - t); ctx.lineTo(x - t, y - t); ctx.closePath();
+  } else ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
 }

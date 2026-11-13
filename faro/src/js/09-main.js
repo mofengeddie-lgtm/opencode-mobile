@@ -41,7 +41,13 @@ const App = {
       if (q === 'high' || q === 'low' || q === 'auto') this.qualityPref = q;
       this.showFps = localStorage.getItem('faro-fps') === 'on';
       if (localStorage.getItem('faro-formation') === 'line') this.formation = 'line';
+      // v1.4: ahorro de batería, colores para daltonismo y letra grande.
+      this.battery = localStorage.getItem('faro-battery') === '1';
+      this.cvd = localStorage.getItem('faro-cvd') === '1';
+      this.bigText = localStorage.getItem('faro-bigtext') === '1';
     } catch (err) { /* sin almacenamiento */ }
+    applyPalette(this.cvd);
+    document.body.classList.toggle('bigtext', !!this.bigText);
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -102,8 +108,46 @@ const App = {
 
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
-    this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.quality);
+    this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
     this.renderer.applySeason(this.season());
+    if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
+  },
+
+  // v1.4: ahorro de batería: 30 cuadros por segundo, calidad «más fluido» y menos partículas.
+  setBattery(on) {
+    this.battery = !!on;
+    try { localStorage.setItem('faro-battery', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    if (this.renderer) {
+      this.renderer.applyQuality(on ? 'low' : this.quality);
+      if (this.renderer.fxs) this.renderer.fxs.scale = on ? BATTERY.fx : this.quality === 'high' ? 1 : 0.5;
+    }
+    this.ui.updateA11yBtns();
+  },
+
+  // v1.4: colores para daltonismo. Cambia los colores (y los nombres que dicen el color) de los
+  // jugadores; en una partida, vuelve a dibujar todo con los colores nuevos.
+  setCvd(on) {
+    this.cvd = !!on;
+    try { localStorage.setItem('faro-cvd', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    const oldNames = PLAYER_NAMES.slice();
+    applyPalette(this.cvd);
+    for (const g of [this.game, this.suspended]) {
+      if (!g || !g.players) continue;
+      for (const p of g.players) {
+        p.color = PLAYER_COLORS[p.id];
+        if (p.name === oldNames[p.id]) p.name = PLAYER_NAMES[p.id];
+      }
+    }
+    if (this.game && this.renderer) this.newRenderer(this.game);
+    this.ui.playersSig = '';
+    this.ui.updateA11yBtns();
+  },
+
+  setBigText(on) {
+    this.bigText = !!on;
+    try { localStorage.setItem('faro-bigtext', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    document.body.classList.toggle('bigtext', this.bigText);
+    this.ui.updateA11yBtns();
   },
 
   // v1.2: temporada activa: la que pone la fecha, o la que elegiste en la pausa.
@@ -180,6 +224,11 @@ const App = {
     this.dropUnfinished();
     this.game = new Game(this.gameOpts());
     this.enterGame();
+    // v1.4: el desafío semanal avisa su regla al empezar.
+    if (this.game.opts.weekly) {
+      const W = weeklyFor(Profile.now());
+      this.ui.toast(`Desafío semanal: ${W.name}. ${W.desc}`, 'info');
+    }
     if (this.game.camp) {
       this.focusCore();
       this.ui.showBrief();
@@ -328,7 +377,7 @@ const App = {
   autoQuality(fps) {
     this.fps = fps;
     if (this.showFps) $('fps').textContent = `${fps} fps`;
-    if (this.qualityPref !== 'auto' || this.quality !== 'high' || this.state !== 'play' || this.paused) {
+    if (this.qualityPref !== 'auto' || this.quality !== 'high' || this.state !== 'play' || this.paused || this.battery) {
       this.lowFpsSecs = 0;
       return false;
     }
@@ -491,6 +540,12 @@ const App = {
       requestAnimationFrame((t) => this.loop(t));
       return;
     }
+    // v1.4: ahorro de batería: se salta cuadros para quedarse en unos 30 por segundo.
+    if (this.battery && now - (this.lastDraw || 0) < BATTERY.minFrameMs) {
+      requestAnimationFrame((t) => this.loop(t));
+      return;
+    }
+    this.lastDraw = now;
     const raw = Math.max(0, (now - this.last) / 1000);
     const dt = Math.min(0.1, raw);
     this.last = now;

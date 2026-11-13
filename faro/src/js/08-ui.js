@@ -153,6 +153,11 @@ class UI {
     this.updateMusicBtns();
     document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
     this.updateSeasonBtns();
+    // v1.4: ahorro de batería, daltonismo y letra grande.
+    $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
+    $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
+    $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
+    this.updateA11yBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
         app.sound.toggle();
@@ -286,6 +291,20 @@ class UI {
     mm.addEventListener('pointermove', (e) => { if (this.mmDrag) moveCam(e); });
     mm.addEventListener('pointerup', () => { this.mmDrag = false; });
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
+  }
+
+  updateA11yBtns() {
+    const app = this.app;
+    const set = (id, on, label) => {
+      const b = $(id);
+      if (!b) return;
+      b.classList.toggle('gold', !!on);
+      b.setAttribute('aria-pressed', String(!!on));
+      b.textContent = `${label}: ${on ? 'sí' : 'no'}`;
+    };
+    set('btn-battery', app.battery, 'Ahorro de batería');
+    set('btn-cvd', app.cvd, 'Colores para daltonismo');
+    set('btn-bigtext', app.bigText, 'Letra grande');
   }
 
   updateSeasonBtns() {

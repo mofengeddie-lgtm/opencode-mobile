@@ -139,15 +139,6 @@ function skinSlotOf(kind, type) {
   return null;
 }
 
-function hashStr(str) {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
 function dayKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
@@ -238,6 +229,82 @@ function rankedDifficulty(points) {
   return rankIndex(points) >= 2 ? 'hard' : 'normal';
 }
 
+// v1.4: logros. Cada uno con su insignia (inicial y color propios) y cristales al lograrlo.
+// done(c): c = { P, g, me, win } al terminar una partida. prog(P): [actual, meta] para los acumulados.
+const ACHIEVEMENTS = [
+  { id: 'primer_faro', name: 'Primer Faro', desc: 'Termina el Tutorial.', icon: 'PF', color: '#f2ab38', crystals: 0,
+    done: (c) => c.P.tutorialDone },
+  { id: 'intacto', name: 'Sin un rasguño', desc: 'Gana una partida sin perder ningún edificio.', icon: 'SR', color: '#5ee07a', crystals: 100,
+    done: (c) => c.win && !c.g.mode.tutorial && c.g.time >= 180 && !(c.me.stats.lostBld > 0) },
+  { id: 'guardian', name: 'Guardián del Faro', desc: 'Captura el Faro 3 veces.', icon: 'GF', color: '#ffd36a', crystals: 100,
+    done: (c) => (c.P.stats.faro || 0) >= 3, prog: (P) => [P.stats.faro || 0, 3] },
+  { id: 'lobo_mar', name: 'Lobo de mar', desc: 'Desembarca tropas en otra isla con una Barcaza.', icon: 'LM', color: '#7fc8ff', crystals: 75,
+    done: (c) => (c.me.stats.landings || 0) > 0 },
+  { id: 'veterano', name: 'Veterano', desc: 'Consigue una tropa con 3 estrellas.', icon: '★', color: '#ffb347', crystals: 100,
+    done: (c) => (c.me.stats.bestVet || 0) >= 3 },
+  { id: 'incansable', name: 'Constructor incansable', desc: 'Termina 25 edificios en una partida.', icon: 'CI', color: '#c0c7cf', crystals: 75,
+    done: (c) => c.me.stats.built >= 25 },
+  { id: 'cien', name: 'Ejército de cien', desc: 'Entrena 100 tropas (en total).', icon: '100', color: '#b87333', crystals: 100,
+    done: (c) => (c.P.stats.trained || 0) >= 100, prog: (P) => [P.stats.trained || 0, 100] },
+  { id: 'diez', name: 'Diez victorias', desc: 'Gana 10 partidas.', icon: '10', color: '#f2c94c', crystals: 150,
+    done: (c) => c.P.stats.wins >= 10, prog: (P) => [P.stats.wins, 10] },
+  { id: 'expres', name: 'Victoria exprés', desc: 'Gana una partida en menos de 10 minutos.', icon: 'VE', color: '#ef8a5a', crystals: 100,
+    done: (c) => c.win && !c.g.mode.tutorial && !c.g.camp && c.g.time < 600 },
+  { id: 'cielo', name: 'Cielo despejado', desc: 'Derriba 10 aeronaves en una partida.', icon: 'CD', color: '#9fd3ff', crystals: 100,
+    done: (c) => (c.me.stats.airKills || 0) >= 10 },
+  { id: 'sargento', name: 'Sargento de la Liga', desc: 'Llega a Sargento (700 puntos) en la Liga 3 vs 3.', icon: 'S', color: '#c0c7cf', crystals: 150,
+    done: (c) => (c.P.ranked.best || 0) >= 700, prog: (P) => [Math.min(P.ranked.best || 0, 700), 700] },
+  { id: 'semanal', name: 'Desafío de la semana', desc: 'Gana un desafío semanal.', icon: 'DS', color: '#e88bd0', crystals: 100,
+    done: (c) => c.win && !!c.g.opts.weekly },
+];
+const ACH_BY_ID = Object.fromEntries(ACHIEVEMENTS.map((a) => [a.id, a]));
+
+// v1.4: desafío semanal. Cambia los lunes; mapa, semilla y una regla fijos toda la semana.
+const WEEKLY_CHALLENGES = [
+  { id: 'nofactory', name: 'Sin fábricas', desc: 'No puedes construir la Fábrica: gana con soldados, barcos y aeronaves.', mode: 'conquest', mapKind: 'continent', difficulty: 'normal', rule: 'nofactory' },
+  { id: 'noair', name: 'Cielo cerrado', desc: 'Sin Helipuerto ni Aeropuerto: todo se decide en tierra y mar.', mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', rule: 'noair' },
+  { id: 'poor', name: 'Bolsillos vacíos', desc: 'Empiezas con 800 monedas en vez de 2.000.', mode: 'conquest', mapKind: 'mesa', difficulty: 'normal', startCoins: 800 },
+  { id: 'fog', name: 'Niebla de guerra', desc: 'Niebla y bots en Difícil.', mode: 'conquest', mapKind: 'bay', difficulty: 'hard', fog: true },
+  { id: 'sea', name: 'Todo por mar', desc: 'Mar abierto: sin puentes, cada isla se toma por mar o por aire.', mode: 'conquest', mapKind: 'open', difficulty: 'normal' },
+  { id: 'duel', name: 'Duelo en las dunas', desc: 'Uno contra uno en Dunas Rojas, contra un bot en Difícil.', mode: 'duel', mapKind: 'dunes', difficulty: 'hard' },
+];
+const WEEKLY_CRYSTALS = 150;
+function weekNumber(d = new Date()) {
+  return Math.floor((dayNum(dayKey(d)) + 3) / 7);
+}
+function weeklyFor(d = new Date()) {
+  const n = weekNumber(d);
+  const ch = WEEKLY_CHALLENGES[n % WEEKLY_CHALLENGES.length];
+  const next = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  next.setDate(next.getDate() + ((8 - next.getDay()) % 7 || 7));
+  return { ...ch, week: 'w' + n, seed: 90000 + n * 37, next };
+}
+
+// v1.4: Top jugadores (tu documento, pág. 20): tú y comandantes bot, por temporada.
+const TOP_PREFIX = ['Brisa', 'Coral', 'Roca', 'Marea', 'Ancla', 'Bruma', 'Duna', 'Ámbar', 'Lince', 'Ola'];
+const TOP_SUFFIX = ['Norte', 'Sur', 'Veloz', 'Real', 'Azul', 'Roja', 'Gris', 'Dorada', 'Firme', 'Alta'];
+function topRows(P, tab) {
+  const S = seasonOf(Profile.now());
+  const rng = mulberry32((P.seed || 1) + 777 + S.no * 13);
+  const games = (P.ranked && P.ranked.games) || 0;
+  const liga = ladderRows(P).filter((r) => r.bot);
+  const extra = [];
+  for (let i = 0; i < 30; i++) {
+    const name = `${TOP_PREFIX[Math.floor(rng() * 10)]}${TOP_SUFFIX[Math.floor(rng() * 10)]}_${10 + Math.floor(rng() * 89)}`;
+    extra.push({ name, points: Math.max(0, Math.round(40 + rng() * 2500 + Math.sin(games + i) * 15)), bot: true });
+  }
+  const bots = [...liga, ...extra].map((r, i) => {
+    const r2 = mulberry32((P.seed || 1) + 91 + i * 7 + S.no);
+    const pct = 0.42 + Math.min(0.32, r.points / 8000) + r2() * 0.06;
+    const ranked = Math.round(20 + r.points / 9 + r2() * 30);
+    return { name: r.name, bot: true, points: r.points, pct, wins: Math.round(ranked * pct + r2() * 120), islands: Math.round(r2() * 900 + r.points / 6) };
+  });
+  const R = P.ranked;
+  const me = { name: 'Tú', me: true, points: R.points, pct: R.games ? R.wins / R.games : 0, wins: P.stats.wins, islands: P.stats.islands };
+  const key = tab === 'wins' ? 'wins' : tab === 'islands' ? 'islands' : 'points';
+  return [...bots, me].sort((a, b) => b[key] - a[key] || (a.me ? -1 : 1)).map((r, i) => ({ ...r, pos: i + 1 }));
+}
+
 const Profile = {
   data: null,
   memoryOnly: false,
@@ -245,7 +312,8 @@ const Profile = {
   defaults() {
     return {
       v: 1, seed: (Math.random() * 1e9) | 0, since: dayKey(), xp: 0, crystals: 0,
-      stats: { games: 0, wins: 0, islands: 0, cores: 0, kills: 0 },
+      stats: { games: 0, wins: 0, islands: 0, cores: 0, kills: 0, trained: 0, faro: 0 },
+      achievements: {}, weekly: {},
       owned: {}, equipped: { inf: null, veh: null, sea: null, core: null }, badges: {},
       tutorialDone: false, pass: {}, daily: { idx: 0, last: null, lost: 0 }, codes: {},
       missions: { day: null, daily: [], rerolled: false, week: null, weekly: [] },
@@ -273,6 +341,9 @@ const Profile = {
     } catch (err) {
       this.memoryOnly = true;
     }
+    // v1.4: logros; quien ya terminó el Tutorial tiene «Primer Faro».
+    d.achievements = d.achievements || {};
+    if (d.tutorialDone && !d.achievements.primer_faro) d.achievements.primer_faro = d.since || dayKey();
     // v1.3: la Clasificatoria aparte pasa a ser la Liga 3 vs 3.
     if (d.play.mode === 'ranked') d.play.mode = RANKED_MODE;
     if (!MODES[d.play.mode] || !MODES[d.play.mode].lobby) d.play.mode = 'conquest';
@@ -521,6 +592,10 @@ class Lobby {
   // Opciones de la partida según la vista (Jugar, Personalizado o Tutorial).
   optsFor(sub = this.sub) {
     const P = this.P;
+    if (sub === 'weekly') {
+      const W = weeklyFor(Profile.now());
+      return { mode: W.mode, mapKind: W.mapKind, difficulty: W.difficulty, seed: W.seed, fog: !!W.fog, rule: W.rule || null, startCoins: W.startCoins || 0, weekly: W.week, weeklyName: W.name };
+    }
     if (sub === 'custom') {
       const c = P.custom;
       return {
@@ -540,7 +615,8 @@ class Lobby {
     const o = this.app.opts;
     const players = (x) => (x.custom ? x.custom.players + ':' + x.custom.teams : MODES[x.mode].players);
     const changed = first || o.mode !== next.mode || o.mapKind !== next.mapKind || players(o) !== players(next);
-    this.app.opts = { ...next, seed: o.seed || ((Math.random() * 1e9) | 0) };
+    // El desafío semanal trae su propia semilla (el mismo mapa toda la semana).
+    this.app.opts = { ...next, seed: next.seed || o.seed || ((Math.random() * 1e9) | 0) };
     if (changed && !first && this.app.loaded) this.app.makePreview();
   }
 
@@ -585,7 +661,9 @@ class Lobby {
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
-      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}${off('Top jugadores')}${off('Servidores')}
+      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
+      ${item('top', 'Top jugadores', `Temporada ${seasonOf(Profile.now()).no}`)}
+      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
     </nav>`;
   }
 
@@ -613,6 +691,8 @@ class Lobby {
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
     if (this.sub === 'campaign') return resume + this.campaignHtml();
     if (this.sub === 'ranks') return resume + this.ranksHtml();
+    if (this.sub === 'top') return resume + this.topHtml();
+    if (this.sub === 'weekly') return resume + this.weeklyHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -830,10 +910,9 @@ class Lobby {
           <span class="rar ${s.rar}">${RARITY[s.rar].name}</span><small>${eq === s.id ? 'Equipado' : 'Equipar'}</small></button>`).join('')}
         </div></div>`;
     }).join('');
-    const badges = P.badges.primerFaro ? '<span class="lvl">Insignia: Primer Faro</span>' : '<p>Termina el Tutorial para ganar la insignia «Primer Faro».</p>';
     return `<section class="lcard panel"><h2>Inventario</h2>
       <p>Toca un aspecto para equiparlo. Se ve en tus tropas y tu Núcleo en la próxima partida.</p>
-      ${rows}<h3>Insignias</h3>${badges}</section>`;
+      ${rows}</section>` + this.achievementsHtml();
   }
 
   // ---------- ventanas ----------
@@ -1014,6 +1093,13 @@ class Lobby {
       this.syncOpts();
       this.render();
     } else if (act === 'play') {
+      this.syncOpts();
+      app.startGame();
+    } else if (act === 'toptab') {
+      this.topTab = b.dataset.v;
+      this.render();
+    } else if (act === 'weekly') {
+      this.sub = 'weekly';
       this.syncOpts();
       app.startGame();
     } else if (act === 'ranked') {
@@ -1249,6 +1335,72 @@ class Lobby {
     return result;
   }
 
+  // ---------- logros (v1.4) ----------
+  checkAchievements(c) {
+    const P = c.P;
+    P.achievements = P.achievements || {};
+    const got = [];
+    for (const a of ACHIEVEMENTS) {
+      if (P.achievements[a.id]) continue;
+      let ok = false;
+      try { ok = !!a.done(c); } catch (err) { ok = false; }
+      if (ok) {
+        P.achievements[a.id] = dayKey();
+        got.push(a);
+      }
+    }
+    return got;
+  }
+
+  achievementsHtml() {
+    const P = this.P;
+    const A = P.achievements || {};
+    const n = ACHIEVEMENTS.filter((a) => A[a.id]).length;
+    return `<section class="lcard panel" id="logros"><h3>Logros · ${n} de ${ACHIEVEMENTS.length}</h3><div class="achs">${ACHIEVEMENTS.map((a) => {
+      const on = !!A[a.id];
+      const pr = !on && a.prog ? a.prog(P) : null;
+      return `<div class="ach ${on ? 'on' : ''}" data-ach="${a.id}"><span class="achbadge" style="--ac:${a.color}">${esc(a.icon)}</span>
+        <div><b>${esc(a.name)}</b><small>${esc(a.desc)}</small>
+        ${pr ? `<div class="xpbar"><i style="width:${Math.min(100, (pr[0] / pr[1]) * 100)}%"></i></div><small>${fmt(pr[0])} / ${fmt(pr[1])}</small>` : ''}
+        <em>${on ? `Logrado el ${prettyDate(A[a.id])}` : a.crystals ? `${a.crystals} cristales` : 'Insignia'}</em></div></div>`;
+    }).join('')}</div></section>`;
+  }
+
+  // ---------- Top jugadores (v1.4, tu documento pág. 20) ----------
+  topHtml() {
+    const P = this.P;
+    const tab = this.topTab || 'liga';
+    const rows = topRows(P, tab);
+    const me = rows.find((r) => r.me);
+    const S = seasonOf(Profile.now());
+    const tabs = [['liga', 'Liga 3 vs 3'], ['wins', 'Victorias'], ['islands', 'Islas tomadas']]
+      .map(([k, l]) => `<button type="button" data-act="toptab" data-v="${k}" class="${tab === k ? 'on' : ''}" aria-pressed="${tab === k}">${l}</button>`).join('');
+    const head = tab === 'liga' ? '<th>Rango</th><th>Puntos</th><th>% victorias</th>' : tab === 'wins' ? '<th>Victorias</th>' : '<th>Islas tomadas</th>';
+    const cells = (r) => (tab === 'liga' ? `<td>${rankName(r.points)}</td><td>${fmt(r.points)}</td><td>${Math.round(r.pct * 100)} %</td>`
+      : tab === 'wins' ? `<td>${fmt(r.wins)}</td>` : `<td>${fmt(r.islands)}</td>`);
+    const row = (r) => `<tr class="${r.me ? 'me' : ''}"><td>${r.pos <= 3 ? `<span class="medal m${r.pos}" aria-label="${['Oro', 'Plata', 'Bronce'][r.pos - 1]}">${r.pos}</span>` : r.pos}</td>
+      <td>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ' <small>(tú)</small>'}</td>${cells(r)}</tr>`;
+    const top = rows.slice(0, 10);
+    const body = top.map(row).join('') + (me.pos > 10 ? `<tr class="gap"><td colspan="5">···</td></tr>${row(me)}` : '');
+    return `<section class="lcard panel"><h2>Top jugadores · Temporada ${S.no}</h2>
+      <p class="queue">${tab === 'liga' ? 'Los mejores de la Liga 3 vs 3 en esta temporada.' : tab === 'wins' ? 'Más victorias (todos los modos).' : 'Más islas tomadas (todos los modos).'} Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.</p>
+      <div class="subtabs">${tabs}</div>
+      <table class="toptable" id="toptable"><thead><tr><th>#</th><th>Jugador</th>${head}</tr></thead><tbody>${body}</tbody></table></section>`;
+  }
+
+  // ---------- desafío semanal (v1.4) ----------
+  weeklyHtml() {
+    const W = weeklyFor(Profile.now());
+    const rec = (this.P.weekly || {})[W.week] || { tries: 0, won: false, best: null };
+    const days = Math.max(1, Math.round((W.next - new Date(Profile.now().getFullYear(), Profile.now().getMonth(), Profile.now().getDate())) / 86400000));
+    return `<section class="lcard panel weekly"><h2>Desafío semanal: ${esc(W.name)}</h2>
+      <div class="weeklybox"><img class="mapthumb" alt="" src="${mapThumb(W.mapKind, MODES[W.mode].players)}">
+      <div><p id="weekly-desc">${esc(W.desc)}</p>
+      <p class="queue">${esc(MODES[W.mode].name)} · ${esc(MAPS[W.mapKind].name)} · bots en ${DIFFICULTY[W.difficulty].name}. Es el mismo mapa toda la semana; cambia en ${days} ${days === 1 ? 'día' : 'días'} (el lunes).</p>
+      <p>${rec.won ? `<b>Ganado.</b> Tu mejor tiempo: <b id="weekly-best">${fmtTime(rec.best)}</b>. Intenta bajarlo.` : `Premio la primera vez que lo ganas: <b>${WEEKLY_CRYSTALS} cristales</b>.`} Intentos: ${rec.tries}.</p>
+      <div class="row"><button class="btn gold" type="button" data-act="weekly" id="btn-weekly">Jugar desafío</button></div></div></div></section>`;
+  }
+
   // ---------- Liga 3 vs 3 (v1.3) ----------
   // Gana +25, pierde −15. Recién llegado a un rango, la primera derrota no te baja de él.
   rankedResult(win, forfeit = false) {
@@ -1322,6 +1474,22 @@ class Lobby {
     P.stats.islands += me.stats.captures;
     P.stats.cores += me.coresKilled;
     P.stats.kills += me.stats.kills;
+    P.stats.trained = (P.stats.trained || 0) + me.stats.trained;
+    P.stats.faro = (P.stats.faro || 0) + (me.stats.faro || 0);
+    // v1.4: desafío semanal: mejor tiempo y premio la primera vez que lo ganas.
+    if (game.opts.weekly) {
+      const W = P.weekly[game.opts.weekly] || (P.weekly[game.opts.weekly] = { tries: 0, won: false, best: null });
+      W.tries++;
+      if (win) {
+        if (!W.won) {
+          out.crystals += WEEKLY_CRYSTALS;
+          out.lines.push(`Desafío semanal ganado: +${WEEKLY_CRYSTALS} cristales`);
+        }
+        W.won = true;
+        W.best = W.best === null ? Math.round(game.time) : Math.min(W.best, Math.round(game.time));
+        out.weekly = W.best;
+      }
+    }
     // Misiones: suman lo que hiciste en esta partida.
     const delta = { games: 1, wins: win ? 1 : 0, built: me.stats.built, trained: me.stats.trained, captures: me.stats.captures,
       kills: me.stats.kills, upgrades: me.stats.upgrades, cores: me.coresKilled };
@@ -1367,6 +1535,12 @@ class Lobby {
     if (game.mode.ranked && !game.opts.custom) {
       out.ranked = this.rankedResult(win);
       out.lines.push(this.rankedLine(out.ranked));
+    }
+    // v1.4: logros nuevos de esta partida.
+    out.achievements = this.checkAchievements({ P, g: game, me, win });
+    for (const a of out.achievements) {
+      out.crystals += a.crystals;
+      out.lines.push(`Logro: ${a.name}${a.crystals ? ` (+${a.crystals} cristales)` : ''}`);
     }
     Profile.addXp(out.xp);
     P.crystals += out.crystals;

@@ -765,6 +765,32 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 .wheel-opt { min-height: 52px; }
 /* v1.4: estrellas de las tropas veteranas en la ficha. */
 .vetstars { color: #ffd36a; font-size: 0.85em; letter-spacing: 1px; }
+/* v1.4: logros, Top jugadores y desafío semanal. */
+.achs { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.ach { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: start; padding: 10px; border-radius: 10px; background: var(--raise); opacity: 0.7; }
+.ach.on { opacity: 1; box-shadow: inset 0 0 0 1px rgba(242,171,56,0.45); }
+.ach b { display: block; font-size: 14px; }
+.ach small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.ach em { display: block; font-style: normal; font-size: 12px; color: var(--gold); margin-top: 4px; }
+.ach .xpbar { margin-top: 6px; }
+.achbadge { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 15px; color: #10161d; background: var(--ac); border: 3px solid rgba(255,255,255,0.25); filter: grayscale(1) brightness(0.6); }
+.ach.on .achbadge { filter: none; }
+.toptable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.toptable th, .toptable td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+.toptable th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.toptable td small { color: var(--muted); font-size: 11px; }
+.toptable tr.me td { background: rgba(242,171,56,0.14); font-weight: 700; }
+.toptable tr.gap td { text-align: center; color: var(--muted); }
+.medal { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-weight: 700; color: #10161d; }
+.medal.m1 { background: #f2c94c; } .medal.m2 { background: #c0c7cf; } .medal.m3 { background: #c98a4b; }
+.weeklybox { display: grid; grid-template-columns: 160px 1fr; gap: 14px; align-items: start; }
+.weeklybox .mapthumb { width: 160px; height: auto; border-radius: 10px; }
+@media (max-width: 560px) { .weeklybox { grid-template-columns: 1fr; } .weeklybox .mapthumb { width: 100%; max-width: 240px; } .toptable { font-size: 12.5px; } .toptable th, .toptable td { padding: 7px 4px; } }
+/* v1.4: letra grande en los paneles del juego (el panel conserva su tamaño y se desplaza). */
+body.bigtext #selpanel > *, body.bigtext #buildpanel .blist, body.bigtext #buildpanel .tabs, body.bigtext #objlist,
+body.bigtext #chatpop > *, body.bigtext #score > *, body.bigtext #econ > *, body.bigtext #pause .panel > *, body.bigtext .toast { zoom: 1.15; }
+body.bigtext .coach-tip { font-size: 15px; width: 250px; }
+.seg3.a11y { grid-template-columns: 1fr; }
 /* «+0/10 s» no se parte en dos líneas. */
 #energyRate, #income { white-space: nowrap; }
 </style>
@@ -925,6 +951,15 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
       <p class="small-note" id="quality-note"></p>
     </div>
     <div>
+      <div class="lbl" style="margin-bottom:6px">Para tu iPad</div>
+      <div class="seg3 a11y">
+        <button class="btn" type="button" data-battery="toggle" id="btn-battery" aria-pressed="false">Ahorro de batería: no</button>
+        <button class="btn" type="button" data-cvd="toggle" id="btn-cvd" aria-pressed="false">Colores para daltonismo: no</button>
+        <button class="btn" type="button" data-bigtext="toggle" id="btn-bigtext" aria-pressed="false">Letra grande: no</button>
+      </div>
+      <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa.</p>
+    </div>
+    <div>
       <div class="lbl" style="margin-bottom:6px">Decoración de temporada</div>
       <div class="seg3 seg4">
         <button class="btn" type="button" data-season="auto">Automática</button>
@@ -1039,6 +1074,8 @@ const KING_TIME = 180;
 const EMERGENCY = { at: 0.25, time: 20 };
 const DOME = { cost: 6000, hp: 3000, range: 3, recover: 60 };
 // Misil nuclear (v0.9): lo lanza un AIR DEFENSE de nivel 4. Muy caro, recarga larga y aviso al rival.
+// v1.4: ahorro de batería (unos 30 cuadros por segundo y menos partículas).
+const BATTERY = { minFrameMs: 31, fx: 0.3 };
 // v1.4: tropas veteranas. Estrellas por eliminaciones; cada estrella da +10 % de vida máxima y +8 % de daño.
 const VETERAN = { kills: [3, 8, 15], hp: 0.10, dmg: 0.08 };
 // v1.4: reparación sola (Constructores e Ingenieros libres) y producción continua.
@@ -1073,6 +1110,21 @@ const TERRAIN = {
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
 const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
+// v1.4: colores para daltonismo (paleta de Okabe e Ito, que se distingue con los tres tipos de
+// daltonismo) y formas distintas para cada jugador en el minimapa.
+const BASE_COLORS = PLAYER_COLORS.slice();
+const BASE_NAMES = PLAYER_NAMES.slice();
+const CVD_COLORS = [0x0072b2, 0xd55e00, 0xe69f00, 0xcc79a7, 0xf0e442, 0x56b4e9];
+const CVD_NAMES = ['Tú', 'Bermellón', 'Naranja', 'Malva', 'Amarillo', 'Celeste'];
+const PLAYER_SHAPES = ['circle', 'square', 'triangle', 'diamond', 'star', 'cross'];
+function applyPalette(cvd) {
+  const cols = cvd ? CVD_COLORS : BASE_COLORS;
+  const names = cvd ? CVD_NAMES : BASE_NAMES;
+  for (let i = 0; i < PLAYER_COLORS.length; i++) {
+    PLAYER_COLORS[i] = cols[i];
+    PLAYER_NAMES[i] = names[i];
+  }
+}
 
 // Multiplicadores de daño por tipo de objetivo:
 // inf = infantería, veh = vehículo, ship = barco, sub = submarino, air = aéreo, bld = edificio.
@@ -3100,6 +3152,8 @@ class Game {
     this.speed = mode.speed || (opts.turbo ? 2 : 1);
     this.fog = !!(opts.fog || mode.fog);
     this.creator = !!opts.creator;
+    // v1.4: regla especial del desafío semanal ('nofactory', 'noair'...).
+    this.rule = opts.rule || null;
     this.elimOrder = [];
     this._assignT = 0;
     this.time = 0;
@@ -3128,7 +3182,7 @@ class Game {
     for (let i = 0; i < mode.players; i++) {
       this.players.push({
         id: i, team: mode.teams[i], team0: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
-        coins: mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
+        coins: (i === 0 && opts.startCoins) || mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
         human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
         emergencyUsed: false, dome: null,
         stats: { built: 0, trained: 0, lost: 0, kills: 0, earned: 0, captures: 0, upgrades: 0, hitBy: {} },
@@ -3624,6 +3678,11 @@ class Game {
     const c = this.cells[ci];
     const p = this.players[pid];
     if (!c) return 'Casilla no válida';
+    // v1.4: reglas del desafío semanal (solo para ti).
+    if (pid === 0 && this.rule) {
+      if (this.rule === 'nofactory' && type === 'factory') return 'Desafío: sin Fábrica';
+      if (this.rule === 'noair' && (type === 'helipad' || type === 'airport')) return 'Desafío: sin Helipuerto ni Aeropuerto';
+    }
     // Las estructuras de mar se ponen en su lugar del mar aunque esté fuera de tu territorio (punto 15).
     if (def.sea) {
       if (c.owner >= 0 && c.owner !== pid && this.isEnemy(c.owner, pid)) return 'Es territorio enemigo';
@@ -4080,6 +4139,12 @@ class Game {
     const out = t.cargo;
     t.cargo = [];
     if (t.owner === 0) this.emit('sound', { name: 'order' });
+    // v1.4: desembarco en otra isla (para el logro «Lobo de mar»).
+    const home = this.players[t.owner].core && this.cells[this.players[t.owner].core.cell];
+    if (t.mover === 'sea' && home && out.some((u) => u.mover === 'land' && this.cells[u.cell].comp !== home.comp)) {
+      const st = this.players[t.owner].stats;
+      st.landings = (st.landings || 0) + 1;
+    }
     return out;
   }
 
@@ -4531,6 +4596,7 @@ class Game {
     this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
     if (killer >= 0 && killer !== e.owner) this.players[killer].stats.kills++;
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
+    if (e.kind === 'bld') this.players[e.owner].stats.lostBld = (this.players[e.owner].stats.lostBld || 0) + 1;
     if (e.kind === 'bld' && e.owner === 0 && this.camp && !this.over) this.camp.lostBld++;
     if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
@@ -4815,6 +4881,7 @@ class Game {
             pt.prog = 1;
             pt.owner = pid;
             this.players[pid].stats.captures++;
+            if (pt.type === 'faro') this.players[pid].stats.faro = (this.players[pid].stats.faro || 0) + 1;
             this.territoryDirty = true;
             this.refreshEconomy();
             const what = pt.type === 'faro' ? 'el Faro' : 'una Bandera';
@@ -9007,10 +9074,18 @@ class Renderer {
       ctx.fill();
       ctx.stroke();
     }
+    // v1.4: con «Colores para daltonismo», cada jugador tiene además su forma (Núcleo y tropas).
+    const cvd = !!(window.FARO && window.FARO.cvd);
     for (const bl of g.buildings) {
       ctx.fillStyle = hexColor(PLAYER_COLORS[bl.owner]);
       const x = T.ox + bl.x * T.s;
       const y = T.oz + bl.z * T.s;
+      if (cvd && bl.type === 'core') {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        minimapShape(ctx, PLAYER_SHAPES[bl.owner], x, y, 6.5);
+        continue;
+      }
       const s = bl.type === 'core' ? 7 : 4;
       ctx.fillRect(x - s / 2, y - s / 2, s, s);
       if (bl.type === 'core') {
@@ -9022,6 +9097,12 @@ class Renderer {
     for (const u of g.units) {
       if (u.inside || (!u.visible && g.players[u.owner].team !== myTeam)) continue;
       ctx.fillStyle = hexColor(PLAYER_COLORS[u.owner]);
+      if (cvd) {
+        ctx.strokeStyle = 'rgba(10,14,20,0.8)';
+        ctx.lineWidth = 0.8;
+        minimapShape(ctx, PLAYER_SHAPES[u.owner], T.ox + u.x * T.s, T.oz + u.z * T.s, 2.6);
+        continue;
+      }
       ctx.beginPath();
       ctx.arc(T.ox + u.x * T.s, T.oz + u.z * T.s, 1.8, 0, Math.PI * 2);
       ctx.fill();
@@ -9110,6 +9191,29 @@ class Renderer {
     this.overlayHalf = g.units.length > (this.quality === 'high' ? 120 : 40);
     if (!this.overlayHalf || this.ovFrame % 2 === 0) this.drawOverlay(selection);
   }
+}
+
+// v1.4: forma de cada jugador en el minimapa (modo para daltonismo).
+function minimapShape(ctx, shape, x, y, r) {
+  ctx.beginPath();
+  if (shape === 'square') ctx.rect(x - r * 0.85, y - r * 0.85, r * 1.7, r * 1.7);
+  else if (shape === 'triangle') { ctx.moveTo(x, y - r); ctx.lineTo(x + r, y + r * 0.8); ctx.lineTo(x - r, y + r * 0.8); ctx.closePath(); }
+  else if (shape === 'diamond') { ctx.moveTo(x, y - r); ctx.lineTo(x + r, y); ctx.lineTo(x, y + r); ctx.lineTo(x - r, y); ctx.closePath(); }
+  else if (shape === 'star') {
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      const rr = i % 2 ? r * 0.45 : r;
+      if (i) ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); else ctx.moveTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+    }
+    ctx.closePath();
+  } else if (shape === 'cross') {
+    const t = r * 0.38;
+    ctx.moveTo(x - t, y - r); ctx.lineTo(x + t, y - r); ctx.lineTo(x + t, y - t); ctx.lineTo(x + r, y - t); ctx.lineTo(x + r, y + t);
+    ctx.lineTo(x + t, y + t); ctx.lineTo(x + t, y + r); ctx.lineTo(x - t, y + r); ctx.lineTo(x - t, y + t); ctx.lineTo(x - r, y + t);
+    ctx.lineTo(x - r, y - t); ctx.lineTo(x - t, y - t); ctx.closePath();
+  } else ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
 }
 
 // ---- 061-fx.js ----
@@ -10120,6 +10224,11 @@ class UI {
     this.updateMusicBtns();
     document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
     this.updateSeasonBtns();
+    // v1.4: ahorro de batería, daltonismo y letra grande.
+    $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
+    $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
+    $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
+    this.updateA11yBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
         app.sound.toggle();
@@ -10253,6 +10362,20 @@ class UI {
     mm.addEventListener('pointermove', (e) => { if (this.mmDrag) moveCam(e); });
     mm.addEventListener('pointerup', () => { this.mmDrag = false; });
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
+  }
+
+  updateA11yBtns() {
+    const app = this.app;
+    const set = (id, on, label) => {
+      const b = $(id);
+      if (!b) return;
+      b.classList.toggle('gold', !!on);
+      b.setAttribute('aria-pressed', String(!!on));
+      b.textContent = `${label}: ${on ? 'sí' : 'no'}`;
+    };
+    set('btn-battery', app.battery, 'Ahorro de batería');
+    set('btn-cvd', app.cvd, 'Colores para daltonismo');
+    set('btn-bigtext', app.bigText, 'Letra grande');
   }
 
   updateSeasonBtns() {
@@ -12066,15 +12189,6 @@ function skinSlotOf(kind, type) {
   return null;
 }
 
-function hashStr(str) {
-  let h = 2166136261;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
 function dayKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
@@ -12165,6 +12279,82 @@ function rankedDifficulty(points) {
   return rankIndex(points) >= 2 ? 'hard' : 'normal';
 }
 
+// v1.4: logros. Cada uno con su insignia (inicial y color propios) y cristales al lograrlo.
+// done(c): c = { P, g, me, win } al terminar una partida. prog(P): [actual, meta] para los acumulados.
+const ACHIEVEMENTS = [
+  { id: 'primer_faro', name: 'Primer Faro', desc: 'Termina el Tutorial.', icon: 'PF', color: '#f2ab38', crystals: 0,
+    done: (c) => c.P.tutorialDone },
+  { id: 'intacto', name: 'Sin un rasguño', desc: 'Gana una partida sin perder ningún edificio.', icon: 'SR', color: '#5ee07a', crystals: 100,
+    done: (c) => c.win && !c.g.mode.tutorial && c.g.time >= 180 && !(c.me.stats.lostBld > 0) },
+  { id: 'guardian', name: 'Guardián del Faro', desc: 'Captura el Faro 3 veces.', icon: 'GF', color: '#ffd36a', crystals: 100,
+    done: (c) => (c.P.stats.faro || 0) >= 3, prog: (P) => [P.stats.faro || 0, 3] },
+  { id: 'lobo_mar', name: 'Lobo de mar', desc: 'Desembarca tropas en otra isla con una Barcaza.', icon: 'LM', color: '#7fc8ff', crystals: 75,
+    done: (c) => (c.me.stats.landings || 0) > 0 },
+  { id: 'veterano', name: 'Veterano', desc: 'Consigue una tropa con 3 estrellas.', icon: '★', color: '#ffb347', crystals: 100,
+    done: (c) => (c.me.stats.bestVet || 0) >= 3 },
+  { id: 'incansable', name: 'Constructor incansable', desc: 'Termina 25 edificios en una partida.', icon: 'CI', color: '#c0c7cf', crystals: 75,
+    done: (c) => c.me.stats.built >= 25 },
+  { id: 'cien', name: 'Ejército de cien', desc: 'Entrena 100 tropas (en total).', icon: '100', color: '#b87333', crystals: 100,
+    done: (c) => (c.P.stats.trained || 0) >= 100, prog: (P) => [P.stats.trained || 0, 100] },
+  { id: 'diez', name: 'Diez victorias', desc: 'Gana 10 partidas.', icon: '10', color: '#f2c94c', crystals: 150,
+    done: (c) => c.P.stats.wins >= 10, prog: (P) => [P.stats.wins, 10] },
+  { id: 'expres', name: 'Victoria exprés', desc: 'Gana una partida en menos de 10 minutos.', icon: 'VE', color: '#ef8a5a', crystals: 100,
+    done: (c) => c.win && !c.g.mode.tutorial && !c.g.camp && c.g.time < 600 },
+  { id: 'cielo', name: 'Cielo despejado', desc: 'Derriba 10 aeronaves en una partida.', icon: 'CD', color: '#9fd3ff', crystals: 100,
+    done: (c) => (c.me.stats.airKills || 0) >= 10 },
+  { id: 'sargento', name: 'Sargento de la Liga', desc: 'Llega a Sargento (700 puntos) en la Liga 3 vs 3.', icon: 'S', color: '#c0c7cf', crystals: 150,
+    done: (c) => (c.P.ranked.best || 0) >= 700, prog: (P) => [Math.min(P.ranked.best || 0, 700), 700] },
+  { id: 'semanal', name: 'Desafío de la semana', desc: 'Gana un desafío semanal.', icon: 'DS', color: '#e88bd0', crystals: 100,
+    done: (c) => c.win && !!c.g.opts.weekly },
+];
+const ACH_BY_ID = Object.fromEntries(ACHIEVEMENTS.map((a) => [a.id, a]));
+
+// v1.4: desafío semanal. Cambia los lunes; mapa, semilla y una regla fijos toda la semana.
+const WEEKLY_CHALLENGES = [
+  { id: 'nofactory', name: 'Sin fábricas', desc: 'No puedes construir la Fábrica: gana con soldados, barcos y aeronaves.', mode: 'conquest', mapKind: 'continent', difficulty: 'normal', rule: 'nofactory' },
+  { id: 'noair', name: 'Cielo cerrado', desc: 'Sin Helipuerto ni Aeropuerto: todo se decide en tierra y mar.', mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal', rule: 'noair' },
+  { id: 'poor', name: 'Bolsillos vacíos', desc: 'Empiezas con 800 monedas en vez de 2.000.', mode: 'conquest', mapKind: 'mesa', difficulty: 'normal', startCoins: 800 },
+  { id: 'fog', name: 'Niebla de guerra', desc: 'Niebla y bots en Difícil.', mode: 'conquest', mapKind: 'bay', difficulty: 'hard', fog: true },
+  { id: 'sea', name: 'Todo por mar', desc: 'Mar abierto: sin puentes, cada isla se toma por mar o por aire.', mode: 'conquest', mapKind: 'open', difficulty: 'normal' },
+  { id: 'duel', name: 'Duelo en las dunas', desc: 'Uno contra uno en Dunas Rojas, contra un bot en Difícil.', mode: 'duel', mapKind: 'dunes', difficulty: 'hard' },
+];
+const WEEKLY_CRYSTALS = 150;
+function weekNumber(d = new Date()) {
+  return Math.floor((dayNum(dayKey(d)) + 3) / 7);
+}
+function weeklyFor(d = new Date()) {
+  const n = weekNumber(d);
+  const ch = WEEKLY_CHALLENGES[n % WEEKLY_CHALLENGES.length];
+  const next = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  next.setDate(next.getDate() + ((8 - next.getDay()) % 7 || 7));
+  return { ...ch, week: 'w' + n, seed: 90000 + n * 37, next };
+}
+
+// v1.4: Top jugadores (tu documento, pág. 20): tú y comandantes bot, por temporada.
+const TOP_PREFIX = ['Brisa', 'Coral', 'Roca', 'Marea', 'Ancla', 'Bruma', 'Duna', 'Ámbar', 'Lince', 'Ola'];
+const TOP_SUFFIX = ['Norte', 'Sur', 'Veloz', 'Real', 'Azul', 'Roja', 'Gris', 'Dorada', 'Firme', 'Alta'];
+function topRows(P, tab) {
+  const S = seasonOf(Profile.now());
+  const rng = mulberry32((P.seed || 1) + 777 + S.no * 13);
+  const games = (P.ranked && P.ranked.games) || 0;
+  const liga = ladderRows(P).filter((r) => r.bot);
+  const extra = [];
+  for (let i = 0; i < 30; i++) {
+    const name = `${TOP_PREFIX[Math.floor(rng() * 10)]}${TOP_SUFFIX[Math.floor(rng() * 10)]}_${10 + Math.floor(rng() * 89)}`;
+    extra.push({ name, points: Math.max(0, Math.round(40 + rng() * 2500 + Math.sin(games + i) * 15)), bot: true });
+  }
+  const bots = [...liga, ...extra].map((r, i) => {
+    const r2 = mulberry32((P.seed || 1) + 91 + i * 7 + S.no);
+    const pct = 0.42 + Math.min(0.32, r.points / 8000) + r2() * 0.06;
+    const ranked = Math.round(20 + r.points / 9 + r2() * 30);
+    return { name: r.name, bot: true, points: r.points, pct, wins: Math.round(ranked * pct + r2() * 120), islands: Math.round(r2() * 900 + r.points / 6) };
+  });
+  const R = P.ranked;
+  const me = { name: 'Tú', me: true, points: R.points, pct: R.games ? R.wins / R.games : 0, wins: P.stats.wins, islands: P.stats.islands };
+  const key = tab === 'wins' ? 'wins' : tab === 'islands' ? 'islands' : 'points';
+  return [...bots, me].sort((a, b) => b[key] - a[key] || (a.me ? -1 : 1)).map((r, i) => ({ ...r, pos: i + 1 }));
+}
+
 const Profile = {
   data: null,
   memoryOnly: false,
@@ -12172,7 +12362,8 @@ const Profile = {
   defaults() {
     return {
       v: 1, seed: (Math.random() * 1e9) | 0, since: dayKey(), xp: 0, crystals: 0,
-      stats: { games: 0, wins: 0, islands: 0, cores: 0, kills: 0 },
+      stats: { games: 0, wins: 0, islands: 0, cores: 0, kills: 0, trained: 0, faro: 0 },
+      achievements: {}, weekly: {},
       owned: {}, equipped: { inf: null, veh: null, sea: null, core: null }, badges: {},
       tutorialDone: false, pass: {}, daily: { idx: 0, last: null, lost: 0 }, codes: {},
       missions: { day: null, daily: [], rerolled: false, week: null, weekly: [] },
@@ -12200,6 +12391,9 @@ const Profile = {
     } catch (err) {
       this.memoryOnly = true;
     }
+    // v1.4: logros; quien ya terminó el Tutorial tiene «Primer Faro».
+    d.achievements = d.achievements || {};
+    if (d.tutorialDone && !d.achievements.primer_faro) d.achievements.primer_faro = d.since || dayKey();
     // v1.3: la Clasificatoria aparte pasa a ser la Liga 3 vs 3.
     if (d.play.mode === 'ranked') d.play.mode = RANKED_MODE;
     if (!MODES[d.play.mode] || !MODES[d.play.mode].lobby) d.play.mode = 'conquest';
@@ -12448,6 +12642,10 @@ class Lobby {
   // Opciones de la partida según la vista (Jugar, Personalizado o Tutorial).
   optsFor(sub = this.sub) {
     const P = this.P;
+    if (sub === 'weekly') {
+      const W = weeklyFor(Profile.now());
+      return { mode: W.mode, mapKind: W.mapKind, difficulty: W.difficulty, seed: W.seed, fog: !!W.fog, rule: W.rule || null, startCoins: W.startCoins || 0, weekly: W.week, weeklyName: W.name };
+    }
     if (sub === 'custom') {
       const c = P.custom;
       return {
@@ -12467,7 +12665,8 @@ class Lobby {
     const o = this.app.opts;
     const players = (x) => (x.custom ? x.custom.players + ':' + x.custom.teams : MODES[x.mode].players);
     const changed = first || o.mode !== next.mode || o.mapKind !== next.mapKind || players(o) !== players(next);
-    this.app.opts = { ...next, seed: o.seed || ((Math.random() * 1e9) | 0) };
+    // El desafío semanal trae su propia semilla (el mismo mapa toda la semana).
+    this.app.opts = { ...next, seed: next.seed || o.seed || ((Math.random() * 1e9) | 0) };
     if (changed && !first && this.app.loaded) this.app.makePreview();
   }
 
@@ -12512,7 +12711,9 @@ class Lobby {
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
-      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}${off('Top jugadores')}${off('Servidores')}
+      ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
+      ${item('top', 'Top jugadores', `Temporada ${seasonOf(Profile.now()).no}`)}
+      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
     </nav>`;
   }
 
@@ -12540,6 +12741,8 @@ class Lobby {
     if (this.sub === 'tutorial') return resume + this.tutorialHtml();
     if (this.sub === 'campaign') return resume + this.campaignHtml();
     if (this.sub === 'ranks') return resume + this.ranksHtml();
+    if (this.sub === 'top') return resume + this.topHtml();
+    if (this.sub === 'weekly') return resume + this.weeklyHtml();
     const m = MODES[P.play.mode];
     const diffs = Object.entries(DIFFICULTY).map(([k, d]) => `<button type="button" data-act="diff" data-v="${k}" class="${P.play.difficulty === k ? 'on' : ''}">${d.name}</button>`).join('');
     const st = P.stats;
@@ -12757,10 +12960,9 @@ class Lobby {
           <span class="rar ${s.rar}">${RARITY[s.rar].name}</span><small>${eq === s.id ? 'Equipado' : 'Equipar'}</small></button>`).join('')}
         </div></div>`;
     }).join('');
-    const badges = P.badges.primerFaro ? '<span class="lvl">Insignia: Primer Faro</span>' : '<p>Termina el Tutorial para ganar la insignia «Primer Faro».</p>';
     return `<section class="lcard panel"><h2>Inventario</h2>
       <p>Toca un aspecto para equiparlo. Se ve en tus tropas y tu Núcleo en la próxima partida.</p>
-      ${rows}<h3>Insignias</h3>${badges}</section>`;
+      ${rows}</section>` + this.achievementsHtml();
   }
 
   // ---------- ventanas ----------
@@ -12941,6 +13143,13 @@ class Lobby {
       this.syncOpts();
       this.render();
     } else if (act === 'play') {
+      this.syncOpts();
+      app.startGame();
+    } else if (act === 'toptab') {
+      this.topTab = b.dataset.v;
+      this.render();
+    } else if (act === 'weekly') {
+      this.sub = 'weekly';
       this.syncOpts();
       app.startGame();
     } else if (act === 'ranked') {
@@ -13176,6 +13385,72 @@ class Lobby {
     return result;
   }
 
+  // ---------- logros (v1.4) ----------
+  checkAchievements(c) {
+    const P = c.P;
+    P.achievements = P.achievements || {};
+    const got = [];
+    for (const a of ACHIEVEMENTS) {
+      if (P.achievements[a.id]) continue;
+      let ok = false;
+      try { ok = !!a.done(c); } catch (err) { ok = false; }
+      if (ok) {
+        P.achievements[a.id] = dayKey();
+        got.push(a);
+      }
+    }
+    return got;
+  }
+
+  achievementsHtml() {
+    const P = this.P;
+    const A = P.achievements || {};
+    const n = ACHIEVEMENTS.filter((a) => A[a.id]).length;
+    return `<section class="lcard panel" id="logros"><h3>Logros · ${n} de ${ACHIEVEMENTS.length}</h3><div class="achs">${ACHIEVEMENTS.map((a) => {
+      const on = !!A[a.id];
+      const pr = !on && a.prog ? a.prog(P) : null;
+      return `<div class="ach ${on ? 'on' : ''}" data-ach="${a.id}"><span class="achbadge" style="--ac:${a.color}">${esc(a.icon)}</span>
+        <div><b>${esc(a.name)}</b><small>${esc(a.desc)}</small>
+        ${pr ? `<div class="xpbar"><i style="width:${Math.min(100, (pr[0] / pr[1]) * 100)}%"></i></div><small>${fmt(pr[0])} / ${fmt(pr[1])}</small>` : ''}
+        <em>${on ? `Logrado el ${prettyDate(A[a.id])}` : a.crystals ? `${a.crystals} cristales` : 'Insignia'}</em></div></div>`;
+    }).join('')}</div></section>`;
+  }
+
+  // ---------- Top jugadores (v1.4, tu documento pág. 20) ----------
+  topHtml() {
+    const P = this.P;
+    const tab = this.topTab || 'liga';
+    const rows = topRows(P, tab);
+    const me = rows.find((r) => r.me);
+    const S = seasonOf(Profile.now());
+    const tabs = [['liga', 'Liga 3 vs 3'], ['wins', 'Victorias'], ['islands', 'Islas tomadas']]
+      .map(([k, l]) => `<button type="button" data-act="toptab" data-v="${k}" class="${tab === k ? 'on' : ''}" aria-pressed="${tab === k}">${l}</button>`).join('');
+    const head = tab === 'liga' ? '<th>Rango</th><th>Puntos</th><th>% victorias</th>' : tab === 'wins' ? '<th>Victorias</th>' : '<th>Islas tomadas</th>';
+    const cells = (r) => (tab === 'liga' ? `<td>${rankName(r.points)}</td><td>${fmt(r.points)}</td><td>${Math.round(r.pct * 100)} %</td>`
+      : tab === 'wins' ? `<td>${fmt(r.wins)}</td>` : `<td>${fmt(r.islands)}</td>`);
+    const row = (r) => `<tr class="${r.me ? 'me' : ''}"><td>${r.pos <= 3 ? `<span class="medal m${r.pos}" aria-label="${['Oro', 'Plata', 'Bronce'][r.pos - 1]}">${r.pos}</span>` : r.pos}</td>
+      <td>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ' <small>(tú)</small>'}</td>${cells(r)}</tr>`;
+    const top = rows.slice(0, 10);
+    const body = top.map(row).join('') + (me.pos > 10 ? `<tr class="gap"><td colspan="5">···</td></tr>${row(me)}` : '');
+    return `<section class="lcard panel"><h2>Top jugadores · Temporada ${S.no}</h2>
+      <p class="queue">${tab === 'liga' ? 'Los mejores de la Liga 3 vs 3 en esta temporada.' : tab === 'wins' ? 'Más victorias (todos los modos).' : 'Más islas tomadas (todos los modos).'} Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.</p>
+      <div class="subtabs">${tabs}</div>
+      <table class="toptable" id="toptable"><thead><tr><th>#</th><th>Jugador</th>${head}</tr></thead><tbody>${body}</tbody></table></section>`;
+  }
+
+  // ---------- desafío semanal (v1.4) ----------
+  weeklyHtml() {
+    const W = weeklyFor(Profile.now());
+    const rec = (this.P.weekly || {})[W.week] || { tries: 0, won: false, best: null };
+    const days = Math.max(1, Math.round((W.next - new Date(Profile.now().getFullYear(), Profile.now().getMonth(), Profile.now().getDate())) / 86400000));
+    return `<section class="lcard panel weekly"><h2>Desafío semanal: ${esc(W.name)}</h2>
+      <div class="weeklybox"><img class="mapthumb" alt="" src="${mapThumb(W.mapKind, MODES[W.mode].players)}">
+      <div><p id="weekly-desc">${esc(W.desc)}</p>
+      <p class="queue">${esc(MODES[W.mode].name)} · ${esc(MAPS[W.mapKind].name)} · bots en ${DIFFICULTY[W.difficulty].name}. Es el mismo mapa toda la semana; cambia en ${days} ${days === 1 ? 'día' : 'días'} (el lunes).</p>
+      <p>${rec.won ? `<b>Ganado.</b> Tu mejor tiempo: <b id="weekly-best">${fmtTime(rec.best)}</b>. Intenta bajarlo.` : `Premio la primera vez que lo ganas: <b>${WEEKLY_CRYSTALS} cristales</b>.`} Intentos: ${rec.tries}.</p>
+      <div class="row"><button class="btn gold" type="button" data-act="weekly" id="btn-weekly">Jugar desafío</button></div></div></div></section>`;
+  }
+
   // ---------- Liga 3 vs 3 (v1.3) ----------
   // Gana +25, pierde −15. Recién llegado a un rango, la primera derrota no te baja de él.
   rankedResult(win, forfeit = false) {
@@ -13249,6 +13524,22 @@ class Lobby {
     P.stats.islands += me.stats.captures;
     P.stats.cores += me.coresKilled;
     P.stats.kills += me.stats.kills;
+    P.stats.trained = (P.stats.trained || 0) + me.stats.trained;
+    P.stats.faro = (P.stats.faro || 0) + (me.stats.faro || 0);
+    // v1.4: desafío semanal: mejor tiempo y premio la primera vez que lo ganas.
+    if (game.opts.weekly) {
+      const W = P.weekly[game.opts.weekly] || (P.weekly[game.opts.weekly] = { tries: 0, won: false, best: null });
+      W.tries++;
+      if (win) {
+        if (!W.won) {
+          out.crystals += WEEKLY_CRYSTALS;
+          out.lines.push(`Desafío semanal ganado: +${WEEKLY_CRYSTALS} cristales`);
+        }
+        W.won = true;
+        W.best = W.best === null ? Math.round(game.time) : Math.min(W.best, Math.round(game.time));
+        out.weekly = W.best;
+      }
+    }
     // Misiones: suman lo que hiciste en esta partida.
     const delta = { games: 1, wins: win ? 1 : 0, built: me.stats.built, trained: me.stats.trained, captures: me.stats.captures,
       kills: me.stats.kills, upgrades: me.stats.upgrades, cores: me.coresKilled };
@@ -13294,6 +13585,12 @@ class Lobby {
     if (game.mode.ranked && !game.opts.custom) {
       out.ranked = this.rankedResult(win);
       out.lines.push(this.rankedLine(out.ranked));
+    }
+    // v1.4: logros nuevos de esta partida.
+    out.achievements = this.checkAchievements({ P, g: game, me, win });
+    for (const a of out.achievements) {
+      out.crystals += a.crystals;
+      out.lines.push(`Logro: ${a.name}${a.crystals ? ` (+${a.crystals} cristales)` : ''}`);
     }
     Profile.addXp(out.xp);
     P.crystals += out.crystals;
@@ -13726,7 +14023,13 @@ const App = {
       if (q === 'high' || q === 'low' || q === 'auto') this.qualityPref = q;
       this.showFps = localStorage.getItem('faro-fps') === 'on';
       if (localStorage.getItem('faro-formation') === 'line') this.formation = 'line';
+      // v1.4: ahorro de batería, colores para daltonismo y letra grande.
+      this.battery = localStorage.getItem('faro-battery') === '1';
+      this.cvd = localStorage.getItem('faro-cvd') === '1';
+      this.bigText = localStorage.getItem('faro-bigtext') === '1';
     } catch (err) { /* sin almacenamiento */ }
+    applyPalette(this.cvd);
+    document.body.classList.toggle('bigtext', !!this.bigText);
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -13787,8 +14090,46 @@ const App = {
 
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
-    this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.quality);
+    this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
     this.renderer.applySeason(this.season());
+    if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
+  },
+
+  // v1.4: ahorro de batería: 30 cuadros por segundo, calidad «más fluido» y menos partículas.
+  setBattery(on) {
+    this.battery = !!on;
+    try { localStorage.setItem('faro-battery', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    if (this.renderer) {
+      this.renderer.applyQuality(on ? 'low' : this.quality);
+      if (this.renderer.fxs) this.renderer.fxs.scale = on ? BATTERY.fx : this.quality === 'high' ? 1 : 0.5;
+    }
+    this.ui.updateA11yBtns();
+  },
+
+  // v1.4: colores para daltonismo. Cambia los colores (y los nombres que dicen el color) de los
+  // jugadores; en una partida, vuelve a dibujar todo con los colores nuevos.
+  setCvd(on) {
+    this.cvd = !!on;
+    try { localStorage.setItem('faro-cvd', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    const oldNames = PLAYER_NAMES.slice();
+    applyPalette(this.cvd);
+    for (const g of [this.game, this.suspended]) {
+      if (!g || !g.players) continue;
+      for (const p of g.players) {
+        p.color = PLAYER_COLORS[p.id];
+        if (p.name === oldNames[p.id]) p.name = PLAYER_NAMES[p.id];
+      }
+    }
+    if (this.game && this.renderer) this.newRenderer(this.game);
+    this.ui.playersSig = '';
+    this.ui.updateA11yBtns();
+  },
+
+  setBigText(on) {
+    this.bigText = !!on;
+    try { localStorage.setItem('faro-bigtext', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    document.body.classList.toggle('bigtext', this.bigText);
+    this.ui.updateA11yBtns();
   },
 
   // v1.2: temporada activa: la que pone la fecha, o la que elegiste en la pausa.
@@ -13865,6 +14206,11 @@ const App = {
     this.dropUnfinished();
     this.game = new Game(this.gameOpts());
     this.enterGame();
+    // v1.4: el desafío semanal avisa su regla al empezar.
+    if (this.game.opts.weekly) {
+      const W = weeklyFor(Profile.now());
+      this.ui.toast(`Desafío semanal: ${W.name}. ${W.desc}`, 'info');
+    }
     if (this.game.camp) {
       this.focusCore();
       this.ui.showBrief();
@@ -14013,7 +14359,7 @@ const App = {
   autoQuality(fps) {
     this.fps = fps;
     if (this.showFps) $('fps').textContent = `${fps} fps`;
-    if (this.qualityPref !== 'auto' || this.quality !== 'high' || this.state !== 'play' || this.paused) {
+    if (this.qualityPref !== 'auto' || this.quality !== 'high' || this.state !== 'play' || this.paused || this.battery) {
       this.lowFpsSecs = 0;
       return false;
     }
@@ -14176,6 +14522,12 @@ const App = {
       requestAnimationFrame((t) => this.loop(t));
       return;
     }
+    // v1.4: ahorro de batería: se salta cuadros para quedarse en unos 30 por segundo.
+    if (this.battery && now - (this.lastDraw || 0) < BATTERY.minFrameMs) {
+      requestAnimationFrame((t) => this.loop(t));
+      return;
+    }
+    this.lastDraw = now;
     const raw = Math.max(0, (now - this.last) / 1000);
     const dt = Math.min(0.1, raw);
     this.last = now;
