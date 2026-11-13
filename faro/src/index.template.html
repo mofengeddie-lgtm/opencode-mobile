@@ -792,6 +792,45 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .seg3.a11y, body.bigtext .seg3.a11y { grid-template-columns: minmax(0, 1fr); }
 /* «+0/10 s» no se parte en dos líneas. */
 #energyRate, #income { white-space: nowrap; }
+/* ---------- v1.5: portada nueva ---------- */
+.lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
+.lmenu button { gap: 8px; }
+.lmenu .lm-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.lmenu small { white-space: nowrap; flex: none; }
+.cover.hero { min-height: 300px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; }
+.cover.hero .cover-text { max-width: none; padding: 20px 22px; }
+.cover.hero .cover-text h2 { font-size: 44px; }
+.hero-play { position: relative; z-index: 2; display: grid; gap: 8px; justify-items: end; padding: 18px 20px; }
+.hero-btn { min-height: 64px; min-width: 210px; padding: 0 26px; font-family: var(--font-display); font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(242,171,56,0.35), 0 2px 0 rgba(0,0,0,0.25); }
+.hero-btn svg { width: 22px; height: 22px; flex: none; }
+.hero-mode { font-size: 12.5px; font-weight: 600; color: #e8edf1; background: rgba(8,15,21,0.62); padding: 4px 10px; border-radius: 999px; max-width: 100%; text-align: center; }
+.modecard { grid-template-columns: 132px minmax(0, 1fr); align-items: center; }
+.modethumb { width: 132px; height: 132px; border-radius: 10px; object-fit: cover; background: rgba(255,255,255,0.04); grid-row: span 2; align-self: start; }
+.modecard .mode-now { justify-items: start; text-align: left; background: none; padding: 0; }
+.modebtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.modebtns .btn { flex: 1 1 130px; min-height: 46px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+.modebtns .btn svg { width: 18px; height: 18px; flex: none; }
+.modefoot { grid-column: 1 / -1; }
+.stattiles.numbers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stattiles.numbers div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); min-width: 0; }
+.stattiles.numbers b { font-size: 22px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stattiles.numbers span { font-size: 11.5px; }
+.sidebtn .ic { color: var(--gold); }
+.sidebtn .ic svg { width: 22px; height: 22px; }
+@media (max-width: 980px) {
+  .lobby-body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .cover.hero { grid-template-columns: minmax(0, 1fr); min-height: 270px; gap: 4px; }
+  .hero-play { justify-items: stretch; padding: 0 14px 14px; }
+  .hero-btn { min-width: 0; width: 100%; min-height: 56px; font-size: 22px; }
+  .cover.hero .cover-text { padding: 14px 14px 0; }
+  .cover.hero .cover-text h2 { font-size: 30px; }
+  .modecard { grid-template-columns: 84px minmax(0, 1fr); }
+  .modethumb { width: 84px; height: 84px; grid-row: auto; }
+  .modebtns { grid-column: 1 / -1; }
+  .stattiles.numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 </style>
 
 <canvas id="gl"></canvas>
@@ -912,7 +951,7 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.4</span>
+      <span class="version">v1.5</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -957,16 +996,6 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         <button class="btn" type="button" data-bigtext="toggle" id="btn-bigtext" aria-pressed="false">Letra grande: no</button>
       </div>
       <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa.</p>
-    </div>
-    <div>
-      <div class="lbl" style="margin-bottom:6px">Decoración de temporada</div>
-      <div class="seg3 seg4">
-        <button class="btn" type="button" data-season="auto">Automática</button>
-        <button class="btn" type="button" data-season="pumpkin">Calabazas</button>
-        <button class="btn" type="button" data-season="winter">Invierno</button>
-        <button class="btn" type="button" data-season="none">Ninguna</button>
-      </div>
-      <p class="small-note" id="season-note"></p>
     </div>
     <div>
       <div class="lbl" style="margin-bottom:6px">Música</div>

@@ -151,8 +151,6 @@ class UI {
       this.updateMusicBtns();
     });
     this.updateMusicBtns();
-    document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
-    this.updateSeasonBtns();
     // v1.4: ahorro de batería, daltonismo y letra grande.
     $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
     $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
@@ -305,16 +303,6 @@ class UI {
     set('btn-battery', app.battery, 'Ahorro de batería');
     set('btn-cvd', app.cvd, 'Colores para daltonismo');
     set('btn-bigtext', app.bigText, 'Letra grande');
-  }
-
-  updateSeasonBtns() {
-    const pref = this.app.seasonPref();
-    document.querySelectorAll('[data-season]').forEach((b) => b.classList.toggle('gold', b.dataset.season === pref));
-    const note = $('season-note');
-    if (note) {
-      const auto = seasonForDate(new Date());
-      note.textContent = `Automática: ${auto ? SEASONS[auto].name : 'ninguna en esta fecha'} (Calabazas del 15 oct al 5 nov; Invierno del 10 dic al 6 ene).`;
-    }
   }
 
   updateMusicBtns() {

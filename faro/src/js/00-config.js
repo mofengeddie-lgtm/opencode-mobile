@@ -10,27 +10,13 @@ function terrainColor(mapKind, t) {
   return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
 }
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.4';
+const GAME_VERSION = '1.5';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
 const START_UNITS = ['builder'];
 // Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
 const MAX_POP = 240;
-// v1.2: temporadas automáticas por la fecha (mes 1-12, día): Calabazas e Invierno.
-const SEASONS = {
-  pumpkin: { name: 'Calabazas', from: [10, 15], to: [11, 5] },
-  winter: { name: 'Invierno', from: [12, 10], to: [1, 6] },
-};
-function seasonForDate(d) {
-  const v = (d.getMonth() + 1) * 100 + d.getDate();
-  for (const [k, S] of Object.entries(SEASONS)) {
-    const a = S.from[0] * 100 + S.from[1];
-    const b = S.to[0] * 100 + S.to[1];
-    if (a <= b ? v >= a && v <= b : v >= a || v <= b) return k;
-  }
-  return null;
-}
 // v1.2: tiempo que hay que mantener pulsado el mapa para abrir la rueda de selección.
 const WHEEL_HOLD_MS = 450;
 // v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.

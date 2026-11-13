@@ -690,7 +690,7 @@ class Bot {
       .sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp);
     for (const b of damaged) {
       const bc = g.cells[b.cell];
-      const e = engs.find((x) => g.cells[x.cell].comp === bc.comp || bc.nb.some((ni) => g.cells[ni].comp === g.cells[x.cell].comp));
+      const e = engs.find((x) => !g.isUnreach(x, b) && (g.cells[x.cell].comp === bc.comp || bc.nb.some((ni) => g.cells[ni].comp === g.cells[x.cell].comp)));
       if (!e) continue;
       g.orderRepair([e], b);
       engs.splice(engs.indexOf(e), 1);

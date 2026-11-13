@@ -797,6 +797,45 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .seg3.a11y, body.bigtext .seg3.a11y { grid-template-columns: minmax(0, 1fr); }
 /* «+0/10 s» no se parte en dos líneas. */
 #energyRate, #income { white-space: nowrap; }
+/* ---------- v1.5: portada nueva ---------- */
+.lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
+.lmenu button { gap: 8px; }
+.lmenu .lm-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.lmenu small { white-space: nowrap; flex: none; }
+.cover.hero { min-height: 300px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px; }
+.cover.hero .cover-text { max-width: none; padding: 20px 22px; }
+.cover.hero .cover-text h2 { font-size: 44px; }
+.hero-play { position: relative; z-index: 2; display: grid; gap: 8px; justify-items: end; padding: 18px 20px; }
+.hero-btn { min-height: 64px; min-width: 210px; padding: 0 26px; font-family: var(--font-display); font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(242,171,56,0.35), 0 2px 0 rgba(0,0,0,0.25); }
+.hero-btn svg { width: 22px; height: 22px; flex: none; }
+.hero-mode { font-size: 12.5px; font-weight: 600; color: #e8edf1; background: rgba(8,15,21,0.62); padding: 4px 10px; border-radius: 999px; max-width: 100%; text-align: center; }
+.modecard { grid-template-columns: 132px minmax(0, 1fr); align-items: center; }
+.modethumb { width: 132px; height: 132px; border-radius: 10px; object-fit: cover; background: rgba(255,255,255,0.04); grid-row: span 2; align-self: start; }
+.modecard .mode-now { justify-items: start; text-align: left; background: none; padding: 0; }
+.modebtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.modebtns .btn { flex: 1 1 130px; min-height: 46px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+.modebtns .btn svg { width: 18px; height: 18px; flex: none; }
+.modefoot { grid-column: 1 / -1; }
+.stattiles.numbers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stattiles.numbers div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); min-width: 0; }
+.stattiles.numbers b { font-size: 22px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stattiles.numbers span { font-size: 11.5px; }
+.sidebtn .ic { color: var(--gold); }
+.sidebtn .ic svg { width: 22px; height: 22px; }
+@media (max-width: 980px) {
+  .lobby-body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .cover.hero { grid-template-columns: minmax(0, 1fr); min-height: 270px; gap: 4px; }
+  .hero-play { justify-items: stretch; padding: 0 14px 14px; }
+  .hero-btn { min-width: 0; width: 100%; min-height: 56px; font-size: 22px; }
+  .cover.hero .cover-text { padding: 14px 14px 0; }
+  .cover.hero .cover-text h2 { font-size: 30px; }
+  .modecard { grid-template-columns: 84px minmax(0, 1fr); }
+  .modethumb { width: 84px; height: 84px; grid-row: auto; }
+  .modebtns { grid-column: 1 / -1; }
+  .stattiles.numbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 </style>
 
 <canvas id="gl"></canvas>
@@ -917,7 +956,7 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.4</span>
+      <span class="version">v1.5</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
@@ -962,16 +1001,6 @@ body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         <button class="btn" type="button" data-bigtext="toggle" id="btn-bigtext" aria-pressed="false">Letra grande: no</button>
       </div>
       <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa.</p>
-    </div>
-    <div>
-      <div class="lbl" style="margin-bottom:6px">Decoración de temporada</div>
-      <div class="seg3 seg4">
-        <button class="btn" type="button" data-season="auto">Automática</button>
-        <button class="btn" type="button" data-season="pumpkin">Calabazas</button>
-        <button class="btn" type="button" data-season="winter">Invierno</button>
-        <button class="btn" type="button" data-season="none">Ninguna</button>
-      </div>
-      <p class="small-note" id="season-note"></p>
     </div>
     <div>
       <div class="lbl" style="margin-bottom:6px">Música</div>
@@ -1038,27 +1067,13 @@ function terrainColor(mapKind, t) {
   return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
 }
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.4';
+const GAME_VERSION = '1.5';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
 const START_UNITS = ['builder'];
 // Comunidad (población) máxima: 240 desde la v1.0 (180 en la v0.9).
 const MAX_POP = 240;
-// v1.2: temporadas automáticas por la fecha (mes 1-12, día): Calabazas e Invierno.
-const SEASONS = {
-  pumpkin: { name: 'Calabazas', from: [10, 15], to: [11, 5] },
-  winter: { name: 'Invierno', from: [12, 10], to: [1, 6] },
-};
-function seasonForDate(d) {
-  const v = (d.getMonth() + 1) * 100 + d.getDate();
-  for (const [k, S] of Object.entries(SEASONS)) {
-    const a = S.from[0] * 100 + S.from[1];
-    const b = S.to[0] * 100 + S.to[1];
-    if (a <= b ? v >= a && v <= b : v >= a || v <= b) return k;
-  }
-  return null;
-}
 // v1.2: tiempo que hay que mantener pulsado el mapa para abrir la rueda de selección.
 const WHEEL_HOLD_MS = 450;
 // v1.0: distancia máxima (centro a centro) a la que el constructor trabaja en una obra: pegado a ella.
@@ -1892,6 +1907,8 @@ class GameMap {
         homeXZ[i] = [Math.cos(ang) * rad, Math.sin(ang) * rad];
       }
     }
+    // v1.5: en Dúos el Arrecife usa el anillo de parejas, pero igual necesita sus dos islas centro.
+    if (kind === 'reef' && !this.hubs.length) for (const sx of [-1, 1]) this.hubs.push({ x: sx * ring * 0.42, z: 0 });
     for (let i = 0; i < n; i++) {
       const cell = this.atWorld(homeXZ[i][0], homeXZ[i][1]);
       this.homes.push(cell.i);
@@ -1988,7 +2005,7 @@ class GameMap {
     };
     if (kind === 'archipelago') for (const hp of homePos) bridge(hp.x, hp.z, 0, 0);
     if (kind === 'bay') homePos.forEach((hp, i) => { if (i % 2 === 0) bridge(hp.x, hp.z, 0, 0); });
-    if (kind === 'reef') homePos.forEach((hp, i) => { const h = this.hubs[i % 2]; bridge(hp.x, hp.z, h.x, h.z); });
+    if (kind === 'reef') homePos.forEach((hp, i) => { const h = this.hubFor(i); bridge(hp.x, hp.z, h.x, h.z); });
 
     // Bahía: agua dentro del territorio inicial para poder construir un puerto.
     homePos.forEach((hp, idx) => {
@@ -2176,7 +2193,7 @@ class GameMap {
     if (kind === 'archipelago' || kind === 'continent' || kind === 'reef' || kind === 'bay') {
       const target = this.get(0, 0).comp;
       const bad = kind === 'reef'
-        ? this.homes.some((hi, i) => this.cells[hi].comp !== this.atWorld(this.hubs[i % 2].x, this.hubs[i % 2].z).comp)
+        ? this.homes.some((hi, i) => this.cells[hi].comp !== this.atWorld(this.hubFor(i).x, this.hubFor(i).z).comp)
         : kind === 'bay'
           ? this.homes.some((hi, i) => i % 2 === 0 && this.cells[hi].comp !== target)
           : this.homes.some((hi) => this.cells[hi].comp !== target);
@@ -2223,6 +2240,12 @@ class GameMap {
       }
     }
     return dist;
+  }
+
+  // v1.5: isla centro de grupo del Arrecife para el jugador i (en Dúos, la del lado donde está su casa).
+  hubFor(i) {
+    if (this.pairs) return this.cells[this.homes[i]].x < 0 ? this.hubs[0] : this.hubs[1];
+    return this.hubs[i % 2];
   }
 
   // Componentes conexas: tierra (sin montañas) y agua por separado.
@@ -4101,6 +4124,17 @@ class Game {
     }
   }
 
+  // v1.5: recuerda por unos segundos que no puede llegar a ese objetivo.
+  markUnreach(u, t, secs = 6) {
+    const un = u.unreach || (u.unreach = {});
+    for (const k of Object.keys(un)) if (un[k] <= this.time) delete un[k];
+    un[t.id] = this.time + secs;
+  }
+
+  isUnreach(u, t) {
+    return !!(u.unreach && u.unreach[t.id] > this.time);
+  }
+
   // v1.4: la tropa que va a subir no llega al transporte (la orilla junto a él está tapada por
   // edificios, o el transporte está lejos de la costa): si el transporte está quieto, va a buscarla
   // a la orilla libre más cercana a la tropa.
@@ -4611,6 +4645,7 @@ class Game {
       if (!b.alive || !b.built || b.owner !== u.owner || b.hp >= b.maxHp * 0.98 || b.upgrading) continue;
       const d = this.map.dist(uc, this.cells[b.cell]);
       if (d > AUTO_REPAIR.range) continue;
+      if (this.isUnreach(u, b)) continue;
       if (this.units.some((x) => x !== u && x.alive && x.state === 'repair' && x.repairTarget === b)) continue;
       if (d < bd) { bd = d; best = b; }
     }
@@ -5217,7 +5252,8 @@ class Game {
         u.scanT = 0.25 + Math.random() * 0.1;
         u.autoTarget = this.acquire(u, w, 0);
         // v1.4: «Mantener posición» no sale a perseguir; «Patrullar» pelea como «Avanzar atacando».
-        u.aggroTarget = !u.autoTarget && !u.hold && (u.state === 'idle' || u.state === 'amove' || u.state === 'patrol') ? this.acquire(u, w, 2) : null;
+        // v1.5: después de no encontrar camino a un enemigo, sigue su camino unos segundos antes de buscar otro.
+        u.aggroTarget = !u.autoTarget && !u.hold && !(u.aggroBlock > this.time) && (u.state === 'idle' || u.state === 'amove' || u.state === 'patrol') ? this.acquire(u, w, 2) : null;
       }
       if (u.target && u.target.alive && this.inRange(u, w, u.target)) ft = u.target;
       else if (u.autoTarget && u.autoTarget.alive && this.inRange(u, w, u.autoTarget)) ft = u.autoTarget;
@@ -5324,6 +5360,7 @@ class Game {
             for (const k of Object.keys(un)) if (un[k] <= this.time) delete un[k];
             un[t.id] = this.time + 6;
             if (u.aggroTarget === t) u.aggroTarget = null;
+            if (u.patrol || u.resume >= 0) u.aggroBlock = this.time + 4;
             u.target = null;
             if (u.patrol) {
               u.state = 'patrol';
@@ -5398,6 +5435,15 @@ class Game {
         if (u.repathT <= 0) {
           u.repathT = 1;
           this.setPath(u, b.cell);
+          // v1.5: sin camino hasta el edificio (rodeado o en otra isla): lo deja y no lo vuelve a intentar enseguida.
+          if (!u.path.length) {
+            this.markUnreach(u, b, 15);
+            if (u.owner === 0 && !u.autoRep) this.toast(0, `${u.def.name}: no puede llegar a ${b.def.name} para repararlo`, 'bad');
+            u.state = 'idle';
+            u.repairTarget = null;
+            u.autoRep = false;
+            break;
+          }
         }
         this.followPath(u, dt);
         break;
@@ -6975,7 +7021,7 @@ class Bot {
       .sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp);
     for (const b of damaged) {
       const bc = g.cells[b.cell];
-      const e = engs.find((x) => g.cells[x.cell].comp === bc.comp || bc.nb.some((ni) => g.cells[ni].comp === g.cells[x.cell].comp));
+      const e = engs.find((x) => !g.isUnreach(x, b) && (g.cells[x.cell].comp === bc.comp || bc.nb.some((ni) => g.cells[ni].comp === g.cells[x.cell].comp)));
       if (!e) continue;
       g.orderRepair([e], b);
       engs.splice(engs.indexOf(e), 1);
@@ -7668,75 +7714,6 @@ class Renderer {
       const hpx = h * this.renderer.getPixelRatio();
       this.fxs.setScale(hpx / (2 * Math.tan((this.camera.fov * Math.PI) / 360)));
     }
-  }
-
-  // ---------- temporadas (v1.2): calabazas o nieve ----------
-  applySeason(season) {
-    const g = this.game;
-    this.season = season || null;
-    if (this.seasonGroup) {
-      this.scene.remove(this.seasonGroup);
-      this.seasonGroup.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
-    }
-    this.seasonGroup = new THREE.Group();
-    this.scene.add(this.seasonGroup);
-    this.snow = null;
-    this.pumpkins = 0;
-    // Suelo: en invierno, la tierra se aclara y las montañas quedan nevadas.
-    if (!this.baseColors0) this.baseColors0 = this.baseColors.map((c) => c.clone());
-    const white = new THREE.Color(0xf4f8fb);
-    this.baseColors = this.baseColors0.map((c, i) => {
-      const col = c.clone();
-      const t = g.cells[i].t;
-      if (season === 'winter' && t === 'mount') col.lerp(white, 0.65);
-      else if (season === 'winter' && TERRAIN[t].land) col.lerp(white, 0.32);
-      return col;
-    });
-    this.tintTerritory();
-    const rng = mulberry32(g.opts.seed + 31);
-    if (season === 'pumpkin') {
-      const spots = g.cells.filter((c) => (c.t === 'grass' || c.t === 'forest' || c.t === 'sand') && !c.bld && !c.point && rng() < 0.08).slice(0, 60);
-      const body = new THREE.InstancedMesh(new THREE.SphereGeometry(0.17, 12, 8), new THREE.MeshStandardMaterial({ color: 0xf07f1e, emissive: 0x7a2e00, emissiveIntensity: 0.35, roughness: 0.6 }), spots.length);
-      const stem = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.025, 0.03, 0.08, 6), new THREE.MeshStandardMaterial({ color: 0x3d6b22 }), spots.length);
-      const m = new THREE.Matrix4();
-      spots.forEach((c, k) => {
-        const ox = (rng() - 0.5) * 0.9;
-        const oz = (rng() - 0.5) * 0.9;
-        m.makeScale(1, 0.78, 1);
-        m.setPosition(c.x + ox, c.h + 0.13, c.z + oz);
-        body.setMatrixAt(k, m);
-        m.makeTranslation(c.x + ox, c.h + 0.29, c.z + oz);
-        stem.setMatrixAt(k, m);
-      });
-      this.seasonGroup.add(body, stem);
-      this.pumpkins = spots.length;
-    }
-    if (season === 'winter') {
-      const N = this.quality === 'high' ? 700 : 300;
-      const pos = new Float32Array(N * 3);
-      for (let i = 0; i < N; i++) {
-        pos[i * 3] = (rng() - 0.5) * 60;
-        pos[i * 3 + 1] = rng() * 16;
-        pos[i * 3 + 2] = (rng() - 0.5) * 60;
-      }
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      this.snow = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.14, transparent: true, opacity: 0.85, depthWrite: false }));
-      this.seasonGroup.add(this.snow);
-    }
-  }
-
-  updateSeason(dt) {
-    if (!this.snow) return;
-    const a = this.snow.geometry.attributes.position;
-    for (let i = 0; i < a.count; i++) {
-      let y = a.getY(i) - dt * 1.6;
-      if (y < 0) y += 16;
-      a.setY(i, y);
-      a.setX(i, a.getX(i) + Math.sin(y + i) * dt * 0.2);
-    }
-    a.needsUpdate = true;
-    this.snow.position.set(this.cam.tx, 0, this.cam.tz);
   }
 
   // ---------- terreno ----------
@@ -9216,7 +9193,6 @@ class Renderer {
     this.updatePoints(time);
     this.updateShields(time);
     this.updateRadZones(time);
-    this.updateSeason(dt);
     this.updateSelectionRings(selection);
     this.updateCamera();
     this.renderer.render(this.scene, this.camera);
@@ -10257,8 +10233,6 @@ class UI {
       this.updateMusicBtns();
     });
     this.updateMusicBtns();
-    document.querySelectorAll('[data-season]').forEach((b) => b.addEventListener('click', () => app.setSeason(b.dataset.season)));
-    this.updateSeasonBtns();
     // v1.4: ahorro de batería, daltonismo y letra grande.
     $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
     $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
@@ -10411,16 +10385,6 @@ class UI {
     set('btn-battery', app.battery, 'Ahorro de batería');
     set('btn-cvd', app.cvd, 'Colores para daltonismo');
     set('btn-bigtext', app.bigText, 'Letra grande');
-  }
-
-  updateSeasonBtns() {
-    const pref = this.app.seasonPref();
-    document.querySelectorAll('[data-season]').forEach((b) => b.classList.toggle('gold', b.dataset.season === pref));
-    const note = $('season-note');
-    if (note) {
-      const auto = seasonForDate(new Date());
-      note.textContent = `Automática: ${auto ? SEASONS[auto].name : 'ninguna en esta fecha'} (Calabazas del 15 oct al 5 nov; Invierno del 10 dic al 6 ene).`;
-    }
   }
 
   updateMusicBtns() {
@@ -12181,6 +12145,23 @@ const TUTORIAL_STEPS = [
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
 const MAP_THUMBS = {};
+// v1.5: iconos dibujados del vestíbulo (antes eran letras sueltas).
+const LOBBY_ICONS = (() => {
+  const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  return {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>',
+    modes: svg('<rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'),
+    map: svg('<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>'),
+    dice: svg('<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/>'),
+    pass: svg('<path d="M10 21h4l-.8-11h-2.4z"/><path d="M9.5 10h5M10.5 6h3l.7 4h-4.4z"/><path d="M12 3v3M15 7.5l4.5-2M9 7.5l-4.5-2"/>'),
+    missions: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="m8.5 12 2 2 4-4M8.5 17.5h7"/>'),
+    daily: svg('<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11"/><path d="M12 9c-1.5-3.5-5-4-5-1.5S10 9 12 9zm0 0c1.5-3.5 5-4 5-1.5S14 9 12 9z"/>'),
+    codes: svg('<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2.5 2.5M14 9l2 2"/>'),
+    backup: svg('<path d="M4 8h13l-3-3M20 16H7l3 3"/>'),
+    creator: svg('<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z"/>'),
+  };
+})();
+
 function mapThumb(kind, players = 6) {
   const key = kind + ':' + players;
   if (MAP_THUMBS[key]) return MAP_THUMBS[key];
@@ -12749,15 +12730,15 @@ class Lobby {
   }
 
   leftHtml() {
-    const item = (sub, label, hint) => `<button type="button" data-act="sub" data-sub="${sub}" class="${this.sub === sub ? 'on' : ''}">${label}${hint ? `<small>${hint}</small>` : ''}</button>`;
-    const off = (label) => `<button type="button" disabled title="Necesita servidores">${label}<small>Roblox</small></button>`;
+    const item = (sub, label, hint) => `<button type="button" data-act="sub" data-sub="${sub}" class="${this.sub === sub ? 'on' : ''}"><span class="lm-label">${label}</span>${hint ? `<small>${hint}</small>` : ''}</button>`;
+    const off = (label) => `<button type="button" disabled title="Necesita servidores"><span class="lm-label">${label}</span><small>Roblox</small></button>`;
     return `<nav class="lmenu panel" aria-label="Menú del vestíbulo">
       ${item('main', 'Jugar')}
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
-      ${item('top', 'Top jugadores', `Temporada ${seasonOf(Profile.now()).no}`)}
+      ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
       ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
     </nav>`;
   }
@@ -12793,38 +12774,44 @@ class Lobby {
     const st = P.stats;
     const pct = st.games ? Math.round((st.wins / st.games) * 100) : 0;
     const cover = Thumbs.cover();
+    const ranked = MODES[P.play.mode] && MODES[P.play.mode].ranked;
+    const diffName = ranked ? DIFFICULTY[rankedDifficulty(P.ranked.points)].name : DIFFICULTY[P.play.difficulty].name;
+    const mapName = MAPS[P.play.mapKind] ? MAPS[P.play.mapKind].name : '';
+    const thumb = LOBBY_MAPS.includes(P.play.mapKind) ? mapThumb(P.play.mapKind, Math.max(2, m.players || 6)) : '';
+    const tile = (n, label) => `<div><b>${n}</b><span>${label}</span></div>`;
+    // v1.5: portada nueva: la imagen grande con JUGAR adentro, el modo con la miniatura del mapa y tus números en fichas.
     return `${resume}
-      <section class="cover panel"${cover ? ` style="--cover:url('${cover}')"` : ''}>
+      <section class="cover hero panel"${cover ? ` style="--cover:url('${cover}')"` : ''}>
         <div class="cover-img" aria-hidden="true"></div>
         <div class="cover-text">
           <div class="cover-brand"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Patrullar', 'Tropas veteranas', 'Logros', 'Desafío semanal', this.app.season() ? `Temporada: ${SEASONS[this.app.season()].name}` : 'Temporadas'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Núcleo nuevo', 'Edificios con tu color', 'Fichas de tropas', 'Portada nueva'].map((t) => `<li>${t}</li>`).join('')}</ul>
+        </div>
+        <div class="hero-play">
+          <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>Jugar</span></button>
+          <span class="hero-mode">${esc(m.name)} · ${esc(mapName)} · ${esc(diffName)}</span>
         </div>
       </section>
-      <section class="lcard panel">
+      <section class="lcard panel modecard">
+        ${thumb ? `<img class="modethumb" alt="" src="${thumb}">` : ''}
         <div class="mode-now"><small>Modo</small><b>${esc(m.name)}</b><span>${esc(m.desc)}</span>
-          <span>Mapa: <b>${esc(MAPS[P.play.mapKind].name)}</b></span></div>
-        <div class="play-row">
-          <button class="btn" type="button" data-act="modal" data-m="modes">Cambiar</button>
-          <button class="btn gold" type="button" data-act="play" id="btn-play">Play</button>
-          <button class="btn" type="button" data-act="modal" data-m="maps">Mapa</button>
+          <span>Mapa: <b>${esc(mapName)}</b></span></div>
+        <div class="modebtns">
+          <button class="btn" type="button" data-act="modal" data-m="modes">${LOBBY_ICONS.modes}Cambiar modo</button>
+          <button class="btn" type="button" data-act="modal" data-m="maps">${LOBBY_ICONS.map}Mapa</button>
+          <button class="btn" type="button" data-act="reroll">${LOBBY_ICONS.dice}Otra isla</button>
         </div>
-        ${MODES[P.play.mode] && MODES[P.play.mode].ranked ? `<p class="queue">Liga 3 vs 3 · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
-          : `<div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
-        <div class="row"><button class="btn" type="button" data-act="reroll">Otra isla</button></div>
+        ${ranked ? `<p class="queue modefoot">Liga 3 vs 3 · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
+          : `<div class="field modefoot"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
       </section>
       <section class="lcard panel">
         <h3>Tus números</h3>
-        <div class="numbers">
-          <span>Partidas</span><b>${st.games}</b>
-          <span>Victorias</span><b>${st.wins}</b>
-          <span>% de victorias</span><b>${pct} %</b>
-          <span>Islas tomadas</span><b>${st.islands}</b>
-          <span>Núcleos destruidos</span><b>${st.cores}</b>
-          <span>Jugando desde</span><b>${prettyDate(P.since)}</b>
+        <div class="stattiles numbers">
+          ${tile(st.games, 'Partidas')}${tile(st.wins, 'Victorias')}${tile(`${pct} %`, 'De victorias')}
+          ${tile(st.islands, 'Islas tomadas')}${tile(st.cores, 'Núcleos destruidos')}${tile(prettyDate(P.since), 'Jugando desde')}
         </div>
       </section>`;
   }
@@ -12942,12 +12929,12 @@ class Lobby {
     return `<aside class="lside">
       <div class="lcard panel"><h3>Nivel ${lv}</h3><div class="xpbar"><i style="width:${(into / LEVEL_XP) * 100}%"></i></div>
         <p>${fmt(into)} / ${fmt(LEVEL_XP)} XP</p></div>
-      ${btn('pass', 'P', 'Pase del Faro', `Nivel ${tier} de ${PASS_TIERS}`, passN || '')}
-      ${btn('missions', 'M', 'Misiones', `${missionsLeft} por hacer`, '')}
-      ${btn('daily', 'D', 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
-      ${btn('codes', 'C', 'Códigos', 'Canjea un código', '')}
-      ${btn('backup', '⇄', 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
-      ${Creator.owner ? btn('creator', '★', 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
+      ${btn('pass', LOBBY_ICONS.pass, 'Pase del Faro', `Nivel ${tier} de ${PASS_TIERS}`, passN || '')}
+      ${btn('missions', LOBBY_ICONS.missions, 'Misiones', `${missionsLeft} por hacer`, '')}
+      ${btn('daily', LOBBY_ICONS.daily, 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
+      ${btn('codes', LOBBY_ICONS.codes, 'Códigos', 'Canjea un código', '')}
+      ${btn('backup', LOBBY_ICONS.backup, 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
+      ${Creator.owner ? btn('creator', LOBBY_ICONS.creator, 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
     </aside>`;
   }
 
@@ -14072,6 +14059,8 @@ const App = {
       this.battery = localStorage.getItem('faro-battery') === '1';
       this.cvd = localStorage.getItem('faro-cvd') === '1';
       this.bigText = localStorage.getItem('faro-bigtext') === '1';
+      // v1.5: ya no hay decoraciones de temporada (Calabazas, Invierno).
+      localStorage.removeItem('faro-season');
     } catch (err) { /* sin almacenamiento */ }
     applyPalette(this.cvd);
     document.body.classList.toggle('bigtext', !!this.bigText);
@@ -14136,7 +14125,7 @@ const App = {
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
     this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
-    this.renderer.applySeason(this.season());
+    this.renderer.tintTerritory();
     if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
   },
 
@@ -14175,24 +14164,6 @@ const App = {
     try { localStorage.setItem('faro-bigtext', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
     document.body.classList.toggle('bigtext', this.bigText);
     this.ui.updateA11yBtns();
-  },
-
-  // v1.2: temporada activa: la que pone la fecha, o la que elegiste en la pausa.
-  seasonPref() {
-    try { return localStorage.getItem('faro-season') || 'auto'; } catch (err) { return 'auto'; }
-  },
-
-  season() {
-    const pref = this.seasonPref();
-    if (pref === 'auto') return seasonForDate(new Date());
-    return pref === 'none' ? null : pref;
-  },
-
-  setSeason(v) {
-    try { localStorage.setItem('faro-season', v); } catch (err) { /* sin almacenamiento */ }
-    if (this.renderer) this.renderer.applySeason(this.season());
-    this.ui.updateSeasonBtns();
-    if (this.lobby) this.lobby.render();
   },
 
   makePreview() {

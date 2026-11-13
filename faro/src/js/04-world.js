@@ -970,6 +970,17 @@ class Game {
     }
   }
 
+  // v1.5: recuerda por unos segundos que no puede llegar a ese objetivo.
+  markUnreach(u, t, secs = 6) {
+    const un = u.unreach || (u.unreach = {});
+    for (const k of Object.keys(un)) if (un[k] <= this.time) delete un[k];
+    un[t.id] = this.time + secs;
+  }
+
+  isUnreach(u, t) {
+    return !!(u.unreach && u.unreach[t.id] > this.time);
+  }
+
   // v1.4: la tropa que va a subir no llega al transporte (la orilla junto a él está tapada por
   // edificios, o el transporte está lejos de la costa): si el transporte está quieto, va a buscarla
   // a la orilla libre más cercana a la tropa.
@@ -1480,6 +1491,7 @@ class Game {
       if (!b.alive || !b.built || b.owner !== u.owner || b.hp >= b.maxHp * 0.98 || b.upgrading) continue;
       const d = this.map.dist(uc, this.cells[b.cell]);
       if (d > AUTO_REPAIR.range) continue;
+      if (this.isUnreach(u, b)) continue;
       if (this.units.some((x) => x !== u && x.alive && x.state === 'repair' && x.repairTarget === b)) continue;
       if (d < bd) { bd = d; best = b; }
     }
@@ -2086,7 +2098,8 @@ class Game {
         u.scanT = 0.25 + Math.random() * 0.1;
         u.autoTarget = this.acquire(u, w, 0);
         // v1.4: «Mantener posición» no sale a perseguir; «Patrullar» pelea como «Avanzar atacando».
-        u.aggroTarget = !u.autoTarget && !u.hold && (u.state === 'idle' || u.state === 'amove' || u.state === 'patrol') ? this.acquire(u, w, 2) : null;
+        // v1.5: después de no encontrar camino a un enemigo, sigue su camino unos segundos antes de buscar otro.
+        u.aggroTarget = !u.autoTarget && !u.hold && !(u.aggroBlock > this.time) && (u.state === 'idle' || u.state === 'amove' || u.state === 'patrol') ? this.acquire(u, w, 2) : null;
       }
       if (u.target && u.target.alive && this.inRange(u, w, u.target)) ft = u.target;
       else if (u.autoTarget && u.autoTarget.alive && this.inRange(u, w, u.autoTarget)) ft = u.autoTarget;
@@ -2193,6 +2206,7 @@ class Game {
             for (const k of Object.keys(un)) if (un[k] <= this.time) delete un[k];
             un[t.id] = this.time + 6;
             if (u.aggroTarget === t) u.aggroTarget = null;
+            if (u.patrol || u.resume >= 0) u.aggroBlock = this.time + 4;
             u.target = null;
             if (u.patrol) {
               u.state = 'patrol';
@@ -2267,6 +2281,15 @@ class Game {
         if (u.repathT <= 0) {
           u.repathT = 1;
           this.setPath(u, b.cell);
+          // v1.5: sin camino hasta el edificio (rodeado o en otra isla): lo deja y no lo vuelve a intentar enseguida.
+          if (!u.path.length) {
+            this.markUnreach(u, b, 15);
+            if (u.owner === 0 && !u.autoRep) this.toast(0, `${u.def.name}: no puede llegar a ${b.def.name} para repararlo`, 'bad');
+            u.state = 'idle';
+            u.repairTarget = null;
+            u.autoRep = false;
+            break;
+          }
         }
         this.followPath(u, dt);
         break;

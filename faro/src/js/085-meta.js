@@ -86,6 +86,23 @@ const TUTORIAL_STEPS = [
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
 const MAP_THUMBS = {};
+// v1.5: iconos dibujados del vestíbulo (antes eran letras sueltas).
+const LOBBY_ICONS = (() => {
+  const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  return {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>',
+    modes: svg('<rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'),
+    map: svg('<path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5v-13L15 6.5 9 4z"/><path d="M9 4v13M15 6.5v13"/>'),
+    dice: svg('<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/>'),
+    pass: svg('<path d="M10 21h4l-.8-11h-2.4z"/><path d="M9.5 10h5M10.5 6h3l.7 4h-4.4z"/><path d="M12 3v3M15 7.5l4.5-2M9 7.5l-4.5-2"/>'),
+    missions: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="m8.5 12 2 2 4-4M8.5 17.5h7"/>'),
+    daily: svg('<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11"/><path d="M12 9c-1.5-3.5-5-4-5-1.5S10 9 12 9zm0 0c1.5-3.5 5-4 5-1.5S14 9 12 9z"/>'),
+    codes: svg('<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2.5 2.5M14 9l2 2"/>'),
+    backup: svg('<path d="M4 8h13l-3-3M20 16H7l3 3"/>'),
+    creator: svg('<path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z"/>'),
+  };
+})();
+
 function mapThumb(kind, players = 6) {
   const key = kind + ':' + players;
   if (MAP_THUMBS[key]) return MAP_THUMBS[key];
@@ -654,15 +671,15 @@ class Lobby {
   }
 
   leftHtml() {
-    const item = (sub, label, hint) => `<button type="button" data-act="sub" data-sub="${sub}" class="${this.sub === sub ? 'on' : ''}">${label}${hint ? `<small>${hint}</small>` : ''}</button>`;
-    const off = (label) => `<button type="button" disabled title="Necesita servidores">${label}<small>Roblox</small></button>`;
+    const item = (sub, label, hint) => `<button type="button" data-act="sub" data-sub="${sub}" class="${this.sub === sub ? 'on' : ''}"><span class="lm-label">${label}</span>${hint ? `<small>${hint}</small>` : ''}</button>`;
+    const off = (label) => `<button type="button" disabled title="Necesita servidores"><span class="lm-label">${label}</span><small>Roblox</small></button>`;
     return `<nav class="lmenu panel" aria-label="Menú del vestíbulo">
       ${item('main', 'Jugar')}
       ${item('campaign', 'Campaña', `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', 'Personalizado', 'mitad de XP')}
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
-      ${item('top', 'Top jugadores', `Temporada ${seasonOf(Profile.now()).no}`)}
+      ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
       ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
     </nav>`;
   }
@@ -698,38 +715,44 @@ class Lobby {
     const st = P.stats;
     const pct = st.games ? Math.round((st.wins / st.games) * 100) : 0;
     const cover = Thumbs.cover();
+    const ranked = MODES[P.play.mode] && MODES[P.play.mode].ranked;
+    const diffName = ranked ? DIFFICULTY[rankedDifficulty(P.ranked.points)].name : DIFFICULTY[P.play.difficulty].name;
+    const mapName = MAPS[P.play.mapKind] ? MAPS[P.play.mapKind].name : '';
+    const thumb = LOBBY_MAPS.includes(P.play.mapKind) ? mapThumb(P.play.mapKind, Math.max(2, m.players || 6)) : '';
+    const tile = (n, label) => `<div><b>${n}</b><span>${label}</span></div>`;
+    // v1.5: portada nueva: la imagen grande con JUGAR adentro, el modo con la miniatura del mapa y tus números en fichas.
     return `${resume}
-      <section class="cover panel"${cover ? ` style="--cover:url('${cover}')"` : ''}>
+      <section class="cover hero panel"${cover ? ` style="--cover:url('${cover}')"` : ''}>
         <div class="cover-img" aria-hidden="true"></div>
         <div class="cover-text">
           <div class="cover-brand"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Patrullar', 'Tropas veteranas', 'Logros', 'Desafío semanal', this.app.season() ? `Temporada: ${SEASONS[this.app.season()].name}` : 'Temporadas'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Núcleo nuevo', 'Edificios con tu color', 'Fichas de tropas', 'Portada nueva'].map((t) => `<li>${t}</li>`).join('')}</ul>
+        </div>
+        <div class="hero-play">
+          <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>Jugar</span></button>
+          <span class="hero-mode">${esc(m.name)} · ${esc(mapName)} · ${esc(diffName)}</span>
         </div>
       </section>
-      <section class="lcard panel">
+      <section class="lcard panel modecard">
+        ${thumb ? `<img class="modethumb" alt="" src="${thumb}">` : ''}
         <div class="mode-now"><small>Modo</small><b>${esc(m.name)}</b><span>${esc(m.desc)}</span>
-          <span>Mapa: <b>${esc(MAPS[P.play.mapKind].name)}</b></span></div>
-        <div class="play-row">
-          <button class="btn" type="button" data-act="modal" data-m="modes">Cambiar</button>
-          <button class="btn gold" type="button" data-act="play" id="btn-play">Play</button>
-          <button class="btn" type="button" data-act="modal" data-m="maps">Mapa</button>
+          <span>Mapa: <b>${esc(mapName)}</b></span></div>
+        <div class="modebtns">
+          <button class="btn" type="button" data-act="modal" data-m="modes">${LOBBY_ICONS.modes}Cambiar modo</button>
+          <button class="btn" type="button" data-act="modal" data-m="maps">${LOBBY_ICONS.map}Mapa</button>
+          <button class="btn" type="button" data-act="reroll">${LOBBY_ICONS.dice}Otra isla</button>
         </div>
-        ${MODES[P.play.mode] && MODES[P.play.mode].ranked ? `<p class="queue">Liga 3 vs 3 · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
-          : `<div class="field"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
-        <div class="row"><button class="btn" type="button" data-act="reroll">Otra isla</button></div>
+        ${ranked ? `<p class="queue modefoot">Liga 3 vs 3 · ${rankName(P.ranked.points)} · ${P.ranked.points} puntos. La dificultad la pone tu rango (${DIFFICULTY[rankedDifficulty(P.ranked.points)].name}).</p>`
+          : `<div class="field modefoot"><label>Dificultad de los bots</label><div class="seg">${diffs}</div></div>`}
       </section>
       <section class="lcard panel">
         <h3>Tus números</h3>
-        <div class="numbers">
-          <span>Partidas</span><b>${st.games}</b>
-          <span>Victorias</span><b>${st.wins}</b>
-          <span>% de victorias</span><b>${pct} %</b>
-          <span>Islas tomadas</span><b>${st.islands}</b>
-          <span>Núcleos destruidos</span><b>${st.cores}</b>
-          <span>Jugando desde</span><b>${prettyDate(P.since)}</b>
+        <div class="stattiles numbers">
+          ${tile(st.games, 'Partidas')}${tile(st.wins, 'Victorias')}${tile(`${pct} %`, 'De victorias')}
+          ${tile(st.islands, 'Islas tomadas')}${tile(st.cores, 'Núcleos destruidos')}${tile(prettyDate(P.since), 'Jugando desde')}
         </div>
       </section>`;
   }
@@ -847,12 +870,12 @@ class Lobby {
     return `<aside class="lside">
       <div class="lcard panel"><h3>Nivel ${lv}</h3><div class="xpbar"><i style="width:${(into / LEVEL_XP) * 100}%"></i></div>
         <p>${fmt(into)} / ${fmt(LEVEL_XP)} XP</p></div>
-      ${btn('pass', 'P', 'Pase del Faro', `Nivel ${tier} de ${PASS_TIERS}`, passN || '')}
-      ${btn('missions', 'M', 'Misiones', `${missionsLeft} por hacer`, '')}
-      ${btn('daily', 'D', 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
-      ${btn('codes', 'C', 'Códigos', 'Canjea un código', '')}
-      ${btn('backup', '⇄', 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
-      ${Creator.owner ? btn('creator', '★', 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
+      ${btn('pass', LOBBY_ICONS.pass, 'Pase del Faro', `Nivel ${tier} de ${PASS_TIERS}`, passN || '')}
+      ${btn('missions', LOBBY_ICONS.missions, 'Misiones', `${missionsLeft} por hacer`, '')}
+      ${btn('daily', LOBBY_ICONS.daily, 'Premio diario', Profile.dailyClaimable() ? '¡Listo para reclamar!' : 'Vuelve mañana', Profile.dailyClaimable() ? '1' : '')}
+      ${btn('codes', LOBBY_ICONS.codes, 'Códigos', 'Canjea un código', '')}
+      ${btn('backup', LOBBY_ICONS.backup, 'Copia de tu progreso', 'Llévalo a otro iPad', '')}
+      ${Creator.owner ? btn('creator', LOBBY_ICONS.creator, 'Modo creador', Creator.active() ? 'Activado' : 'Apagado', '') : ''}
     </aside>`;
   }
 

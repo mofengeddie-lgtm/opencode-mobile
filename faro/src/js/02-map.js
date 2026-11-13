@@ -103,6 +103,8 @@ class GameMap {
         homeXZ[i] = [Math.cos(ang) * rad, Math.sin(ang) * rad];
       }
     }
+    // v1.5: en Dúos el Arrecife usa el anillo de parejas, pero igual necesita sus dos islas centro.
+    if (kind === 'reef' && !this.hubs.length) for (const sx of [-1, 1]) this.hubs.push({ x: sx * ring * 0.42, z: 0 });
     for (let i = 0; i < n; i++) {
       const cell = this.atWorld(homeXZ[i][0], homeXZ[i][1]);
       this.homes.push(cell.i);
@@ -199,7 +201,7 @@ class GameMap {
     };
     if (kind === 'archipelago') for (const hp of homePos) bridge(hp.x, hp.z, 0, 0);
     if (kind === 'bay') homePos.forEach((hp, i) => { if (i % 2 === 0) bridge(hp.x, hp.z, 0, 0); });
-    if (kind === 'reef') homePos.forEach((hp, i) => { const h = this.hubs[i % 2]; bridge(hp.x, hp.z, h.x, h.z); });
+    if (kind === 'reef') homePos.forEach((hp, i) => { const h = this.hubFor(i); bridge(hp.x, hp.z, h.x, h.z); });
 
     // Bahía: agua dentro del territorio inicial para poder construir un puerto.
     homePos.forEach((hp, idx) => {
@@ -387,7 +389,7 @@ class GameMap {
     if (kind === 'archipelago' || kind === 'continent' || kind === 'reef' || kind === 'bay') {
       const target = this.get(0, 0).comp;
       const bad = kind === 'reef'
-        ? this.homes.some((hi, i) => this.cells[hi].comp !== this.atWorld(this.hubs[i % 2].x, this.hubs[i % 2].z).comp)
+        ? this.homes.some((hi, i) => this.cells[hi].comp !== this.atWorld(this.hubFor(i).x, this.hubFor(i).z).comp)
         : kind === 'bay'
           ? this.homes.some((hi, i) => i % 2 === 0 && this.cells[hi].comp !== target)
           : this.homes.some((hi) => this.cells[hi].comp !== target);
@@ -434,6 +436,12 @@ class GameMap {
       }
     }
     return dist;
+  }
+
+  // v1.5: isla centro de grupo del Arrecife para el jugador i (en Dúos, la del lado donde está su casa).
+  hubFor(i) {
+    if (this.pairs) return this.cells[this.homes[i]].x < 0 ? this.hubs[0] : this.hubs[1];
+    return this.hubs[i % 2];
   }
 
   // Componentes conexas: tierra (sin montañas) y agua por separado.

@@ -45,6 +45,8 @@ const App = {
       this.battery = localStorage.getItem('faro-battery') === '1';
       this.cvd = localStorage.getItem('faro-cvd') === '1';
       this.bigText = localStorage.getItem('faro-bigtext') === '1';
+      // v1.5: ya no hay decoraciones de temporada (Calabazas, Invierno).
+      localStorage.removeItem('faro-season');
     } catch (err) { /* sin almacenamiento */ }
     applyPalette(this.cvd);
     document.body.classList.toggle('bigtext', !!this.bigText);
@@ -109,7 +111,7 @@ const App = {
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
     this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
-    this.renderer.applySeason(this.season());
+    this.renderer.tintTerritory();
     if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
   },
 
@@ -148,24 +150,6 @@ const App = {
     try { localStorage.setItem('faro-bigtext', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
     document.body.classList.toggle('bigtext', this.bigText);
     this.ui.updateA11yBtns();
-  },
-
-  // v1.2: temporada activa: la que pone la fecha, o la que elegiste en la pausa.
-  seasonPref() {
-    try { return localStorage.getItem('faro-season') || 'auto'; } catch (err) { return 'auto'; }
-  },
-
-  season() {
-    const pref = this.seasonPref();
-    if (pref === 'auto') return seasonForDate(new Date());
-    return pref === 'none' ? null : pref;
-  },
-
-  setSeason(v) {
-    try { localStorage.setItem('faro-season', v); } catch (err) { /* sin almacenamiento */ }
-    if (this.renderer) this.renderer.applySeason(this.season());
-    this.ui.updateSeasonBtns();
-    if (this.lobby) this.lobby.render();
   },
 
   makePreview() {
