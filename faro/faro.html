@@ -790,7 +790,11 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 body.bigtext #selpanel > *, body.bigtext #buildpanel .blist, body.bigtext #buildpanel .tabs, body.bigtext #objlist,
 body.bigtext #chatpop > *, body.bigtext #score > *, body.bigtext #econ > *, body.bigtext #pause .panel > *, body.bigtext .toast { zoom: 1.15; }
 body.bigtext .coach-tip { font-size: 15px; width: 250px; }
-.seg3.a11y { grid-template-columns: 1fr; }
+/* Con letra grande, los paneles de la pausa pueden achicarse al ancho de la pantalla. */
+body.bigtext #pause .panel > * { min-width: 0; }
+body.bigtext .seg3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 520px) { body.bigtext .seg4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+.seg3.a11y, body.bigtext .seg3.a11y { grid-template-columns: minmax(0, 1fr); }
 /* «+0/10 s» no se parte en dos líneas. */
 #energyRate, #income { white-space: nowrap; }
 </style>
