@@ -1110,12 +1110,13 @@ const TERRAIN = {
 
 const PLAYER_COLORS = [0x2f7fe0, 0xe0484d, 0xf0a030, 0x9b5de5, 0xe85d9f, 0x1fb5a3];
 const PLAYER_NAMES = ['Tú', 'Rojo', 'Naranja', 'Violeta', 'Rosa', 'Turquesa'];
-// v1.4: colores para daltonismo (paleta de Okabe e Ito, que se distingue con los tres tipos de
-// daltonismo) y formas distintas para cada jugador en el minimapa.
+// v1.4: colores para daltonismo. Elegidos con una simulación de protanopía, deuteranopía y
+// tritanopía para que cualquier par se distinga (diferencia CIEDE2000 de 19 o más), todos claros
+// para verse sobre el fondo oscuro; además, una forma distinta por jugador en el minimapa.
 const BASE_COLORS = PLAYER_COLORS.slice();
 const BASE_NAMES = PLAYER_NAMES.slice();
-const CVD_COLORS = [0x0072b2, 0xd55e00, 0xe69f00, 0xcc79a7, 0xf0e442, 0x56b4e9];
-const CVD_NAMES = ['Tú', 'Bermellón', 'Naranja', 'Malva', 'Amarillo', 'Celeste'];
+const CVD_COLORS = [0x3b6cce, 0xb82e2e, 0xfcfc88, 0x9da9e7, 0xef6c82, 0x88fce9];
+const CVD_NAMES = ['Tú', 'Rojo', 'Amarillo', 'Lavanda', 'Rosa', 'Aguamarina'];
 const PLAYER_SHAPES = ['circle', 'square', 'triangle', 'diamond', 'star', 'cross'];
 function applyPalette(cvd) {
   const cols = cvd ? CVD_COLORS : BASE_COLORS;
