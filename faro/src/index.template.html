@@ -736,10 +736,11 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 /* ---------- v1.3: panel de selección compacto y botones de 44 × 44 px (PRD 1.5) ---------- */
 /* Arriba los botones principales; las partes largas, plegadas en «Más detalles». */
 #selpanel { max-height: min(44vh, 380px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
-#selpanel > .selhead { order: -3; }
-#selpanel > .mainacts { order: -2; }
-/* v1.5: la cola y lo que cambia al mejorar, justo debajo de los botones (no tapados por las tarjetas). */
-#selpanel > #sel-queue, #selpanel > .nextup { order: -1; }
+#selpanel > .selhead { order: -5; }
+#selpanel > .mainacts { order: -4; }
+/* v1.5: la cola y «Repetir / Siempre» justo debajo de los botones; después las tarjetas (ahora en filas). */
+#selpanel > #sel-queue { order: -3; }
+#selpanel > .actions.repeat, #selpanel > #loop-wait { order: -2; }
 #selpanel:not(.more) .sec { display: none !important; }
 .selhead .headbtns { display: flex; gap: 6px; align-items: center; }
 .btn.seltoggle { min-width: 44px; padding: 0 10px; font-size: 12.5px; }
@@ -820,6 +821,7 @@ button.chip:hover { background: var(--raise-2); }
 /* v1.5: en pantallas bajas, «¡A jugar!» queda fijo al pie de la ficha de la misión (antes quedaba escondido abajo). */
 .brief .brief-go { position: sticky; bottom: -22px; margin: 0 -22px -22px; padding: 12px 22px 14px; background: var(--panel-solid); border-top: 1px solid var(--line); z-index: 1; }
 /* ---------- v1.5: portada nueva ---------- */
+.lobby-tabs button { min-height: 44px; }
 .lobby .seg button, .lmenu button { min-height: 44px; }
 .lobby-body { grid-template-columns: 212px minmax(0, 1fr) 236px; }
 .lmenu button { gap: 8px; }
@@ -829,7 +831,7 @@ button.chip:hover { background: var(--raise-2); }
 .cover.hero .cover-text { max-width: none; padding: 20px 22px; }
 .cover.hero .cover-text h2 { font-size: clamp(28px, 3vw, 42px); white-space: nowrap; }
 .hero-play { position: relative; z-index: 2; display: grid; gap: 8px; justify-items: end; padding: 18px 20px; }
-.hero-btn { min-height: 64px; min-width: 210px; padding: 0 26px; font-family: var(--font-display); font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(242,171,56,0.35), 0 2px 0 rgba(0,0,0,0.25); }
+.hero-btn { min-height: 64px !important; min-width: 210px; padding: 0 26px; font-family: var(--font-display); font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; gap: 10px; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(242,171,56,0.35), 0 2px 0 rgba(0,0,0,0.25); }
 .hero-btn svg { width: 22px; height: 22px; flex: none; }
 .hero-mode { font-size: 12.5px; font-weight: 600; color: #e8edf1; background: rgba(8,15,21,0.62); padding: 4px 10px; border-radius: 999px; max-width: 100%; text-align: center; }
 .modecard { grid-template-columns: 132px minmax(0, 1fr); align-items: center; }
@@ -851,7 +853,7 @@ button.chip:hover { background: var(--raise-2); }
 @media (max-width: 640px) {
   .cover.hero { grid-template-columns: minmax(0, 1fr); min-height: 270px; gap: 4px; }
   .hero-play { justify-items: stretch; padding: 0 14px 14px; }
-  .hero-btn { min-width: 0; width: 100%; min-height: 56px; font-size: 22px; }
+  .hero-btn { min-width: 0; width: 100%; min-height: 56px !important; font-size: 22px; }
   .cover.hero .cover-text { padding: 14px 14px 0; }
   .cover.hero .cover-text h2 { font-size: 30px; }
   .modecard { grid-template-columns: 84px minmax(0, 1fr); }
