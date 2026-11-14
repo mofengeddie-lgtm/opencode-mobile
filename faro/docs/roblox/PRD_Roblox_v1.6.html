@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="13 NOV 2026">
+<meta name="pie" content="Plan para Roblox">
+<title>Faro de Ámbar · PRD Roblox v1.6</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 18px 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+h4 { font-size: 10.5pt; margin: 12px 0 4px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+a { color: var(--teal); }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul, ol { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+code { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 8.6pt; background: #eef1ef; padding: 0 3px; border-radius: 3px; }
+pre { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 7.6pt; line-height: 1.35; background: #f6f7f6; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+pre code { background: none; padding: 0; font-size: inherit; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+figure { margin: 10px 0 14px; page-break-inside: avoid; }
+figure img, figure svg { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); display: block; }
+figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 4px; }
+.figgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="eyebrow">Faro de Ámbar · Plan para Roblox</div>
+<h1>Faro de Ámbar</h1>
+<p class="sub">PRD y plan de inicio · versión 1.6</p>
+<p class="meta">Versión 1.6 · 13 de noviembre de 2026 · Diseño visual y desarrollo futuro pendiente · Documento escrito por el usuario; imágenes y esquema añadidos en sus lugares marcados</p>
+<h2>1. Objetivo y punto de partida</h2>
+<p><strong>Instrucción vigente:</strong> el juego empezará cuando el usuario lo indique. Aprobar modelos o UI no inicia por sí solo el desarrollo.</p>
+<p><strong>Ruta elegida:</strong> Roblox Studio + Luau, con las cinco etapas y herramientas indicadas por el usuario. Studio se utiliza en ordenador; el acceso previsto en iPad es mediante la aplicación Roblox.</p>
+<p><strong>Objetivo:</strong> un juego de estrategia en tiempo real con formas de bloques tipo Roblox, terreno hexagonal 3D y controles cómodos en iPad horizontal. El jugador construye su base, produce unidades, conquista islas, combate y vuelve al menú al terminar.</p>
+<h3>Fuentes y estado actual</h3>
+<p>El diseño original es <strong>documento_juego_v2.pdf</strong> (2 de noviembre de 2026, 30 páginas). Se contrasta con <strong>Faro_de_Ambar_Informe_Completo.pdf</strong> (6 de noviembre) y las fotografías del usuario. El informe describe un antecedente en Godot con 13 edificios, 18 unidades, tres mapas y seis modos.</p>
+<p>Se combinan el diseño previo y la base Luau enviada: <strong>27 unidades y 15 edificios provisionales</strong>. Hay 31 modelos estáticos 0.2 para revisar y 11 nuevos pendientes de diseñar. Las maquetas de UI y los modelos requieren revisión; integrar la base no inicia el desarrollo.</p>
+<p><strong>El proyecto original completo todavía no está disponible; ahora se han recibido ocho fragmentos Luau.</strong> Las 94 pruebas y el arranque Web citados pertenecen al informe histórico; no demuestran que esta propuesta funcione ya en Roblox. El enlace anterior también quedó pendiente.</p>
+<h3>Qué significa «que funcione normal»</h3>
+<p>Una partida deberá iniciarse y terminarse sin bloqueos. Los botones responderán correctamente, los gestos no duplicarán órdenes y los costes se explicarán. Se comprobarán el acceso y el rendimiento en un iPad identificado antes de afirmar que cumplen los objetivos.</p>
+<h2>2. Las cinco etapas de desarrollo</h2>
+<p><strong>Plan establecido por el usuario.</strong> Se ejecutará cuando indique empezar. Ahora se revisan modelos, UI y documentos; ninguna etapa de programación o publicación ha comenzado por registrar esta tabla.</p>
+<table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Herramientas</th>
+<th>Para qué sirven</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Empezar</td>
+<td>Roblox Studio + Luau + Rojo + Git</td>
+<td>Crear la base del juego, programar las mecánicas, organizar el código y guardar versiones.</td>
+</tr>
+<tr>
+<td>2. Intermedio</td>
+<td>Blender + Animation Editor + SurfaceAppearance</td>
+<td>Crear personajes, vehículos, edificios, animaciones y materiales realistas.</td>
+</tr>
+<tr>
+<td>3. Completar el juego</td>
+<td>Roblox Studio + Luau + DataStoreService</td>
+<td>Terminar menús, inventario, misiones, controles y guardado del progreso.</td>
+</tr>
+<tr>
+<td>4. Pulir el juego</td>
+<td>MicroProfiler + Developer Console + simuladores de Studio</td>
+<td>Corregir errores, mejorar rendimiento y cargas, probar multijugador y ajustar la experiencia en móvil.</td>
+</tr>
+<tr>
+<td>5. Publicar y actualizar</td>
+<td>Roblox Studio + Creator Hub + Analytics</td>
+<td>Publicar el juego, revisar su funcionamiento y preparar mejoras según los resultados.</td>
+</tr>
+</tbody>
+</table>
+<h3>Cómo se aplicará a Faro de Ámbar</h3>
+<p>El primer incremento será una partida completa contra bots en un mapa y un modo. La estructura cliente-servidor se preparará desde la etapa 1; las pruebas amplias con varios jugadores se realizarán en la etapa 4.</p>
+<p>Los 31 modelos 0.2 son propuestas estáticas ya disponibles para revisión. En la etapa 2 se ajustarán los aprobados, se prepararán rigs compatibles y animaciones, y se importarán a Roblox. Tener forma tipo R6 no significa que el rig esté terminado.</p>
+<p><strong>Orden vigente:</strong> primero revisión visual; después, cuando el usuario indique comenzar, estas cinco etapas. La aprobación de modelos o pantallas no inicia por sí sola la programación.</p>
+<h2>3. Dirección visual</h2>
+<p>Las fotos son referencias de composición y legibilidad, no capturas de una nueva versión de Faro de Ámbar.</p>
+<ul>
+<li><strong>Terreno:</strong> hexágonos unidos, elevación moderada, bosques agrupados, montañas reconocibles y costas transitables.</li>
+<li><strong>Color:</strong> islas verdes, arena cálida y mar azul; ámbar como acento de identidad del Faro.</li>
+<li><strong>Unidades:</strong> cuerpos de bloques tipo Roblox, soldados verdes, barcos grises y siluetas reconocibles a pequeña escala.</li>
+<li><strong>Interfaz:</strong> paneles gris oscuro, miniaturas, vida verde y costes amarillos; construcción a la derecha y producción abajo.</li>
+<li><strong>Vestíbulo:</strong> acceso claro a jugar, tutorial y modos mediante tarjetas.</li>
+</ul>
+<p>Se utilizarán nombres, iconos y recursos propios. Los materiales podrán incorporar metal, pintura y desgaste más realistas mediante PBR, conservando las formas de bloques. La cámara mostrará la base y su entorno; vegetación y efectos se ajustarán con mediciones de rendimiento.</p>
+<div class="figgrid">
+<figure><img src="../img/ref-isla-propia.png" alt="Isla propia de cerca: Núcleo, granjas, Cuartel, fábrica, molino y puerto sobre hexágonos verdes y arena, rodeados de mar">
+<figcaption><b>Referencia 1 · Isla propia de cerca</b> (captura enviada por el usuario). Hexágonos verdes con borde de arena, mar azul con reflejos, Núcleo al centro con su rayo, granjas, Cuartel, fábrica, molino y puerto; soldados verdes legibles.</figcaption></figure>
+<figure><img src="../img/ref-archipielago.jpg" alt="Vista amplia del archipiélago: varias islas con bases de colores, islas pequeñas con energía y petróleo en el mar">
+<figcaption><b>Referencia 2 · Archipiélago</b> (captura enviada por el usuario). Islas separadas por mar navegable, bases de otros jugadores con su color en el borde del territorio, islas chicas con recursos y manchas oscuras de petróleo en el mar.</figcaption></figure>
+</div>
+<p class="small">Las dos capturas son del prototipo web de Faro de Ámbar. Sirven de referencia de composición, color y legibilidad para la versión de Roblox.</p>
+
+<h2>4. Interfaz y controles</h2>
+<p><strong>Distribución propuesta:</strong> recursos y participantes arriba; minimapa plegable a la izquierda; construcción plegable a la derecha; selección y producción abajo. El centro queda disponible para observar y dar órdenes.</p>
+<ul>
+<li>Toque: seleccionar; con unidades seleccionadas, indicar destino válido.</li>
+<li>Arrastre: mover cámara sin ordenar al soltar.</li>
+<li>Pellizco: acercar o alejar sin activar una selección posterior.</li>
+<li>Construir: elegir tarjeta, tocar terreno, revisar, rotar y confirmar.</li>
+<li>Cancelar: salir del modo activo; demoler requiere confirmación.</li>
+</ul>
+<p>Los botones principales tendrán un área táctil objetivo equivalente a 44 × 44 píxeles de interfaz, ajustada con escalado de UI y comprobada físicamente en la aplicación Roblox. En 4:3 y 16:9 se evitarán solapamientos. Los motivos de bloqueo aparecerán en español junto a la acción.</p>
+<figure><svg viewBox="0 0 1180 820" role="img" aria-label="Esquema del HUD en iPad horizontal" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, Arial, sans-serif">
+  <defs><linearGradient id="mar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb3d9"/><stop offset="1" stop-color="#2a8fbf"/></linearGradient></defs>
+  <rect width="1180" height="820" fill="url(#mar)"/>
+  <ellipse cx="590" cy="420" rx="330" ry="210" fill="#9ccb6b" stroke="#e8d59a" stroke-width="22"/>
+  <text x="590" y="410" text-anchor="middle" font-size="30" font-weight="700" fill="#17313a">MAPA</text>
+  <text x="590" y="446" text-anchor="middle" font-size="19" fill="#17313a">Centro libre para observar y dar órdenes</text>
+  <g fill="#1d2a33" fill-opacity="0.93" stroke="#d99a2b" stroke-width="2">
+    <rect x="12" y="12" width="560" height="64" rx="12"/>
+    <rect x="586" y="12" width="450" height="64" rx="12"/>
+    <rect x="1050" y="12" width="118" height="64" rx="12"/>
+    <rect x="12" y="92" width="236" height="250" rx="12"/>
+    <rect x="12" y="588" width="236" height="220" rx="12"/>
+    <rect x="908" y="92" width="260" height="620" rx="12"/>
+    <rect x="262" y="560" width="632" height="248" rx="12"/>
+  </g>
+  <g fill="#ffffff" font-size="17">
+    <text x="30" y="40" font-weight="700" fill="#f2ab38">RECURSOS</text>
+    <text x="30" y="64">Monedas · Tropas · Energía · Tiempo</text>
+    <text x="604" y="40" font-weight="700" fill="#f2ab38">PARTICIPANTES</text>
+    <text x="604" y="64">Colores de cada imperio · marcador</text>
+    <text x="1068" y="50" font-weight="700" fill="#f2ab38">Pausa</text>
+    <text x="30" y="122" font-weight="700" fill="#f2ab38">OBJETIVOS</text>
+    <text x="30" y="148">Primeros pasos o misión</text>
+    <text x="30" y="172">Avisos de la partida</text>
+    <text x="30" y="618" font-weight="700" fill="#f2ab38">MINIMAPA (plegable)</text>
+    <text x="30" y="644">Grupos 1-2-3</text>
+    <text x="30" y="668">Ejército · Barcos · Aéreos</text>
+    <text x="30" y="692">Recuadro · Núcleo</text>
+    <text x="926" y="122" font-weight="700" fill="#f2ab38">CONSTRUCCIÓN (plegable)</text>
+    <text x="926" y="150">Pestañas: Economía, Energía,</text>
+    <text x="926" y="174">Producción, Defensa</text>
+    <text x="926" y="208">Tarjeta: miniatura, coste en</text>
+    <text x="926" y="232">amarillo, qué da y límite</text>
+    <text x="280" y="590" font-weight="700" fill="#f2ab38">SELECCIÓN Y PRODUCCIÓN</text>
+    <text x="280" y="618">Ficha: nombre, nivel, vida en verde</text>
+    <text x="280" y="644">Botones: Mejorar · Punto de reunión · Demoler</text>
+    <text x="280" y="670">Cola con tiempo y «×» · Repetir · Siempre</text>
+    <text x="280" y="696">Tarjetas de tropas con coste y población</text>
+  </g>
+  <g fill="#f2ab38"><rect x="262" y="736" width="140" height="56" rx="10"/><rect x="414" y="736" width="140" height="56" rx="10" fill-opacity="0.35"/><rect x="566" y="736" width="140" height="56" rx="10" fill-opacity="0.35"/></g>
+  <text x="332" y="770" text-anchor="middle" font-size="15" font-weight="700" fill="#1a1206">44 × 44 px mín.</text>
+</svg>
+<figcaption><b>Esquema del HUD en iPad horizontal</b> (sección 4): recursos y participantes arriba; objetivos y minimapa plegable a la izquierda; construcción plegable a la derecha; selección y producción abajo; el centro queda para el mapa. Toda zona táctil mide 44 × 44 px o más.</figcaption></figure>
+<figure><img src="../img/hud-v15-ipad.png" alt="Captura del prototipo web v1.5 en iPad horizontal con el Cuartel seleccionado">
+<figcaption><b>Cómo se ve hoy en el prototipo web (v1.5)</b>: la misma distribución, con el Cuartel elegido (cola con tiempo, lo que cambia al mejorar y tarjetas de tropas).</figcaption></figure>
+
+<h2>5. Requisitos del juego</h2>
+<p>Estos requisitos definen el comportamiento futuro esperado. No autorizan a implementarlo ahora. Las reglas y recursos originales se contrastarán con ellos al planificar su adaptación a Roblox.</p>
+<ul>
+<li><strong>RF-01 · Acceso y partida.</strong> Desde Roblox se puede iniciar la prueba contra bots, consultar el resultado y volver al vestíbulo. La pausa solo detiene una sesión individual que lo permita; abrir el menú no pausa un servidor compartido. La carga informa del progreso y de los fallos.</li>
+<li><strong>RF-02 · Mapa y cámara.</strong> El escenario mantiene hexágonos continuos, rutas válidas y zonas útiles para construir. La cámara permite desplazarse, acercarse y volver al Núcleo sin perder el área jugable.</li>
+<li><strong>RF-03 · Construcción.</strong> Cada edificio muestra coste, requisitos y ubicación permitida. La vista previa distingue posiciones válidas e inválidas. Confirmar cobra una sola vez; cancelar no cobra; la rotación elegida se conserva.</li>
+<li><strong>RF-04 · Economía.</strong> Monedas, ingresos, energía y capacidad reflejan la simulación. Los recursos insuficientes impiden la acción y explican el motivo. Las mejoras y bonificaciones conservan las reglas documentadas hasta revisar su balance.</li>
+<li><strong>RF-05 · Producción.</strong> Seleccionar un productor muestra sus unidades y su cola. La orden se asigna al edificio seleccionado. Cancelar una unidad pendiente devuelve las monedas y la energía gastadas, y libera su capacidad reservada.</li>
+<li><strong>RF-06 · Movimiento y transporte.</strong> La infantería y los tanques circulan por tierra y utilizan Barcazas para cruzar agua. El transporte incluye aproximación, embarque, cruce y desembarque. Las rutas navales no atraviesan tierra y los destinos imposibles se comunican.</li>
+<li><strong>RF-07 · Combate y final.</strong> Unidades y bots atacan objetivos válidos, reciben daño y pueden ser destruidos. La captura del Faro aplica su bonificación; la victoria cierra la partida y la caída del Núcleo termina la participación del jugador. El resultado ofrece revancha o regreso; observar el final queda por verificar.</li>
+<li><strong>RF-08 · Interfaz y entrada.</strong> Minimapa, selección, construcción y producción funcionan con ratón y toque. Arrastres y pellizcos no generan acciones involuntarias. Los paneles pueden plegarse sin perder el estado de selección.</li>
+<li><strong>RF-09 · Perfil de progreso.</strong> DataStoreService guarda desde el servidor gemas/cristales, XP, inventario, misiones, recompensas y canjes por cuenta. El perfil se recupera entre sesiones y dispositivos con la misma cuenta. Los fallos se comunican y se evitan premios duplicados. Reanudar partidas en curso queda fuera del alcance inicial.</li>
+<li><strong>RF-10 · Ayuda y modos.</strong> El tutorial explica selección, economía, construcción y transporte. Cada modo indica sus reglas y los participantes controlados por bots. Las opciones disponibles deben corresponder a funciones reales.</li>
+</ul>
+<h2>6. Alcance y prioridades</h2>
+<h3>Fase actual · Revisión visual y documentación</h3>
+<p>Revisar los 31 modelos estáticos 0.2 y sus maquetas de UI; especificar 11 modelos nuevos del catálogo combinado. Entregar por separado el PDF de UI y el PDF del juego con el PRD. Registrar qué aprueba el usuario y qué debe cambiar.</p>
+<p><strong>El desarrollo espera la indicación del usuario para comenzar.</strong> La elección de Roblox y esta hoja de ruta no sustituyen esa orden. Se conservarán las decisiones visuales para integrar solo recursos aprobados.</p>
+<h3>Primer incremento · Etapa 1</h3>
+<p>Preparar Studio, Luau, Rojo y Git. Construir un mapa y un modo contra bots: inicio, construcción, economía, producción, transporte, combate, resultado y regreso. Desde esta base el servidor valida las órdenes y decide sus efectos; el cliente presenta la UI y recibe la entrada.</p>
+<h3>Contenido completo · Etapas 2 y 3</h3>
+<p>Integrar y animar las unidades y edificios aprobados. Completar menús, tutorial, inventario, misiones y progreso por cuenta. Extender después el trabajo a los tres mapas y seis modos documentados, conservando pruebas de las reglas principales.</p>
+<h3>Calidad y entrega · Etapas 4 y 5</h3>
+<p>Probar varios clientes, entradas y salidas de jugadores, sincronización y rendimiento. Ajustar cargas, memoria, gráficos y controles en móvil. Preparar después la publicación en Roblox, revisar su funcionamiento y organizar actualizaciones con Analytics.</p>
+<p><strong>Alcance aún por concretar:</strong> matchmaking, límites de jugadores por modo, clasificación global, comercio y compras. Probar multijugador está incluido en la ruta; esas funciones adicionales necesitan reglas específicas antes de implementarse.</p>
+<h2>7. Herramientas y base técnica</h2>
+<p><strong>Plataforma seleccionada: Roblox Studio con Luau.</strong> Blender es la herramienta principal de creación de recursos; Maya queda como alternativa. La sección 14 incorpora las herramientas adicionales indicadas por el usuario.</p>
+<h3>Código y versiones</h3>
+<p>Roblox Studio compone y ejecuta la experiencia. Luau define las mecánicas. Rojo sincroniza el proyecto y código del sistema de archivos con Studio; se definirá qué recursos gestiona. Git conserva versiones de los archivos incluidos en el repositorio. VS Code, Luau Language Server, Selene y StyLua apoyan la edición; Wally gestiona bibliotecas y Rokit fija versiones de herramientas compatibles. El progreso de los jugadores se guarda aparte.</p>
+<h3>Modelos, animaciones y materiales</h3>
+<p>Blender prepara geometría, UV, texturas y rig. Animation Editor crea y ajusta animaciones de rigs compatibles con Roblox. SurfaceAppearance aplica mapas PBR a MeshParts; los mapas deben crearse o prepararse antes. Los acabados realistas se adaptarán al estilo de bloques y al rendimiento móvil.</p>
+<h3>Progreso y arquitectura</h3>
+<p>DataStoreService guarda perfiles por cuenta desde el servidor. Se prevén control de errores, reintentos limitados y actualizaciones que eviten duplicados o pérdidas. El servidor valida construcción, gastos, producción, daño y recompensas; la UI no decide esos resultados por sí sola.</p>
+<h3>Diagnóstico y publicación</h3>
+<p>MicroProfiler mide el coste de los sistemas. Developer Console permite investigar errores, memoria y red. Los simuladores y sesiones de varios clientes de Studio se complementan con pruebas en un iPad físico. Studio publica versiones; Creator Hub gestiona la experiencia y Analytics ayuda a evaluar el uso tras publicarla.</p>
+<h3>Antecedentes y objetivo móvil</h3>
+<p>Godot y Unreal quedan como antecedentes documentales; esta ruta usa Roblox. Para reutilizar el antiguo proyecto se necesitarán sus fuentes y una evaluación de los recursos. GDScript, Blueprints o C++ no pasan automáticamente a Luau.</p>
+<p><strong>RNF-01:</strong> objetivo inicial de 30 fps sostenidos en un iPad identificado; 60 fps es aspiracional. Medir sesiones de 20 minutos, cargas, memoria y respuesta táctil. Repetir 120 unidades como prueba de estrés, sin afirmar rendimiento antes de medirlo.</p>
+<h2>8. Pruebas de aceptación</h2>
+<p>Cada resultado incluirá versión del proyecto, entorno, pasos, resultado esperado y evidencia. <strong>Pendiente</strong> no equivale a <strong>aprobado</strong>. Estas pruebas son futuras y se ejecutarán tras la orden de inicio. La emulación táctil complementa la prueba física; no acredita el rendimiento de la aplicación Roblox en iPad.</p>
+<ul>
+<li><strong>CA-01 → RF-01.</strong> Cargar, iniciar y volver al menú tres veces en Roblox. Probar pausa y reanudación en sesión individual; en servidor compartido el menú no detiene la partida. No debe haber bloqueos.</li>
+<li><strong>CA-02 → RF-02.</strong> Revisar los tres mapas: continuidad de hexágonos, islas sin solapamientos, edificios accesibles y rutas terrestres y navales válidas. Comprobar límites y retorno de cámara.</li>
+<li><strong>CA-03 → RF-03.</strong> Construir en posición válida, rechazar una inválida, rotar y cancelar. Verificar orientación, ocupación del terreno y cobro único; repetir con recursos insuficientes.</li>
+<li><strong>CA-04 → RF-04.</strong> Verificar el saldo esperado tras producción y mejora. Capturar el Faro aumenta el ingreso un 50 %, según la regla documentada. El HUD debe reflejar estos valores sin cobros duplicados.</li>
+<li><strong>CA-05 → RF-05.</strong> Con dos productores del mismo tipo, producir en el seleccionado y cancelar la última orden. Comprobar la cola, la devolución exacta de monedas y energía, y la capacidad liberada.</li>
+<li><strong>CA-06 → RF-06.</strong> Transportar soldados y un tanque entre islas mediante Barcaza, desde embarque hasta desembarque. Comprobar también destino inaccesible, pérdida del transporte y ausencia de unidades atrapadas permanentemente.</li>
+<li><strong>CA-07 → RF-07.</strong> Completar victoria y derrota contra bots. Confirmar daño, destrucción, captura y bonificación; el resultado debe permitir revancha o regreso limpio.</li>
+<li><strong>CA-08 → RF-08.</strong> Probar toque, arrastre y pellizco en 4:3 y 16:9. Ningún gesto debe duplicar órdenes; ningún control esencial queda fuera de pantalla o tapado por otro panel.</li>
+<li><strong>CA-09 → RF-09.</strong> Guardar progreso y recuperarlo tras reconectar, en otro servidor y en otro dispositivo con la misma cuenta. Comprobar fallos de DataStoreService y solicitudes repetidas: no se duplican premios ni se sobrescribe el perfil con datos incompletos.</li>
+<li><strong>CA-10 → RF-10.</strong> Completar el tutorial y abrir los modos disponibles. Cada tarjeta debe iniciar la opción indicada y describir correctamente si se juega contra bots.</li>
+<li><strong>CA-11 → RNF-01.</strong> Jugar 20 minutos en el iPad registrado sin cierres ni bloqueos. Adjuntar mediciones de fluidez y memoria; indicar si se alcanza el objetivo de 30 fps o qué ajustes faltan.</li>
+</ul>
+<p>Las reglas adicionales se comprueban con CA-12 a CA-15; CA-16 cubre multijugador y servidor (sección 9). Las 94 pruebas históricas servirán de referencia para adaptar comprobaciones a Roblox. Antes de entregar el acceso se verificará una entrada limpia desde la aplicación Roblox.</p>
+<h2>9. Entregas y criterios por etapa</h2>
+<h3>Entrega actual</h3>
+<p>PDF de UI separado del PDF del juego con PRD 1.6, más fuentes de los 31 modelos estáticos. La revisión visual sigue pendiente del usuario. Esta actualización combina la base Luau con el diseño previo, conserva ambos balances y registra correcciones de movimiento, UI y guardado. Los fragmentos se han revisado por lectura; no se ejecutaron en Roblox.</p>
+<h3>Resultados futuros</h3>
+<ul>
+<li><strong>Etapa 1 · Base:</strong> proyecto organizado con Studio, Luau y Rojo; versiones en Git; primera partida completa contra bots y validación de órdenes en el servidor.</li>
+<li><strong>Etapa 2 · Recursos:</strong> modelos aprobados importados, rigs y animaciones comprobados, materiales legibles y adecuados para móvil.</li>
+<li><strong>Etapa 3 · Sistemas:</strong> menús, inventario, misiones y controles conectados; perfil persistente por cuenta con DataStoreService.</li>
+<li><strong>Etapa 4 · Calidad:</strong> informe de errores corregidos y mediciones; pruebas de varios clientes y del dispositivo móvil identificado.</li>
+<li><strong>Etapa 5 · Publicación:</strong> versión accesible en Roblox, comprobación del acceso y plan de actualizaciones basado en Analytics.</li>
+</ul>
+<h3>CA-16 · Multijugador y servidor</h3>
+<p>Ejecutar una sesión con al menos dos clientes en Studio. Comprobar selección, órdenes, producción, movimiento, combate y resultados coherentes entre clientes. Probar entrada, desconexión y reconexión sin bloquear al resto. Las solicitudes inválidas o repetidas no deben crear recursos ni recompensas adicionales.</p>
+<h3>Métricas de seguimiento</h3>
+<p>En calidad: errores, tiempos de carga, memoria y tiempos de cuadro. Tras publicar: inicio y final del tutorial, inicio y final de partidas, abandono y retorno de jugadores según las métricas disponibles. Las mediciones orientarán mejoras; aún no existen resultados de producción.</p>
+<h3>Dependencias y siguiente paso</h3>
+<p>Para reutilizar el proyecto histórico se necesitará el ZIP original y revisar sus fuentes. La creación en Studio requiere ordenador; la comprobación móvil requiere un dispositivo físico. Al iniciar se registrarán versiones y configuraciones; Rokit fijará las herramientas CLI compatibles. Se conservarán fuentes y exportaciones de arte y audio. Cuentas y permisos se revisarán al iniciar cada trabajo.</p>
+<p><strong>Ahora corresponde revisar los documentos y diseños. El desarrollo comenzará cuando el usuario lo indique.</strong> No se fijan fechas, se configura un repositorio ni se publica una experiencia por actualizar el PRD.</p>
+<h2>10. Catálogo combinado de edificios</h2>
+<p><strong>15 edificios: 13 anteriores y 2 nuevos.</strong> Las cifras de ambas fuentes son provisionales; no se mezclan automáticamente. «—» significa no definido. E = energía. La omisión de energía en la base no la elimina del diseño.</p>
+<table>
+<thead>
+<tr>
+<th>Edificio</th>
+<th>Coste anterior</th>
+<th>Oro base</th>
+<th>Función combinada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Núcleo</td>
+<td>0</td>
+<td>0</td>
+<td>Centro y defensa; su caída elimina al jugador.</td>
+</tr>
+<tr>
+<td>Granja</td>
+<td>800</td>
+<td>60</td>
+<td>Agricultura e ingresos.</td>
+</tr>
+<tr>
+<td>Molino</td>
+<td>150</td>
+<td>—</td>
+<td>Produce energía.</td>
+</tr>
+<tr>
+<td>Casa</td>
+<td>5.000</td>
+<td>—</td>
+<td>Amplía población.</td>
+</tr>
+<tr>
+<td>Cuartel</td>
+<td>200</td>
+<td>150</td>
+<td>Produce la infantería combinada.</td>
+</tr>
+<tr>
+<td>Fábrica</td>
+<td>400 + 50 E</td>
+<td>400</td>
+<td>Vehículos terrestres.</td>
+</tr>
+<tr>
+<td>Puerto</td>
+<td>3.000</td>
+<td>350</td>
+<td>Produce y cura barcos; en costa.</td>
+</tr>
+<tr>
+<td>Helipuerto / Hangar</td>
+<td>40.000</td>
+<td>600</td>
+<td>Producción aérea; adaptar diseño y salidas.</td>
+</tr>
+<tr>
+<td>Muro</td>
+<td>30</td>
+<td>—</td>
+<td>Obstáculo defensivo.</td>
+</tr>
+<tr>
+<td>Torreta</td>
+<td>250</td>
+<td>—</td>
+<td>Defensa terrestre.</td>
+</tr>
+<tr>
+<td>Antiaéreo</td>
+<td>300</td>
+<td>—</td>
+<td>Defensa aérea.</td>
+</tr>
+<tr>
+<td>Bomba de petróleo</td>
+<td>3.200</td>
+<td>—</td>
+<td>Extracción terrestre.</td>
+</tr>
+<tr>
+<td>Plataforma petrolera</td>
+<td>15.000</td>
+<td>500</td>
+<td>Extracción en yacimientos marinos.</td>
+</tr>
+<tr>
+<td>Corral de ganadería</td>
+<td>—</td>
+<td>120</td>
+<td>Ganadería de vacas o cerdos; ingresos.</td>
+</tr>
+<tr>
+<td>Mina de oro</td>
+<td>—</td>
+<td>300</td>
+<td>Extracción sobre yacimientos de oro.</td>
+</tr>
+</tbody>
+</table>
+<h3>Economía, capacidad y mejoras conservadas</h3>
+<p>El diseño previo propone Núcleo, una Granja, 2.000 monedas y 20 plazas iniciales. Núcleo y Granja generan 1.500 y 2.000 monedas/min; Molino, 5 E cada 10 s; Bomba y Plataforma, 2.800 y 10.000 monedas/min. La base usa GeneracionOro sin período: no se asume oro por segundo ni por minuto.</p>
+<p>Se conservan seis Casas iniciales, dos más por rival eliminado y cinco plazas por nivel. Edificios hasta nivel 3; Casas hasta nivel 4, con mejoras de 2.500, 3.500 y 5.000. El «50 % del costo» de otras mejoras requiere definir su base. El balance final sigue pendiente; la combinación no aprueba precios.</p>
+<h2>11. Catálogo combinado de unidades</h2>
+<p><strong>27 unidades: 18 anteriores y 9 añadidas.</strong> Costes separados por fuente; «—» no significa cero. Plazas conserva la población anterior, no capacidad de transporte; las aéreas eran ejemplos. Los 18 modelos anteriores son propuestas estáticas; las 9 adiciones aún no tienen modelo.</p>
+<table>
+<thead>
+<tr>
+<th>Unidad</th>
+<th>Coste anterior</th>
+<th>Oro base</th>
+<th>Plazas</th>
+<th>Productor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Constructor</td>
+<td>200</td>
+<td>40</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Ingeniero</td>
+<td>600</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Artillero</td>
+<td>700</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Escopetero</td>
+<td>950</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Ranger</td>
+<td>1.000</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Francotirador</td>
+<td>1.200</td>
+<td>80</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Rompedor</td>
+<td>1.250</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Cazador</td>
+<td>1.800</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Cohetero</td>
+<td>2.500</td>
+<td>—</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Explorador</td>
+<td>—</td>
+<td>30</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Soldado</td>
+<td>—</td>
+<td>55</td>
+<td>—</td>
+<td>Cuartel</td>
+</tr>
+<tr>
+<td>Tanque</td>
+<td>300 + 30 E</td>
+<td>—</td>
+<td>—</td>
+<td>Fábrica</td>
+</tr>
+<tr>
+<td>Camión antiaéreo</td>
+<td>200 + 20 E</td>
+<td>—</td>
+<td>—</td>
+<td>Fábrica</td>
+</tr>
+<tr>
+<td>Blindado ligero</td>
+<td>—</td>
+<td>180</td>
+<td>—</td>
+<td>Fábrica</td>
+</tr>
+<tr>
+<td>Tanque ligero</td>
+<td>—</td>
+<td>300</td>
+<td>—</td>
+<td>Fábrica</td>
+</tr>
+<tr>
+<td>Tanque pesado</td>
+<td>—</td>
+<td>550</td>
+<td>—</td>
+<td>Fábrica</td>
+</tr>
+<tr>
+<td>Lancha rápida</td>
+<td>1.800</td>
+<td>—</td>
+<td>1</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Barco constructor</td>
+<td>2.600</td>
+<td>—</td>
+<td>1</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Barcaza</td>
+<td>4.100</td>
+<td>100</td>
+<td>1</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Destructor</td>
+<td>6.000</td>
+<td>—</td>
+<td>4</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Submarino</td>
+<td>6.800</td>
+<td>400</td>
+<td>3</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Cañonera</td>
+<td>—</td>
+<td>250</td>
+<td>—</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Acorazado</td>
+<td>—</td>
+<td>700</td>
+<td>—</td>
+<td>Puerto</td>
+</tr>
+<tr>
+<td>Helicóptero</td>
+<td>26.000</td>
+<td>450</td>
+<td>3</td>
+<td>Hangar*</td>
+</tr>
+<tr>
+<td>Apache Guardián</td>
+<td>35.000</td>
+<td>—</td>
+<td>5</td>
+<td>Hangar*</td>
+</tr>
+<tr>
+<td>Dron explorador</td>
+<td>—</td>
+<td>120</td>
+<td>—</td>
+<td>Hangar*</td>
+</tr>
+<tr>
+<td>Avión de combate</td>
+<td>—</td>
+<td>800</td>
+<td>—</td>
+<td>Hangar*</td>
+</tr>
+</tbody>
+</table>
+<h3>Correspondencias para conservar el diseño</h3>
+<p>Builder → Constructor; Sniper → Francotirador; Submarine → Submarino. TransportBoat → Barcaza conserva el transporte de soldados y tanques. AttackHelicopter → Helicóptero es una equivalencia provisional; Apache Guardián permanece separado.</p>
+<p>Se mantienen por separado Tanque, Tanque ligero y Tanque pesado, y también Lancha rápida/Cañonera y Destructor/Acorazado. Se revisará si algunos son variantes; no se descarta ninguna entrada por parecido de nombre. Soldado se añade sin retirar Artillero ni Ranger.</p>
+<p>*Hangar amplía el Helipuerto existente; incorporar el avión de combate requiere revisar su modelo y las salidas. El JSON combinado adjunto conserva todos los valores de Vida, Ataque, Rango y Velocidad recibidos, con su fuente y sin inventar valores para las unidades anteriores.</p>
+<h2>12. Reglas añadidas y sus pruebas</h2>
+<p>Estas reglas completan RF-02 a RF-07. Las cantidades marcadas como ejemplo son referencias provisionales; cada prueba registrará la configuración efectivamente utilizada.</p>
+<h3>RF-11 · Dos escudos independientes</h3>
+<p><strong>Emergencia (p. 13):</strong> al llegar al 25 % de vida del Núcleo, se activa una vez por partida; duración propuesta de 20 segundos. La vida de 2.000 y esos números aparecen como ejemplos. El informe posterior confirma como comportamiento descrito el umbral del 25 %.</p>
+<p><strong>Cúpula (p. 12):</strong> compra adicional por 25.000 monedas de partida, precio propuesto por EMF y recogido en el informe; una por jugador. Absorbe daño naval y aéreo cercano según el informe; permite pasar infantería y disparar desde dentro. Estados azul, amarillo y rojo. La recuperación de 60 segundos es un ejemplo, y su vida no queda cuantificada.</p>
+<p><strong>CA-12:</strong> activar emergencia dos veces en una partida y comprobar que solo opera la primera; reiniciarla en una partida nueva. Probar daño, rotura y recuperación de la Cúpula por separado. Verificar que la infantería entra y que el disparo propio funciona. La colisión física de barcos o aeronaves con la Cúpula requiere aclarar el «frena» del diseño antes de cambiarla.</p>
+<h3>RF-12 · Territorio, capacidad y captura</h3>
+<p>Construir solo en territorio propio, con coste y duración visibles. Puerto en costa junto al agua; plataforma sobre petróleo. Capturar una isla sin Núcleo exige soldados cerca de su bandera y ausencia de enemigos durante un tiempo configurable (pp. 5–7 y 13). Bosque: lentitud y ocultación; montaña: visión ampliada, sin construir. Las ventajas entre tropas deben favorecer ejércitos variados.</p>
+<p><strong>CA-13:</strong> rechazar construcción fuera de territorio; probar ocupación, límites de Casas y población. Disputar una captura con enemigos y completarla al despejar la zona. Comprobar bosque, montaña y que las mejoras cobran según la regla registrada en la auditoría.</p>
+<h3>RF-13 · Apoyo y operaciones navales</h3>
+<p>Constructor repara; Ingeniero construye más rápido y coloca una torreta pequeña (p. 9). Puerto cura barcos cercanos; Barco constructor instala plataformas; Submarino usa sigilo (p. 10). La Barcaza lleva soldados y tanques: lo cubre CA-06.</p>
+<p><strong>CA-14:</strong> dañar y reparar entidades válidas, producir en el Puerto seleccionado, instalar una plataforma válida e impedir otra sobre un punto ocupado. Probar ocultación y detección del Submarino con las reglas del proyecto; el diseño no define por completo quién lo detecta.</p>
+<h2>13. Progresión y decisiones pendientes</h2>
+<h3>RF-14 · Progreso cosmético</h3>
+<p>El tutorial enseña construir, producir y atacar; el diseño propone insignia Primer Faro, 150 cristales y Soldado Dorado (p. 18). El informe posterior describe esa recompensa como implementada y única. Se preserva como referencia por comprobar con CA-09.</p>
+<p>Las pp. 21–25 proponen pase de 40 niveles, tres misiones diarias y tres semanales, una sustitución diaria y premios de siete días: 20, 20, 30, 30, 40, 40 cristales y Cofre del Faro. Son cifras de ejemplo; no se cambian automáticamente los valores recuperados del proyecto.</p>
+<p>Cofre de Isla: 60/28/10/2 %; Cofre del Faro: 40/38/17/5 % para común/raro/épico/legendario. Probabilidades y garantía de un legendario cada 30 cofres son propuestas. Repetidos devuelven cristales; falta fijar cuánto y cómo se cuenta la garantía.</p>
+<p><strong>CA-15:</strong> mostrar probabilidades antes de abrir; sumar 100 %; acreditar premios una vez; comprobar devolución y garantía según configuración. Equipar una apariencia no debe cambiar vida, daño, velocidad ni coste. Monedas y energía se reinician por partida; el perfil conserva progreso. Verificar día de reinicio y racha antes de afirmar que funcionan.</p>
+<h3>Qué conservamos y qué hay que resolver</h3>
+<ul>
+<li><strong>Motor y nombre:</strong> Roblox Studio + Luau es la ruta elegida. Faro de Ámbar sigue como nombre de trabajo. Godot y la alternativa Unreal son antecedentes de versiones anteriores.</li>
+<li><strong>Turbo:</strong> la p. 15 propone monedas y producción x2 y muestra seis minutos como ejemplo; otras páginas dicen sin límite. El informe describe simulación x2. Auditar la conducta existente y documentar una regla antes de modificarla.</li>
+<li><strong>Alcance futuro:</strong> las pruebas multijugador forman parte de la etapa 4 y la publicación, de la etapa 5. Códigos para amigos, espectadores remotos, clasificación global, compras y pase de pago necesitan reglas específicas. Observar el final de una partida y ver repeticiones deben definirse antes de ofrecerlos.</li>
+<li><strong>Por decidir:</strong> salud/daño/tiempos, carga de Barcaza, mejoras sucesivas, detección de sigilo y zona horaria de recompensas. Cristales/gemas, invitaciones y botón SALIR eran preguntas del diseño original; no bloquean la revisión documental ni el diagnóstico.</li>
+</ul>
+<p><strong>Prioridad inmediata:</strong> revisar modelos y UI. El juego empezará cuando el usuario lo indique. Roblox ya es la plataforma elegida; al iniciar se concretará el alcance de cada etapa y se contrastarán las reglas con las fuentes originales.</p>
+<h2>14. Herramientas adicionales de producción</h2>
+<p><strong>Incorporadas a petición del usuario.</strong> Complementan las cinco etapas de la sección 2. Se prepararán cuando el usuario indique empezar; esta revisión actualiza únicamente la documentación.</p>
+<table>
+<thead>
+<tr>
+<th>Herramienta adicional</th>
+<th>Para qué sirve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visual Studio Code</td>
+<td>Escribir y organizar el código fuera de Studio. Rojo sincroniza los archivos del proyecto con Studio.</td>
+</tr>
+<tr>
+<td>Luau Language Server</td>
+<td>Añadir autocompletado y revisión de tipos al editor. Se configurará con las definiciones de Roblox y la estructura del proyecto.</td>
+</tr>
+<tr>
+<td>Selene + StyLua</td>
+<td>Selene detecta problemas comunes; StyLua aplica un formato uniforme al código. Complementan las pruebas del juego.</td>
+</tr>
+<tr>
+<td>Wally</td>
+<td>Instalar y administrar bibliotecas de código para Roblox y sus versiones. Se incorporarán las dependencias necesarias para el proyecto.</td>
+</tr>
+<tr>
+<td>Rokit</td>
+<td>Mantener las mismas versiones de las herramientas de línea de comandos compatibles, como Rojo y Wally.</td>
+</tr>
+<tr>
+<td>Substance 3D Painter</td>
+<td>Pintar materiales y texturas detalladas: metal, madera, tela, desgaste y suciedad; exportar mapas PBR para SurfaceAppearance.</td>
+</tr>
+<tr>
+<td>Photoshop</td>
+<td>Crear iconos, imágenes para menús, texturas y miniaturas. La interfaz interactiva se construye y programa en Roblox Studio.</td>
+</tr>
+<tr>
+<td>REAPER o Audacity</td>
+<td>Crear y editar sonidos, voces y música, y preparar archivos para importarlos a Roblox. Se elegirá uno según el trabajo.</td>
+</tr>
+<tr>
+<td>Autodesk Maya</td>
+<td>Modelar personajes, preparar rigs y realizar animaciones avanzadas. Es una alternativa a Blender, no un requisito adicional.</td>
+</tr>
+</tbody>
+</table>
+<h3>Uso dentro de las cinco etapas</h3>
+<p><strong>Etapa 1 y mantenimiento:</strong> VS Code, Luau Language Server, Selene, StyLua, Wally y Rokit acompañan el trabajo con Luau, Rojo y Git. Rokit fija herramientas compatibles; las versiones de Studio y de las aplicaciones de arte se registran por separado.</p>
+<p><strong>Etapas 2 y 3:</strong> Substance 3D Painter, Photoshop y REAPER o Audacity preparan materiales, imágenes y audio. Maya puede sustituir a Blender en modelado y animación. Se comprobará la importación de los recursos en Roblox.</p>
+<p>Los materiales detallados conservarán las siluetas de bloques tipo Roblox. Texturas y audio se ajustarán al rendimiento móvil. Primero se revisan los modelos y la UI; el desarrollo sigue pendiente de la indicación del usuario.</p>
+<h2>15. Integración de la base aportada</h2>
+<p><strong>Decisión del usuario: combinar la base con nuestro juego.</strong> Se conservan hexágonos, Faro, territorio, economía con energía, población, producción por edificio seleccionado, Barcaza, defensas, modos y progreso cosmético. La base aporta datos y esquemas para adaptar, no una versión ya funcional.</p>
+<h3>Datos, modelos y presentación</h3>
+<p>El catálogo provisional reúne 42 entradas: 15 edificios y 27 unidades. Añade Corral, Mina de oro, Explorador, Soldado, Blindado ligero, Tanque ligero, Tanque pesado, Cañonera, Acorazado, Dron explorador y Avión de combate. Son <strong>11 modelos nuevos por diseñar</strong>; los 31 anteriores siguen pendientes de revisión. También se adaptará el Helipuerto a Hangar.</p>
+<p>Core → Núcleo; Farm → Granja; Barracks → Cuartel; VehicleFactory → Fábrica; Harbor → Puerto; OilRig → Plataforma petrolera; Hangar → Helipuerto/Hangar. Los identificadores ingleses se vinculan a nombres españoles, modelos e iconos propios. La UI usará el catálogo combinado y mostrará costes definitivos solo tras resolver el balance.</p>
+<p><strong>Catalogo_Combinado_Faro_de_Ambar_v1_6.json</strong> registra las 42 entradas, valores anteriores y valores nuevos por separado, estadísticas recibidas y estado de cada modelo. Es documentación estructurada; no es el ModuleScript ejecutable. Un valor nulo significa pendiente, nunca cero.</p>
+<h3>Mapas y biomas</h3>
+<p>Se conservan las distribuciones documentadas Archipiélago Ámbar, Bahía Gris y Arrecife Doble. Se añaden tres perfiles de la base: Valle Verde para agricultura y tierra; Islas de Guerra para navegación y petróleo; Desierto Seco para agua escasa y oro. Su relación con las distribuciones se definirá al generar mapas; no se afirma que existan seis mapas terminados.</p>
+<p>El tablero cuadrado aleatorio de 20 × 20 sirve de referencia técnica. El resultado conservará hexágonos conectados, costas, puertos útiles, yacimientos y rutas transitables. La generación independiente de celdas no asegura esas condiciones; se comprobarán conectividad y zonas iniciales.</p>
+<h3>Balance y progreso</h3>
+<p>Se unificará «oro» con las monedas de partida, conservando energía y población. GeneracionOro necesita un período. El combate recibido propone Rango × 12 studs y un ataque por ciclo cercano a un segundo; son convenciones por revisar. El movimiento implica una velocidad en studs por segundo al corregir el nombre del campo. El saldo inicial 200 del guardado recibido no reemplaza automáticamente las 2.000 monedas del diseño previo.</p>
+<p>Las gemas/cristales pertenecen al perfil persistente. El oro de partida se reinicia. El historial de códigos se incorpora al perfil cuando exista un sistema de canje validado por servidor; los fragmentos solo muestran carga y guardado del historial, no la entrega segura de premios.</p>
+<h2>16. Correcciones necesarias de la base</h2>
+<p><strong>Revisión estática de ocho bloques; no ejecutados en Roblox Studio.</strong> Las correcciones siguientes forman parte del plan futuro. No se han instalado scripts ni iniciado el juego.</p>
+<ul>
+<li><strong>Organización.</strong> GameData será un ModuleScript; reclutamiento, mapa, movimiento, combate y guardado irán en el servidor; la UI y la carga, en LocalScripts. El texto concatenado, con instrucciones después de return GameData, no es un único archivo ejecutable válido.</li>
+<li><strong>Reclutamiento.</strong> TAMANO_CELDA no está definido en su ámbito y se usa después de descontar oro. Validar modelo, productor y salida antes de cobrar; un fallo de creación debe conservar el saldo. Un Model necesita pivote o punto de salida, no una propiedad Position de Part.</li>
+<li><strong>Autoridad del servidor.</strong> Comprobar tipos, propiedad, estado, productor permitido, disponibilidad económica, capacidad y frecuencia de solicitudes. El cliente no puede producir con edificios ajenos ni mover unidades de otro jugador.</li>
+<li><strong>Movimiento.</strong> Velocity no existe en los datos: se llama Velocidad. La celda más cercana puede quedar muy lejos de un destino fuera del mapa. No hay búsqueda de ruta: validar solo el destino permite atravesar agua o tierra prohibida durante un trayecto recto. Usar el mapa activo, vecinos hexagonales y rutas según el tipo de unidad.</li>
+<li><strong>Modelos y física.</strong> Los cubos genéricos y el Tween sobre Part no satisfacen los modelos aprobados. El controlador debe mover el modelo completo, respetar altura del terreno o vuelo y gestionar órdenes nuevas, muerte y transporte.</li>
+<li><strong>UI.</strong> ipairsestructuras es un identificador sin definir; el bucle fallará al ejecutarse. Elegir el primer hijo de workspace no identifica el productor. Se necesita selección contextual, orden y distribución de botones, miniaturas, desplazamiento, estados de carga/error y entrada táctil. SolicitudConstruccion todavía no está definida en los bloques recibidos.</li>
+<li><strong>Guardado.</strong> El bucle usa «en» donde Luau exige «in»: ese script no compila. Faltan creación del perfil y estado de carga. Un fallo de lectura no debe convertirse en perfil nuevo y luego sobrescribir datos válidos. Diseñar guardado periódico, actualizaciones seguras, reintentos limitados y coordinación de sesiones. BindToClose ayuda en cierres normales, sin garantizar un apagón abrupto.</li>
+</ul>
+<h3>Comprobaciones cuando se autorice desarrollar</h3>
+<p>Validar cobro único y fallo de spawn; rechazar edificios/unidades ajenos y órdenes inválidas; probar rutas entre islas sin atajos; comprobar que la UI usa el productor seleccionado en iPad; recuperar el perfil tras reconexión sin reiniciar datos por un error de carga. Las pruebas CA-01 a CA-16 siguen vigentes y se ampliarán con estos casos.</p>
+<p>Las secciones siguientes completan la revisión, la configuración y el archivo íntegro de los ocho códigos. Primero se revisan modelos, UI y documentación; la implementación espera la orden del usuario.</p>
+<h2>17. Carga, combate y barras de vida</h2>
+<p>Los dos últimos bloques amplían la base con presentación de carga y combate automático. Se incorporan al plan; todavía no están integrados ni probados. Las referencias a Mini Empires se conservan en la transcripción recibida; la implementación y presentación utilizarán Faro de Ámbar.</p>
+<h3>Pantalla de carga</h3>
+<p>El bloque crea una pantalla oscura con título y barra verde. La barra avanza con 100 esperas de 0,03 segundos: representa tiempo transcurrido, no disponibilidad real del mapa, perfil o modelos. Se sustituirá por estados reales de preparación, con información de error o reintento cuando corresponda.</p>
+<p>La carga se ejecutará en un LocalScript de ReplicatedFirst. Se mostrará la pantalla propia antes de retirar la predeterminada y se esperará la disponibilidad de los recursos esenciales y la señal de partida lista. La barra solo mostrará porcentajes si se pueden medir; de otro modo indicará la fase actual.</p>
+<p>El Tween solo desvanece el fondo; título y barras permanecen opacos. La transición incluirá todos los elementos. Texto, márgenes y reaparición se comprobarán en iPad con el nombre y arte del proyecto.</p>
+<h3>Combate y propiedad</h3>
+<p>El bucle ataca al primer objeto cercano con Vida, sin distinguir propietario o equipo. Por tanto, puede dañar aliados. Se registrarán dueño, equipo, estado y objetivos permitidos para cada entidad; el servidor elegirá un enemigo válido y aplicará las reglas de alcance, visibilidad y tipo de ataque.</p>
+<p>La propuesta interpreta Rango como un múltiplo de 12 studs y realiza como máximo un ataque por atacante y ciclo de aproximadamente un segundo. Estos números no aprueban el balance del catálogo combinado. La medida de celda, alcance y cadencia deberá estar definida de forma coherente.</p>
+<p>Position supone piezas individuales; se usará la posición del modelo completo. El doble recorrido crece de forma cuadrática: se medirá y limitará la búsqueda a objetivos cercanos cuando sea necesario. El ciclo terminará al cerrar la partida.</p>
+<h3>Vida visible</h3>
+<p>crearBarraVida está declarada, pero nunca se invoca; vidaMaxima tampoco se utiliza. Se conectará al alta de cada unidad y edificio, con punto de anclaje adecuado al modelo y máximo válido. La barra reflejará daño y curación, limitada entre 0 y 100 %, y se retirará al destruir la entidad.</p>
+<p><strong>Aceptación futura:</strong> carga coherente con el estado real; ningún ataque a aliados; daño y alcance conforme al balance registrado; barras correctas tras daño, curación y destrucción. Estas comprobaciones complementan CA-07 y CA-11.</p>
+<h2>18. Guía de configuración revisada</h2>
+<p><strong>Resultado:</strong> la guía aporta estructura útil, pero aún faltan sistemas. Crear carpetas y canales no implementa sus funciones. Esta sección corrige la guía recibida; su texto original se conserva en el anexo final. No se han cambiado permisos ni creado una experiencia.</p>
+<h3>Red y modelos</h3>
+<p>Los tres canales se llaman SolicitudConstruccion, SolicitudReclutamiento y SolicitudMovimiento y son <strong>RemoteFunction</strong>. Reclutamiento y movimiento ya crean dos de ellos en los bloques: se elegirá una sola estrategia de creación y reutilización para evitar duplicados. Construcción necesita además su función del servidor, con validación y cobro único.</p>
+<p>ReplicatedStorage/Modelos es una ubicación propuesta. El código recibido aún crea cubos y no consulta esa carpeta. La integración deberá localizar y clonar el modelo correcto, vincularlo a su ID y preparar pivote, puntos de salida, propietario y vida. Los nombres de la guía cubren 9 edificios y 14 unidades; nuestro catálogo combinado tiene 15 y 27.</p>
+<h3>Interfaz y corrección del bucle</h3>
+<p>La jerarquía MenuJuego → MenuPrincipal → ContenedorBotones y ContadorOro coincide con el script. InterfazUsuario será un LocalScript hijo de MenuJuego. El ScrollingFrame necesitará UIListLayout o UIGridLayout, orden de tarjetas y tamaño de lienzo actualizado.</p>
+<p>La corrección es <code>for _, v in ipairs(estructuras) do</code>. Resuelve la llamada al iterador, pero el código aún elige el primer hijo de workspace. Debe usar el productor seleccionado, propio, activo y compatible. También faltan colocación con vista previa y conexión de selección con órdenes de movimiento.</p>
+<h3>Acceso a servicios</h3>
+<p>Enable Studio Access to API Services permite probar DataStore desde Studio en una experiencia publicada. Se utilizarán datos de prueba separados del progreso real. Es una configuración de las pruebas de Studio, no un permiso que cada jugador tenga que activar.</p>
+<p><strong>Allow HTTP Requests no es necesario para DataStore ni para canjes resueltos dentro de Roblox.</strong> Solo se evaluaría si una función futura necesita llamar a un servicio HTTP externo. La guía recibida presenta ambos ajustes como obligatorios; esa afirmación queda corregida aquí.</p>
+<h3>Sistemas mínimos que faltan</h3>
+<p>Inicializar Datos/Oro, Datos/Gemas y CodigosCanjeados con estados de carga; colocar Núcleo y recursos iniciales; implementar construcción, ingresos, producción y propiedad; enlazar modelos y controles; corregir errores de campo y sintaxis; resolver rutas, combate y guardado. Después se comprobará una partida completa antes de ampliar el contenido.</p>
+<h2>19. Archivo íntegro del código recibido</h2>
+<p><strong>Los ocho códigos se incluyen completos en los anexos A–H.</strong> Se mantienen comentarios, cifras y errores de la aportación para conservar una referencia fiel. La guía de configuración se reproduce en el anexo I. Las correcciones propuestas están en las secciones 16–18; los anexos no son una versión corregida ni lista para publicar.</p>
+<table>
+<thead>
+<tr>
+<th>Anexo</th>
+<th>Bloque recibido</th>
+<th>Ubicación prevista al integrar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>GameData</td>
+<td>ModuleScript en ReplicatedStorage.</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Reclutamiento</td>
+<td>Script del servidor.</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Generación del mapa</td>
+<td>Script del servidor.</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Movimiento</td>
+<td>Script del servidor.</td>
+</tr>
+<tr>
+<td>E</td>
+<td>InterfazUsuario</td>
+<td>LocalScript dentro de MenuJuego.</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Guardado</td>
+<td>Script del servidor.</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Pantalla de carga</td>
+<td>LocalScript en ReplicatedFirst.</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Combate y vida</td>
+<td>Combate en servidor; presentación de vida integrada con los modelos.</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Guía de configuración</td>
+<td>Referencia documental con correcciones en la sección 18.</td>
+</tr>
+</tbody>
+</table>
+<h3>Conservación y uso</h3>
+<p>Los ocho archivos suman 507 líneas y se guardan también como textos .luau.txt. El PRD editable contiene los mismos bloques sin modificar. En el PDF algunas líneas largas se dividen visualmente para que quepan en la página; el texto fuente conserva sus líneas originales.</p>
+<p>Los comentarios que afirman «restricciones originales» o «asegurar el guardado» se transcriben como parte de la aportación, no como comprobaciones realizadas. Los errores conocidos permanecen visibles en el archivo original para poder contrastarlos con una implementación futura.</p>
+<h3>Decisiones vigentes</h3>
+<p>Se conserva el estilo de bloques tipo Roblox, la revisión de modelos y UI antes de integrar, la hoja de ruta de cinco etapas y todas las herramientas adicionales. Combinar y documentar esta base no equivale a iniciar programación. Cuando el usuario indique empezar, se aplicará el plan revisado y se validarán los resultados en Studio y en el dispositivo previsto.</p>
+<h2>20. Anexo A · GameData</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local GameData = {}
+
+-- TIPOS DE MAPAS Y BIOMAS NATIVOS
+GameData.Mapas = {
+    [&quot;ValleVerde&quot;] = {Nombre = &quot;Valle Verde&quot;, Descripcion = &quot;Mapa balanceado ideal para agricultura y bases terrestres.&quot;},
+    [&quot;IslasGuerra&quot;] = {Nombre = &quot;Islas de Guerra&quot;, Descripcion = &quot;Mapa enfocado en combate naval y plataformas de petróleo.&quot;},
+    [&quot;DesiertoSeco&quot;] = {Nombre = &quot;Desierto Seco&quot;, Descripcion = &quot;Mapa con alta escasez de agua, pero rico en minas de oro.&quot;}
+}
+
+-- ESTRUCTURAS, GANADERÍA Y ECONOMÍA
+GameData.Edificios = {
+    [&quot;Core&quot;] = {Nombre = &quot;Core (Centro Urbano)&quot;, CostoOro = 0, VidaMaxima = 2500, GeneracionOro = 5},
+
+    -- Ganadería y Agricultura (Sectores económicos básicos)
+    [&quot;Farm&quot;] = {Nombre = &quot;Granja de Cultivos&quot;, CostoOro = 60, VidaMaxima = 200, GeneracionOro = 10},
+    [&quot;LivestockPen&quot;] = {Nombre = &quot;Corral de Ganadería (Vacas/Cerdos)&quot;, CostoOro = 120, VidaMaxima = 300, GeneracionOro = 22},
+
+    -- Industria Pesada
+    [&quot;GoldMine&quot;] = {Nombre = &quot;Mina de Oro&quot;, CostoOro = 300, VidaMaxima = 600, GeneracionOro = 50},
+    [&quot;OilRig&quot;] = {Nombre = &quot;Plataforma Petrolífera&quot;, CostoOro = 500, VidaMaxima = 1000, GeneracionOro = 110},
+
+    -- Cuarteles y Producción Militar
+    [&quot;Barracks&quot;] = {Nombre = &quot;Cuartel de Infantería&quot;, CostoOro = 150, VidaMaxima = 500},
+    [&quot;VehicleFactory&quot;] = {Nombre = &quot;Fábrica de Vehículos&quot;, CostoOro = 400, VidaMaxima = 1200},
+    [&quot;Harbor&quot;] = {Nombre = &quot;Puerto Naval&quot;, CostoOro = 350, VidaMaxima = 900},
+    [&quot;Hangar&quot;] = {Nombre = &quot;Hangar Aéreo&quot;, CostoOro = 600, VidaMaxima = 1100}
+}
+
+-- ARSENAL COMPLETO DE EJÉRCITOS Y PERSONAL
+GameData.Unidades = {
+    -- PERSONAL / INFANTERÍA (Barracks)
+    [&quot;Builder&quot;] = {CostoOro = 40, Vida = 50, Ataque = 0, Rango = 0, Velocidad = 8, Tipo = &quot;Infanteria&quot;},
+    [&quot;Scout&quot;] = {CostoOro = 30, Vida = 60, Ataque = 8, Rango = 2, Velocidad = 12, Tipo = &quot;Infanteria&quot;},
+    [&quot;Soldier&quot;] = {CostoOro = 55, Vida = 120, Ataque = 18, Rango = 3, Velocidad = 7, Tipo = &quot;Infanteria&quot;},
+    [&quot;Sniper&quot;] = {CostoOro = 80, Vida = 80, Ataque = 30, Rango = 7, Velocidad = 6, Tipo = &quot;Infanteria&quot;},
+
+    -- TANQUES / VEHÍCULOS TERRESTRES (VehicleFactory)
+    [&quot;ArmoredCar&quot;] = {CostoOro = 180, Vida = 300, Ataque = 25, Rango = 4, Velocidad = 11, Tipo = &quot;Tanque&quot;},
+    [&quot;LightTank&quot;] = {CostoOro = 300, Vida = 550, Ataque = 50, Rango = 5, Velocidad = 8, Tipo = &quot;Tanque&quot;},
+    [&quot;HeavyTank&quot;] = {CostoOro = 550, Vida = 1000, Ataque = 95, Rango = 6, Velocidad = 5, Tipo = &quot;Tanque&quot;},
+
+    -- BARCOS / VEHÍCULOS MARÍTIMOS (Harbor)
+    [&quot;TransportBoat&quot;] = {CostoOro = 100, Vida = 250, Ataque = 0, Rango = 0, Velocidad = 10, Tipo = &quot;Barco&quot;},
+    [&quot;Gunboat&quot;] = {CostoOro = 250, Vida = 450, Ataque = 40, Rango = 5, Velocidad = 8, Tipo = &quot;Barco&quot;},
+    [&quot;Battleship&quot;] = {CostoOro = 700, Vida = 1200, Ataque = 110, Rango = 8, Velocidad = 4, Tipo = &quot;Barco&quot;},
+    [&quot;Submarine&quot;] = {CostoOro = 400, Vida = 350, Ataque = 75, Rango = 5, Velocidad = 7, Tipo = &quot;Barco&quot;},
+
+    -- HELICÓPTEROS Y AVIONES / UNIDADES AÉREAS (Hangar)
+    [&quot;ScoutDrone&quot;] = {CostoOro = 120, Vida = 70, Ataque = 5, Rango = 3, Velocidad = 14, Tipo = &quot;Aereo&quot;},
+    [&quot;AttackHelicopter&quot;] = {CostoOro = 450, Vida = 500, Ataque = 65, Rango = 5, Velocidad = 11, Tipo = &quot;Aereo&quot;},
+    [&quot;FighterJet&quot;] = {CostoOro = 800, Vida = 750, Ataque = 130, Rango = 6, Velocidad = 16, Tipo = &quot;Aereo&quot;}
+}
+
+return GameData
+</code></pre>
+<h2>21. Anexo B · Reclutamiento</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local GameData = require(ReplicatedStorage:WaitForChild(&quot;GameData&quot;))
+
+local EventoReclutar = Instance.new(&quot;RemoteFunction&quot;)
+EventoReclutar.Name = &quot;SolicitudReclutamiento&quot;
+EventoReclutar.Parent = ReplicatedStorage
+
+EventoReclutar.OnServerInvoke = function(jugador, nombreUnidad, edificioOrigen)
+    local datosUnidad = GameData.Unidades[nombreUnidad]
+    if not datosUnidad then return false, &quot;La unidad solicitada no existe en la base de datos.&quot; end
+
+    -- 1. Validar que el jugador tenga la infraestructura correcta
+    if not edificioOrigen or edificioOrigen.Name == &quot;Core&quot; then
+        return false, &quot;Estructura de producción incorrecta.&quot;
+    end
+
+    -- Restricciones de fábrica originales de Mini Empires
+    if datosUnidad.Tipo == &quot;Infanteria&quot; and edificioOrigen.Name ~= &quot;Barracks&quot; then
+        return false, &quot;Los soldados y el personal requieren un Cuartel (Barracks).&quot;
+    elseif datosUnidad.Tipo == &quot;Tanque&quot; and edificioOrigen.Name ~= &quot;VehicleFactory&quot; then
+        return false, &quot;Los vehículos pesados requieren una Fábrica de Vehículos.&quot;
+    elseif datosUnidad.Tipo == &quot;Barco&quot; and edificioOrigen.Name ~= &quot;Harbor&quot; then
+        return false, &quot;Los buques de guerra requieren un Puerto Naval.&quot;
+    elseif datosUnidad.Tipo == &quot;Aereo&quot; and edificioOrigen.Name ~= &quot;Hangar&quot; then
+        return false, &quot;Los helicópteros y aviones requieren un Hangar Aéreo.&quot;
+    end
+
+    -- 2. Validar finanzas del jugador
+    local oroJugador = jugador.Datos.Oro
+    if oroJugador.Value &lt; datosUnidad.CostoOro then
+        return false, &quot;No tienes suficiente oro. Costo: &quot; .. datosUnidad.CostoOro
+    end
+
+    -- 3. Descontar costo y realizar el Spawning físico
+    oroJugador.Value = oroJugador.Value - datosUnidad.CostoOro
+
+    -- Instanciar visualmente la tropa sobre el mapa de forma genérica (cubos de colores según tipo)
+    local clonUnidad = Instance.new(&quot;Part&quot;)
+    clonUnidad.Name = nombreUnidad
+    clonUnidad.Size = Vector3.new(3, datosUnidad.Tipo == &quot;Tanque&quot; and 4 or 5, 3)
+    clonUnidad.Position = edificioOrigen.Position + Vector3.new(0, 4, TAMANO_CELDA) -- Aparece al frente del edificio
+
+    -- Diferenciar visualmente tipos de ejércitos
+    if datosUnidad.Tipo == &quot;Infanteria&quot; then clonUnidad.Color = Color3.fromRGB(0, 150, 0)
+    elseif datosUnidad.Tipo == &quot;Tanque&quot; then clonUnidad.Color = Color3.fromRGB(100, 100, 100)
+    elseif datosUnidad.Tipo == &quot;Barco&quot; then clonUnidad.Color = Color3.fromRGB(50, 50, 150)
+    elseif datosUnidad.Tipo == &quot;Aereo&quot; then clonUnidad.Color = Color3.fromRGB(200, 50, 50) end
+
+    -- Configurar estadísticas físicas del soldado en la instancia para el combate
+    local vidaVal = Instance.new(&quot;IntValue&quot;)
+    vidaVal.Name = &quot;Vida&quot;
+    vidaVal.Value = datosUnidad.Vida
+    vidaVal.Parent = clonUnidad
+
+    clonUnidad.Parent = workspace
+    return true, &quot;¡&quot; .. nombreUnidad .. &quot; desplegado en el campo de batalla!&quot;
+end
+</code></pre>
+<h2>22. Anexo C · Generación del mapa</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local GameData = require(ReplicatedStorage:WaitForChild(&quot;GameData&quot;))
+
+local TAMANO_CELDA = 12
+local ANCHO = 20
+local LARGO = 20
+
+-- Configurar qué mapa renderizar globalmente en el proyecto
+local MAPA_ACTUAL = &quot;ValleVerde&quot; -- Puedes cambiarlo a &quot;IslasGuerra&quot; o &quot;DesiertoSeco&quot;
+
+local TiposBaldosas = {
+    [&quot;Pasto&quot;] = {Color = Color3.fromRGB(34, 139, 34), Material = Enum.Material.Grass},
+    [&quot;TierraGanadera&quot;] = {Color = Color3.fromRGB(139, 69, 19), Material = Enum.Material.Ground},
+    [&quot;AguaMar&quot;] = {Color = Color3.fromRGB(30, 144, 255), Material = Enum.Material.Glass},
+    [&quot;YacimientoOro&quot;] = {Color = Color3.fromRGB(255, 215, 0), Material = Enum.Material.Neon}
+}
+
+function generarMapaPorBioma(tipoMapa)
+    local carpetaMapa = Instance.new(&quot;Folder&quot;)
+    carpetaMapa.Name = &quot;Tablero_&quot; .. tipoMapa
+    carpetaMapa.Parent = workspace
+
+    print(&quot;Cargando el mapa: &quot; .. GameData.Mapas[tipoMapa].Nombre)
+
+    for x = 1, ANCHO do
+        for z = 1, LARGO do
+            local celda = Instance.new(&quot;Part&quot;)
+            celda.Size = Vector3.new(TAMANO_CELDA - 0.4, 1, TAMANO_CELDA - 0.4)
+            celda.Anchored = true
+            celda.Position = Vector3.new(x * TAMANO_CELDA, 0, z * TAMANO_CELDA)
+
+            -- LÓGICA DE PROBABILIDADES SEGÚN EL MAPA SELECCIONADO
+            local randomVal = math.random(1, 100)
+            local baldosaFinal = TiposBaldosas.Pasto
+
+            if tipoMapa == &quot;ValleVerde&quot; then
+                if randomVal &gt; 85 then baldosaFinal = TiposBaldosas.TierraGanadera
+                elseif randomVal &lt; 10 then baldosaFinal = TiposBaldosas.AguaMar
+                elseif randomVal == 50 then baldosaFinal = TiposBaldosas.YacimientoOro end
+
+            elseif tipoMapa == &quot;IslasGuerra&quot; then
+                if randomVal &gt; 45 then baldosaFinal = TiposBaldosas.AguaMar -- 55% de Agua
+                elseif randomVal &lt; 10 then baldosaFinal = TiposBaldosas.YacimientoOro end
+
+            elseif tipoMapa == &quot;DesiertoSeco&quot; then
+                baldosaFinal = TiposBaldosas.TierraGanadera
+                if randomVal &gt; 80 then baldosaFinal = TiposBaldosas.YacimientoOro -- Lleno de oro
+                elseif randomVal == 1 then baldosaFinal = TiposBaldosas.AguaMar end -- Casi sin agua
+            end
+
+            -- Aplicar diseño estético
+            celda.Color = baldosaFinal.Color
+            celda.Material = baldosaFinal.Material
+            celda.Name = &quot;Celda_&quot; .. x .. &quot;_&quot; .. z
+
+            -- Configurar metadatos del juego
+            local metaTerreno = Instance.new(&quot;StringValue&quot;)
+            metaTerreno.Name = &quot;TipoTerreno&quot;
+            metaTerreno.Value = (baldosaFinal == TiposBaldosas.Pasto and &quot;Pasto&quot;) or 
+                               (baldosaFinal == TiposBaldosas.TierraGanadera and &quot;Tierra&quot;) or 
+                               (baldosaFinal == TiposBaldosas.AguaMar and &quot;Agua&quot;) or &quot;Oro&quot;
+            metaTerreno.Parent = celda
+
+            celda.Parent = carpetaMapa
+        end
+    end
+end
+
+generarMapaPorBioma(MAPA_ACTUAL)
+</code></pre>
+<h2>23. Anexo D · Movimiento</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local TweenService = game:GetService(&quot;TweenService&quot;)
+local GameData = require(ReplicatedStorage:WaitForChild(&quot;GameData&quot;))
+
+local EventoMover = Instance.new(&quot;RemoteFunction&quot;)
+EventoMover.Name = &quot;SolicitudMovimiento&quot;
+EventoMover.Parent = ReplicatedStorage
+
+-- Función para buscar celdas vecinas (Grafo simple)
+local function obtenerCeldaCercana(posicionDestino)
+    local celdas = workspace:FindFirstChild(&quot;Tablero_ValleVerde&quot;) or workspace:FindFirstChildOfClass(&quot;Folder&quot;)
+    if not celdas then return nil end
+
+    local celdaMasCercana = nil
+    local distanciaMinima = math.huge
+
+    for _, celda in ipairs(celdas:GetChildren()) do
+        local dist = (celda.Position - posicionDestino).Magnitude
+        if dist &lt; distanciaMinima then
+            distanciaMinima = dist
+            celdaMasCercana = celda
+        end
+    end
+    return celdaMasCercana
+end
+
+EventoMover.OnServerInvoke = function(jugador, unidadPart, posicionDestino)
+    if not unidadPart or not unidadPart:FindFirstChild(&quot;Vida&quot;) then return false, &quot;Unidad inválida.&quot; end
+
+    local datosConfig = GameData.Unidades[unidadPart.Name]
+    if not datosConfig then return false, &quot;Datos de unidad no encontrados.&quot; end
+
+    local celdaDestino = obtenerCeldaCercana(posicionDestino)
+    if not celdaDestino then return false, &quot;Destino fuera del mapa.&quot; end
+
+    local tipoTerreno = celdaDestino.TipoTerreno.Value
+
+    -- VALIDACIÓN DE RESTRICCIONES DE MOVIMIENTO ORIGINALES
+    if datosConfig.Tipo == &quot;Barco&quot; and tipoTerreno ~= &quot;Agua&quot; then
+        return false, &quot;Los barcos solo pueden navegar en el mar.&quot;
+    elseif (datosConfig.Tipo == &quot;Tanque&quot; or datosConfig.Tipo == &quot;Infanteria&quot;) and tipoTerreno == &quot;Agua&quot; then
+        return false, &quot;Las unidades terrestres no pueden nadar.&quot;
+    end
+
+    -- Movimiento usando interpolación (Tween) simulando la velocidad original
+    local tiempoViaje = (unidadPart.Position - celdaDestino.Position).Magnitude / datosConfig.Velocity
+    if datosConfig.Tipo == &quot;Aereo&quot; then
+        -- Los helicópteros y aviones flotan en el eje Y
+        local infoTween = TweenInfo.new(tiempoViaje, Enum.EasingStyle.Linear)
+        local targetPos = Vector3.new(celdaDestino.Position.X, 15, celdaDestino.Position.Z)
+        TweenService:Create(unidadPart, infoTween, {Position = targetPos}):Play()
+    else
+        -- Unidades terrestres y marítimas van a ras de suelo
+        local infoTween = TweenInfo.new(tiempoViaje, Enum.EasingStyle.Linear)
+        local targetPos = Vector3.new(celdaDestino.Position.X, unidadPart.Size.Y/2 + 0.5, celdaDestino.Position.Z)
+        TweenService:Create(unidadPart, infoTween, {Position = targetPos}):Play()
+    end
+
+    return true, &quot;Desplazando unidad...&quot;
+end
+</code></pre>
+<h2>24. Anexo E · InterfazUsuario</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local Players = game:GetService(&quot;Players&quot;)
+local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local GameData = require(ReplicatedStorage:WaitForChild(&quot;GameData&quot;))
+
+local jugador = Players.LocalPlayer
+local datos = jugador:WaitForChild(&quot;Datos&quot;)
+local oro = datos:WaitForChild(&quot;Oro&quot;)
+
+local UI = script.Parent
+local contenedor = UI.MenuPrincipal.ContenedorBotones
+local contadorOro = UI.MenuPrincipal.ContadorOro
+
+-- Actualizar el contador de Oro en la UI de forma constante
+oro.Changed:Connect(function(nuevoValor)
+    contadorOro.Text = &quot;Oro: &quot; .. nuevoValor
+end)
+contadorOro.Text = &quot;Oro: &quot; .. oro.Value
+
+-- Generar botones automáticamente para todo el catálogo de Ganadería, Edificios y Tropas
+local function crearBotonesTienda()
+    -- Botones de Edificios y Ganadería
+    for claveId, info in pairs(GameData.Edificios) do
+        local boton = Instance.new(&quot;TextButton&quot;)
+        boton.Size = UDim2.new(0.9, 0, 0, 40)
+        boton.Text = info.Nombre .. &quot; (&quot; .. info.CostoOro .. &quot; Oro)&quot;
+        boton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        boton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        boton.Parent = contenedor
+
+        boton.MouseButton1Click:Connect(function()
+            -- Lógica simplificada: Envía la orden de construir en la celda donde apunte el mouse
+            local mouse = jugador:GetMouse()
+            local objetivo = mouse.Target
+            if objetivo and objetivo.Parent.Name:match(&quot;Tablero&quot;) then
+                local exito, msg = ReplicatedStorage.SolicitudConstruccion:InvokeServer(claveId, objetivo)
+                print(msg)
+            end
+        end)
+    end
+
+    -- Botones de Reclutamiento de Soldados, Tanques, Barcos y Helicópteros
+    for claveId, info in pairs(GameData.Unidades) do
+        local boton = Instance.new(&quot;TextButton&quot;)
+        boton.Size = UDim2.new(0.9, 0, 0, 40)
+        boton.Text = &quot;Reclutar: &quot; .. claveId .. &quot; (&quot; .. info.CostoOro .. &quot; Oro)&quot;
+        boton.BackgroundColor3 = Color3.fromRGB(20, 60, 20)
+        boton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        boton.Parent = contenedor
+
+        boton.MouseButton1Click:Connect(function()
+            -- Busca un edificio propio del jugador en el workspace para spawnear la unidad
+            local estructuras = workspace:GetChildren() -- Filtro conceptual
+            local miFabrica = nil
+            for _, v in ipairsestructuras do
+                -- (Aquí buscaría un cuartel o fábrica que pertenezca al jugador)
+                miFabrica = v
+                break
+            end
+
+            local exito, msg = ReplicatedStorage.SolicitudReclutamiento:InvokeServer(claveId, miFabrica)
+            print(msg)
+        end)
+    end
+end
+
+crearBotonesTienda()
+</code></pre>
+<h2>25. Anexo F · Guardado</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local DataStoreService = game:GetService(&quot;DataStoreService&quot;)
+local BaseDatosImperio = DataStoreService:GetDataStore(&quot;ProgresoMiniEmpires_v1&quot;)
+
+game.Players.PlayerAdded:Connect(function(jugador)
+    -- Esperar a que el script principal cree las carpetas de datos
+    local datos = jugador:WaitForChild(&quot;Datos&quot;)
+    local oro = datos:WaitForChild(&quot;Oro&quot;)
+    local gemas = datos:WaitForChild(&quot;Gemas&quot;)
+    local historial = jugador:WaitForChild(&quot;CodigosCanjeados&quot;)
+
+    local claveGuardado = &quot;Jugador_&quot; .. jugador.UserId
+    local datosCargados = nil
+
+    local exito, errorMsg = pcall(function()
+        datosCargados = BaseDatosImperio:GetAsync(claveGuardado)
+    end)
+
+    if exito and datosCargados then
+        -- Cargar valores numéricos de economía
+        oro.Value = datosCargados.Oro or 200
+        gemas.Value = datosCargados.Gemas or 0
+
+        -- Cargar historial de códigos promocionales canjeados
+        if datosCargados.Codigos then
+            for _, nombreCodigo in ipairs(datosCargados.Codigos) do
+                local registro = Instance.new(&quot;BoolValue&quot;)
+                registro.Name = nombreCodigo
+                registro.Parent = historial
+            end
+        end
+        print(&quot;Datos de &quot; .. jugador.Name .. &quot; cargados con éxito.&quot;)
+    else
+        print(&quot;Nuevo jugador detectado o error al cargar datos.&quot;)
+    end
+end)
+
+-- Función unificada para guardar la información
+local function guardarProgreso(jugador)
+    local datos = jugador:FindFirstChild(&quot;Datos&quot;)
+    local historial = jugador:FindFirstChild(&quot;CodigosCanjeados&quot;)
+
+    if datos then
+        local claveGuardado = &quot;Jugador_&quot; .. jugador.UserId
+
+        -- Recopilar los códigos promocionales usados
+        local listaCodigos = {}
+        if historial then
+            for _, valor en ipairs(historial:GetChildren()) do
+                table.insert(listaCodigos, valor.Name)
+            end
+        end
+
+        local tablaAForrar = {
+            Oro = datos.Oro.Value,
+            Gemas = datos.Gemas.Value,
+            Codigos = listaCodigos
+        }
+
+        local exito, errorMsg = pcall(function()
+            BaseDatosImperio:SetAsync(claveGuardado, tablaAForrar)
+        end)
+
+        if exito then
+            print(&quot;Datos de &quot; .. jugador.Name .. &quot; guardados en la nube.&quot;)
+        else
+            warn(&quot;Error crítico al guardar datos: &quot; .. tostring(errorMsg))
+        end
+    end
+end
+
+game.Players.PlayerRemoving:Connect(guardarProgreso)
+
+-- Asegurar el guardado si el servidor se apaga inesperadamente
+game:BindToClose(function()
+    for _, jugador in ipairs(game.Players:GetPlayers()) do
+        guardarProgreso(jugador)
+    end
+end)
+</code></pre>
+<h2>26. Anexo G · Pantalla de carga</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local ReplicatedFirst = game:GetService(&quot;ReplicatedFirst&quot;)
+local TweenService = game:GetService(&quot;TweenService&quot;)
+local Players = game:GetService(&quot;Players&quot;)
+
+-- Eliminar la carga por defecto de Roblox
+ReplicatedFirst:RemoveDefaultLoadingScreen()
+
+local jugador = Players.LocalPlayer
+local UIPlayer = jugador:WaitForChild(&quot;PlayerGui&quot;)
+
+-- Crear la pantalla de carga visualmente desde el código
+local pantallaCarga = Instance.new(&quot;ScreenGui&quot;)
+pantallaCarga.Name = &quot;PantallaCargaMiniEmpires&quot;
+pantallaCarga.IgnoreGuiInset = true
+
+local fondo = Instance.new(&quot;Frame&quot;)
+fondo.Size = UDim2.new(1, 0, 1, 0)
+fondo.BackgroundColor3 = Color3.fromRGB(15, 32, 67) -- Azul oscuro como el original
+fondo.Parent = pantallaCarga
+
+local titulo = Instance.new(&quot;TextLabel&quot;)
+titulo.Size = UDim2.new(0.8, 0, 0.2, 0)
+titulo.Position = UDim2.new(0.1, 0, 0.3, 0)
+titulo.Text = &quot;MINI EMPIRES CLONE&quot;
+titulo.TextColor3 = Color3.fromRGB(255, 215, 0)
+titulo.TextSize = 45
+titulo.Font = Enum.Font.GothamBold
+titulo.BackgroundTransparency = 1
+titulo.Parent = fondo
+
+local barraFondo = Instance.new(&quot;Frame&quot;)
+barraFondo.Size = UDim2.new(0.6, 0, 0.05, 0)
+barraFondo.Position = UDim2.new(0.2, 0, 0.6, 0)
+barraFondo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+barraFondo.Parent = fondo
+
+local barraProgreso = Instance.new(&quot;Frame&quot;)
+barraProgreso.Size = UDim2.new(0, 0, 1, 0)
+barraProgreso.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+barraProgreso.Parent = barraFondo
+
+pantallaCarga.Parent = UIPlayer
+
+-- Simular la precarga del mapa y recursos
+for i = 1, 100 do
+    task.wait(0.03)
+    barraProgreso.Size = UDim2.new(i / 100, 0, 1, 0)
+end
+
+-- Desvanecer la portada de forma fluida
+local tween = TweenService:Create(fondo, TweenInfo.new(1), {BackgroundTransparency = 1})
+tween:Play()
+tween.Completed:Connect(function()
+    pantallaCarga:Destroy()
+end)
+</code></pre>
+<h2>27. Anexo H · Combate y barras de vida</h2>
+<p>Código recibido, sin correcciones. Véanse las secciones 16–18 antes de su futura integración.</p>
+<pre><code class="language-luau">local ReplicatedStorage = game:GetService(&quot;ReplicatedStorage&quot;)
+local GameData = require(ReplicatedStorage:WaitForChild(&quot;GameData&quot;))
+
+-- Función para crear una barra de vida flotante sobre la tropa/edificio
+local function crearBarraVida(objeto, vidaMaxima)
+    local billboard = Instance.new(&quot;BillboardGui&quot;)
+    billboard.Size = UDim2.new(0, 50, 0, 10)
+    billboard.StudsOffset = Vector3.new(0, 3, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Name = &quot;BarraVidaUI&quot;
+
+    local fondoBarra = Instance.new(&quot;Frame&quot;)
+    fondoBarra.Size = UDim2.new(1, 0, 1, 0)
+    fondoBarra.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    fondoBarra.Parent = billboard
+
+    local progresoBarra = Instance.new(&quot;Frame&quot;)
+    progresoBarra.Size = UDim2.new(1, 0, 1, 0)
+    progresoBarra.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    progresoBarra.Name = &quot;Progreso&quot;
+    progresoBarra.Parent = fondoBarra
+
+    billboard.Parent = objeto
+end
+
+-- Bucle global de combate (Busca enemigos cercanos cada 1 segundo)
+task.spawn(function()
+    while true do
+        task.wait(1)
+        local personajes = workspace:GetChildren()
+
+        for _, atacante in ipairs(personajes) do
+            local vidaAtacante = atacante:FindFirstChild(&quot;Vida&quot;)
+            local estadisticas = GameData.Unidades[atacante.Name]
+
+            if vidaAtacante and estadisticas and estadisticas.Ataque &gt; 0 then
+                -- Buscar un objetivo cercano
+                for _, objetivo in ipairs(personajes) do
+                    if atacante ~= objetivo and objetivo:FindFirstChild(&quot;Vida&quot;) then
+                        local distancia = (atacante.Position - objetivo.Position).Magnitude
+
+                        -- Si está en rango de ataque, le hace daño
+                        if distancia &lt;= (estadisticas.Rango * 12) then 
+                            local vidaObjetivo = objetivo.Vida
+                            vidaObjetivo.Value = vidaObjetivo.Value - estadisticas.Ataque
+
+                            -- Actualizar la barra de vida visual
+                            local uiVida = objetivo:FindFirstChild(&quot;BarraVidaUI&quot;)
+                            if uiVida then
+                                local configOriginal = GameData.Unidades[objetivo.Name] or GameData.Edificios[objetivo.Name]
+                                if configOriginal then
+                                    local maxVida = configOriginal.Vida or configOriginal.VidaMaxima
+                                    uiVida.Frame.Progreso.Size = UDim2.new(math.max(0, vidaObjetivo.Value) / maxVida, 0, 1, 0)
+                                end
+                            end
+
+                            -- Si muere, se elimina del mapa
+                            if vidaObjetivo.Value &lt;= 0 then
+                                objetivo:Destroy()
+                            end
+                            break -- Ataca a un objetivo por segundo
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+</code></pre>
+<h2>28. Anexo I · Guía original recibida</h2>
+<p>Transcripción para referencia. Las precisiones sobre RemoteFunction, modelos, permisos y sistemas faltantes están en la sección 18; no se deben interpretar todos estos pasos como requisitos correctos.</p>
+<pre><code class="language-text">1. Configurar los Eventos de Red (Remote Events)
+
+Tus scripts intentan comunicarse entre el cliente y el servidor, pero si los canales de comunicación no existen, el juego se romperá.
+• Ve al panel Explorer (Explorador).
+• Haz clic derecho en ReplicatedStorage -&gt; Insert Object.
+• Añade 3 RemoteFunction y cámbiales el nombre exactamente a:
+    1. SolicitudConstruccion
+    2. SolicitudReclutamiento
+    3. SolicitudMovimiento
+
+2. Crear las Carpetas de Modelos 3D
+
+Tus scripts de reclutamiento y construcción buscan los diseños de tus tanques, casas y soldados.
+• En ReplicatedStorage, haz clic derecho e inserta una Folder (Carpeta).
+• Cámbiale el nombre a Modelos.
+• Dentro de esa carpeta, debes meter los modelos 3D que quieras usar para tu juego (puedes diseñarlos con bloques o buscarlos en la Toolbox). Deben llamarse exactamente igual que en tu script GameData:
+    • Edificios: Core, Farm, LivestockPen, GoldMine, OilRig, Barracks, VehicleFactory, Harbor, Hangar.
+    • Tropas: Builder, Scout, Soldier, Sniper, ArmoredCar, LightTank, HeavyTank, TransportBoat, Gunboat, Battleship, Submarine, ScoutDrone, AttackHelicopter, FighterJet.
+
+3. Modificar un detalle en tu script de UI
+
+En el script de la interfaz (InterfazUsuario en StarterGui), hay una pequeña línea que tiene un error de escritura que bloqueará el juego.
+• Busca la línea que dice: for _, v in ipairsestructuras do
+• Corrígela para que quede así: for _, v in ipairs(estructuras) do (le faltaban los paréntesis).
+
+4. Activar los Permisos del Servidor (Obligatorio)
+
+Para que el sistema de códigos promocionales y el guardado de datos funcionen en la nube de Roblox:
+1. Ve a la pestaña superior Home y haz clic en Game Settings (Ajustes del Juego).
+2. Ve a la sección Security (Seguridad).
+3. Activa la casilla Enable Studio Access to API Services (Permitir acceso de Studio a servicios API).
+4. Activa la casilla Allow HTTP Requests (Permitir solicitudes HTTP).
+5. Haz clic en Save (Guardar).
+
+5. Diseñar los Botones Visuales
+
+El script de la UI genera los botones lógicos, pero necesita un contenedor físico para mostrarlos en pantalla.
+• En StarterGui, crea un ScreenGui llamado MenuJuego.
+• Dentro, añade un Frame llamado MenuPrincipal.
+• Dentro de ese Frame, añade un ScrollingFrame llamado ContenedorBotones y un TextLabel llamado ContadorOro.
+• Mete tu LocalScript de la interfaz dentro de este ScreenGui.
+</code></pre>
+</body>
+</html>

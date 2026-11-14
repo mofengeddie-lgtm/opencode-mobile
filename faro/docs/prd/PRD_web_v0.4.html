@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Faro de Ámbar · PRD prototipo web v0.4</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.4</p>
+  <p class="meta">7 de noviembre de 2026 · Estado: <b id="estado">Implementada · probada en navegador y en simulación · pendiente de prueba en iPad</b> · Pedido del usuario: «Mejora el UI del juego y los NPC»</p>
+  <div class="tiles">
+    <div class="tile"><b>Bots con carácter</b><span>Cuatro personalidades, ejércitos mixtos, retirada y avisos.</span></div>
+    <div class="tile"><b>Interfaz que informa</b><span>Alertas con «Ver», fichas de unidad, marcador y desglose de ingresos.</span></div>
+    <div class="tile"><b>Medido</b><span>Cada mejora tiene una prueba y una meta numérica.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Que los rivales controlados por la computadora (los bots, o NPC) jueguen de forma variada y creíble, y que la interfaz explique mejor qué pasa en la partida, sobre todo en el iPad.</p>
+
+  <h3>2. Punto de partida medido (v0.3)</h3>
+  <p>15 partidas simuladas de 15 minutos (5 combinaciones de modo y mapa × 3 semillas):</p>
+  <table>
+    <thead><tr><th style="width:42%">Medida</th><th style="width:20%">v0.3</th><th>Problema</th></tr></thead>
+    <tbody>
+      <tr><td>Tropas de combate que son infantería</td><td>100 %</td><td>Los bots nunca fabrican tanques, buques de guerra ni helicópteros: no ahorran para unidades caras.</td></tr>
+      <tr><td>Energía sin usar al final</td><td>509 de media</td><td>Construyen Molinos pero no gastan la energía.</td></tr>
+      <tr><td>Retiradas de tropas heridas</td><td>0</td><td>Luchan hasta morir.</td></tr>
+      <tr><td>Cúpulas compradas</td><td>0</td><td>Nunca se protegen de barcos ni aeronaves.</td></tr>
+      <tr><td>Mensajes de los bots</td><td>0</td><td>No anuncian nada: no se sabe qué planean.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1</td><td>6 nov 2026</td><td>Primera versión jugable (entonces «HEXBOX»).</td></tr>
+      <tr><td>0.2</td><td>7 nov 2026</td><td>Transporte, Pozo petrolero, Batería antiaérea y Lanzamisiles.</td></tr>
+      <tr><td>0.3</td><td>7 nov 2026</td><td>Faro de Ámbar: Faro, Banderas, energía, escudos, Cúpula, construcción con vista previa, 6 modos.</td></tr>
+      <tr><td>0.4</td><td>7 nov 2026</td><td>Esta versión: bots e interfaz.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Bots (NPC)</div>
+  <h2>Qué cambia en los bots</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:24%">Función</th><th>Comportamiento esperado</th></tr></thead>
+    <tbody>
+      <tr><td>N1</td><td>Cuatro personalidades</td><td><b>Agresivo:</b> ataca pronto y seguido. <b>Constructor:</b> más economía y defensas; ataca tarde y fuerte. <b>Almirante:</b> prioriza Puerto, buques y Barcaza. <b>Guardián del Faro:</b> prioriza capturar y defender el Faro y las Banderas. Cada bot tiene una; se ve en el marcador.</td></tr>
+      <tr><td>N2</td><td>Ejército mixto</td><td>Cada bot sigue un plan de ejército según su personalidad y ahorra para unidades caras (tanques, buques, helicópteros). Usa la energía de sus Molinos.</td></tr>
+      <tr><td>N3</td><td>Contrarrestar</td><td>Mira qué tropas tienen sus enemigos y entrena lo que les gana: contra aeronaves, Antiaéreos y Baterías; contra vehículos, Lanzacohetes y Tanques; contra infantería, Jeeps y Tiradores; contra buques, Destructores y Submarinos.</td></tr>
+      <tr><td>N4</td><td>Oleadas agrupadas</td><td>Antes de atacar, reúne la oleada en su frontera y sale cuando está junta (o tras 25 s). En Difícil, al llegar ataca primero las defensas cercanas (Torretas, Baterías) y después el Núcleo.</td></tr>
+      <tr><td>N5</td><td>Retirada y reparación</td><td>Una tropa con menos del 30 % de vida vuelve a curarse (Enfermería, Puerto o Núcleo) y luego regresa. Sus Ingenieros reparan los edificios dañados.</td></tr>
+      <tr><td>N6</td><td>Barcaza a Banderas</td><td>En mapas con mar, la Barcaza también lleva tropas a capturar Banderas de otras islas. Deja un guardia en cada punto capturado.</td></tr>
+      <tr><td>N7</td><td>Cúpula a tiempo</td><td>Si barcos, aeronaves o Lanzamisiles dañan su base, ahorra para la Cúpula y la compra.</td></tr>
+      <tr><td>N8</td><td>Mensajes</td><td>Los bots hablan: avisan cuando van a atacarte («Rojo: voy por tu base»), cuando capturan el Faro o cuando caen. En equipos, tu aliado te cuenta su plan. Como máximo un mensaje por bot cada 20 s.</td></tr>
+      <tr><td>N9</td><td>Dificultad con tácticas</td><td><b>Fácil:</b> no agrupa, no se retira ni contrarresta. <b>Normal:</b> agrupa, contrarresta y se retira. <b>Difícil:</b> además ataca primero las defensas.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Interfaz</div>
+  <h2>Qué cambia en la interfaz</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:24%">Función</th><th>Comportamiento esperado</th></tr></thead>
+    <tbody>
+      <tr><td>U1</td><td>Alertas con «Ver»</td><td>Los avisos importantes (ataque a tu base, oleada en camino, Faro perdido) llevan un botón «Ver» que mueve la cámara al lugar. El minimapa marca el sitio con un pulso durante 5 s.</td></tr>
+      <tr><td>U2</td><td>Fichas de unidad</td><td>Mantener pulsada una tarjeta de entrenamiento (o pasar el ratón) muestra vida, daño por segundo, alcance, velocidad y contra qué es fuerte o débil. Un toque normal sigue entrenando.</td></tr>
+      <tr><td>U3</td><td>Desglose de economía</td><td>Tocar las monedas o la energía abre un resumen: cuánto da el Núcleo, cada tipo de edificio, las Banderas y el bono del Faro. La suma coincide con la barra superior.</td></tr>
+      <tr><td>U4</td><td>Marcador</td><td>Tocar la lista de jugadores abre el marcador: personalidad, territorio, ejército, edificios, ingresos y puntos que controla cada imperio.</td></tr>
+      <tr><td>U5</td><td>Círculo de alcance</td><td>Al seleccionar una tropa, Torreta o Núcleo, se dibuja en el suelo hasta dónde dispara.</td></tr>
+      <tr><td>U6</td><td>Producción a la vista</td><td>Sobre tus edificios que están entrenando aparece un indicador con el progreso y cuántas tropas quedan en cola.</td></tr>
+      <tr><td>U7</td><td>Mensajes de los bots</td><td>Un panel pequeño muestra los últimos mensajes de los bots con su color. En pantallas estrechas solo se muestran los que te afectan.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Pruebas</div>
+  <h2>Pruebas de aceptación y metas</h2>
+  <p>Las metas de los bots se miden en 15 partidas simuladas, igual que el punto de partida. Las pruebas de interfaz usan Chromium con tamaño de iPad y toques simulados.</p>
+  <table style="table-layout: fixed">
+    <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+      <tr><td>A01</td><td>Personalidades distintas: el Agresivo ataca antes que el Constructor; el Almirante tiene más buques.</td><td><span class="chip ok">Aprobada</span></td><td>Los 3 bots de una partida reciben personalidades distintas. En 6 partidas con las mismas personalidades: primera oleada del Agresivo a los 359 s de media frente a 840 s del Constructor; el Almirante entrena 4,2 buques de guerra por partida frente a 3,3 de los demás.</td></tr>
+      <tr><td>A02</td><td>Meta: al menos 25 % de las tropas de combate no son infantería; energía sin usar por debajo de 250.</td><td><span class="chip ok">Aprobada</span></td><td>15 partidas por conjunto, mismas semillas que la v0.3. Tropas de combate que no son infantería: 25,5 % (193 de 756) y 27,3 % (156 de 572); en la v0.3, 0,4 % y 0,9 %. Energía sin usar: 228 y 164; en la v0.3, 522 y 452.</td></tr>
+      <tr><td>A03</td><td>Contra 6 helicópteros, el bot elige antiaéreos; contra tanques, lanzacohetes o tanques.</td><td><span class="chip ok">Aprobada</span></td><td>Contra 6 helicópteros, el 100 % de los vehículos elegidos son Antiaéreos. Contra 6 tanques, el 68 % de las elecciones son Lanzacohetes o Tanques.</td></tr>
+      <tr><td>A04</td><td>La oleada sale agrupada; en Difícil ataca primero las defensas cercanas.</td><td><span class="chip ok">Aprobada</span></td><td>3 partidas: 8 oleadas reunidas; todas salieron con 8 de cada 10 tropas a 4 casillas o menos (media: 99 % juntas). En Difícil, las 6 tropas atacaron primero la Torreta junto al Núcleo.</td></tr>
+      <tr><td>A05</td><td>Una tropa herida se retira, se cura y vuelve; un Ingeniero bot repara un edificio dañado.</td><td><span class="chip ok">Aprobada</span></td><td>Fusilero al 20 %: se retira, se cura junto al Núcleo y vuelve a los 43 s con el 87 % de vida. Un Ingeniero bot reparó una Granja del 40 % al 100 %.</td></tr>
+      <tr><td>A06</td><td>En «Mar abierto», los bots capturan Banderas de otras islas con la Barcaza.</td><td><span class="chip ok">Aprobada</span></td><td>4 partidas en «Mar abierto»: 10 viajes de Barcaza y 3 Banderas capturadas en otras islas.</td></tr>
+      <tr><td>A07</td><td>Un bot atacado por buques compra la Cúpula.</td><td><span class="chip ok">Aprobada</span></td><td>Tras recibir fuego de un Destructor, el bot compró la Cúpula. En las 30 partidas de medición la compraron 10 veces (v0.3: ninguna).</td></tr>
+      <tr><td>A08</td><td>El bot avisa antes de que su oleada llegue a tu base; máximo un mensaje por bot cada 20 s.</td><td><span class="chip ok">Aprobada</span></td><td>3 de 3 ataques avisados antes de entrar en tu territorio (ejemplo: aviso a los 192 s, llegada a los 212 s). 0 infracciones del límite de 20 s; la despedida al caer es la única excepción.</td></tr>
+      <tr><td>A09</td><td>En Fácil no hay retiradas ni oleadas agrupadas; en Normal y Difícil sí.</td><td><span class="chip ok">Aprobada</span></td><td>Fácil, 3 partidas: 0 retiradas y 0 oleadas reunidas. Difícil, 3 partidas: 113 retiradas y 14 oleadas reunidas.</td></tr>
+      <tr><td>A10</td><td>«Ver» mueve la cámara al lugar de la alerta y el minimapa muestra el pulso.</td><td><span class="chip ok">Aprobada</span></td><td>Atacar una Granja muestra «Atacan tu Granja» con «Ver»; «Ver» centró la cámara en la Granja; el minimapa mostró el pulso. El mensaje «¡Prepárate, voy por ti!» apareció en el panel con su botón «Ver».</td></tr>
+      <tr><td>A11</td><td>Mantener pulsada una tarjeta muestra la ficha sin entrenar; un toque entrena.</td><td><span class="chip ok">Aprobada</span></td><td>Mantener pulsado el Lanzacohetes 0,65 s mostró su ficha (vida 230, daño/s 36, alcance 4, fuerte contra vehículos, buques y edificios) sin entrenar. Un toque normal en el Fusilero lo puso en cola.</td></tr>
+      <tr><td>A12</td><td>El desglose de economía suma lo mismo que la barra superior.</td><td><span class="chip ok">Aprobada</span></td><td>Núcleo +900, Granja ×3 +720, subtotal 1.620, Faro +810, total +2.430: igual que la barra superior. La energía tiene su propio resumen y ambos se cierran con la X.</td></tr>
+      <tr><td>A13</td><td>El marcador muestra una fila por jugador con su personalidad y se cierra.</td><td><span class="chip ok">Aprobada</span></td><td>4 filas (Tú, Rojo, Naranja, Violeta); cada bot muestra su estilo y los tres son distintos. Se cierra con la X.</td></tr>
+      <tr><td>A14</td><td>El círculo de alcance aparece al seleccionar y coincide con el alcance real.</td><td><span class="chip ok">Aprobada</span></td><td>Con un Fusilero seleccionado el círculo mide exactamente su alcance (5,55 unidades = 3 casillas); al deseleccionar se oculta.</td></tr>
+      <tr><td>A15</td><td>El indicador de producción aparece sobre el edificio que entrena y desaparece al vaciar la cola.</td><td><span class="chip ok">Aprobada</span></td><td>Con un Fusilero en cola aparece 1 indicador; al terminar la cola, 0.</td></tr>
+      <tr><td>A16</td><td>Las pruebas de v0.1 a v0.3 siguen pasando; nada tapado en 5 tamaños con los paneles nuevos.</td><td><span class="chip ok">Aprobada</span></td><td>v0.1: 18 de 18. v0.2: 10 de 10. v0.3: 43 de 43. 7 partidas simuladas (6 modos, 3 mapas) sin errores. Sin solapes ni paneles fuera de pantalla en 1180×820, 1280×720, 820×1180, 844×390 y 390×844, con mensajes, desglose y marcador abiertos.</td></tr>
+      <tr><td>A17</td><td>Rendimiento en un iPad físico (objetivo 30 fps).</td><td><span class="chip np">No probada</span></td><td>Requiere jugar en tu iPad. Los bots nuevos tardan unos 0,13 ms por paso de simulación, muy por debajo de lo que cuesta dibujar un cuadro.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Resultados</div>
+  <h2>Antes y después</h2>
+  <p>Mismas 30 partidas simuladas (2 conjuntos de 15, con semillas fijas) para la v0.3 y la v0.4, dificultad Normal:</p>
+  <table>
+    <thead><tr><th style="width:46%">Medida</th><th style="width:27%">v0.3</th><th>v0.4</th></tr></thead>
+    <tbody>
+      <tr><td>Tropas de combate que no son infantería</td><td>0,4 % · 0,9 %</td><td>25,5 % · 27,3 %</td></tr>
+      <tr><td>Energía sin usar al final</td><td>522 · 452</td><td>228 · 164</td></tr>
+      <tr><td>Oleadas de ataque lanzadas</td><td>no se registraban</td><td>43 · 30</td></tr>
+      <tr><td>Retiradas de tropas heridas</td><td>0 · 0</td><td>361 · 224</td></tr>
+      <tr><td>Cúpulas compradas</td><td>0 · 0</td><td>5 · 5</td></tr>
+      <tr><td>Mensajes de los bots</td><td>0 · 0</td><td>38 · 46</td></tr>
+    </tbody>
+  </table>
+  <h3>Qué cambió al probar</h3>
+  <p>Las mediciones encontraron problemas reales que se corrigieron antes de entregar:</p>
+  <ul>
+    <li><b>Barcos ingenieros sin límite:</b> cada bot entrenaba entre 7 y 11 (1.600 cada uno) y se quedaba sin dinero. Ahora, como máximo 3 por partida.</li>
+    <li><b>El ahorro militar se evaporaba:</b> gastos no anotados (puestos avanzados) se descontaban del ahorro para tropas caras. Ahora salen del presupuesto de economía.</li>
+    <li><b>Infantería de urgencia constante:</b> cualquier enemigo en su territorio hacía gastar lo ahorrado en soldados. Ahora solo si el peligro está junto al Núcleo y el ejército es pequeño.</li>
+    <li><b>Fábrica tardía y Molinos de más:</b> la Fábrica sube en la lista de prioridades; los Molinos se construyen solo cuando falta energía.</li>
+    <li><b>Rezagados:</b> tropas lejanas salían con la oleada y llegaban solas. Ahora se quedan en casa.</li>
+    <li><b>Ingeniero interrumpido:</b> el bot lo mandaba a fundar un puesto a mitad de una reparación.</li>
+    <li><b>Ataque sin aviso:</b> si no había punto de reunión, la oleada salía sin anunciarse. Ahora siempre avisa y no sale mientras su aviso espera turno.</li>
+  </ul>
+  <h3>Regla nueva</h3>
+  <p>El Núcleo cura a las tropas propias que están a 2 casillas o menos (2 % de vida por segundo). Es el lugar al que se retiran las tropas heridas cuando no hay Enfermería, y también vale para ti.</p>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Decisiones</div>
+  <h2>Decisiones abiertas</h2>
+  <ul>
+    <li><b>Dificultad:</b> si los bots nuevos resultan demasiado fuertes en Normal, se ajusta su ingreso o su ritmo de decisión antes que quitarles tácticas.</li>
+    <li><b>Mensajes:</b> el tono es breve y en español neutro. Si molestan, se podrán silenciar desde la pausa.</li>
+    <li><b>Fuera de alcance:</b> diplomacia (alianzas o treguas con bots), chat escrito por el jugador y multijugador real.</li>
+    <li><b>Helicópteros de los bots:</b> casi no aparecen (menos del 1 %), porque el Helipuerto llega tarde y es caro. Falta decidir si deben usarlos más.</li>
+    <li><b>Margen de la meta:</b> el ejército mixto queda justo por encima del 25 % en uno de los conjuntos. Si en el iPad se siente que hay demasiada infantería, se puede subir el peso de vehículos y buques.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>El usuario juega la v0.4 en el iPad. La v0.5 empieza con su propio PRD y PDF.</p>
+</section>
+
+</body>
+</html>

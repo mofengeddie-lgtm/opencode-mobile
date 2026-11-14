@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="13 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.6</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.6</p>
+  <p class="meta">13 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «sigue mejorando, aplica más cosas buenas y que se vea más profesional», tu PRD Roblox v1.6 y tus dos capturas</p>
+  <div class="tiles">
+    <div class="tile"><b>Más profesional</b><span>Pantalla de carga de verdad, transiciones suaves y una ventana «Acerca de» con versión y créditos.</span></div>
+    <div class="tile"><b>Más claro al jugar</b><span>Por qué no se puede construir o entrenar algo, y el alcance de una defensa antes de ponerla.</span></div>
+    <div class="tile"><b>Todo documentado</b><span>Documento completo con todo el código, que se actualiza en cada versión, y tu PRD Roblox con imágenes.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>La v1.5 pulió la portada, el Núcleo, los edificios y las tropas. La v1.6 se ocupa de lo que hace que un juego se sienta terminado: cómo arranca, cómo se mueven los paneles, cómo explica lo que no se puede hacer y cómo se presenta. Además deja todo el proyecto en un solo documento que se amplía con cada mejora. El mapa y las reglas (precios, vida, daño) no cambian.</p>
+
+  <h3>2. De dónde sale cada idea</h3>
+  <table>
+    <thead><tr><th style="width:32%">Lo que vi</th><th>Idea para la v1.6</th></tr></thead>
+    <tbody>
+      <tr><td>Al abrir el juego hay unos segundos sin nada que diga qué pasa (carga el 3D, 75 modelos y el cielo). Tu PRD Roblox pide una carga que informe el progreso real y los fallos (RF-01, sección 17).</td><td><b>Pantalla de carga:</b> logo, fase actual (motor 3D, modelos 3D, cielo, tu perfil), barra con el avance real y, si algo falla, el motivo y un botón «Reintentar».</td></tr>
+      <tr><td>Los paneles y ventanas aparecen de golpe.</td><td><b>Transiciones suaves:</b> la ficha, el panel de construir y las ventanas del vestíbulo entran con un movimiento corto; los botones responden al toque. Si el iPad tiene «Reducir movimiento» o el ahorro de batería está activo, no hay animación.</td></tr>
+      <tr><td>Una tarjeta de construir o entrenar que no alcanza solo se ve apagada; no dice qué falta. Tu PRD pide «los motivos de bloqueo en español junto a la acción» (sección 4).</td><td><b>Motivo junto a la acción:</b> cada tarjeta dice «Faltan 300 monedas», «Faltan 20 de energía», «Límite: 6 de 6» o «Comunidad llena».</td></tr>
+      <tr><td>El círculo de alcance aparece al elegir una defensa ya puesta, pero no al colocarla.</td><td><b>Alcance al colocar:</b> al elegir dónde va una Torreta, Torreta chica o AIR DEFENSE, se ve su alcance en el suelo antes de pagar.</td></tr>
+      <tr><td>El juego no muestra en ningún lado su versión, sus novedades ni los créditos (cielo de Poly Haven, movimiento de CMU, three.js).</td><td><b>«Acerca de»:</b> ventana en el vestíbulo con la versión, las novedades de esta versión y los créditos.</td></tr>
+      <tr><td>Tu pedido: un documento completo desde la primera versión, con todos los archivos y el código, que crezca con cada mejora; y tus imágenes en tu PRD.</td><td><b>Documento completo</b> (historia v0.1 → hoy, registro de mejoras, catálogo, archivos, pruebas, plan Roblox y el código completo) que se vuelve a generar en cada versión; <b>tu PRD Roblox v1.6</b> en PDF con tus capturas y el esquema del HUD.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
+      <tr><td>1.0-1.3</td><td>9-11 nov 2026</td><td>Botón «Construir», alianzas, Dúos, rueda, mapas nuevos y los 29 puntos de tu revisión.</td></tr>
+      <tr><td>1.4</td><td>12-13 nov 2026</td><td>Patrullar, veteranas, reparación sola, producción continua, logros y opciones para el iPad.</td></tr>
+      <tr><td>1.5</td><td>13 nov 2026</td><td>Sin temporadas del año, portada nueva, Núcleo nuevo, edificios y tropas con su color, y 5 errores arreglados.</td></tr>
+      <tr><td>1.6</td><td>13 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Detalle</div>
+  <h2>Cómo funciona cada cosa</h2>
+  <h3>A. Pantalla de carga</h3>
+  <ul>
+    <li>Aparece apenas se abre la página, con el logo y el nombre del juego.</li>
+    <li>Muestra la fase real: «Preparando el 3D», «Modelos 3D: 40 de 75», «Cielo», «Tu perfil». La barra avanza con lo que de verdad terminó, no con un reloj.</li>
+    <li>Si algo falla (por ejemplo, sin conexión para el motor 3D), dice qué falló y ofrece «Reintentar».</li>
+  </ul>
+  <h3>B. Transiciones</h3>
+  <ul>
+    <li>Ficha de selección, panel de construir y ventanas del vestíbulo: entrada corta (unos 0,2 s) deslizando y apareciendo.</li>
+    <li>Botones: se hunden un poco al tocarlos.</li>
+    <li>Sin animación con «Reducir movimiento» del iPad o con el ahorro de batería.</li>
+  </ul>
+  <h3>C. Motivos junto a la acción</h3>
+  <ul>
+    <li>Tarjetas de construir: «Faltan N monedas», «Faltan N de energía», «Límite: 6 de 6».</li>
+    <li>Tarjetas de entrenar: «Faltan N monedas», «Faltan N de energía», «Comunidad llena».</li>
+    <li>El motivo se actualiza solo cuando cambian las monedas, la energía o los límites.</li>
+  </ul>
+  <h3>D. Alcance al colocar</h3>
+  <ul>
+    <li>Al mover la obra fantasma de una defensa, un círculo muestra hasta dónde dispara (con la ventaja de altura si va en una meseta).</li>
+  </ul>
+  <h3>E. «Acerca de» y documentos</h3>
+  <ul>
+    <li>Ventana en el vestíbulo: versión, novedades de la v1.6 y créditos.</li>
+    <li>Documento completo y registro de mejoras: se generan desde el proyecto; cada versión agrega sus mejoras y lo vuelve a generar (regla nueva del proyecto).</li>
+  </ul>
+  <h3>F. Lo que no se toca</h3>
+  <ul>
+    <li>El mapa, las reglas (precios, vida, daño, tiempos) y el equilibrio con los bots.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y de celular, toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>M01</td><td>Pantalla de carga: aparece al abrir, pasa por las fases reales con la barra avanzando según lo cargado, y con un fallo simulado muestra el motivo y «Reintentar», que vuelve a cargar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M02</td><td>Transiciones: ficha, panel de construir y ventanas entran con animación corta; con «Reducir movimiento» o ahorro de batería no hay animación.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M03</td><td>Motivos junto a la acción: con poco dinero, poca energía, límite lleno y comunidad llena, cada tarjeta dice el motivo correcto con el número exacto.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M04</td><td>Alcance al colocar: al mover la obra de una Torreta, Torreta chica y AIR DEFENSE, el círculo tiene el radio del arma (y de la meseta) y sigue a la obra.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M05</td><td>«Acerca de»: se abre desde el vestíbulo, muestra la versión 1.6, las novedades y los créditos, y se cierra; botones de 44 px o más.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M06</td><td>Documentos: el documento completo incluye la v1.6 en su registro, todos los archivos de código y el código completo; el PRD Roblox v1.6 tiene tus dos capturas y el esquema del HUD.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M07</td><td>Caza de errores: 30 partidas largas con chequeos y 30 minutos de toques al azar sin errores, congelamientos ni textos raros.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M08</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y el equilibrio con los bots no cambia.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M09</td><td>Rendimiento igual o mejor que la v1.5 y el juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Decisiones</div>
+  <h2>Decisiones</h2>
+  <ul>
+    <li><b>Tu PRD Roblox v1.6</b> queda en <code>faro/docs/roblox/</code> tal como lo escribiste; solo agregué tus capturas y el esquema del HUD donde dejaste las marcas. El desarrollo en Roblox sigue esperando tu indicación.</li>
+    <li><b>Dos «1.6»:</b> tu PRD Roblox v1.6 (el plan para Roblox) y este PRD web v1.6 (la siguiente versión del prototipo web) son documentos distintos; los nombres de archivo los separan («Roblox» y «web»).</li>
+    <li><b>El documento completo</b> incluye todo el código del juego y de sus herramientas. Las pruebas automáticas se guardan en <code>faro/tests/</code> y el documento las lista (su código completo ocuparía otras 150 páginas).</li>
+    <li><b>Sin cambios de reglas:</b> todo lo de esta versión es presentación, ayuda y documentos.</li>
+    <li><b>Sigue pendiente de tu decisión:</b> de la v1.3, la tabla de precios, el tamaño del juego, el Tanque ligero y el precio de la Casa, y lo que tu documento dejó «POR DECIDIR»; de la v1.4, las estrellas de los bots de la campaña (Misión 5) y la Barcaza de los bots (Misión 6).</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Empiezo a programar la v1.6 con este plan, pruebo cada punto y te entrego el PDF con los resultados reales y el documento completo actualizado.</p>
+</section>
+
+</body>
+</html>

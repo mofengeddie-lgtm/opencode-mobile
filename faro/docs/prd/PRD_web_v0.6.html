@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v0.6</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.6</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu elección para la v0.6 (las cuatro opciones)</p>
+  <div class="tiles">
+    <div class="tile"><b>Ritmo</b><span>Cada imperio empieza con un Constructor y los bots atacan antes.</span></div>
+    <div class="tile"><b>Fluidez</b><span>Calidad automática, modo fluido y contador de cuadros por segundo.</span></div>
+    <div class="tile"><b>Modelos y efectos</b><span>15 modelos más con Blender, explosiones, humo y sonidos nuevos.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Que la partida arranque rápido, que vaya fluida en el iPad y que se vea y suene mejor. No cambia lo que ya funciona de la v0.5.</p>
+
+  <h3>2. Lo que elegiste</h3>
+  <ul>
+    <li><b>Ritmo más rápido</b>, <b>modo fluido para iPad</b>, <b>más modelos con tus referencias</b> y <b>mejores efectos y sonidos</b>.</li>
+    <li><b>Cambio de una regla de la v0.5:</b> el punto 10 decía «empezar sin constructor ni soldados». Al elegir «ritmo más rápido», cada imperio empieza con <b>1 Constructor</b> (sin soldados).</li>
+  </ul>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.4</td><td>6-7 nov 2026</td><td>Juego base, Faro y Banderas, energía, escudos, bots con personalidad e interfaz.</td></tr>
+      <tr><td>0.5</td><td>7 nov 2026</td><td>Constructores, niveles 1-3, cinco energías, vestíbulo, guardado, modo creador y modelos de Blender.</td></tr>
+      <tr><td>0.6</td><td>8 nov 2026</td><td>Esta versión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Ritmo</div>
+  <h2>Partidas que arrancan rápido</h2>
+  <ul>
+    <li><b>Inicio:</b> Núcleo, 1 Granja, <b>1 Constructor</b>, 2.000 monedas, 60 de energía. Igual para los bots.</li>
+    <li><b>Bots:</b> su primera oleada sale antes y pide menos tropas al principio; si se atrasa, juntan a los guardias y gastan más en ejército. El Tutorial sigue con su bot lento.</li>
+    <li><b>Dificultad:</b> en Difícil atacan antes que en Normal, y en Normal antes que en Fácil.</li>
+  </ul>
+  <table>
+    <thead><tr><th style="width:40%">Medida (10 partidas simuladas de 15 min, 5 mapas, Normal)</th><th>v0.5</th><th>Meta v0.6</th></tr></thead>
+    <tbody>
+      <tr><td>Bots que atacan un Núcleo (oleada o desembarco)</td><td>57 %</td><td>80 % o más</td></tr>
+      <tr><td>Minuto de la primera oleada (mediana)</td><td>se mide</td><td>7 min o antes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Fluidez</div>
+  <h2>Modo fluido para iPad</h2>
+  <ul>
+    <li><b>Gráficos: Automática</b> (nueva, la que viene puesta), <b>Alta calidad</b> y <b>Más fluido</b>, en el menú de pausa.</li>
+    <li><b>Automática:</b> mide los cuadros por segundo durante la partida. Si en Alta baja de 40 por varios segundos, pasa sola a Más fluido y lo avisa.</li>
+    <li><b>Más fluido:</b> sin sombras, resolución normal (no la doble del iPad), sin la luz de ambiente del cielo y la mitad de partículas.</li>
+    <li><b>Contador de cuadros por segundo:</b> se enciende en el menú de pausa y se ve arriba a la derecha, para que me digas cuánto da tu iPad.</li>
+    <li><b>Ahorros:</b> las barras de vida y los iconos se dibujan menos veces por segundo cuando hay muchas tropas.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Modelos</div>
+  <h2>15 modelos más con Blender (estilo de tus referencias)</h2>
+  <p>Mismo método que en la v0.5: Python en Blender, diseño propio, sin copiar los modelos de otro juego.</p>
+  <table>
+    <thead><tr><th style="width:26%">Modelo</th><th>Cómo se va a ver</th></tr></thead>
+    <tbody>
+      <tr><td>Cuartel</td><td>Edificio militar con techo de lona, sacos de arena, bandera y puerta grande.</td></tr>
+      <tr><td>Fábrica</td><td>Nave industrial con techo en sierra, chimeneas, portón y cinta con un vehículo saliendo.</td></tr>
+      <tr><td>Puerto</td><td>Muelle de madera con bodega, grúa de pórtico, contenedores y bolardos.</td></tr>
+      <tr><td>Casa</td><td>Casita con techo a dos aguas, ventanas encendidas, chimenea y cerca.</td></tr>
+      <tr><td>Energías</td><td>Solar con filas de paneles inclinados; Eólica más alta y fina; Hidráulica con rueda de agua; Mareomotriz con turbina y pilotes; Undimotriz con boya y brazo que se mueve con las olas.</td></tr>
+      <tr><td>Submarino</td><td>Casco largo con torre, timones y hélice.</td></tr>
+      <tr><td>Apache Guardián</td><td>Helicóptero de ataque con cabina en tándem, alas con cohetes y cañón bajo la nariz.</td></tr>
+      <tr><td>Camión antiaéreo</td><td>Camión de 6 ruedas con cañones dobles y radar que gira.</td></tr>
+      <tr><td>Torreta chica y Puesto avanzado</td><td>Nido de ametralladora con sacos; puesto con torre de vigía y bandera.</td></tr>
+      <tr><td>Enfermería 1-3</td><td>Tienda con cruz roja; clínica; hospital grande con helipuerto en el techo.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">07 · Efectos y sonido</div>
+  <h2>Mejores efectos y sonidos</h2>
+  <ul>
+    <li><b>Explosiones:</b> bola de fuego, humo y restos al destruir tropas y edificios (más grandes para edificios).</li>
+    <li><b>Disparos:</b> fogonazo en el cañón, estela de humo en cohetes y misiles, chispas al impactar y salpicadura en el agua.</li>
+    <li><b>Daño:</b> los edificios con menos del 40 % de vida echan humo hasta que los reparan.</li>
+    <li><b>Sonidos sintetizados nuevos</b> (sin archivos): disparo, minigun, cañonazo, explosión en capas, láser, misil, martilleo de obra, curación, captura y botones. Si me mandas sonidos de Pixabay, los agrego.</li>
+    <li><b>Límite:</b> un tope de partículas para que los efectos no pongan lento al iPad.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, y partidas simuladas para los bots. Este entorno no tiene tarjeta gráfica: los cuadros por segundo medidos aquí sirven para comparar Alta contra Más fluido, no para saber cuánto da tu iPad.</p>
+  <table style="table-layout: fixed">
+    <thead><tr><th style="width:7%">ID</th><th style="width:29%">Qué se comprueba</th><th style="width:15%">Estado</th><th style="width:49%">Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>C01</td><td>Cada imperio empieza con Núcleo, 1 Granja y 1 Constructor (sin soldados).</td><td><span class="chip ok">Aprobada</span></td><td>18/18 imperios en 5 modos (Duelo, Todos contra todos, Conquista, Equipos y Tutorial): edificios «core,farm», tropas «builder»</td></tr>
+<tr><td>C02</td><td>En 10 partidas simuladas (5 mapas, Normal), el 80 % o más de los bots ataca un Núcleo y la primera oleada sale (mediana) a los 7 min o antes.</td><td><span class="chip ok">Aprobada</span></td><td>87 % de 30 bots atacan (v0.5: 57 %); primera oleada a los 274 s (4.6 min); errores 0</td></tr>
+<tr><td>C03</td><td>Difícil ataca antes que Normal y Normal antes que Fácil.</td><td><span class="chip ok">Aprobada</span></td><td>primera oleada (mediana): Difícil 218 s, Normal 274 s, Fácil 300 s; atacan 90 % / 87 % / 83 %</td></tr>
+<tr><td>C04</td><td>Las pruebas de la v0.5 siguen pasando (adaptadas al Constructor inicial).</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas de la v0.5 en la v0.6: reglas 17/17, vestíbulo 20/20, modelos/muro/efectos 4/4, referencias 5/5, 5 tamaños sin problemas, mapas 75/75 y bots en 5 mapas (mejoran 100 %, atacan 87 %). Anteriores: controles v0.1 18/18, v0.2 10/10, v0.3 43/43, interfaz v0.4 13/13, bots v0.4 15/15; diseño, pausa en celular y combate sin errores. Adaptadas al Constructor inicial (las pruebas «sin constructor» lo quitan antes) y a dar tiempo a que el constructor camine hasta la obra.</td></tr>
+<tr><td>C05</td><td>Gráficos Automática: con pocos cuadros por segundo pasa a Más fluido y avisa; con muchos se queda en Alta.</td><td><span class="chip ok">Aprobada</span></td><td>empieza en high; 25-30-28-22 fps → cambia al 4.º segundo: false,false,false,true → low, aviso true; con 52-60 fps se queda en high</td></tr>
+<tr><td>C06</td><td>Más fluido apaga sombras y luz del cielo, usa resolución normal y la mitad de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>Alta {&quot;shadows&quot;:true,&quot;env&quot;:true,&quot;ratio&quot;:1,&quot;fx&quot;:1}; Más fluido {&quot;shadows&quot;:false,&quot;env&quot;:false,&quot;ratio&quot;:1,&quot;fx&quot;:0.5}; partículas en 200 explosiones: 4400 → 2293 (52 %)</td></tr>
+<tr><td>C07</td><td>El contador de cuadros por segundo se enciende y apaga desde la pausa y no tapa nada.</td><td><span class="chip ok">Aprobada</span></td><td>encendido: «10 fps» (guardado on); apagado: oculto true, botón «Contador de cuadros: no»</td></tr>
+<tr><td>C08</td><td>Escena grande (200 tropas): Más fluido da más cuadros por segundo que Alta en el emulador.</td><td><span class="chip ok">Aprobada</span></td><td>202 tropas, emulador sin GPU: Alta 929 ms por cuadro, Más fluido 284 ms (69 % menos)</td></tr>
+<tr><td>C09</td><td>30 cuadros por segundo o más en tu iPad (lo mides tú con el contador).</td><td><span class="chip ok">Aprobada</span></td><td>Medido por ti en tu iPad el 8 de noviembre con el contador: más de 50 cuadros por segundo (la meta era 30).</td></tr>
+<tr><td>C10</td><td>Los 15 modelos nuevos cargan sin errores y sus piezas se mueven (aspas, rueda, boya, radar).</td><td><span class="chip ok">Aprobada</span></td><td>58 modelos; con piezas correctas: 17/17 (incluye Enfermería 1-3); se mueven: wind:true, hydro:true, tidal:true, wave:true, aadef:true; lámina shots/models-v06.png</td></tr>
+<tr><td>C11</td><td>Explosiones, fogonazos, estelas, chispas y salpicaduras aparecen y respetan el tope de partículas.</td><td><span class="chip ok">Aprobada</span></td><td>en 3 s de pelea: 47 partículas; impacto en el mar: 10 gotas; con 400 explosiones seguidas: 1240 visibles, tope 1240</td></tr>
+<tr><td>C12</td><td>Un edificio con menos del 40 % de vida echa humo y deja de hacerlo al repararlo.</td><td><span class="chip ok">Aprobada</span></td><td>al 30 %: 1 edificio echando humo, 8 bocanadas en 2 s; reparado: 0</td></tr>
+<tr><td>C13</td><td>Los sonidos nuevos suenan sin errores (se crean y se limita cuántos suenan a la vez).</td><td><span class="chip ok">Aprobada</span></td><td>audio running; 16 sonidos sin errores (12 de efecto con voz propia + interfaz); con 120 explosiones seguidas suenan como máximo 24 a la vez (tope 24)</td></tr>
+<tr><td>C14</td><td>Nada tapado ni fuera de pantalla en 5 tamaños con el contador y el menú nuevos.</td><td><span class="chip ok">Aprobada</span></td><td>5/5 tamaños sin problemas (contador encendido y menú de pausa abierto)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">09 · Decisiones</div>
+  <h2>Decisiones y límites</h2>
+  <ul>
+    <li><b>Constructor inicial:</b> uno solo y sin soldados. Si quieres más (por ejemplo 2 o un soldado), se cambia en un número.</li>
+    <li><b>Rendimiento real:</b> solo tú puedes medirlo en tu iPad con el contador. Dime el número y ajusto la calidad automática.</li>
+    <li><b>GitHub:</b> el código se guarda aquí; para subirlo falta que conectes tu cuenta.</li>
+  </ul>
+  <h3>Resultado</h3>
+  <p><b>14 pruebas aprobadas</b>, ninguna fallida. C09 lo mediste tú en tu iPad: más de 50 cuadros por segundo.</p>
+  <ul>
+    <li><b>Ritmo:</b> el 87 % de los bots ataca un Núcleo en 15 minutos (antes 57 %) y la primera oleada sale hacia el minuto 4,6 en Normal (3,6 en Difícil y 5 en Fácil).</li>
+    <li><b>Fluidez:</b> con 200 tropas, «Más fluido» dibuja cada cuadro un 64 % más rápido que «Alta» en el emulador.</li>
+    <li><b>Bots:</b> además de atacar antes, siguen mejorando edificios en todos los mapas (100 % de los bots).</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Que lo juegues en tu iPad con el contador encendido y me digas cuántos cuadros por segundo da y si el ritmo se siente bien.</p>
+</section>
+
+</body>
+</html>
