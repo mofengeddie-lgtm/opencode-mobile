@@ -254,6 +254,9 @@ const INSIDE = ([sel, label, onlyX]) => {
     // Construir con botón: barra de colocación con «Construir» y una casilla elegida.
     await page.evaluate(() => { FARO.setSelection([]); FARO.input.startPlacement({ kind: 'build', btype: 'farm' }); const p = FARO.input.placement; const c = [...p.valid][0]; if (c !== undefined) FARO.input.previewAt(c); });
     await page.waitForTimeout(300);
+    // v1.6: la barra entra con una transición de 0,2 s; en Chromium sin tarjeta gráfica hay ~1 cuadro por segundo
+    // y a los 300 ms todavía puede ir a mitad de camino: se espera a que termine antes de medir.
+    await page.evaluate(() => Promise.race([Promise.all(document.getAnimations().map((a) => a.finished.catch(() => 0))), new Promise((r) => setTimeout(r, 8000))]));
     res.construir = await page.evaluate(() => {
       const bad = [];
       const pb = document.getElementById('placebar');

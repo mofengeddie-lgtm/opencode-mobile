@@ -2,11 +2,17 @@
 
 Una entrada por versión, de la más nueva a la más vieja. **Cada versión nueva agrega aquí sus mejoras y partes importantes** antes de publicarse (regla del proyecto). El detalle completo de cada una está en su PRD (`docs/prd/`).
 
-## v1.6 · en curso
+## v1.6 · 13-14 nov 2026
 
-- Documento completo del proyecto (este documento) con historia, archivos y todo el código; se vuelve a generar en cada versión.
-- PRD Roblox v1.6 del usuario en PDF, con sus capturas y el esquema de la interfaz.
-- Pruebas automáticas guardadas en `faro/tests/` para que el proyecto tenga todo su código.
+- Pantalla de carga real: muestra cada fase (página, motor 3D, modelos «k de n», cielo, perfil) con barra; si algo falla lo dice en palabras simples y ofrece «Reintentar». Tope de 90 s por si se queda trabada.
+- Error real arreglado: si el motor 3D no llegaba, la carga se quedaba en «Abriendo el juego…» sin aviso. Ahora se revisa justo después de pedirlo.
+- Transiciones suaves en paneles, lista de construcción y ventanas; los botones se hunden un poco al tocarlos. Se apagan con «ahorro de batería» o si el iPad pide menos movimiento.
+- Motivos junto a la acción: cada edificio y cada tropa que no se puede hacer dice por qué («Faltan 40 monedas», «Límite: 3 de 3», «Comunidad llena: construye Casas») y se actualiza en vivo.
+- Alcance al colocar: al elegir una defensa se ve su círculo de alcance (más grande en terreno alto) en ámbar si se puede colocar y en rojo si no.
+- Ventana «Acerca de»: versión, novedades y créditos (Blender, Poly Haven, CMU, three.js).
+- Documentos: PRD Roblox v1.6 del usuario en PDF con sus dos capturas y el esquema de la interfaz; este documento completo con historia, archivos y todo el código, que se vuelve a generar en cada versión; pruebas automáticas guardadas en `faro/tests/`.
+- Sin cambios de reglas, mapa ni equilibrio.
+<!-- PRUEBAS_V16 -->
 
 ## v1.5 · 13 nov 2026
 

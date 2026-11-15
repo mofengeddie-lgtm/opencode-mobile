@@ -33,6 +33,15 @@ los archivos y el código, que se amplía cada vez que hay una mejora.** Es apar
   el usuario (5 etapas). El desarrollo en Roblox empieza solo cuando el usuario lo indique.
   `docs/roblox/build_prd_roblox.py` arma su PDF con las capturas de `docs/img/`.
 
+- `docs/roblox/PRD_Faro_de_Ambar_v1_8.md` (14 nov 2026): revisión del usuario que amplía el plan Roblox:
+  auditoría del código Luau (R-01 a R-14), catálogo de 78 unidades y 32 edificios, arsenal estratégico
+  (silo DF-5C y lanzador nuclear móvil de un solo uso), UI del arsenal y mejoras profesionales (P0–P2).
+  Es documentación; nada de eso está aprobado como balance. Se guarda sin cambios.
+- `docs/roblox/ui-0.4/` (14 nov 2026): las 14 pantallas de la «Dirección visual UI 0.4» del usuario
+  (`ui04-02.jpg` … `ui04-15.jpg`) y sus dos propuestas de vehículos (`ref-nuclear-movil.jpg`, `ref-df-17.jpg`).
+  Son la guía de aspecto de la interfaz web desde la v1.7: paneles azul noche, acento ámbar, celeste para
+  la información y verde para lo que está bien. Las fotos de prensa de referencia no se guardan en el proyecto.
+
 - `PRD_Faro_de_Ambar_v1_5.pdf` (6 nov 2026): PRD maestro para Roblox. Sus cifras marcadas como
   EJEMPLO no son precios aprobados.
 - Las capturas de otros juegos son referencias de composición. No copies nombres, números, mapas

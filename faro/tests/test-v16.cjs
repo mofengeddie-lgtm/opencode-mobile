@@ -140,6 +140,8 @@ const newGame = (page, extra = '') => page.evaluate((x) => {
     out.push(`Construir: Granja (300) con unas 100 monedas «${farm.txt}» (le faltan ${farm.coins}); Fábrica (50 de energía) con unos 10 «${fac.txt}» (le faltan ${fac.energy}); Casa con ${lim} hechas «${house.txt}»`);
     // Entrenar.
     const card = async (t) => page.evaluate((tt) => { const el = document.querySelector(`#selpanel [data-why="${tt}"]`); return el ? el.textContent : 'sin tarjeta'; }, t);
+    // La ficha se refresca con los cuadros; en Chromium sin tarjeta gráfica hay ~1 por segundo: esperar a que cambie (hasta 8 s).
+    const cardChange = async (t, prev) => { for (let i = 0; i < 40; i++) { const x = await card(t); if (x !== prev) return x; await page.waitForTimeout(200); } return card(t); };
     const short = async () => page.evaluate(() => Math.ceil(UNITS.rifle.cost - FARO.game.players[0].coins));
     await page.evaluate(() => {
       const g = FARO.game; const core = g.cells[g.players[0].core.cell];
@@ -151,12 +153,10 @@ const newGame = (page, extra = '') => page.evaluate((x) => {
     const rifle1 = await card('rifle');
     const need1 = await short();
     await page.evaluate(() => { FARO.game.players[0].coins = 300; });
-    await page.waitForTimeout(700);
-    const rifle2 = await card('rifle');
+    const rifle2 = await cardChange('rifle', rifle1);
     const need2 = await short();
     await page.evaluate(() => { const p = FARO.game.players[0]; p.coins = 50000; FARO.game.update(0.1); p.popUsed = p.popCap; FARO.ui.selSig = ''; FARO.game.update = ((u) => function (dt) { u.call(this, dt); this.players[0].popUsed = this.players[0].popCap; })(FARO.game.update); });
-    await page.waitForTimeout(700);
-    const popTxt = await card('rifle');
+    const popTxt = await cardChange('rifle', rifle2);
     const eUnit = await page.evaluate(() => { const t = BUILDINGS.factory.produces.find((k) => UNITS[k].energy); return t || null; });
     await page.evaluate(() => { FARO.setSelection([FAC]); FARO.game.players[0].energy = 0; });
     await page.waitForTimeout(700);
@@ -181,19 +181,24 @@ const newGame = (page, extra = '') => page.evaluate((x) => {
       const page = await open(browser, 1180, 820);
       await newGame(page, map);
       for (const t of ['turret', 'miniturret', 'aadef']) {
-        const r = await page.evaluate((tt) => {
+        const r = await page.evaluate(([tt, mapName]) => {
           const g = FARO.game; const core = g.cells[g.players[0].core.cell];
           g.players[0].coins = 50000;
           FARO.input.startPlacement({ kind: 'build', btype: tt });
+          let claimed = false;
+          if (mapName === 'mesa' && !g.cells.some((x) => TERRAIN[x.t].highGround && !g.placeInvalid(0, tt, x.i, true))) {
+            const hc = g.cells.filter((x) => TERRAIN[x.t].highGround && !x.bld && !x.point && x.owner < 0).sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core))[0];
+            if (hc) { hc.owner = 0; claimed = true; }
+          }
           const cands = g.cells.filter((x) => !g.placeInvalid(0, tt, x.i, true)).sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core));
           const high = cands.find((c) => TERRAIN[c.t].highGround);
-          const c = (window.__MAP === 'mesa' && high) || cands[0];
+          const c = (mapName === 'mesa' && high) || cands[0];
           FARO.input.previewAt(c.i);
           const ring = FARO.renderer.ghostRange;
           const w = BUILDINGS[tt].weapon;
           const hb = TERRAIN[c.t].highGround ? 1 : 0;
           const want = (w.range + hb) * SQ3 + 0.75;
-          const res = { t: BUILDINGS[tt].name, vis: !!ring && ring.visible, r: ring ? +ring.userData.radius.toFixed(3) : 0, want: +want.toFixed(3), at: !!ring && Math.hypot(ring.position.x - c.x, ring.position.z - c.z) < 0.01, high: !!hb, range: w.range + hb };
+          const res = { t: BUILDINGS[tt].name, vis: !!ring && ring.visible, r: ring ? +ring.userData.radius.toFixed(3) : 0, want: +want.toFixed(3), at: !!ring && Math.hypot(ring.position.x - c.x, ring.position.z - c.z) < 0.01, high: !!hb, range: w.range + hb, claimed, nHigh: g.cells.filter((x) => TERRAIN[x.t].highGround).length };
           // Mover la obra a otra casilla: el círculo la sigue.
           const c2 = cands.find((x) => x !== c && g.map.dist(x, c) >= 2);
           FARO.input.previewAt(c2.i);
@@ -201,10 +206,10 @@ const newGame = (page, extra = '') => page.evaluate((x) => {
           FARO.input.cancelPlacement();
           res.hidden = !ring.visible;
           return res;
-        }, t);
-        const ok = r.vis && Math.abs(r.r - r.want) < 0.001 && r.at && r.follows && r.hidden;
+        }, [t, map]);
+        const ok = r.vis && Math.abs(r.r - r.want) < 0.001 && r.at && r.follows && r.hidden && (map !== 'mesa' || r.high);
         if (!ok) okAll = false;
-        out.push(`${map === 'mesa' ? 'Mesetas' : 'Continente'} · ${r.t}: círculo de ${r.range} casillas${r.high ? ' (en meseta, +1)' : ''} visible (${r.vis}), sigue a la obra (${r.follows}) y se va al cancelar (${r.hidden})`);
+        out.push(`${map === 'mesa' ? 'Mesetas' : 'Continente'} · ${r.t}: círculo de ${r.range} casillas${r.high ? ` (en meseta, +1${r.claimed ? '; meseta dada para la prueba' : ''})` : (map === 'mesa' ? ` (no se encontró meseta: el mapa tiene ${r.nHigh})` : '')} visible (${r.vis}), sigue a la obra (${r.follows}) y se va al cancelar (${r.hidden})`);
       }
       await page.evaluate(() => { FARO.input.startPlacement({ kind: 'build', btype: 'turret' }); const g = FARO.game; const core = g.cells[g.players[0].core.cell]; const c = g.cells.filter((x) => !g.placeInvalid(0, 'turret', x.i, true)).sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core))[2]; FARO.input.previewAt(c.i); FARO.renderer.cam.tx = c.x; FARO.renderer.cam.tz = c.z; FARO.renderer.cam.dist = 18; });
       await page.waitForTimeout(800);
