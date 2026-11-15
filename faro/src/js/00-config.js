@@ -10,7 +10,7 @@ function terrainColor(mapKind, t) {
   return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
 }
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.6';
+const GAME_VERSION = '1.7';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -49,6 +49,10 @@ const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flig
   // v1.0: 1 minuto de radiación donde cae; quema por segundo esta parte de la vida máxima de los enemigos.
   // El Núcleo se quema más despacio, para que un solo misil no decida la partida.
   rad: { time: 60, unit: 0.04, bld: 0.005, core: 0.0025 } };
+// v1.7: Arsenal estratégico (opción de «Personalizado», apagada si no se elige). Con ella cada jugador tiene un solo
+// uso estratégico por partida: el misil del AIR DEFENSE de nivel 4 o el del Lanzador nuclear móvil.
+// prep: segundos de preparación al salir de la Fábrica; range: alcance del lanzador móvil en casillas.
+const STRATEGIC = { uses: 1, prep: 60, range: 14 };
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
@@ -163,7 +167,7 @@ const BUILDINGS = {
   },
   factory: {
     fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 2, builtBy: 'land',
-    produces: ['jeep', 'apc', 'lighttank', 'tank', 'heavytank', 'aa', 'arty', 'missiletruck', 'launcher'],
+    produces: ['jeep', 'apc', 'lighttank', 'tank', 'heavytank', 'aa', 'arty', 'missiletruck', 'launcher', 'nukelauncher'],
     desc: 'Fabrica tanques, camiones antiaéreos, jeeps y lanzamisiles.',
   },
   harbor: {
@@ -328,9 +332,16 @@ const UNITS = {
     desc: 'Lleva 6 soldados protegidos y tiene una ametralladora.',
   },
   launcher: {
-    name: 'Lanzador de misiles', cls: 'veh', mover: 'land', cost: 7000, energy: 70, hp: 1200, speed: 0.8, pop: 4, build: 24,
+    // v1.7: el «Lanzador de misiles» pasa a llamarse Lanzador DF-17 y estrena modelo (mismos números).
+    name: 'Lanzador DF-17', cls: 'veh', mover: 'land', cost: 7000, energy: 70, hp: 1200, speed: 0.8, pop: 4, build: 24,
     weapon: { dmg: 900, cd: 14, range: 9, proj: 'missile', mult: { inf: 0.3, veh: 0.6, ship: 0.6, air: 0, bld: 1.6, sub: 0 } },
-    desc: 'Camión gigante con un misil de muy largo alcance contra bases. Lento y caro.',
+    desc: 'Camión con un misil a la vista, de muy largo alcance contra bases. Lento y caro.',
+  },
+  // v1.7: solo existe con «Arsenal estratégico». Un contenedor, un misil nuclear, un uso por partida (ver STRATEGIC).
+  nukelauncher: {
+    name: 'Lanzador nuclear móvil', cls: 'veh', mover: 'land', cost: 22000, energy: 80, hp: 1400, speed: 0.8, pop: 4, build: 40,
+    limit: 1, strategic: true,
+    desc: 'Camión largo con un solo misil nuclear: un uso por partida. No pelea; necesita escolta.',
   },
   medic: {
     name: 'Médico', cls: 'inf', mover: 'land', cost: 900, hp: 220, speed: 1.6, pop: 1, build: 8, vision: 3,

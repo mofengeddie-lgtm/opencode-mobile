@@ -11,7 +11,7 @@ function customMode(c) {
   for (let i = 0; i < n; i++) teams.push(c.teams ? (i < Math.ceil(n / 2) ? 0 : 1) : i);
   return {
     name: 'Personalizado', players: n, teams, coins: c.coins || START_COINS, energy: c.energy || START_ENERGY,
-    fog: !!c.fog, speed: c.turbo ? 2 : 1, king: !!c.king, custom: true,
+    fog: !!c.fog, speed: c.turbo ? 2 : 1, king: !!c.king, custom: true, strategic: !!c.strategic,
   };
 }
 
@@ -28,6 +28,8 @@ class Game {
     this.creator = !!opts.creator;
     // v1.4: regla especial del desafío semanal ('nofactory', 'noair'...).
     this.rule = opts.rule || null;
+    // v1.7: Arsenal estratégico (solo en Personalizado): un uso estratégico por jugador y partida.
+    this.strategic = !!mode.strategic;
     this.elimOrder = [];
     this._assignT = 0;
     this.time = 0;
@@ -58,7 +60,7 @@ class Game {
         id: i, team: mode.teams[i], team0: mode.teams[i], name: PLAYER_NAMES[i], color: PLAYER_COLORS[i],
         coins: (i === 0 && opts.startCoins) || mode.coins || START_COINS, energy: mode.energy || START_ENERGY, energyRate: 0,
         human: i === 0, alive: true, income: 0, popUsed: 0, popCap: 0, coresKilled: 0,
-        emergencyUsed: false, dome: null,
+        emergencyUsed: false, dome: null, stratUsed: 0,
         stats: { built: 0, trained: 0, lost: 0, kills: 0, earned: 0, captures: 0, upgrades: 0, hitBy: {} },
       });
     }
@@ -463,6 +465,8 @@ class Game {
     u.x = cell.x + u.offX;
     u.z = cell.z + u.offZ;
     u.y = this.groundY(u, cell);
+    // v1.7: el Lanzador nuclear móvil sale «preparando» y con su único misil sin usar.
+    if (def.strategic) { u.armAt = this.time + STRATEGIC.prep; u.spent = false; }
     this.units.push(u);
     return u;
   }
@@ -728,6 +732,10 @@ class Game {
     if (!b.built) return 'Aún en construcción';
     if (!b.def.produces || !b.def.produces.includes(type)) return 'No se produce aquí';
     if (b.queue.length >= 5) return 'Cola llena (5)';
+    if (def.strategic) {
+      if (!this.strategic) return 'Solo con «Arsenal estratégico» (Personalizado)';
+      if (this.strategicLeft(b.owner) <= 0) return 'Uso estratégico agotado (0/1)';
+    }
     if (def.limit) {
       const have = this.units.filter((u) => u.alive && u.owner === b.owner && u.type === type).length +
         this.buildings.reduce((s, x) => s + (x.owner === b.owner ? x.queue.filter((q) => q.type === type).length : 0), 0);
@@ -2477,6 +2485,7 @@ class Game {
   nukeInvalid(b, ci) {
     if (!b || !b.alive || b.type !== 'aadef' || b.level < 4 || !b.built) return 'Necesita un AIR DEFENSE de nivel 4';
     if (b.upgrading) return 'Termina primero la mejora';
+    if (this.strategicLeft(b.owner) <= 0) return 'Uso estratégico agotado (0/1)';
     if (this.time < (b.nukeReadyAt || 0)) return `Recargando: faltan ${Math.ceil(b.nukeReadyAt - this.time)} s`;
     const p = this.players[b.owner];
     if (!(this.creator && b.owner === 0) && p.coins < NUKE.cost) return `Monedas insuficientes (${fmt(NUKE.cost)})`;
@@ -2496,6 +2505,7 @@ class Game {
   }
 
   salvoInvalid(pid, ci) {
+    if (this.strategic) return 'Con Arsenal estratégico hay un solo uso por partida';
     const silos = this.readySilos(pid);
     if (silos.length < 3) return `Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes ${silos.length})`;
     const p = this.players[pid];
@@ -2524,10 +2534,68 @@ class Game {
     const p = this.players[b.owner];
     if (!(this.creator && b.owner === 0)) p.coins -= NUKE.cost;
     b.nukeReadyAt = this.time + NUKE.cooldown;
+    this.fireNuke(b.owner, b, ci);
+    return null;
+  }
+
+  // v1.7: Arsenal estratégico. Usos que le quedan a un jugador (sin la opción no hay cuota).
+  strategicLeft(pid) {
+    if (!this.strategic) return Infinity;
+    return Math.max(0, STRATEGIC.uses - (this.players[pid].stratUsed || 0));
+  }
+
+  // Lo que un edificio puede producir en esta partida (el Lanzador nuclear móvil solo con Arsenal estratégico).
+  producesOf(b) {
+    const list = b.def.produces || [];
+    return this.strategic ? list : list.filter((t) => !UNITS[t].strategic);
+  }
+
+  // Estado del Lanzador nuclear móvil para la interfaz: 'prep', 'ready', 'spent' o 'quota' (el uso se gastó con otro).
+  mobileState(u) {
+    if (u.spent) return 'spent';
+    if (this.strategicLeft(u.owner) <= 0) return 'quota';
+    return this.time < (u.armAt || 0) ? 'prep' : 'ready';
+  }
+
+  mobileNukeInvalid(u, ci) {
+    if (!u || !u.alive || !u.def.strategic) return 'Necesita un Lanzador nuclear móvil';
+    if (!this.strategic) return 'Solo con «Arsenal estratégico»';
+    if (u.spent) return 'Agotado: ya usó su único misil (0/1)';
+    if (this.strategicLeft(u.owner) <= 0) return 'Uso estratégico agotado (0/1)';
+    if (u.inside) return 'Bájalo del transporte primero';
+    if (this.time < (u.armAt || 0)) return `Preparando: faltan ${Math.ceil(u.armAt - this.time)} s`;
+    if (ci !== undefined) {
+      const c = this.cells[ci];
+      if (!c) return 'Casilla no válida';
+      if (this.map.dist(c, this.cells[u.cell]) > STRATEGIC.range) return `Demasiado lejos (alcance: ${STRATEGIC.range} casillas)`;
+      const p = this.players[u.owner];
+      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return 'Muy cerca de tu Núcleo';
+    }
+    return null;
+  }
+
+  // El servidor (aquí, la partida) acepta una sola orden: gasta el misil del vehículo y el uso del jugador a la vez.
+  launchMobileNuke(u, ci) {
+    const why = this.mobileNukeInvalid(u, ci);
+    if (why) return why;
+    u.spent = true;
+    u.spentAt = this.time;
+    this.orderStop([u]);
+    this.fireNuke(u.owner, u, ci);
+    return null;
+  }
+
+  // El misil sale de un AIR DEFENSE de nivel 4 o de un Lanzador nuclear móvil. Con Arsenal estratégico gasta el uso.
+  fireNuke(owner, src, ci) {
     const c = this.cells[ci];
+    if (this.strategic) {
+      const pl = this.players[owner];
+      pl.stratUsed = (pl.stratUsed || 0) + 1;
+      pl.stratAt = this.time;
+    }
     this.projectiles.push({
-      kind: 'nuke', t: null, dmg: NUKE.dmg, owner: b.owner, src: b, sx: b.x, sy: b.y + 1, sz: b.z, tx: c.x, ty: c.h, tz: c.z,
-      time: 0, dur: NUKE.flight, color: PLAYER_COLORS[b.owner], cell: ci, checked: false,
+      kind: 'nuke', t: null, dmg: NUKE.dmg, owner, src, sx: src.x, sy: src.y + 1, sz: src.z, tx: c.x, ty: c.h, tz: c.z,
+      time: 0, dur: NUKE.flight, color: PLAYER_COLORS[owner], cell: ci, checked: false,
     });
     this.nukesLaunched = (this.nukesLaunched || 0) + 1;
     this.emit('sound', { name: 'alarm' });
@@ -2535,7 +2603,7 @@ class Game {
     const R = NUKE.radius + 2;
     for (const q of this.players) {
       if (!q.alive) continue;
-      const mine = q.id === b.owner;
+      const mine = q.id === owner;
       const near = this.buildings.some((x) => x.alive && x.owner === q.id && this.map.dist(this.cells[x.cell], c) <= R) ||
         this.units.some((u) => u.alive && u.owner === q.id && this.map.dist(this.cells[u.cell], c) <= R);
       if (q.id === 0 && (mine || near)) {
