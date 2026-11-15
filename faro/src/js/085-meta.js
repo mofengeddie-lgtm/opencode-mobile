@@ -4,6 +4,8 @@
 // partida (punto 16) y modo creador (punto 19). El progreso se guarda en este navegador.
 
 const PROFILE_KEY = 'faro-profile-v1';
+// v1.7: si el perfil guardado no se puede leer, se guarda tal cual aquí y no se pisa.
+const PROFILE_BAK_KEY = 'faro-profile-v1-copia';
 const XP_REWARD = { play: 40, win: 60, island: 10, core: 20, mission: 50 };
 const LEVEL_XP = 1000;
 const PASS_TIERS = 40;
@@ -86,14 +88,44 @@ const TUTORIAL_STEPS = [
 const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', 'dunes'];
 // v1.2: miniatura de cada mapa (se dibuja una vez con una semilla fija y se guarda).
 const MAP_THUMBS = {};
-// v1.6: lo que trae esta versión (ventana «Acerca de»).
+// Lo que trae esta versión (ventana «Acerca de»).
 const ABOUT_NEWS = [
-  'Pantalla de carga con el avance real y «Reintentar» si algo falla.',
-  'Paneles y ventanas que entran con un movimiento suave.',
-  'Cada tarjeta dice por qué no se puede construir o entrenar (faltan monedas, energía, límite o comunidad).',
-  'Al colocar una defensa se ve su alcance antes de pagar.',
-  'Esta ventana, con la versión y los créditos.',
+  'Arsenal: «Conoce tu ejército», con buscador, filtros y la ficha de cada tropa y edificio.',
+  'Equipo nuevo: Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera.',
+  'Lanzador DF-17 con modelo nuevo y Lanzador nuclear móvil de un solo uso (opción «Arsenal estratégico» en Personalizado).',
+  'Selección más clara: vida del grupo, orden actual, «Centrar» y lista de pasajeros.',
+  'Carga en 3 pasos y un perfil que no se pierde si no se pudo leer.',
+  'Ajustes: tamaño de la interfaz y «Reducir destellos».',
 ];
+
+// v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.
+const ARSENAL_FILTERS = [['all', 'Todos'], ['inf', 'Infantería'], ['land', 'Tierra'], ['sea', 'Mar'], ['air', 'Aire'], ['bld', 'Edificios'], ['strat', 'Estratégico']];
+const ARSENAL_NEW = ['nukelauncher', 'drone', 'fpv', 'mlrs', 'missileboat'];
+const ARSENAL_ON = { land: 'en tierra', landcoast: 'en tierra junto al agua', coast: 'en el agua junto a la orilla', shallowcoast: 'en agua baja junto a la costa', deep: 'en mar profundo' };
+function arsenalItems() {
+  const out = [];
+  for (const [k, d] of Object.entries(UNITS)) {
+    const fam = d.strategic ? 'strat' : d.cls === 'inf' ? 'inf' : d.cls === 'veh' ? 'land' : d.cls === 'air' ? 'air' : 'sea';
+    out.push({ key: k, kind: 'unit', def: d, fam, also: d.strategic ? ['land'] : [] });
+  }
+  for (const [k, d] of Object.entries(BUILDINGS)) {
+    out.push({ key: k, kind: 'bld', def: d, fam: 'bld', also: k === 'antinuke' || k === 'aadef' ? ['strat'] : [] });
+  }
+  return out;
+}
+function arsenalRole(it) {
+  const d = it.def;
+  if (it.kind === 'bld') {
+    const tab = BUILD_TABS.find((t) => t.items.includes(it.key));
+    return tab ? tab.name : it.key === 'core' ? 'Base' : 'Especial';
+  }
+  if (d.strategic) return 'Estratégico';
+  return { inf: 'Infantería', veh: 'Vehículo', ship: 'Barco', sub: 'Submarino', air: d.plane ? 'Avión' : 'Aeronave' }[d.cls] || '';
+}
+// Sin tildes ni mayúsculas, para buscar «canon» y encontrar «Cañón».
+function plainText(s) {
+  return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
 
 // v1.5: iconos dibujados del vestíbulo (antes eran letras sueltas).
 const LOBBY_ICONS = (() => {
@@ -346,7 +378,7 @@ const Profile = {
       missions: { day: null, daily: [], rerolled: false, week: null, weekly: [] },
       chests: { pity: 0, opened: 0 },
       play: { mode: 'conquest', mapKind: 'archipelago', difficulty: 'normal' },
-      custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false },
+      custom: { kind: 'conquest', players: 4, mapKind: 'archipelago', coins: START_COINS, difficulty: 'normal', teams: false, fog: false, turbo: false, strategic: false },
       creator: { on: true, instant: false },
       campaign: { done: {}, stars: {} },
       ranked: { points: 0, best: 0, games: 0, wins: 0, history: [], shield: false },
@@ -355,18 +387,30 @@ const Profile = {
     };
   },
 
+  // v1.7: perfil seguro. Tres casos: no hay nada guardado (perfil nuevo); lo guardado se entiende (se revisa dato por
+  // dato y se repara solo lo que vino mal); o no se entiende (no se pisa: queda una copia, se avisa y no se guarda nada
+  // encima hasta que el jugador elija «Empezar de nuevo» o cargue una copia).
   load() {
     const d = this.defaults();
+    this.loadError = null;
+    this.repaired = [];
+    this.locked = false;
+    let raw = null;
     try {
-      const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-      if (saved && saved.v === 1) {
-        for (const k of Object.keys(saved)) {
-          if (d[k] && typeof d[k] === 'object' && !Array.isArray(d[k]) && saved[k] && typeof saved[k] === 'object') Object.assign(d[k], saved[k]);
-          else d[k] = saved[k];
-        }
-      }
+      raw = localStorage.getItem(PROFILE_KEY);
     } catch (err) {
       this.memoryOnly = true;
+    }
+    if (raw) {
+      let saved;
+      try { saved = JSON.parse(raw); } catch (err) { saved = undefined; }
+      if (!saved || typeof saved !== 'object' || Array.isArray(saved) || saved.v !== 1) {
+        this.loadError = 'unreadable';
+        this.locked = true;
+        try { localStorage.setItem(PROFILE_BAK_KEY, raw); } catch (err) { /* sin espacio para la copia */ }
+      } else {
+        this.merge(d, saved);
+      }
     }
     // v1.4: logros; quien ya terminó el Tutorial tiene «Primer Faro».
     d.achievements = d.achievements || {};
@@ -381,7 +425,56 @@ const Profile = {
     return d;
   },
 
+  // Copia lo guardado sobre los valores de fábrica, revisando el tipo de cada dato. Un dato con el tipo equivocado
+  // (un número que llegó como texto, una lista que llegó como número…) se repara o vuelve a su valor de fábrica; el
+  // resto se conserva. Los datos que este juego no conoce se dejan como están.
+  merge(d, saved) {
+    const fix = (path, def, val) => {
+      if (typeof def === 'number') {
+        if (typeof val === 'number' && Number.isFinite(val)) return val;
+        const n = typeof val === 'string' && val.trim() !== '' ? Number(val) : NaN;
+        this.repaired.push(path);
+        return Number.isFinite(n) ? n : def;
+      }
+      if (typeof def === 'boolean') {
+        if (typeof val === 'boolean') return val;
+        this.repaired.push(path);
+        return def;
+      }
+      if (Array.isArray(def)) {
+        if (Array.isArray(val)) return val;
+        this.repaired.push(path);
+        return def;
+      }
+      if (def && typeof def === 'object') {
+        if (!val || typeof val !== 'object' || Array.isArray(val)) {
+          this.repaired.push(path);
+          return def;
+        }
+        for (const k of Object.keys(val)) def[k] = k in def ? fix(path + '.' + k, def[k], val[k]) : val[k];
+        return def;
+      }
+      if (typeof def === 'string' && typeof val !== 'string') {
+        this.repaired.push(path);
+        return def;
+      }
+      return val;
+    };
+    for (const k of Object.keys(saved)) d[k] = k in d ? fix(k, d[k], saved[k]) : saved[k];
+  },
+
+  // «Empezar de nuevo» después de un perfil que no se pudo leer: la copia queda guardada aparte.
+  startFresh() {
+    this.locked = false;
+    this.loadError = null;
+    this.data = this.defaults();
+    this.refresh();
+    this.save();
+  },
+
   save() {
+    // Mientras haya un perfil sin leer y el jugador no haya elegido, no se escribe nada encima.
+    if (this.locked) return;
     try {
       localStorage.setItem(PROFILE_KEY, JSON.stringify(this.data));
     } catch (err) {
@@ -423,6 +516,7 @@ const Profile = {
   },
 
   restore(data) {
+    this.locked = false;
     try { localStorage.setItem(PROFILE_KEY, JSON.stringify(data)); } catch (err) { this.memoryOnly = true; }
     if (this.memoryOnly) {
       this.data = data;
@@ -592,6 +686,12 @@ class Lobby {
       this.render();
     });
     $('menu').addEventListener('click', (e) => this.onClick(e));
+    // v1.7: buscador del Arsenal (solo se vuelven a dibujar las tarjetas, para no perder el cursor).
+    $('menu').addEventListener('input', (e) => {
+      if (e.target.id !== 'ars-search') return;
+      this.arsQuery = e.target.value;
+      this.arsenalRefresh();
+    });
     $('modal').addEventListener('click', (e) => {
       if (e.target === $('modal')) this.closeModal();
       else this.onClick(e);
@@ -627,7 +727,7 @@ class Lobby {
       const c = P.custom;
       return {
         mode: c.kind === 'king' ? 'king' : 'conquest', mapKind: c.mapKind, difficulty: c.difficulty,
-        custom: { players: c.players, teams: c.teams, coins: c.coins, fog: c.fog, turbo: c.turbo, king: c.kind === 'king' },
+        custom: { players: c.players, teams: c.teams, coins: c.coins, fog: c.fog, turbo: c.turbo, king: c.kind === 'king', strategic: !!c.strategic },
       };
     }
     if (sub === 'tutorial') return { mode: 'tutorial', mapKind: 'open', difficulty: 'easy' };
@@ -667,6 +767,7 @@ class Lobby {
     body.classList.toggle('wide', this.view !== 'play');
     if (this.view === 'shop') body.innerHTML = this.shopHtml();
     else if (this.view === 'inv') body.innerHTML = this.invHtml();
+    else if (this.view === 'arsenal') body.innerHTML = this.arsenalHtml();
     else body.innerHTML = this.leftHtml() + `<div class="lmain">${this.mainHtml()}</div>` + this.sideHtml();
     // v1.3: aviso (una vez) de que empezó una temporada nueva.
     const note = P.season && P.season.notice;
@@ -780,6 +881,8 @@ class Lobby {
       <div class="field"><label>Dificultad</label>${seg('difficulty', Object.entries(DIFFICULTY).map(([k, d]) => [k, d.name]))}</div>
       <div class="field"><label>Equipos</label>${seg('teams', [[false, 'Todos contra todos'], [true, 'Dos equipos']])}</div>
       <div class="field"><label>Extras</label>${seg('fog', [[false, 'Sin niebla'], [true, 'Niebla']])}${seg('turbo', [[false, 'Ritmo normal'], [true, 'Turbo ×2']])}</div>
+      <div class="field" id="field-strategic"><label>Arsenal estratégico · opción experimental</label>${seg('strategic', [[false, 'Desactivado'], [true, 'Activado']])}
+        <small class="fieldnote">Activado: cada jugador tiene <b>un solo uso estratégico</b> en toda la partida, con el misil del AIR DEFENSE de nivel 4 o con el Lanzador nuclear móvil (que solo existe con esta opción). Desactivado: todo sigue como siempre.</small></div>
       <div class="row">
         <button class="btn gold" type="button" data-act="play" id="btn-play-custom">Jugar personalizado</button>
         <button class="btn" type="button" disabled>Unirse con código · Disponible en Roblox</button>
@@ -929,6 +1032,91 @@ class Lobby {
     }
     return `<section class="lcard panel"><header class="rowx"><h2>Tienda</h2><span class="crystals"><i></i><b>${Creator.active() ? '∞' : fmt(P.crystals)}</b></span></header>
       <div class="subtabs">${tabs}</div>${inner}</section>`;
+  }
+
+  // ---------- v1.7: Arsenal («Conoce tu ejército») ----------
+  arsenalList() {
+    const q = plainText(this.arsQuery || '');
+    const f = this.arsFilter || 'all';
+    return arsenalItems().filter((it) => (f === 'all' || it.fam === f || it.also.includes(f)) && (!q || plainText(it.def.name).includes(q)));
+  }
+
+  arsenalCards(list) {
+    return list.map((it) => `<button type="button" class="item arsitem ${it.key === this.arsPick ? 'on' : ''}" data-act="arspick" data-k="${it.key}">
+      <img alt="" src="${Thumbs.get(it.key, PLAYER_COLORS[0])}"><b>${esc(it.def.name)}</b><small>${esc(arsenalRole(it))}</small>${ARSENAL_NEW.includes(it.key) ? '<span class="newtag">Nuevo</span>' : ''}</button>`).join('') ||
+      '<p class="arsempty">Nada con ese nombre en este filtro.</p>';
+  }
+
+  arsenalSheet(it) {
+    const d = it.def;
+    const rows = [];
+    let extra = '';
+    const notes = [];
+    if (it.kind === 'unit') {
+      const makers = Object.values(BUILDINGS).filter((b) => b.produces && b.produces.includes(it.key)).map((b) => b.name);
+      rows.push(['Precio', `${fmt(d.cost)} monedas${d.energy ? ` y ${d.energy} de energía` : ''}`]);
+      rows.push(['Comunidad', `${d.pop} ${d.pop === 1 ? 'plaza' : 'plazas'}`]);
+      rows.push(['Tiempo', `${d.build} s`]);
+      rows.push(['Se produce en', makers.join(', ') || '—']);
+      extra = this.app.ui.unitTilesHtml({ def: d, maxHp: d.hp, vet: 0 });
+      const w = d.weapon;
+      if (w && w.salvo > 1) notes.push(`Dispara salvas de ${w.salvo}.`);
+      if (w && w.splash) notes.push(`Daño en área: a lo que esté a ${String(w.splash.r).replace('.', ',')} casillas del blanco le llega el ${Math.round(w.splash.pct * 100)} %.`);
+      if (d.kamikaze) notes.push('Un solo uso: se destruye al atacar.');
+      if (d.capacity) notes.push(`Lleva ${d.capacity} plazas de ${d.carries === 'inf' ? 'infantería' : 'tropas de tierra'}.`);
+      if (d.hangar) notes.push(`Hangar para ${d.hangar} Cazas.`);
+      if (d.stealth) notes.push('Sigilo: solo se ve de cerca o con detectores.');
+      if (d.detects) notes.push('Detecta submarinos.');
+      if (d.builds) notes.push('Construye y repara.');
+      if (d.healAura) notes.push('Cura a los soldados cercanos.');
+      if (d.strategic) notes.push(`Solo con «Arsenal estratégico» (Personalizado). Un misil, un uso por partida; alcance ${STRATEGIC.range} casillas; ${STRATEGIC.prep} s de preparación.`);
+      if (!w && !d.strategic && !d.builds && !d.healAura) notes.push('No pelea.');
+    } else {
+      rows.push(['Precio', d.cost ? `${fmt(d.cost)} monedas${d.energyCost ? ` y ${d.energyCost} de energía` : ''}` : 'Empiezas con uno']);
+      rows.push(['Tiempo de obra', `${d.build} s`]);
+      rows.push(['Vida', fmt(d.hp)]);
+      if (d.limit) rows.push(['Límite', `${d.limit} por jugador`]);
+      if (d.on) rows.push(['Dónde', Array.isArray(d.on) ? 'solo en ' + d.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ') : ARSENAL_ON[d.on] || String(d.on)]);
+      if (d.income) rows.push(['Ingreso', `+${fmt(d.income)} monedas/min`]);
+      if (d.maxLevel) rows.push(['Niveles', `hasta ${d.maxLevel}`]);
+      if (d.produces) rows.push(['Produce', d.produces.map((t) => UNITS[t].name).join(', ')]);
+      if (d.weapon) rows.push(['Alcance', `${d.weapon.range} casillas`]);
+      if (it.key === 'aadef') notes.push('En nivel 4 lanza el misil nuclear. Con «Arsenal estratégico» comparte el único uso con el Lanzador nuclear móvil.');
+    }
+    return `<div class="arsbig"><img alt="" src="${Thumbs.get(it.key, PLAYER_COLORS[0])}"></div>
+      <span class="lbl">${ARSENAL_NEW.includes(it.key) ? 'Nuevo · ' : ''}${esc(arsenalRole(it))}</span>
+      <h3 id="ars-name">${esc(d.name)}</h3>
+      <p>${esc(d.desc || '')}</p>
+      <dl class="arsrows">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+      ${extra}
+      ${notes.length ? `<ul class="arsnotes">${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}`;
+  }
+
+  arsenalHtml() {
+    const all = arsenalItems();
+    const nU = all.filter((x) => x.kind === 'unit').length;
+    const list = this.arsenalList();
+    if (!list.some((x) => x.key === this.arsPick)) this.arsPick = list.length ? list[0].key : null;
+    const pick = list.find((x) => x.key === this.arsPick);
+    const f = this.arsFilter || 'all';
+    return `<section class="lcard panel arsenal">
+      <div class="arshead"><div><h2>Conoce tu ejército</h2><p>Todo lo que hoy existe en el juego. Toca una tarjeta para ver su ficha.</p></div>
+        <span class="arscount" id="ars-count">${nU} tropas · ${all.length - nU} edificios</span></div>
+      <input type="search" id="ars-search" class="arssearch" placeholder="Buscar tropa o edificio…" value="${esc(this.arsQuery || '')}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar tropa o edificio">
+      <div class="arsfilters">${ARSENAL_FILTERS.map(([k, label]) => `<button type="button" class="arsf ${f === k ? 'on' : ''}" data-act="arsfilter" data-v="${k}" aria-pressed="${f === k}">${label}</button>`).join('')}</div>
+      <div class="arsbody"><div class="shopgrid arsgrid" id="ars-grid">${this.arsenalCards(list)}</div>
+        <aside class="arssheet" id="ars-sheet" aria-live="polite">${pick ? this.arsenalSheet(pick) : ''}</aside></div>
+    </section>`;
+  }
+
+  arsenalRefresh() {
+    const grid = $('ars-grid');
+    if (!grid) return;
+    const list = this.arsenalList();
+    if (!list.some((x) => x.key === this.arsPick)) this.arsPick = list.length ? list[0].key : null;
+    const pick = list.find((x) => x.key === this.arsPick);
+    grid.innerHTML = this.arsenalCards(list);
+    $('ars-sheet').innerHTML = pick ? this.arsenalSheet(pick) : '';
   }
 
   invHtml() {
@@ -1163,6 +1351,16 @@ class Lobby {
       app.reroll();
     } else if (act === 'diff') {
       this.setPlay('difficulty', b.dataset.v);
+    } else if (act === 'arsfilter') {
+      this.arsFilter = b.dataset.v;
+      document.querySelectorAll('#menu .arsf').forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+      this.arsenalRefresh();
+    } else if (act === 'arspick') {
+      this.arsPick = b.dataset.k;
+      this.arsenalRefresh();
+      // En pantallas angostas la ficha queda debajo de la lista: se lleva a la vista.
+      const sheet = $('ars-sheet');
+      if (sheet && window.innerWidth < 760) sheet.scrollIntoView({ block: 'nearest' });
     } else if (act === 'cset') {
       let v = b.dataset.v;
       if (v === 'true' || v === 'false') v = v === 'true';
@@ -1756,10 +1954,16 @@ class Lobby {
       : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
          <div><b>+${fmt(r.crystals)} cristales</b><span>${r.missions.length ? 'Incluye misiones' : 'Por jugar' + (win ? ' y ganar' : '')}</span></div>
          <div><b>Nivel ${r.level}</b><span>${r.levelUp ? '¡Subiste de nivel!' : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
+    // v1.7: como en la UI 0.4: tres fichas arriba (Duración, Territorio, Experiencia) y los botones siempre a la vista.
+    const land = game.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0);
     return `
-      <div class="endhero"><div><h2>${win ? '¡Victoria!' : 'Derrota'}</h2><p>${esc(text)}</p></div></div>
-      <div class="endstats">
-        <div><b>${fmtTime(game.time)}</b><span>Tiempo</span></div>
+      <div class="endhero"><div><span class="lbl endchip">Partida finalizada</span><h2>${win ? '¡Victoria!' : 'Derrota'}</h2><p>${esc(text)}</p></div></div>
+      <div class="endstats endmain" id="endmain">
+        <div><b>${fmtTime(game.time)}</b><span>Duración</span></div>
+        <div><b>${fmt(land)}</b><span>Territorio (casillas)</span></div>
+        <div class="xp"><b>${r.creator ? '—' : '+' + fmt(r.xp)}</b><span>Experiencia</span></div>
+      </div>
+      <div class="endstats endmore">
         <div><b>${s.captures}</b><span>Islas tomadas</span></div>
         <div><b>${s.trained}</b><span>Tropas entrenadas</span></div>
         <div><b>${me.coresKilled}</b><span>Núcleos destruidos</span></div>
@@ -1767,17 +1971,17 @@ class Lobby {
       <h3 class="lbl">Posiciones</h3>
       <div class="positions">${pos.map((x) => `<div class="${x.p.id === 0 ? 'me' : ''}"><b>${x.rank}.º</b><i style="background:${cssColor(x.p.color)}"></i>
         <span>${esc(x.p.name)}</span><small>${esc(x.note)}</small></div>`).join('')}</div>
-      <h3 class="lbl">Premios</h3>
+      <h3 class="lbl">Premios${r.creator ? '' : ' <span class="endok">· confirmados</span>'}</h3>
       <div class="prizes">${prizes}</div>
       ${r.missions.length ? `<div class="advice">Misiones completadas: ${r.missions.map(esc).join(', ')}</div>` : ''}
       ${r.tutorial ? `<div class="advice">Premio del Tutorial: ${esc(r.tutorial)}</div>` : ''}
       ${win ? '' : `<div class="advice"><b>Consejo:</b> ${esc(this.advice(game))}</div>`}
       ${this.historyHtml(game)}
-      <div class="row">
+      <div class="row endrow">
         ${game.canSpectate() ? '<button class="btn" type="button" id="btn-spectate">Seguir mirando</button>' : ''}
         <button class="btn" type="button" id="btn-watch">Mirar el mapa</button>
-        <button class="btn gold" type="button" id="btn-again">Revancha</button>
-        <button class="btn" type="button" id="btn-menu">Vestíbulo</button>
+        <button class="btn" type="button" id="btn-again">Revancha</button>
+        <button class="btn gold" type="button" id="btn-menu">Volver al vestíbulo</button>
       </div>`;
   }
 }

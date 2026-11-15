@@ -786,7 +786,10 @@ body.has-prod #toasts { top: calc(var(--top) + 116px); }
 @media (max-width: 560px) { .weeklybox { grid-template-columns: 1fr; } .weeklybox .mapthumb { width: 100%; max-width: 240px; } .toptable { font-size: 12.5px; } .toptable th, .toptable td { padding: 7px 4px; } }
 /* v1.4: letra grande en los paneles del juego (el panel conserva su tamaño y se desplaza). */
 body.bigtext #selpanel > *, body.bigtext #buildpanel .blist, body.bigtext #buildpanel .tabs, body.bigtext #objlist,
-body.bigtext #chatpop > *, body.bigtext #score > *, body.bigtext #econ > *, body.bigtext #pause .panel > *, body.bigtext .toast { zoom: 1.15; }
+body.bigtext #chatpop > *, body.bigtext #score > *, body.bigtext #econ > *, body.bigtext #pause .panel > *, body.bigtext .toast { zoom: var(--uiz, 1.15); }
+/* v1.7: «Tamaño de la interfaz» (100 a 130 %). Por debajo de 115 % no hace falta el acomodo de «Letra grande». */
+body.uiz:not(.bigtext) #selpanel > *, body.uiz:not(.bigtext) #buildpanel .blist, body.uiz:not(.bigtext) #buildpanel .tabs, body.uiz:not(.bigtext) #objlist,
+body.uiz:not(.bigtext) #chatpop > *, body.uiz:not(.bigtext) #score > *, body.uiz:not(.bigtext) #econ > *, body.uiz:not(.bigtext) #pause .panel > *, body.uiz:not(.bigtext) .toast { zoom: var(--uiz, 1); }
 body.bigtext .coach-tip { font-size: 15px; width: 250px; }
 /* Con letra grande, los paneles de la pausa pueden achicarse al ancho de la pantalla. */
 body.bigtext #pause .panel > * { min-width: 0; }
@@ -874,6 +877,15 @@ button.chip:hover { background: var(--raise-2); }
 .boot-detail { margin: 0; min-height: 18px; color: #9fb0bb; font: 500 13px/1.35 'Barlow', system-ui, sans-serif; }
 #boot.failed .boot-bar i { background: #ef5350; }
 #boot.failed .boot-detail { color: #ffb4b5; }
+.boot-steps { list-style: none; margin: 8px 0 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
+.boot-steps li { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; font: 600 15px/1.2 'Barlow', system-ui, sans-serif; color: #e8edf1; }
+.boot-steps i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #223340; color: #9fb0bb; font: 700 14px 'Barlow', system-ui, sans-serif; font-style: normal; }
+.boot-steps span { font-weight: 500; font-size: 14px; color: #9fb0bb; }
+.boot-steps li.now i, .boot-steps li.now span { color: #f2ab38; }
+.boot-steps li.done i, .boot-steps li.done span { color: #8fdc9a; }
+.boot-steps li.error i, .boot-steps li.error span { color: #ffb4b5; }
+.boot-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.boot-alt { background: #223340; color: #e8edf1; }
 .boot-retry { min-height: 48px; min-width: 180px; margin-top: 6px; border: 0; border-radius: 10px; background: #f2ab38; color: #1a1206; font: 700 17px 'Barlow', system-ui, sans-serif; cursor: pointer; }
 /* ---------- v1.6: transiciones (sin animación con «Reducir movimiento» o ahorro de batería) ---------- */
 @keyframes faroPanelIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -889,6 +901,76 @@ button.chip:hover { background: var(--raise-2); }
   .btn:active, .bitem:active, .card:active, .sidebtn:active, .qbtn:active { transform: none; }
 }
 body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist, body.battery .screen > .dialog, body.battery #modal .dialog, body.battery .modal > .dialog, body.battery .modal-card { animation: none !important; }
+/* ---------- v1.7: barra de arriba con «Ingresos», selección, pasajeros, uso estratégico y ajustes ---------- */
+.stat.income svg, .stat.income b { color: var(--good); }
+.stat.income b { font-size: 18px; }
+@media (min-width: 861px) { .stat.coins small { display: none; } }
+@media (max-width: 860px) { #stat-income { display: none; } }
+.selorder { font-size: 12.5px; }
+.selorder b { color: var(--energy); font-weight: 600; }
+#selpanel > .selorder { order: -4; }
+.qres { flex: 1 1 100%; font-size: 12px; color: var(--muted); }
+.paxbox { display: grid; gap: 6px; padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); }
+.paxhead { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 13px; }
+.paxhead span { color: var(--energy); font-family: var(--font-display); font-variant-numeric: tabular-nums; }
+.paxlist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px; max-height: 132px; overflow-y: auto; touch-action: pan-y; }
+.paxlist li { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; padding: 3px 8px 3px 4px; border-radius: 6px; background: var(--raise); font-size: 12.5px; }
+.paxlist img { width: 28px; height: 28px; }
+.paxlist span { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.paxlist em { font-style: normal; font-size: 11.5px; color: var(--good); }
+.paxlist li.way em { color: var(--energy); }
+.stratbox { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: rgba(242, 171, 56, 0.08); border: 1px solid rgba(242, 171, 56, 0.45); }
+.stratbox .lbl { grid-column: 1 / -1; color: var(--gold); }
+.stratbox .stratnum { font-family: var(--font-display); font-size: 30px; line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stratbox .strattext { font-size: 12.5px; color: var(--text); line-height: 1.35; }
+.stratbox.spent { background: rgba(255, 255, 255, 0.04); border-color: var(--line); }
+.stratbox.spent .stratnum, .stratbox.spent .lbl { color: var(--muted); }
+#strat .dialog { width: min(440px, 100%); border-color: rgba(242, 171, 56, 0.6); }
+#strat .stratchip { color: var(--gold); }
+#strat .dialog p b { color: var(--text); }
+#strat .dialog .row .btn { min-height: 48px; }
+@media (max-width: 520px) { .stratbox { grid-template-columns: auto 1fr; } .stratbox .btn { grid-column: 1 / -1; } }
+.uiscale { display: grid; gap: 4px; margin-top: 8px; }
+.uiscale .lbl b { color: var(--gold); font-family: var(--font-display); font-size: 13px; }
+#ui-scale { width: 100%; min-height: 44px; accent-color: var(--gold); touch-action: pan-x; cursor: pointer; }
+/* ---------- v1.7: Arsenal, opción estratégica y resultado ---------- */
+.fieldnote { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.fieldnote b { color: var(--text); }
+.arshead { display: flex; justify-content: space-between; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.arscount { font-family: var(--font-display); color: var(--muted); font-size: 14px; white-space: nowrap; }
+.arssearch { width: 100%; min-height: 46px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--raise); color: var(--text); font: 500 15px var(--font-body); -webkit-user-select: text; user-select: text; touch-action: auto; }
+.arssearch::placeholder { color: var(--muted); }
+.arssearch:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+.arsfilters { display: flex; gap: 6px; flex-wrap: wrap; }
+.arsf { min-height: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--raise); color: var(--muted); font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.arsf.on { color: var(--gold); border-color: var(--gold); background: rgba(242, 171, 56, 0.1); }
+.arsbody { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 360px); gap: 12px; align-items: start; }
+.arsgrid { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); max-height: 62vh; overflow-y: auto; touch-action: pan-y; padding: 2px; align-content: start; }
+.arsitem { position: relative; }
+.arsitem.on { border-color: var(--energy) !important; box-shadow: 0 0 0 1px var(--energy); }
+.arsitem small { color: var(--gold); }
+.newtag { position: absolute; top: 5px; left: 5px; padding: 1px 6px; border-radius: 5px; background: var(--energy); color: #06222e; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.arsempty { grid-column: 1 / -1; padding: 16px 4px; }
+.arssheet { display: grid; gap: 8px; padding: 14px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); position: sticky; top: 0; }
+.arssheet h3 { margin: 0; font-family: var(--font-display); font-size: 24px !important; letter-spacing: 0.02em !important; text-transform: none !important; color: var(--text) !important; }
+.arssheet .lbl { color: var(--energy); }
+.arsbig { display: grid; place-items: center; border-radius: 8px; background: var(--raise); }
+.arsbig img { width: 132px; height: 132px; }
+.arsrows { display: grid; gap: 0; margin: 0; }
+.arsrows div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.arsrows dt { color: var(--muted); }
+.arsrows dd { margin: 0; text-align: right; font-weight: 600; }
+.arsnotes { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+@media (max-width: 760px) { .arsbody { grid-template-columns: minmax(0, 1fr); } .arsgrid { max-height: 44vh; } .arssheet { position: static; } }
+.endchip { color: var(--good); }
+.endok { color: var(--good); text-transform: none; letter-spacing: 0; }
+.endstats.endmain { grid-template-columns: repeat(3, 1fr); }
+.endstats.endmain b { font-size: 30px; }
+.endstats.endmain .xp b { color: var(--gold); }
+.endstats.endmore { grid-template-columns: repeat(3, 1fr); }
+.endstats.endmore div { padding: 6px 10px; background: rgba(255, 255, 255, 0.04); }
+.endstats.endmore b { font-size: 18px; }
+#enddialog .endrow { position: sticky; bottom: -22px; margin: 0 -22px -22px; padding: 12px 22px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--panel-solid); border-top: 1px solid var(--line); z-index: 2; }
 /* ---------- v1.6: motivo junto a la acción ---------- */
 .why { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 700; color: #ffb4b5; line-height: 1.25; }
 .why:empty { display: none; }
@@ -904,17 +986,42 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
   <div class="boot-card">
     <svg class="boot-logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
     <h1 class="boot-title">Faro de <span>Ámbar</span></h1>
+    <!-- v1.7: tres pasos con su estado real (UI 0.4 del usuario). -->
+    <ol class="boot-steps" id="boot-steps">
+      <li data-step="1" class="now"><i>1</i><b>Recursos esenciales</b><span>Cargando…</span></li>
+      <li data-step="2"><i>2</i><b>Tu perfil</b><span>En espera</span></li>
+      <li data-step="3"><i>3</i><b>La partida</b><span>En espera</span></li>
+    </ol>
     <p class="boot-phase" id="boot-phase">Abriendo el juego…</p>
     <div class="boot-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="boot-bar"><i id="boot-fill"></i></div>
     <p class="boot-detail" id="boot-detail">&nbsp;</p>
-    <button class="boot-retry" id="boot-retry" type="button" hidden>Reintentar</button>
+    <div class="boot-btns"><button class="boot-retry" id="boot-retry" type="button" hidden>Reintentar</button>
+      <button class="boot-retry boot-alt" id="boot-alt" type="button" hidden>Empezar de nuevo</button></div>
   </div>
 </div>
 <script>
 // Fases de la carga y su peso en la barra: motor 3D, modelos, cielo y tu perfil.
 window.FaroBoot = (function () {
-  var W = { page: 6, engine: 10, models: 64, sky: 10, profile: 10 };
-  var order = ['page', 'engine', 'models', 'sky', 'profile'];
+  var W = { page: 5, engine: 9, models: 58, sky: 8, profile: 10, game: 10 };
+  var order = ['page', 'engine', 'models', 'sky', 'profile', 'game'];
+  // v1.7: los tres pasos que ve el jugador y las fases reales que cubre cada uno.
+  var STEPS = [['page', 'engine', 'models', 'sky'], ['profile'], ['game']];
+  var stepErr = 0;
+  function steps() {
+    var prevDone = true;
+    var out = [];
+    for (var i = 0; i < STEPS.length; i++) {
+      var all = true, any = false;
+      for (var j = 0; j < STEPS[i].length; j++) { var v = done[STEPS[i][j]] || 0; if (v < 1) all = false; if (v > 0) any = true; }
+      var st = stepErr === i + 1 ? 'error' : all ? 'done' : (prevDone && (any || i === 0)) ? 'now' : 'wait';
+      out.push(st);
+      prevDone = all;
+    }
+    var lis = document.querySelectorAll('#boot-steps li');
+    var TXT = { done: 'Listo', now: 'Cargando…', wait: 'En espera', error: 'No se pudo leer' };
+    for (var k = 0; k < lis.length; k++) { lis[k].className = out[k]; lis[k].lastElementChild.textContent = TXT[out[k]]; }
+    return out;
+  }
   var done = { page: 1 };
   var log = ['page'];
   var hist = [];
@@ -923,7 +1030,7 @@ window.FaroBoot = (function () {
     var pct = 0;
     for (var i = 0; i < order.length; i++) pct += W[order[i]] * Math.min(1, done[order[i]] || 0);
     pct = Math.round(pct);
-    hist.push({ pct: pct, text: text || el('boot-phase').textContent, detail: detail || '' });
+    hist.push({ pct: pct, text: text || el('boot-phase').textContent, detail: detail || '', steps: steps().join(',') });
     el('boot-fill').style.width = pct + '%';
     el('boot-bar').setAttribute('aria-valuenow', String(pct));
     if (text) el('boot-phase').textContent = text;
@@ -951,6 +1058,30 @@ window.FaroBoot = (function () {
       var r = el('boot-retry'); r.hidden = false;
       r.onclick = function () { location.reload(); };
     },
+    // v1.7: una pregunta durante la carga (perfil que no se pudo leer): «Reintentar» vuelve a abrir la página y el otro
+    // botón sigue con lo que decida el juego. Mientras tanto la carga espera.
+    ask: function (msg, altLabel, onAlt) {
+      clearTimeout(guard);
+      log.push('pregunta');
+      var b = el('boot'); if (!b) { onAlt(); return; }
+      stepErr = 2;
+      b.classList.add('failed');
+      el('boot-phase').textContent = 'Tu perfil no se pudo leer';
+      el('boot-detail').textContent = msg;
+      steps();
+      hist.push({ pct: paint(), text: 'Tu perfil no se pudo leer', detail: msg, steps: steps().join(',') });
+      el('boot-phase').textContent = 'Tu perfil no se pudo leer';
+      el('boot-detail').textContent = msg;
+      var r = el('boot-retry'); r.hidden = false;
+      r.onclick = function () { location.reload(); };
+      var a = el('boot-alt'); a.hidden = false; a.textContent = altLabel;
+      a.onclick = function () {
+        a.hidden = true; r.hidden = true;
+        stepErr = 0;
+        b.classList.remove('failed');
+        onAlt();
+      };
+    },
     finish: function () {
       clearTimeout(guard);
       log.push('listo');
@@ -975,9 +1106,14 @@ window.FaroBoot = (function () {
         <span class="lbl">Monedas</span>
         <div><b id="coins">0</b><small id="income">+0/min</small></div>
       </div>
-      <div class="stat" id="stat-pop" title="Población">
+      <div class="stat income" id="stat-income" title="Ingresos por minuto: toca para ver de dónde salen" role="button" tabindex="0" data-econ="coins">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 21V4M5 5h12l-3 4 3 4H5"/></svg>
+        <span class="lbl">Ingresos</span>
+        <b id="income2">+0/min</b>
+      </div>
+      <div class="stat" id="stat-pop" title="Población: tropas que tienes (y en cola) de las que caben">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.4 2.7-6 6-6s6 2.6 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c3 .2 5.5 2.4 5.5 5.8"/></svg>
-        <span class="lbl">Tropas</span>
+        <span class="lbl">Población</span>
         <b id="pop">0/0</b>
       </div>
       <div class="stat energy" title="Energía: toca para ver de dónde sale" role="button" tabindex="0" data-econ="energy">
@@ -985,9 +1121,9 @@ window.FaroBoot = (function () {
         <span class="lbl">Energía</span>
         <div><b id="energy">0</b><small id="energyRate">+0/10 s</small></div>
       </div>
-      <div class="stat clock" title="Tiempo">
+      <div class="stat clock" title="Tiempo de la partida">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>
-        <span class="lbl">Tiempo</span>
+        <span class="lbl">Partida</span>
         <b id="clock">00:00</b>
       </div>
     </div>
@@ -1082,10 +1218,11 @@ window.FaroBoot = (function () {
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.6</span>
+      <span class="version">v1.7</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
+      <button type="button" role="tab" data-view="arsenal" aria-selected="false">Arsenal</button>
       <button type="button" role="tab" data-view="shop" aria-selected="false">Tienda</button>
       <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
     </nav>
@@ -1125,8 +1262,14 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" data-battery="toggle" id="btn-battery" aria-pressed="false">Ahorro de batería: no</button>
         <button class="btn" type="button" data-cvd="toggle" id="btn-cvd" aria-pressed="false">Colores para daltonismo: no</button>
         <button class="btn" type="button" data-bigtext="toggle" id="btn-bigtext" aria-pressed="false">Letra grande: no</button>
+        <button class="btn" type="button" id="btn-calm" aria-pressed="false">Reducir destellos: no</button>
       </div>
-      <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa.</p>
+      <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa. Reducir destellos: sin fogonazos de disparo y con el destello del misil muy suave.</p>
+      <div class="uiscale">
+        <label class="lbl" for="ui-scale">Tamaño de la interfaz: <b id="ui-scale-val">100 %</b></label>
+        <input type="range" id="ui-scale" min="100" max="130" step="5" value="100" aria-describedby="ui-scale-note">
+        <p class="small-note" id="ui-scale-note"></p>
+      </div>
     </div>
     <div>
       <div class="lbl" style="margin-bottom:6px">Música</div>
@@ -1168,6 +1311,9 @@ window.FaroBoot = (function () {
   </div>
 </div>
 
+<div id="strat" class="screen overlay-dim" hidden>
+  <div class="dialog panel" id="strat-body" role="alertdialog" aria-label="Confirmar el uso estratégico"></div>
+</div>
 <div id="brief" class="screen overlay-dim" hidden></div>
 <div id="end" class="screen overlay-dim" hidden>
   <div class="dialog panel" id="enddialog"></div>

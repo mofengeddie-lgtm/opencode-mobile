@@ -52,8 +52,10 @@ const full = [
   '',
 ].join('\n');
 
-writeFileSync(join(ROOT, 'faro.html'), full);
-console.log(`[Faro] faro.html listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos)`);
+// FARO_OUT permite construir en otro archivo (para probar una versión sin tocar la publicada).
+const OUT = process.env.FARO_OUT || join(ROOT, 'faro.html');
+writeFileSync(OUT, full);
+console.log(`[Faro] ${OUT.split('/').pop()} listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos)`);
 
 const extra = process.argv[2];
 if (extra) {

@@ -1640,7 +1640,7 @@ class Renderer {
     this.unitIcons = 0;
     if (this.cam.dist >= UNIT_ICON_DIST) this.drawUnitIcons(ctx);
     if (this.nukeFlashT > 0) {
-      ctx.fillStyle = `rgba(255,248,225,${Math.min(0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
+      ctx.fillStyle = `rgba(255,248,225,${Math.min(this.calm ? 0.12 : 0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
       ctx.fillRect(0, 0, this.width, this.height);
     }
   }

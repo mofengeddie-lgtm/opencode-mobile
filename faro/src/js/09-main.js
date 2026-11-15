@@ -52,12 +52,18 @@ const App = {
       this.battery = localStorage.getItem('faro-battery') === '1';
       this.cvd = localStorage.getItem('faro-cvd') === '1';
       this.bigText = localStorage.getItem('faro-bigtext') === '1';
+      // v1.7: tamaño de la interfaz (100 a 130 %; «Letra grande» es el atajo a 115 %) y menos destellos.
+      const us = Number(localStorage.getItem('faro-uiscale'));
+      this.uiScale = us >= 100 && us <= 130 ? us : this.bigText ? 115 : 100;
+      this.calm = localStorage.getItem('faro-calm') === '1';
       // v1.5: ya no hay decoraciones de temporada (Calabazas, Invierno).
       localStorage.removeItem('faro-season');
     } catch (err) { /* sin almacenamiento */ }
     applyPalette(this.cvd);
-    document.body.classList.toggle('bigtext', !!this.bigText);
+    this.applyUiScale();
+    window.addEventListener('resize', () => this.applyUiScale());
     document.body.classList.toggle('battery', !!this.battery);
+    document.body.classList.toggle('calm', !!this.calm);
     Profile.load();
     this.quality = this.qualityPref === 'low' ? 'low' : 'high';
     if (hotData && hotData.opts && MODES[hotData.opts.mode]) Object.assign(this.opts, hotData.opts);
@@ -88,13 +94,23 @@ const App = {
       if (!n) boot.set('models', 1, 'Modelos 3D…', 'Se usan los modelos simples');
       boot.set('profile', 0.5, 'Tu perfil…');
       this.modelCount = n;
+      // v1.7: si el perfil guardado no se pudo leer, se pregunta antes de seguir (no se pisa).
+      if (!Profile.loadError) return null;
+      return new Promise((resolve) => boot.ask('No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.', 'Empezar de nuevo', () => {
+        Profile.startFresh();
+        resolve();
+      }));
+    }).then(() => {
+      const fixed = Profile.repaired ? Profile.repaired.length : 0;
+      boot.set('profile', 1, 'Tu perfil…', fixed ? `Se ${fixed === 1 ? 'reparó 1 dato' : `repararon ${fixed} datos`}; el resto está igual` : '');
+      boot.set('game', 0.3, 'La partida…');
       this.ui = new UI(this);
       this.input = new Input(this);
       this.lobby = new Lobby(this);
       this.makePreview();
       this.ui.showScreen('menu');
       this.loaded = true;
-      boot.set('profile', 1, 'Tu perfil…');
+      boot.set('game', 1, 'La partida…');
       boot.finish();
       // Modo creador: solo si la plataforma confirma que quien abre el juego es su dueño.
       Creator.detect().then(() => this.lobby.render());
@@ -128,6 +144,8 @@ const App = {
     this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
     this.renderer.tintTerritory();
     if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
+    this.renderer.calm = !!this.calm;
+    if (this.renderer.fxs) this.renderer.fxs.calm = !!this.calm;
   },
 
   // v1.4: ahorro de batería: 30 cuadros por segundo, calidad «más fluido» y menos partículas.
@@ -161,10 +179,42 @@ const App = {
     this.ui.updateA11yBtns();
   },
 
+  // v1.7: «Letra grande» es el atajo a 115 % del tamaño de la interfaz.
   setBigText(on) {
-    this.bigText = !!on;
-    try { localStorage.setItem('faro-bigtext', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    this.setUiScale(on ? 115 : 100);
+  },
+
+  // Tamaño de la interfaz: de 100 a 130 %. En pantallas chicas se limita para que los paneles no se salgan.
+  setUiScale(n) {
+    this.uiScale = Math.round(clamp(Number(n) || 100, 100, 130) / 5) * 5;
+    try {
+      localStorage.setItem('faro-uiscale', String(this.uiScale));
+      localStorage.setItem('faro-bigtext', this.uiScale >= 115 ? '1' : '0');
+    } catch (err) { /* sin almacenamiento */ }
+    this.applyUiScale();
+    if (this.ui) this.ui.updateA11yBtns();
+  },
+
+  applyUiScale() {
+    const want = this.uiScale || 100;
+    const small = Math.min(window.innerWidth, window.innerHeight) < 600;
+    const eff = small ? Math.min(want, 115) : want;
+    this.uiScaleEff = eff;
+    this.bigText = want >= 115;
+    document.documentElement.style.setProperty('--uiz', (eff / 100).toFixed(2));
     document.body.classList.toggle('bigtext', this.bigText);
+    document.body.classList.toggle('uiz', eff !== 100);
+  },
+
+  // Menos destellos: sin fogonazos de disparo y con el destello del misil nuclear muy suave.
+  setCalm(on) {
+    this.calm = !!on;
+    try { localStorage.setItem('faro-calm', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    document.body.classList.toggle('calm', this.calm);
+    if (this.renderer) {
+      this.renderer.calm = this.calm;
+      if (this.renderer.fxs) this.renderer.fxs.calm = this.calm;
+    }
     this.ui.updateA11yBtns();
   },
 

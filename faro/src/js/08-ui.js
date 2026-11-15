@@ -33,6 +33,9 @@ const BTN_ICON = {
   unload: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
   found: '<path d="M6 21V4h10l-2 3.5L16 11H6M18 15v6M15 18h6"/>',
   dome: '<path d="M3 18a9 9 0 0 1 18 0zM2 18h20"/>',
+  // v1.7: centrar la cámara y uso estratégico.
+  center: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/>',
+  strat: '<path d="M12 3l8 3.5v5c0 4.6-3.3 8-8 9.5-4.7-1.5-8-4.9-8-9.5v-5z"/><path d="M12 8v5M12 16.2v.3"/>',
 };
 const bi = (k) => `<span class="bi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${BTN_ICON[k]}</svg></span>`;
 
@@ -155,6 +158,13 @@ class UI {
     $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
     $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
     $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
+    $('btn-calm').addEventListener('click', () => app.setCalm(!app.calm));
+    $('ui-scale').addEventListener('input', (e) => app.setUiScale(Number(e.target.value)));
+    // v1.7: ventana de confirmación del uso estratégico.
+    $('strat').addEventListener('click', (e) => {
+      if (e.target.closest('#btn-strat-ok')) this.confirmStrategic();
+      else if (e.target.closest('#btn-strat-cancel') || e.target === $('strat')) this.closeStrategic();
+    });
     this.updateA11yBtns();
     for (const id of ['btn-sound', 'btn-sound2']) {
       $(id).addEventListener('click', () => {
@@ -303,6 +313,15 @@ class UI {
     set('btn-battery', app.battery, 'Ahorro de batería');
     set('btn-cvd', app.cvd, 'Colores para daltonismo');
     set('btn-bigtext', app.bigText, 'Letra grande');
+    // v1.7: tamaño de la interfaz y menos destellos.
+    set('btn-calm', app.calm, 'Reducir destellos');
+    const sl = $('ui-scale');
+    if (sl) {
+      sl.value = String(app.uiScale || 100);
+      const eff = app.uiScaleEff || app.uiScale || 100;
+      $('ui-scale-val').textContent = `${app.uiScale || 100} %`;
+      $('ui-scale-note').textContent = eff < (app.uiScale || 100) ? `En esta pantalla se usa ${eff} % para que todo quepa.` : 'Agranda los paneles, las listas y los avisos. Los botones nunca bajan de 44 px.';
+    }
   }
 
   updateMusicBtns() {
@@ -321,6 +340,7 @@ class UI {
   }
 
   startHud() {
+    this.closeStrategic();
     this.selSig = '';
     this.buildSig = '';
     this.playersSig = '';
@@ -926,6 +946,12 @@ class UI {
   // ---------- ficha de unidad ----------
   // v1.6: por qué no se puede entrenar esta tropa ahora (vacío si se puede).
   trainWhy(p, u) {
+    // v1.7: el Lanzador nuclear móvil depende del uso estratégico y de su límite (1).
+    if (u.strategic) {
+      const g = this.app.game;
+      if (g.strategicLeft(p.id) <= 0) return 'Uso estratégico agotado (0/1)';
+      if (g.units.some((x) => x.alive && x.owner === p.id && x.type === u.key)) return 'Límite: 1 de 1';
+    }
     if (p.coins < u.cost) return `Faltan ${fmt(Math.ceil(u.cost - p.coins))} monedas`;
     if (p.energy < (u.energy || 0)) return `Faltan ${fmt(Math.ceil(u.energy - p.energy))} de energía`;
     if (p.popUsed + u.pop > p.popCap) return 'Comunidad llena: construye Casas';
@@ -1040,8 +1066,12 @@ class UI {
         : 'No hay sitio alcanzable para fundar un puesto';
     } else if (p.kind === 'rally') {
       text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
+    } else if (p.kind === 'mnuke') {
+      text = p.valid && p.valid.size
+        ? `Toca la zona del <b>misil del Lanzador nuclear móvil</b> (alcance ${STRATEGIC.range} casillas). Después te pide confirmar.`
+        : 'No hay ninguna zona al alcance del lanzador: acércalo más.';
     } else if (p.kind === 'nuke') {
-      text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s`;
+      text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s${this.app.game.strategic ? ' · uso único: después te pide confirmar' : ''}`;
     } else if (p.kind === 'allyattack') {
       text = 'Toca un edificio, una tropa o el territorio del <b>rival</b> que quieres atacar con tus aliados';
     } else if (p.kind === 'bombzone') {
@@ -1132,13 +1162,13 @@ class UI {
         `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
         `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}|${first.loop ? 1 : 0}${first.loopWait || ''}`;
       if (first.def.produces) {
-        sig += '|' + first.def.produces.map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('');
+        sig += '|' + g.producesOf(first).map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('') + (g.strategic ? 'q' + g.strategicLeft(0) : '');
       }
       const uc = g.upgradeCost(first);
       if (uc) sig += '|u' + (p.coins >= uc);
       if (first.type === 'airport') sig += '|p' + g.units.filter((u) => u.alive && u.owner === 0 && u.cls === 'air' && Math.hypot(u.x - first.x, u.z - first.z) < 4.5).map((u) => u.id + ':' + Math.floor((u.hp / u.maxHp) * 10)).join(',') + g.units.filter((u) => u.def.plane && u.owner === 0).length;
       if (first.type === 'aadef' || first.type === 'turret') sig += `|r${first.lockOn && first.lockOn.alive ? first.lockOn.id + (first.lockT > 0 ? 't' : 'l') : first.autoTarget && first.autoTarget.alive ? 'a' + first.autoTarget.id : '-'}`;
-      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}${first.type === 'aadef' && first.level >= 4 ? g.salvoInvalid(0) : ''}`;
+      if (first.type === 'aadef' || first.type === 'antinuke') sig += `|n${Math.ceil(Math.max(0, (first.nukeReadyAt || first.chargeAt || 0) - g.time))}${p.coins >= NUKE.cost}${first.type === 'aadef' && first.level >= 4 ? g.salvoInvalid(0) : ''}${g.strategic ? 'q' + g.strategicLeft(0) : ''}`;
       if (first.type === 'core' && first.owner === 0) {
         const d = p.dome;
         sig += `|d${d ? d.level + ':' + (d.hp > 0 ? Math.ceil((d.hp / d.maxHp) * 10) : 'x') : ''}${p.coins >= g.domeCost(0)}|e${p.emergencyUsed}${first.shieldUntil > g.time}`;
@@ -1150,7 +1180,9 @@ class UI {
     } else {
       sig += '|' + sel.map((u) => u.state === 'found').join('') + (p.coins >= 800) +
         sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}` +
-        `|${sel.map((u) => `${u.patrol ? 'p' : ''}${u.hold ? 'h' : ''}${u.vet || 0}:${u.kills || 0}`).join(',')}|${g.players[0].autoRepair !== false}`;
+        `|${sel.map((u) => `${u.patrol ? 'p' : ''}${u.hold ? 'h' : ''}${u.vet || 0}:${u.kills || 0}`).join(',')}|${g.players[0].autoRepair !== false}` +
+        // v1.7: estado del Lanzador nuclear móvil y pasajeros en camino.
+        `|${sel.map((u) => (u.def.strategic ? g.mobileState(u) + Math.ceil(Math.max(0, (u.armAt || 0) - g.time)) : '') + (u.cargo ? 'b' + g.units.filter((x) => x.alive && !x.inside && x.boardTarget === u).length : '')).join('')}`;
       // Aviones (v1.0): estado, bombas y si el bombardero está oculto.
       for (const u of sel) if (u.def.plane) sig += `|${this.planeState(u)}${u.type === 'bomber' ? Math.ceil(Math.max(0, u.cd || 0)) + (g.time - (u.lastShot || -99) < 3 ? 'v' : 'o') : ''}`;
     }
@@ -1173,8 +1205,115 @@ class UI {
         ${hpId ? '<div class="hp" id="sel-hpbar"><i id="sel-hp"></i></div><div class="hptext" id="sel-hptext"></div>' : ''}
       </div>
       <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? `${bi('less')}Menos` : `${bi('more')}Más detalles`}</button>
-      <button class="btn icon" type="button" data-act="close" aria-label="Cerrar">${ICON.close}</button></div>
+      <button class="btn icon" type="button" data-act="close" aria-label="Quitar selección" title="Quitar selección">${ICON.close}</button></div>
     </div>`;
+  }
+
+  // ---------- v1.7: nombre del grupo, orden actual, cola y uso estratégico ----------
+  groupName(sel) {
+    const land = sel.every((u) => u.mover === 'land');
+    const sea = sel.every((u) => u.mover === 'sea');
+    const air = sel.every((u) => u.mover === 'air');
+    return land ? 'Escuadra terrestre' : sea ? 'Flota' : air ? 'Escuadrilla aérea' : 'Grupo mixto';
+  }
+
+  orderOf(u) {
+    const s = u.state;
+    if (u.def.strategic && this.app.game.strategic && this.app.game.mobileState(u) === 'prep' && !u.moving) return 'preparando';
+    if (s === 'move') return 'moviéndose';
+    if (s === 'amove') return 'avanzando y atacando';
+    if (s === 'attack') return 'atacando';
+    if (s === 'patrol') return 'patrullando';
+    if (s === 'build') return 'construyendo';
+    if (s === 'repair') return 'reparando';
+    if (s === 'board') return 'subiendo al transporte';
+    if (s === 'found') return 'yendo a fundar un puesto';
+    if (u.hold) return 'manteniendo posición';
+    if (u.def.weapon && u.autoTarget && u.autoTarget.alive) return 'disparando a lo que tiene a tiro';
+    return 'en espera';
+  }
+
+  orderText(sel) {
+    const counts = new Map();
+    for (const u of sel) {
+      const o = this.orderOf(u);
+      counts.set(o, (counts.get(o) || 0) + 1);
+    }
+    if (counts.size === 1) return [...counts.keys()][0];
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([o, n]) => `${n} ${o}`).join(' · ');
+  }
+
+  queueResText(b) {
+    const p = this.app.game.players[b.owner];
+    const pop = b.queue.reduce((s, q) => s + UNITS[q.type].pop, 0);
+    return `${b.queue.length} en cola · ${pop} ${pop === 1 ? 'plaza reservada' : 'plazas reservadas'} · Comunidad al terminar: ${p.popUsed} / ${p.popCap}`;
+  }
+
+  // Contador del uso estratégico (1/1 → 0/1): el mismo para el AIR DEFENSE de nivel 4 y el Lanzador nuclear móvil.
+  stratQuotaHtml() {
+    const g = this.app.game;
+    const left = g.strategicLeft(0);
+    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · uso único</span>
+      <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b>
+      <span class="strattext" id="strat-text">${left ? 'Uso estratégico disponible. Al usarlo queda en 0 / 1 por el resto de la partida.' : 'Agotado: ya usaste tu único uso estratégico de esta partida.'}</span></div>`;
+  }
+
+  mobileHtml(u) {
+    const g = this.app.game;
+    if (!g.strategic) return '';
+    const st = g.mobileState(u);
+    const left = st === 'spent' || st === 'quota' ? 0 : 1;
+    const secs = Math.ceil(Math.max(0, (u.armAt || 0) - g.time));
+    const text = st === 'prep' ? `Preparando: faltan ${secs} s. Después podrás elegir la zona.`
+      : st === 'ready' ? `Disponible. Alcance: ${STRATEGIC.range} casillas. Un Escudo antimisiles lo puede derribar.`
+        : st === 'spent' ? 'Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.'
+          : 'Agotado: ya usaste tu único uso estratégico con otro lanzador o con el AIR DEFENSE.';
+    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · uso único</span>
+      <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b>
+      <span class="strattext" id="strat-text">${text}</span>
+      <button class="btn danger" type="button" data-act="mnuke" id="btn-mnuke" ${st === 'ready' ? '' : 'disabled'}>${bi('strat')}Elegir zona</button></div>`;
+  }
+
+  // Confirmación del uso estratégico: una sola orden (un doble toque no lanza dos); cancelar no gasta nada.
+  askStrategic(p, ci) {
+    const g = this.app.game;
+    this.strat = { p, ci, busy: false };
+    const c = g.cells[ci];
+    const who = p.kind === 'mnuke' ? 'Lanzador nuclear móvil' : 'AIR DEFENSE de nivel 4';
+    const zone = c.owner >= 0 ? `territorio de ${esc(g.players[c.owner].name)}` : 'zona sin dueño';
+    $('strat-body').innerHTML = `<span class="lbl stratchip">Arsenal estratégico · revisar uso</span>
+      <h2>¿Usar ahora?</h2>
+      <p>Esta acción consume tu <b>única utilización estratégica</b> de la partida.</p>
+      <p class="sec" id="strat-zone">Sale del ${who}. Zona elegida: ${zone}. Llega en ${NUKE.flight} s y los rivales reciben el aviso. No se puede recuperar el uso.</p>
+      <div class="stratbox"><span class="lbl">Disponibilidad</span><b class="stratnum">${g.strategicLeft(0)} / ${STRATEGIC.uses}</b>
+        <span class="strattext">Después de usarlo: 0 / ${STRATEGIC.uses} · Agotado</span></div>
+      <div class="row"><button class="btn gold" type="button" id="btn-strat-ok">Confirmar uso único</button>
+        <button class="btn" type="button" id="btn-strat-cancel">Cancelar</button></div>`;
+    $('strat').hidden = false;
+  }
+
+  closeStrategic() {
+    this.strat = null;
+    $('strat').hidden = true;
+  }
+
+  confirmStrategic() {
+    const s = this.strat;
+    if (!s || s.busy) return;
+    s.busy = true;
+    const app = this.app;
+    const g = app.game;
+    const err = s.p.kind === 'mnuke' ? g.launchMobileNuke(s.p.unit, s.ci) : g.launchNuke(s.p.building, s.ci);
+    this.closeStrategic();
+    if (err) {
+      this.toast(err, 'bad');
+      app.sound.play('error');
+      return;
+    }
+    app.renderer.addMoveMarker(s.ci, 0xff4040);
+    this.toast(`Uso estratégico gastado: 0 / ${STRATEGIC.uses}`, 'info');
+    app.input.cancelPlacement();
+    this.selSig = '';
   }
 
   buildingHtml(b) {
@@ -1251,7 +1390,7 @@ class UI {
     }
     if (d.produces && b.built) {
       const pl = g.players[0];
-      html += '<div class="cards">' + d.produces.map((t) => {
+      html += '<div class="cards">' + g.producesOf(b).map((t) => {
         const u = UNITS[t];
         const poor = pl.coins < u.cost || pl.energy < (u.energy || 0);
         return `<button class="card ${poor ? 'poor' : ''}" type="button" data-act="train" data-type="${t}" title="${esc(u.desc)}">
@@ -1274,7 +1413,7 @@ class UI {
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
       // v1.5: la cola dice cuánto falta y cada tropa tiene su «×» para quitarla (devuelve el dinero).
       html += `<div class="queue ${b.queue.length ? '' : 'sec'}" id="sel-queue">` + (b.queue.length
-        ? `<span class="qhead">En cola · <b id="sel-qtime">${this.queueTimeText(b)}</b></span>` + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Quitar ${esc(UNITS[q.type].name)} (te devuelve ${fmt(UNITS[q.type].cost)})" aria-label="Quitar ${esc(UNITS[q.type].name)}">
+        ? `<span class="qhead">En cola · <b id="sel-qtime">${this.queueTimeText(b)}</b></span><span class="qres" id="sel-qres">${esc(this.queueResText(b))}</span>` + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Quitar ${esc(UNITS[q.type].name)} (te devuelve ${fmt(UNITS[q.type].cost)})" aria-label="Quitar ${esc(UNITS[q.type].name)}">
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i><span class="qx" aria-hidden="true">×</span></button>`).join('') +
           '<span class="qnote">Toca una para quitarla: te devuelve el dinero.</span>'
         : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha.') + '</div>';
@@ -1284,6 +1423,7 @@ class UI {
       // Misil nuclear (v0.9): muy caro, recarga de 3 min.
       const why = g.nukeInvalid(b);
       const wait = g.time < (b.nukeReadyAt || 0);
+      if (g.strategic) html += this.stratQuotaHtml();
       html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>☢ Misil nuclear · ${fmt(NUKE.cost)}</button>
         <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas y deja ${NUKE.rad.time} s de radiación; un Escudo antimisiles lo puede derribar.`}</span></div>`;
       // v1.0: los 3 a la vez (un Escudo antimisiles solo derriba uno por carga).
@@ -1323,10 +1463,14 @@ class UI {
     const first = sel[0];
     const stars = (u) => (u.vet ? ` <span class="vetstars" title="Veterana: ${u.kills} eliminaciones">${'★'.repeat(u.vet)}</span>` : '');
     const vets = sel.filter((u) => u.vet).length;
-    const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${sel.length} tropas${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
-    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` (próxima estrella con ${VETERAN.kills[first.vet || 0]})` : ''}` : '') : 'Toca un destino para moverlas o un enemigo para atacarlo.';
-    let html = this.head(first.type, PLAYER_COLORS[0], title, sub);
+    const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${esc(this.groupName(sel))}${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
+    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` (próxima estrella con ${VETERAN.kills[first.vet || 0]})` : ''}` : '') : `${sel.length} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.`;
+    // v1.7: «Centrar» junto a «Quitar selección», y la orden actual siempre a la vista.
+    let html = this.head(first.type, PLAYER_COLORS[0], title, sub).replace('<div class="headbtns">',
+      `<div class="headbtns"><button class="btn icon" type="button" data-act="center" id="btn-center" aria-label="Centrar la cámara en la selección" title="Centrar">${bi('center')}</button>`);
+    html += `<div class="queue selorder" id="sel-order">Orden actual: <b>${esc(this.orderText(sel))}</b></div>`;
     if (sel.length === 1) html += this.unitTilesHtml(first);
+    if (sel.length === 1 && first.def.strategic) html += this.mobileHtml(first);
     if (counts.size > 1) {
       // v1.5: tocar un tipo deja elegidas solo esas tropas.
       html += '<div class="chips">' + [...counts.entries()].map(([t, n]) =>
@@ -1342,9 +1486,12 @@ class UI {
       const how = hangar ? 'Selecciona Cazas y toca el Portaaviones para guardarlos.'
         : ship.def.carries === 'inf' ? `Selecciona soldados y toca el ${ship.def.name} para subirlos.`
           : `Selecciona tropas de tierra y toca la ${ship.def.name} para subirlas.`;
-      html += `<div class="queue">${hangar ? 'Hangar' : 'Carga'}: ${g.cargoSlots(ship)}/${cap}` +
-        (ship.cargo.length ? ' · ' + ship.cargo.map((u) => `<img class="qitem" style="cursor:default" src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt="${esc(u.def.name)}">`).join('')
-          : ' · ' + how) + '</div>';
+      // v1.7: lista de pasajeros con nombre, y los que vienen en camino.
+      const coming = g.units.filter((x) => x.alive && !x.inside && x.boardTarget === ship);
+      const pax = [...ship.cargo.map((u) => [u, 'a bordo']), ...coming.map((u) => [u, 'en camino'])];
+      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>${hangar ? 'Hangar' : 'Pasajeros'}</b><span id="pax-count">${g.cargoSlots(ship)} / ${cap} plazas${coming.length ? ` · ${coming.length} en camino` : ''}</span></div>` +
+        (pax.length ? `<ul class="paxlist">${pax.map(([u, st]) => `<li class="${st === 'a bordo' ? 'on' : 'way'}"><img src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt=""><span>${esc(u.def.name)}</span><em>${st}</em></li>`).join('')}</ul>`
+          : `<div class="queue">${how}</div>`) + '</div>';
       const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' ? 'Desembarcar' : 'Bajar soldados';
       if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}${label}</button>`);
     }
@@ -1464,7 +1611,22 @@ class UI {
       const k = max ? cur / max : 0;
       hp.style.width = (k * 100).toFixed(1) + '%';
       hp.style.background = k > 0.55 ? 'var(--good)' : k > 0.28 ? '#f2c94c' : 'var(--bad)';
-      $('sel-hptext').textContent = `${fmt(cur)} / ${fmt(max)}`;
+      $('sel-hptext').textContent = sel.length > 1 && first.kind === 'unit'
+        ? `Vida del grupo · ${Math.round(k * 100)} % (${fmt(cur)} / ${fmt(max)})` : `${fmt(cur)} / ${fmt(max)}`;
+    }
+    // v1.7: orden actual y plazas reservadas, en vivo.
+    const ord = $('sel-order');
+    if (ord && first.kind === 'unit') {
+      const t = this.orderText(sel);
+      if (ord.dataset.t !== t) {
+        ord.dataset.t = t;
+        ord.innerHTML = `Orden actual: <b>${esc(t)}</b>`;
+      }
+    }
+    const qres = $('sel-qres');
+    if (qres && first.kind === 'bld') {
+      const t = this.queueResText(first);
+      if (qres.textContent !== t) qres.textContent = t;
     }
     // v1.6: el motivo de cada tarjeta de tropa se actualiza con las monedas, la energía y la comunidad.
     if (first.kind === 'bld' && first.owner === 0) {
@@ -1576,6 +1738,17 @@ class UI {
       }
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
+    } else if (act === 'center') {
+      const us = sel.filter((x) => x.kind === 'unit');
+      if (us.length) app.focusAt(us.reduce((s, x) => s + x.x, 0) / us.length, us.reduce((s, x) => s + x.z, 0) / us.length);
+    } else if (act === 'mnuke') {
+      const err = g.mobileNukeInvalid(b);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else {
+        app.input.startPlacement({ kind: 'mnuke', unit: b });
+      }
     } else if (act === 'nuke') {
       const err = g.nukeInvalid(b);
       if (err) {
@@ -1792,6 +1965,7 @@ class UI {
     const p = g.players[0];
     $('coins').textContent = fmt(p.coins);
     $('income').textContent = `+${fmt(p.income)}/min`;
+    $('income2').textContent = `+${fmt(p.income)}/min`;
     $('pop').textContent = `${p.popUsed}/${p.popCap}`;
     $('energy').textContent = fmt(p.energy);
     $('energyRate').textContent = `+${p.energyRate}/10 s`;
@@ -1847,6 +2021,7 @@ class UI {
     const win = g.result === 'victory';
     $('enddialog').className = 'dialog panel wide ' + (win ? 'result-victory' : 'result-defeat');
     $('enddialog').innerHTML = this.app.lobby.endHtml(g);
+    this.closeStrategic();
     $('end').hidden = false;
     $('btn-again').addEventListener('click', () => this.app.startGame());
     const next = $('btn-next');
