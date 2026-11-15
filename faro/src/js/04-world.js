@@ -1323,6 +1323,16 @@ class Game {
     }
     const ty = t.kind === 'bld' ? t.y + 0.4 : t.y + (t.cls === 'inf' ? 0.25 : 0.2);
     const color = PLAYER_COLORS[a.owner];
+    if (w.proj === 'ram') {
+      // v1.7: Dron kamikaze: choca, daña al blanco y a lo que está pegado, y se destruye.
+      this.damage(t, dmg, a.owner, a);
+      if (w.splash) this.splashDamage(t.x, t.z, w, a.owner, a, t);
+      this.fx.push({ k: 'boom', x: t.x, y: ty, z: t.z, s: 0.8 });
+      this.emit('sound', { name: 'boom', x: t.x, z: t.z });
+      this.players[a.owner].stats.kamikaze = (this.players[a.owner].stats.kamikaze || 0) + 1;
+      this.kill(a, -1);
+      return;
+    }
     if (w.proj === 'laser') {
       this.fx.push({ k: 'laser', x1: sx, y1: sy, z1: sz, x2: t.x, y2: ty, z2: t.z });
       this.damage(t, dmg, a.owner, a);
@@ -1344,11 +1354,25 @@ class Game {
       }
       this.projectiles.push({
         kind: w.proj, t, dmg, owner: a.owner, src: a, sx, sy, sz, tx: t.x, ty, tz: t.z,
-        time: 0, dur: Math.max(w.proj === 'bomb' ? 0.6 : 0.12, d / speed), color, miss,
+        time: 0, dur: Math.max(w.proj === 'bomb' ? 0.6 : 0.12, d / speed), color, miss, w: w.splash ? w : null,
       });
     }
     // Sonido: la minigun de la Torreta suena distinto al cañón.
     this.emit('sound', { name: gun && a.type === 'turret' ? 'minigun' : w.proj, x: sx, z: sz });
+  }
+
+  // v1.7: daño en área (Lanzacohetes múltiple, Dron kamikaze). A los enemigos a «r» casillas del impacto les llega
+  // la parte «pct» del daño del arma, con el multiplicador de cada uno. No toca a los propios ni a los aliados.
+  splashDamage(x, z, w, owner, src, except) {
+    const R = w.splash.r * SQ3;
+    for (const list of [this.units, this.buildings]) {
+      for (const e of list) {
+        if (!e.alive || e === except || e.inside || !this.isEnemy(owner, e.owner)) continue;
+        const mult = e.kind === 'bld' ? w.mult.bld || 0 : w.mult[e.cls] || 0;
+        if (!(mult > 0) || Math.hypot(e.x - x, e.z - z) > R) continue;
+        this.damage(e, w.dmg * mult * w.splash.pct, owner, src);
+      }
+    }
   }
 
   domeCovers(owner, t) {
@@ -2111,13 +2135,30 @@ class Game {
       }
       if (u.target && u.target.alive && this.inRange(u, w, u.target)) ft = u.target;
       else if (u.autoTarget && u.autoTarget.alive && this.inRange(u, w, u.autoTarget)) ft = u.autoTarget;
+      // v1.7: salva (Lanzacohetes múltiple): los cohetes que siguen al primero salen de a uno.
+      if (u.salvoLeft > 0) {
+        u.salvoT -= dt;
+        if (u.salvoT <= 0) {
+          const st = u.salvoTarget;
+          if (st && st.alive && this.inRange(u, w, st)) this.fire(u, w, st);
+          u.salvoLeft--;
+          u.salvoT = 0.22;
+        }
+      }
       if (ft) {
         u.aimYaw = Math.atan2(ft.x - u.x, ft.z - u.z);
         if (u.cd <= 0) {
           this.fire(u, w, ft);
+          // El Dron kamikaze se destruye al atacar.
+          if (!u.alive) return;
           u.cd = w.cd;
           u.lastShot = this.time;
           u.lastShotKind = w.proj;
+          if (w.salvo > 1) {
+            u.salvoLeft = w.salvo - 1;
+            u.salvoT = 0.22;
+            u.salvoTarget = ft;
+          }
         }
       }
     }
@@ -2454,6 +2495,7 @@ class Game {
       if (p.time >= p.dur) {
         p.done = true;
         if (p.t.alive && !p.miss) this.damage(p.t, p.dmg, p.owner, p.src);
+        if (p.w && !p.miss) this.splashDamage(p.tx, p.tz, p.w, p.owner, p.src, p.t);
         this.fx.push({ k: 'boom', x: p.tx, y: p.ty, z: p.tz, s: p.kind === 'torpedo' ? 0.7 : p.kind === 'bomb' ? 1.1 : 0.5, small: p.kind !== 'bomb' });
       }
     }

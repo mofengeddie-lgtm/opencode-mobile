@@ -167,17 +167,17 @@ const BUILDINGS = {
   },
   factory: {
     fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 2, builtBy: 'land',
-    produces: ['jeep', 'apc', 'lighttank', 'tank', 'heavytank', 'aa', 'arty', 'missiletruck', 'launcher', 'nukelauncher'],
+    produces: ['jeep', 'apc', 'lighttank', 'tank', 'heavytank', 'aa', 'arty', 'mlrs', 'missiletruck', 'launcher', 'nukelauncher'],
     desc: 'Fabrica tanques, camiones antiaéreos, jeeps y lanzamisiles.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 2, builtBy: 'land',
-    produces: ['speedboat', 'boatEng', 'barge', 'lander', 'frigate', 'destroyer', 'sub', 'carrier'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    produces: ['speedboat', 'missileboat', 'boatEng', 'barge', 'lander', 'frigate', 'destroyer', 'sub', 'carrier'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
     desc: 'En agua junto a la orilla. Construye los 5 barcos y repara los cercanos.',
   },
   helipad: {
     name: 'Helipuerto', cat: 'prod', cost: 4000, energyCost: 80, hp: 1000, build: 18, on: 'land', limit: 6, builtBy: 'land',
-    produces: ['heli', 'apache'], heal: { cls: ['air'], rate: 40, range: 2 },
+    produces: ['fpv', 'drone', 'heli', 'apache'], heal: { cls: ['air'], rate: 40, range: 2 },
     desc: 'Produce el Helicóptero y el Apache Guardián, y repara a los helicópteros cercanos. Hasta 6.',
   },
   turret: {
@@ -414,6 +414,29 @@ const UNITS = {
     stealth: true, prefersBld: true,
     weapon: { dmg: 650, cd: 6, range: 1, proj: 'bomb', mult: { inf: 0.5, veh: 0.8, ship: 1, air: 0, bld: 2, sub: 0 } },
     desc: 'Ala volante invisible al radar: las defensas solo lo ven de muy cerca. Suelta bombas pesadas sobre edificios.',
+  },
+  // ---------- v1.7: primer lote del equipo que pidió el usuario (números de juego, a probar) ----------
+  // splash: daño en área: a los enemigos a «r» casillas del impacto les llega la parte «pct» del daño.
+  // salvo: cohetes por descarga (salen de a uno). kamikaze: se destruye al atacar.
+  drone: {
+    name: 'Dron de ataque', cls: 'air', mover: 'air', cost: 2600, energy: 25, hp: 520, speed: 2.6, pop: 1, build: 10, vision: 6,
+    weapon: { dmg: 110, cd: 3.2, range: 5, proj: 'missile', mult: { inf: 0.8, veh: 1.3, ship: 1, air: 0, bld: 0.8, sub: 0 } },
+    desc: 'Avión sin piloto: barato, ve lejos y dispara un misil guiado. Poca vida: cuídalo de los antiaéreos.',
+  },
+  fpv: {
+    name: 'Dron kamikaze', cls: 'air', mover: 'air', cost: 900, energy: 5, hp: 90, speed: 3.4, pop: 1, build: 5, kamikaze: true,
+    weapon: { dmg: 380, cd: 1, range: 1, proj: 'ram', splash: { r: 0.6, pct: 0.5 }, mult: { inf: 1, veh: 1.5, ship: 1, air: 0, bld: 0.8, sub: 0 } },
+    desc: 'Se estrella contra su blanco y explota: sirve una sola vez. Muy frágil; fuerte contra vehículos.',
+  },
+  mlrs: {
+    name: 'Lanzacohetes múltiple', cls: 'veh', mover: 'land', cost: 4800, energy: 45, hp: 800, speed: 1.3, pop: 3, build: 18,
+    weapon: { dmg: 80, cd: 9, range: 7, proj: 'rocket', salvo: 6, splash: { r: 0.9, pct: 0.5 }, mult: { inf: 1.2, veh: 0.9, ship: 0.7, air: 0, bld: 0.9, sub: 0 } },
+    desc: 'Suelta una salva de 6 cohetes que daña todo alrededor del blanco. Tarda en recargar y tiene poca vida.',
+  },
+  missileboat: {
+    name: 'Lancha misilera', cls: 'ship', mover: 'sea', cost: 2600, energy: 20, hp: 800, speed: 2.4, pop: 2, build: 11,
+    weapon: { dmg: 260, cd: 5, range: 5, proj: 'missile', mult: { inf: 0.2, veh: 0.5, ship: 1.6, air: 0, bld: 0.9, sub: 0 } },
+    desc: 'Rápida y frágil: misiles antibuque de largo alcance. Ataca por sorpresa a los barcos grandes.',
   },
 };
 
