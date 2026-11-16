@@ -860,7 +860,13 @@ const Thumbs = {
       cam.position.set(5.2, 3.4, 10.4);
       cam.lookAt(5.6, 1.3, 0);
       r.setSize(w, h);
+      // v1.6.1: la portada se dibuja siempre con sus reflejos de siempre, sea cual sea la iluminación del juego.
+      const keepEnv = [GLB_MAT.envMapIntensity, MODEL_MAT.envMapIntensity];
+      GLB_MAT.envMapIntensity = 0.68;
+      MODEL_MAT.envMapIntensity = 1;
       r.render(scene, cam);
+      GLB_MAT.envMapIntensity = keepEnv[0];
+      MODEL_MAT.envMapIntensity = keepEnv[1];
       this.coverUrl = r.domElement.toDataURL('image/jpeg', 0.86);
       hexGeo.dispose();
       [grass, sand, rock, water.material, trailMat].forEach((m) => m.dispose());

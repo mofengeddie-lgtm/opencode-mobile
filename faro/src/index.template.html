@@ -979,6 +979,12 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
 .about-news { display: grid; gap: 6px; margin: 0; padding-left: 18px; }
 .about-credits { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
 .about-ver { display: inline-block; padding: 2px 10px; border-radius: 999px; background: rgba(242,171,56,0.15); color: var(--gold); font-weight: 700; }
+/* ---------- v1.6.1: áreas táctiles de 44 px que faltaban ---------- */
+.pitem { width: 44px; height: 44px; }
+.edge { min-height: 44px; border-radius: 22px; }
+/* «Ver» y «Reclamar»: el botón se ve igual, pero el área que responde al toque mide 44 px de alto. */
+.mini-btn { position: relative; }
+.mini-btn::after { content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
 </style>
 
 <!-- v1.6: pantalla de carga con las fases reales (se ve antes de que llegue el motor 3D). -->
@@ -1255,6 +1261,14 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" data-quality="low">Más fluido</button>
       </div>
       <p class="small-note" id="quality-note"></p>
+    </div>
+    <div>
+      <div class="lbl" style="margin-bottom:6px">Iluminación</div>
+      <div class="seg2">
+        <button class="btn" type="button" data-light="new" aria-pressed="true">Nueva</button>
+        <button class="btn" type="button" data-light="classic" aria-pressed="false">Clásica</button>
+      </div>
+      <p class="small-note">Nueva: colores más vivos, mar con reflejos y, en Alta calidad, sombras que se ven. Clásica: la luz de las versiones anteriores.</p>
     </div>
     <div>
       <div class="lbl" style="margin-bottom:6px">Para tu iPad</div>

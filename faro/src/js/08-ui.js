@@ -156,6 +156,8 @@ class UI {
     this.updateMusicBtns();
     // v1.4: ahorro de batería, daltonismo y letra grande.
     $('btn-battery').addEventListener('click', () => app.setBattery(!app.battery));
+    document.querySelectorAll('[data-light]').forEach((b) => b.addEventListener('click', () => app.setLight(b.dataset.light)));
+    this.updateLightBtns();
     $('btn-cvd').addEventListener('click', () => app.setCvd(!app.cvd));
     $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
     $('btn-calm').addEventListener('click', () => app.setCalm(!app.calm));
@@ -299,6 +301,14 @@ class UI {
     mm.addEventListener('pointermove', (e) => { if (this.mmDrag) moveCam(e); });
     mm.addEventListener('pointerup', () => { this.mmDrag = false; });
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
+  }
+
+  updateLightBtns() {
+    const pref = lightPref();
+    document.querySelectorAll('[data-light]').forEach((b) => {
+      b.classList.toggle('gold', b.dataset.light === pref);
+      b.setAttribute('aria-pressed', String(b.dataset.light === pref));
+    });
   }
 
   updateA11yBtns() {

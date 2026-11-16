@@ -96,6 +96,7 @@ const ABOUT_NEWS = [
   'Selección más clara: vida del grupo, orden actual, «Centrar» y lista de pasajeros.',
   'Carga en 3 pasos y un perfil que no se pierde si no se pudo leer.',
   'Ajustes: tamaño de la interfaz y «Reducir destellos».',
+  'Luz nueva y mar vivo (reflejos que se mueven y espuma en las orillas); en la pausa puedes volver a la luz clásica.',
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.

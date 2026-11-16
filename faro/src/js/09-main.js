@@ -142,10 +142,11 @@ const App = {
   newRenderer(game) {
     if (this.renderer) this.renderer.dispose();
     this.renderer = new Renderer(this.gl, this.canvas, this.overlay, game, this.battery ? 'low' : this.quality);
+    this.renderer.calm = !!this.battery;
     this.renderer.tintTerritory();
     if (this.battery && this.renderer.fxs) this.renderer.fxs.scale = BATTERY.fx;
-    this.renderer.calm = !!this.calm;
-    if (this.renderer.fxs) this.renderer.fxs.calm = !!this.calm;
+    this.renderer.lowFlash = !!this.calm;
+    if (this.renderer.fxs) this.renderer.fxs.lowFlash = !!this.calm;
   },
 
   // v1.4: ahorro de batería: 30 cuadros por segundo, calidad «más fluido» y menos partículas.
@@ -154,6 +155,7 @@ const App = {
     document.body.classList.toggle('battery', this.battery);
     try { localStorage.setItem('faro-battery', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
     if (this.renderer) {
+      this.renderer.calm = !!on;
       this.renderer.applyQuality(on ? 'low' : this.quality);
       if (this.renderer.fxs) this.renderer.fxs.scale = on ? BATTERY.fx : this.quality === 'high' ? 1 : 0.5;
     }
@@ -177,6 +179,14 @@ const App = {
     if (this.game && this.renderer) this.newRenderer(this.game);
     this.ui.playersSig = '';
     this.ui.updateA11yBtns();
+  },
+
+  // v1.6.1: iluminación «Nueva» (sombras a la vista, colores sin quemar) o «Clásica» (la de antes).
+  setLight(mode) {
+    const v = mode === 'classic' ? 'classic' : 'new';
+    try { localStorage.setItem('faro-light', v); } catch (err) { /* sin almacenamiento */ }
+    if (this.renderer) this.renderer.applyLight(v);
+    this.ui.updateLightBtns();
   },
 
   // v1.7: «Letra grande» es el atajo a 115 % del tamaño de la interfaz.
@@ -212,8 +222,8 @@ const App = {
     try { localStorage.setItem('faro-calm', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
     document.body.classList.toggle('calm', this.calm);
     if (this.renderer) {
-      this.renderer.calm = this.calm;
-      if (this.renderer.fxs) this.renderer.fxs.calm = this.calm;
+      this.renderer.lowFlash = this.calm;
+      if (this.renderer.fxs) this.renderer.fxs.lowFlash = this.calm;
     }
     this.ui.updateA11yBtns();
   },

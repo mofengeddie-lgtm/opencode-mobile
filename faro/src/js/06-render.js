@@ -2,6 +2,18 @@
 // Escena 3D: terreno instanciado, decoración, fronteras, entidades, efectos,
 // barras de vida (capa 2D), minimapa y cámara.
 
+// v1.6.1: iluminación. «Nueva»: menos luz de relleno, así las sombras se ven y los colores no se queman
+// (arena cálida y mar azul, como pide la dirección visual del PRD). «Clásica»: la de antes, más clara
+// y plana. hemiFast = relleno en «Más fluido» (sin luz del cielo ni sombras), para que los dos modos
+// de gráficos se vean igual de claros.
+const LIGHTS = {
+  new: { hemi: 0.4, hemiFast: 0.52, sun: 0.9, env: 0.3, glbEnv: 0.5 },
+  classic: { hemi: 0.62, hemiFast: 0.62, sun: 0.88, env: 1, glbEnv: 0.68 },
+};
+function lightPref() {
+  try { return localStorage.getItem('faro-light') === 'classic' ? 'classic' : 'new'; } catch (err) { return 'new'; }
+}
+
 class Renderer {
   constructor(gl, canvas, overlay, game, quality) {
     this.game = game;
@@ -20,9 +32,12 @@ class Renderer {
     scene.fog = new THREE.Fog(sky, 70, 140);
     this.camera = new THREE.PerspectiveCamera(42, 1, 0.5, 400);
 
-    scene.add(new THREE.HemisphereLight(0xe8f6ff, 0x4d6a45, 0.62));
+    this.hemi = new THREE.HemisphereLight(0xe8f6ff, 0x4d6a45, 0.62);
+    scene.add(this.hemi);
     // Luz de ambiente del cielo de Poly Haven para los modelos de Blender.
-    if (ENV_MAP) scene.environment = ENV_MAP;
+    // v1.6.1: solo en Alta calidad (antes quedaba puesta también al empezar en «Más fluido»,
+    // hasta el primer cambio de calidad).
+    if (ENV_MAP && quality === 'high') scene.environment = ENV_MAP;
     const sun = new THREE.DirectionalLight(0xfff1dc, 0.88);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
@@ -50,11 +65,13 @@ class Renderer {
     this.miniDirty = true;
 
     this.buildTerrain();
+    this.buildWater();
     this.buildDecor();
     this.buildBorders();
     this.buildFx();
     this.buildPoints();
     this.buildShields();
+    this.applyLight(lightPref());
     this.resize();
   }
 
@@ -78,8 +95,26 @@ class Renderer {
         if (o.isMesh) o.material = fastMat(o.material, FAST_MATS);
         o.material.needsUpdate = true;
       });
+      this.applyLight(this.lightMode || lightPref());
     }
     this.resize();
+  }
+
+  // v1.6.1: fuerza de las luces según la iluminación elegida en la pausa («Nueva» o «Clásica»).
+  applyLight(mode) {
+    const L = LIGHTS[mode] || LIGHTS.new;
+    this.lightMode = LIGHTS[mode] ? mode : 'new';
+    if (!this.scene || !this.hemi) return;
+    this.hemi.intensity = this.quality === 'high' ? L.hemi : L.hemiFast;
+    this.sun.intensity = L.sun;
+    GLB_MAT.envMapIntensity = L.glbEnv;
+    MODEL_MAT.envMapIntensity = L.env;
+    this.scene.traverse((o) => {
+      const m = o.material;
+      if (m && m.isMeshStandardMaterial && m !== GLB_MAT && m !== MODEL_MAT) m.envMapIntensity = L.env;
+    });
+    // Con la luz clásica el mar ya es muy claro: los reflejos van más suaves.
+    if (this.waterMat) this.waterMat.uniforms.strength.value = this.lightMode === 'classic' ? 0.13 : 0.22;
   }
 
   resize() {
@@ -139,6 +174,146 @@ class Renderer {
     ocean.position.y = -0.09;
     ocean.receiveShadow = true;
     this.scene.add(ocean);
+  }
+
+  // ---------- v1.6.1: mar vivo (reflejos que se mueven y espuma en las costas) ----------
+  // Todo va en 2 dibujos más: un plano con los reflejos y una malla con la espuma de todas las orillas.
+  buildWater() {
+    const g = this.game;
+    // Textura de reflejos: líneas claras y curvas que se repiten sin costura (senos de periodo entero).
+    const N = 128;
+    const cv = document.createElement('canvas');
+    cv.width = N;
+    cv.height = N;
+    const ctx = cv.getContext('2d');
+    const img = ctx.createImageData(N, N);
+    const TAU = Math.PI * 2;
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        const u = (x / N) * TAU;
+        const v = (y / N) * TAU;
+        const w = Math.sin(2 * u + 1.6 * Math.sin(v)) + Math.sin(3 * v + 1.4 * Math.sin(2 * u + 1)) +
+          Math.sin(u - 2 * v + 1.2 * Math.sin(u + v));
+        const b = Math.round(255 * Math.pow(Math.max(0, 1 - Math.abs(w) / 1.1), 3));
+        const o = (y * N + x) * 4;
+        img.data[o] = b;
+        img.data[o + 1] = b;
+        img.data[o + 2] = b;
+        img.data[o + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(cv);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    const R = g.map.R * SQ3 + 14;
+    this.waterMat = new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: tex }, time: { value: 0 }, strength: { value: 0.22 }, radius: { value: R },
+        tint: { value: new THREE.Color(0xcdf4ff) },
+      },
+      vertexShader: `varying vec2 vP;
+        void main() {
+          vec4 w = modelMatrix * vec4(position, 1.0);
+          vP = w.xz;
+          gl_Position = projectionMatrix * viewMatrix * w;
+        }`,
+      // Dos capas de la misma textura que se cruzan: donde coinciden, brilla más (destellos).
+      fragmentShader: `uniform sampler2D map;
+        uniform float time;
+        uniform float strength;
+        uniform float radius;
+        uniform vec3 tint;
+        varying vec2 vP;
+        void main() {
+          float a = texture2D(map, vP * 0.09 + vec2(time * 0.013, time * 0.008)).r;
+          float b = texture2D(map, vP.yx * 0.061 + vec2(-time * 0.009, time * 0.012)).r;
+          float fade = 1.0 - smoothstep(radius * 0.78, radius, length(vP));
+          float s = a * b * 2.0 + (a + b) * 0.2;
+          gl_FragColor = vec4(tint * (s * strength * fade), 1.0);
+        }`,
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    });
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(R * 2, R * 2).rotateX(-Math.PI / 2), this.waterMat);
+    plane.position.y = -0.02;
+    plane.renderOrder = -1;
+    this.waterMesh = plane;
+    this.scene.add(plane);
+
+    // Espuma: una franja en el agua por cada borde entre una casilla de agua y una de tierra.
+    // Las esquinas se unen en inglete para que la franja rodee la isla sin huecos ni dobleces.
+    const wet = (c) => !!(c && TERRAIN[c.t].water);
+    const pos = [];
+    const out = [];
+    const edge = [];
+    const phase = [];
+    const idx = [];
+    const W = 0.36 / Math.cos(Math.PI / 6);
+    const A30 = Math.PI / 6;
+    for (const c of g.cells) {
+      if (wet(c)) continue;
+      for (let i = 0; i < 6; i++) {
+        const n = g.map.get(c.q + HEX_DIRS[i][0], c.r + HEX_DIRS[i][1]);
+        if (!wet(n)) continue;
+        const a = A30 - i * (Math.PI / 3);
+        const prev = g.map.get(c.q + HEX_DIRS[(i + 5) % 6][0], c.r + HEX_DIRS[(i + 5) % 6][1]);
+        const next = g.map.get(c.q + HEX_DIRS[(i + 1) % 6][0], c.r + HEX_DIRS[(i + 1) % 6][1]);
+        // Esquina «más» (compartida con la dirección anterior) y esquina «menos» (con la siguiente).
+        const kp = a + A30;
+        const km = a - A30;
+        const op = !prev || wet(prev) ? kp : km;
+        const om = !next || wet(next) ? km : kp;
+        const ph = (c.i * 0.618 + i * 1.7) % TAU;
+        const base = pos.length / 3;
+        for (const [ka, oa] of [[kp, op], [km, om]]) {
+          const x = c.x + Math.cos(ka);
+          const z = c.z + Math.sin(ka);
+          pos.push(x, -0.012, z, x, -0.012, z);
+          out.push(0, 0, Math.cos(oa) * W, Math.sin(oa) * W);
+          edge.push(1, 0);
+          phase.push(ph, ph);
+        }
+        idx.push(base, base + 1, base + 2, base + 2, base + 1, base + 3);
+      }
+    }
+    const fg = new THREE.BufferGeometry();
+    fg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    fg.setAttribute('aOut', new THREE.Float32BufferAttribute(out, 2));
+    fg.setAttribute('aEdge', new THREE.Float32BufferAttribute(edge, 1));
+    fg.setAttribute('aPhase', new THREE.Float32BufferAttribute(phase, 1));
+    fg.setIndex(idx);
+    this.foamMat = new THREE.ShaderMaterial({
+      uniforms: { time: { value: 0 }, strength: { value: 0.85 } },
+      // La franja se ensancha y se encoge despacio, cada tramo a su ritmo (las olas llegan y se van).
+      vertexShader: `attribute vec2 aOut;
+        attribute float aEdge;
+        attribute float aPhase;
+        uniform float time;
+        varying float vEdge;
+        varying float vWave;
+        void main() {
+          float wave = 0.5 + 0.5 * sin(time * 1.15 + aPhase);
+          vec3 p = position;
+          p.xz += aOut * (0.5 + 0.5 * wave);
+          vEdge = aEdge;
+          vWave = wave;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        }`,
+      fragmentShader: `uniform float strength;
+        varying float vEdge;
+        varying float vWave;
+        void main() {
+          // Blanca y firme junto a la orilla; se deshace hacia el mar. Más marcada cuando la ola se retira.
+          float a = smoothstep(0.0, 0.55, vEdge) * (0.5 + 0.5 * (1.0 - vWave)) * strength;
+          gl_FragColor = vec4(1.0, 1.0, 1.0, a);
+        }`,
+      transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    });
+    this.foamMesh = new THREE.Mesh(fg, this.foamMat);
+    this.foamMesh.frustumCulled = false;
+    this.foamMesh.renderOrder = 1;
+    this.foamCount = idx.length / 6;
+    this.scene.add(this.foamMesh);
   }
 
   tintTerritory() {
@@ -1640,7 +1815,7 @@ class Renderer {
     this.unitIcons = 0;
     if (this.cam.dist >= UNIT_ICON_DIST) this.drawUnitIcons(ctx);
     if (this.nukeFlashT > 0) {
-      ctx.fillStyle = `rgba(255,248,225,${Math.min(this.calm ? 0.12 : 0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
+      ctx.fillStyle = `rgba(255,248,225,${Math.min(this.lowFlash ? 0.12 : 0.75, this.nukeFlashT * 0.6).toFixed(3)})`;
       ctx.fillRect(0, 0, this.width, this.height);
     }
   }
@@ -1780,6 +1955,12 @@ class Renderer {
 
   dispose() {
     if (this.fxs) this.fxs.dispose();
+    for (const m of [this.waterMesh, this.foamMesh]) {
+      if (!m) continue;
+      m.geometry.dispose();
+      if (m.material.uniforms.map) m.material.uniforms.map.value.dispose();
+      m.material.dispose();
+    }
     this.scene.traverse((o) => {
       if (o.isInstancedMesh || o === this.borderMesh || o === this.tracerLines) {
         if (o.geometry) o.geometry.dispose();
@@ -1814,6 +1995,12 @@ class Renderer {
     this.updateRadZones(time);
     this.updateSelectionRings(selection);
     this.updateCamera();
+    if (this.waterMat) {
+      // Con ahorro de batería el mar queda quieto (sin reflejos) para gastar menos.
+      this.waterMesh.visible = !this.calm;
+      this.waterMat.uniforms.time.value = time;
+      this.foamMat.uniforms.time.value = this.calm ? 0 : time;
+    }
     this.renderer.render(this.scene, this.camera);
     // Con muchas tropas, las barras de vida y los iconos se dibujan un cuadro sí y otro no.
     this.ovFrame = (this.ovFrame || 0) + 1;

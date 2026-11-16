@@ -175,7 +175,7 @@ class FxSystem {
 
   flash(x, y, z, s = 0.28) {
     // v1.7: con «Reducir destellos» no hay fogonazos.
-    if (this.calm) return;
+    if (this.lowFlash) return;
     this.add(this.glow, { x, y, z, life: 0.07, s0: s, s1: s * 1.4, r: 1, g: 0.9, b: 0.55, a: 1 });
   }
 
