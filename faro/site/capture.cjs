@@ -3,7 +3,7 @@ const H = require('../helpers.cjs');
 const { chromium } = require('playwright');
 const fs = require('fs');
 const SP = '/tmp/claude-0/-home-user-opencode-mobile/0f78d3e3-e6a8-58dd-9fa1-10429825d51c/scratchpad';
-const GAME = `file://${SP}/faro17.html`;
+const GAME = process.env.GAME || 'file:///home/user/opencode-mobile/faro/faro.html';
 const THREE_JS = SP + '/three/node_modules/three/build/three.min.js';
 const S = (n) => `${SP}/site/shots/${n}.png`;
 (async () => {

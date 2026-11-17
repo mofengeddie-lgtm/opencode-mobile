@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="fecha" content="13 NOV 2026">
+<meta name="fecha" content="17 NOV 2026">
 <title>Faro de Ámbar · PRD prototipo web v1.6</title>
 <style>
 @page { size: A4; }
@@ -46,7 +46,7 @@ li { margin-bottom: 3px; }
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 1.6</p>
-  <p class="meta">13 de noviembre de 2026 · Estado: <b id="estado">Plan</b> · Fuente: tu pedido «sigue mejorando, aplica más cosas buenas y que se vea más profesional», tu PRD Roblox v1.6 y tus dos capturas</p>
+  <p class="meta">17 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu pedido «sigue mejorando, aplica más cosas buenas y que se vea más profesional», tu PRD Roblox v1.6 y tus dos capturas</p>
   <div class="tiles">
     <div class="tile"><b>Más profesional</b><span>Pantalla de carga de verdad, transiciones suaves y una ventana «Acerca de» con versión y créditos.</span></div>
     <div class="tile"><b>Más claro al jugar</b><span>Por qué no se puede construir o entrenar algo, y el alcance de una defensa antes de ponerla.</span></div>
@@ -77,7 +77,7 @@ li { margin-bottom: 3px; }
       <tr><td>1.0-1.3</td><td>9-11 nov 2026</td><td>Botón «Construir», alianzas, Dúos, rueda, mapas nuevos y los 29 puntos de tu revisión.</td></tr>
       <tr><td>1.4</td><td>12-13 nov 2026</td><td>Patrullar, veteranas, reparación sola, producción continua, logros y opciones para el iPad.</td></tr>
       <tr><td>1.5</td><td>13 nov 2026</td><td>Sin temporadas del año, portada nueva, Núcleo nuevo, edificios y tropas con su color, y 5 errores arreglados.</td></tr>
-      <tr><td>1.6</td><td>13 nov 2026</td><td>Esta versión.</td></tr>
+      <tr><td>1.6</td><td>13 nov 2026</td><td>Pantalla de carga real, transiciones, motivos junto a la acción, alcance al colocar, «Acerca de», documento completo y PRD Roblox con imágenes.</td></tr>
     </tbody>
   </table>
 </section>
@@ -125,32 +125,36 @@ li { margin-bottom: 3px; }
   <table>
     <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
     <tbody id="pruebas">
-<tr><td>M01</td><td>Pantalla de carga: aparece al abrir, pasa por las fases reales con la barra avanzando según lo cargado, y con un fallo simulado muestra el motivo y «Reintentar», que vuelve a cargar.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M02</td><td>Transiciones: ficha, panel de construir y ventanas entran con animación corta; con «Reducir movimiento» o ahorro de batería no hay animación.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M03</td><td>Motivos junto a la acción: con poco dinero, poca energía, límite lleno y comunidad llena, cada tarjeta dice el motivo correcto con el número exacto.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M04</td><td>Alcance al colocar: al mover la obra de una Torreta, Torreta chica y AIR DEFENSE, el círculo tiene el radio del arma (y de la meseta) y sigue a la obra.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M05</td><td>«Acerca de»: se abre desde el vestíbulo, muestra la versión 1.6, las novedades y los créditos, y se cierra; botones de 44 px o más.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M06</td><td>Documentos: el documento completo incluye la v1.6 en su registro, todos los archivos de código y el código completo; el PRD Roblox v1.6 tiene tus dos capturas y el esquema del HUD.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M07</td><td>Caza de errores: 30 partidas largas con chequeos y 30 minutos de toques al azar sin errores, congelamientos ni textos raros.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M08</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y el equilibrio con los bots no cambia.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
-<tr><td>M09</td><td>Rendimiento igual o mejor que la v1.5 y el juego pesa menos de 3,5 MB.</td><td><span class="chip pend">Pendiente</span></td><td></td></tr>
+<tr><td>M01</td><td>Pantalla de carga: aparece al abrir, pasa por las fases reales con la barra avanzando según lo cargado, y con un fallo simulado muestra el motivo y «Reintentar», que vuelve a cargar.</td><td><span class="chip ok">Aprobada</span></td><td>al abrir: fases «Abriendo el juego…» → «Preparando el 3D…» → «Modelos 3D…» → «Cielo y luz…» → «Tu perfil…» → «Listo»; la barra avanzó en 83 pasos sin retroceder (orden de fases: page → engine → models → sky → profile → listo) (6, 11, 16, 16 … 95, 100, 100 %), con los modelos contados («0 de 75» … «75 de 75»); la pantalla se retiró al terminar (true). Sin el motor 3D: «No se pudo abrir el juego» — «No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».» y botón «Reintentar» de 48 px; al volver la conexión, «Reintentar» abrió el juego (true)</td></tr>
+<tr><td>M02</td><td>Transiciones: ficha, panel de construir y ventanas entran con animación corta; con «Reducir movimiento» o ahorro de batería no hay animación.</td><td><span class="chip ok">Aprobada</span></td><td>normal: ficha «faroPanelIn», construir «faroSideIn», ventana «faroPop»; con «Reducir movimiento»: none / none / none; con ahorro de batería: none / none / none</td></tr>
+<tr><td>M03</td><td>Motivos junto a la acción: con poco dinero, poca energía, límite lleno y comunidad llena, cada tarjeta dice el motivo correcto con el número exacto.</td><td><span class="chip ok">Aprobada</span></td><td>Construir: Granja (300) con unas 100 monedas «Faltan 199 monedas» (le faltan 199); Fábrica (50 de energía) con unos 10 «Faltan 40 de energía» (le faltan 40); Casa con 8 hechas «Límite: 8 de 8» · Entrenar: Artillero (400) con unas 150 monedas «Faltan 248 monedas» (le faltan 246) y, al subir a 300, se actualiza solo a «Faltan 97 monedas» (le faltan 96); con la comunidad llena «Comunidad llena: construye Casas»; jeep sin energía «Faltan 10 de energía»</td></tr>
+<tr><td>M04</td><td>Alcance al colocar: al mover la obra de una Torreta, Torreta chica y AIR DEFENSE, el círculo tiene el radio del arma (y de la meseta) y sigue a la obra.</td><td><span class="chip ok">Aprobada</span></td><td>Continente · Torreta: círculo de 4 casillas visible (true), sigue a la obra (true) y se va al cancelar (true) · Continente · Torreta chica: círculo de 3 casillas visible (true), sigue a la obra (true) y se va al cancelar (true) · Continente · AIR DEFENSE: círculo de 6 casillas visible (true), sigue a la obra (true) y se va al cancelar (true) · Mesetas · Torreta: círculo de 5 casillas (en meseta, +1; meseta dada para la prueba) visible (true), sigue a la obra (true) y se va al cancelar (true) · Mesetas · Torreta chica: círculo de 4 casillas (en meseta, +1) visible (true), sigue a la obra (true) y se va al cancelar (true) · Mesetas · AIR DEFENSE: círculo de 7 casillas (en meseta, +1) visible (true), sigue a la obra (true) y se va al cancelar (true)</td></tr>
+<tr><td>M05</td><td>«Acerca de»: se abre desde el vestíbulo, muestra la versión 1.6, las novedades y los créditos, y se cierra; botones de 44 px o más.</td><td><span class="chip ok">Aprobada</span></td><td>iPad horizontal: se abre desde el vestíbulo (true), dice «Versión 1.6» (true), 5 novedades, créditos de Blender, Poly Haven, CMU y three.js (true); botones de menos de 44 px: 0; «Cerrar» la cierra (true) · celular vertical: se abre desde el vestíbulo (true), dice «Versión 1.6» (true), 5 novedades, créditos de Blender, Poly Haven, CMU y three.js (true); botones de menos de 44 px: 0; «Cerrar» la cierra (true)</td></tr>
+<tr><td>M06</td><td>Documentos: el documento completo incluye la v1.6 en su registro, todos los archivos de código y el código completo; el PRD Roblox v1.6 tiene tus dos capturas y el esquema del HUD.</td><td><span class="chip ok">Aprobada</span></td><td>Documento completo: 35 archivos de código, todos con su código completo (ninguno incompleto); línea de tiempo con 17 versiones (de la 0.1 a la 1.7); registro con la v1.6 (True); PRD Roblox v1.6: tus dos capturas (True), esquema del HUD (True), tus 28 secciones sin cambios (True); PDF generados: 2 de 2</td></tr>
+<tr><td>M07</td><td>Caza de errores: 30 partidas largas con chequeos y 30 minutos de toques al azar sin errores, congelamientos ni textos raros.</td><td><span class="chip ok">Aprobada</span></td><td>Toques al azar: iPad horizontal 1180 × 820: 15.1 min, 612 toques (378 botón, 121 mapa, 52 arrastre, 34 pulsación larga, 27 tiempo), 2 partidas empezadas; errores en la consola: ninguno; congelamientos: 0; textos raros: ninguno · celular horizontal 844 × 390: 15 min, 851 toques (526 botón, 47 pulsación larga, 175 mapa, 64 arrastre, 39 tiempo), 7 partidas empezadas; errores en la consola: ninguno; congelamientos: 0; textos raros: ninguno. Partidas largas: 30 de 20 minutos (10 modos, 7 mapas, 3 dificultades) con chequeos cada segundo; problemas: ninguno.</td></tr>
+<tr><td>M08</td><td>Las pruebas anteriores siguen pasando, la campaña sigue siendo posible y el equilibrio con los bots no cambia.</td><td><span class="chip np">No probada</span></td><td>Pruebas anteriores en la v1.6: 79 de 79 bien (v1.5: 14, v1.4: 14, v1.3: 14, v1.2: 7, v1.1: 6, v1.0: 6, v0.9: 13, v0.8: 5) (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 5 de 5 (3:08, 3:06, 5:07, 3:09, 3:10); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:51, 2:53); M5 ganó 1 de 3 (27:10); M6 piloto atento ganó 4 de 6 (16:42, 17:19, 24:14, 13:06). Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad): v1.5 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0; v1.6 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0. Tamaños de pantalla: ipad-h: bien · 16x9: bien. Sin correr sobre la v1.6 (dos reinicios del contenedor cortaron la tanda; corren sobre la v1.7, que contiene todo lo de la v1.6): pruebas del navegador de la v0.7, v0.8, v0.9, v1.0 y v1.1, y tamaños: iPad vertical, celular horizontal y celular vertical, tamaños con letra grande. J07web (guardado) falló una vez por ruido de tiempo (v1.2 midió 6,6 ms, cuando suele dar 13 a 25) y pasó al repetirla sola.</td></tr>
+<tr><td>M09</td><td>Rendimiento igual o mejor que la v1.5 y el juego pesa menos de 3,5 MB.</td><td><span class="chip ok">Aprobada</span></td><td>cuadros por segundo en la misma partida (90 tropas y 9 edificios; Chromium sin tarjeta gráfica; 12 s, 3 veces, mediana): Alta calidad: v1.5 2.0 (1.9, 2.0, 2.5); v1.6 2.4 (2.5, 2.0, 2.4): 23 % más · Más fluido: v1.5 2.8 (2.6, 3.0, 2.8); v1.6 2.8 (2.5, 2.8, 3.0): 0 % menos. faro.html pesa 2,51 MB (meta: menos de 3,5 MB)</td></tr>
     </tbody>
   </table>
 </section>
 
 <section>
   <div class="eyebrow">06 · Decisiones</div>
-  <h2>Decisiones</h2>
+  <h2>Decisiones y ajustes durante la versión</h2>
   <ul>
-    <li><b>Tu PRD Roblox v1.6</b> queda en <code>faro/docs/roblox/</code> tal como lo escribiste; solo agregué tus capturas y el esquema del HUD donde dejaste las marcas. El desarrollo en Roblox sigue esperando tu indicación.</li>
-    <li><b>Dos «1.6»:</b> tu PRD Roblox v1.6 (el plan para Roblox) y este PRD web v1.6 (la siguiente versión del prototipo web) son documentos distintos; los nombres de archivo los separan («Roblox» y «web»).</li>
-    <li><b>El documento completo</b> incluye todo el código del juego y de sus herramientas. Las pruebas automáticas se guardan en <code>faro/tests/</code> y el documento las lista (su código completo ocuparía otras 150 páginas).</li>
+    <li><b>Tus documentos:</b> tu PRD Roblox v1.6 queda en <code>faro/docs/roblox/</code> tal como lo escribiste. Solo agregué tus dos capturas en «Referencias visuales» y un esquema del HUD (con una captura del prototipo actual) en «Esquema HUD», donde dejaste las marcas.</li>
+    <li><b>Documento completo:</b> se arma leyendo el proyecto (catálogo desde la configuración del juego, historia desde los PRD y el README, registro de mejoras y el código completo con números de línea). Desde ahora es regla del proyecto: cada versión agrega sus mejoras al registro y lo vuelve a generar. Las pruebas automáticas quedaron guardadas en <code>faro/tests/</code>.</li>
+    <li><b>Error real encontrado por la prueba de la carga:</b> si el motor 3D no llegaba, la primera versión de la pantalla de carga se quedaba en «Abriendo el juego…» sin decir nada. Ahora se comprueba justo después de pedir el motor, y hay un tope de 90 s con «Reintentar».</li>
+    <li><b>Ajuste del juego por una prueba vieja:</b> la prueba de tamaños de pantalla medía la barra de colocación mientras entraba con su transición y la veía «fuera de pantalla». Acorté el movimiento de entrada (de 12 a 8 px) y la prueba ahora espera a que la transición termine antes de medir.</li>
+    <li><b>Pruebas que se ajustaron (no el juego):</b> los motivos de entrenar y la ficha se leían antes de que se refrescaran (en Chromium sin tarjeta gráfica hay cerca de un cuadro por segundo): ahora esperan el cambio. La prueba del alcance en Mesetas buscaba meseta dentro de tu territorio inicial, que no la tiene: ahora se te da la meseta libre más cercana para probarla.</li>
+    <li><b>Reinicios del contenedor:</b> la máquina de pruebas se reinició dos veces durante la tanda de pruebas viejas. Las de la v1.2 a la v1.5, las de lógica, la campaña y el equilibrio terminaron; las del navegador de la v0.7 a la v1.1 y tres de los cinco tamaños de pantalla no. Quedan como «No probada» aquí y corren sobre la v1.7, que contiene todo lo de la v1.6.</li>
+    <li><b>Tu versión 1.6.1:</b> después de esta versión publicaste la 1.6.1 (luz nueva, mar vivo con reflejos y espuma, áreas táctiles de 44 px). Quedó unida a la v1.7 sin perder nada.</li>
     <li><b>Sin cambios de reglas:</b> todo lo de esta versión es presentación, ayuda y documentos.</li>
-    <li><b>Sigue pendiente de tu decisión:</b> de la v1.3, la tabla de precios, el tamaño del juego, el Tanque ligero y el precio de la Casa, y lo que tu documento dejó «POR DECIDIR»; de la v1.4, las estrellas de los bots de la campaña (Misión 5) y la Barcaza de los bots (Misión 6).</li>
   </ul>
-  <h3>Siguiente paso</h3>
-  <p>Empiezo a programar la v1.6 con este plan, pruebo cada punto y te entrego el PDF con los resultados reales y el documento completo actualizado.</p>
+  <h3>Sigue pendiente de tu decisión</h3>
+  <p>De la v1.3: la tabla de precios, el tamaño del juego, el Tanque ligero y el precio de la Casa, y lo que tu documento dejó «POR DECIDIR». De la v1.4: las estrellas de los bots de la campaña (Misión 5) y la Barcaza de los bots (Misión 6). Y de tu PRD Roblox: cuándo empezar la etapa 1 en Roblox Studio.</p>
 </section>
+
 
 </body>
 </html>

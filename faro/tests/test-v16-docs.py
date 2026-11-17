@@ -21,7 +21,8 @@ for f in files:
     printed = block.count('<span class="ln">')
     if abs(printed - n) > 1:
         short.append(f'{f} ({printed} de {n})')
-tl = doc[doc.index('Línea de tiempo de todas las versiones'):]
+# La sección (su título), no el índice del principio, que también la nombra.
+tl = doc[doc.index('<h2>Línea de tiempo de todas las versiones</h2>'):]
 tl = tl[:tl.index('</table>')]
 versions = re.findall(r'<td>(\d+\.\d+)</td><td>', tl)
 reg16 = bool(re.search(r'<h2[^>]*>v1\.6', doc)) or 'v1.6 ·' in doc

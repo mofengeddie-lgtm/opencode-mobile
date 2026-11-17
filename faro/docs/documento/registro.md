@@ -15,7 +15,7 @@ Una entrada por versión, de la más nueva a la más vieja. **Cada versión nuev
 - Resultado con tres fichas (Duración, Territorio, Experiencia), «Revancha» y botones siempre a la vista.
 - Ajustes: «Tamaño de la interfaz» (100 a 130 %) y «Reducir destellos».
 - Sitio web del juego (`site/`) con capturas reales, el ejército, los mapas, la bitácora y el botón «Jugar».
-<!-- PRUEBAS_V17 -->
+- Pruebas: 14 de 14 aprobadas (N05, N07 y N08 se repitieron tras corregir errores de las pruebas). 114 pruebas anteriores bien, 30 partidas largas sin problemas (15 con «Arsenal estratégico»), 30 minutos de toques al azar sin errores, campaña y equilibrio iguales a la v1.6. Las pruebas encontraron un error real: en el celular vertical la pestaña «Inventario» quedaba fuera de la pantalla (arreglado).
 
 ## v1.6.1 · 16 nov 2026 (del usuario)
 
@@ -33,7 +33,7 @@ Una entrada por versión, de la más nueva a la más vieja. **Cada versión nuev
 - Ventana «Acerca de»: versión, novedades y créditos (Blender, Poly Haven, CMU, three.js).
 - Documentos: PRD Roblox v1.6 del usuario en PDF con sus dos capturas y el esquema de la interfaz; este documento completo con historia, archivos y todo el código, que se vuelve a generar en cada versión; pruebas automáticas guardadas en `faro/tests/`.
 - Sin cambios de reglas, mapa ni equilibrio.
-<!-- PRUEBAS_V16 -->
+- Pruebas: carga, transiciones, motivos, alcance, «Acerca de», toques al azar, partidas largas y rendimiento aprobadas. Las pruebas viejas del navegador de la v0.7 a la v1.1 y tres tamaños de pantalla no llegaron a correr sobre la v1.6 (dos reinicios de la máquina de pruebas); pasaron sobre la v1.7, que contiene todo lo de la v1.6.
 
 ## v1.5 · 13 nov 2026
 

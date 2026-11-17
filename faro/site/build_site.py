@@ -42,7 +42,7 @@ modes = '\n'.join(f'<li><b>{E(m["name"])}</b><span>{E(m["desc"])}</span></li>' f
 first = D['items'][next(k for k, i in enumerate(D['items']) if i['isNew'])]
 
 LOG = [
-    ('1.7', '16 nov 2026', 'Arsenal «Conoce tu ejército», Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera, Lanzador DF-17 con modelo nuevo, Lanzador nuclear móvil de un solo uso, selección con vida del grupo y orden actual, carga en 3 pasos y tamaño de la interfaz.'),
+    ('1.7', '15-17 nov 2026', 'Arsenal «Conoce tu ejército», Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera, Lanzador DF-17 con modelo nuevo, Lanzador nuclear móvil de un solo uso, selección con vida del grupo y orden actual, carga en 3 pasos y tamaño de la interfaz.'),
     ('1.6.1', '16 nov 2026', 'Luz nueva y mar vivo: reflejos que se mueven, espuma en las orillas y sombras que se ven. Áreas táctiles de 44 px.'),
     ('1.6', '13-15 nov 2026', 'Pantalla de carga real, motivos junto a cada acción, alcance al colocar defensas y ventana «Acerca de».'),
     ('1.5', '13 nov 2026', 'Portada nueva, Núcleo nuevo hecho con Blender, edificios con su color y fichas de tropas.'),

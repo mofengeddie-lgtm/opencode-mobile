@@ -51,7 +51,7 @@ for k in ['N01', 'N02', 'N03', 'N04', 'N05', 'N06', 'N07', 'N08', 'N09', 'N10', 
     if k in web:
         ev = clean(web[k]['ev'])
         if web[k].get('redo'):
-            ev = '(Repetida tras corregir la prueba.) ' + ev
+            ev = '(Repetida al final con la versión final; ver Decisiones.) ' + ev
         rows[k] = (st(web[k]['ok']), ev)
     else:
         rows[k] = ('np', 'No se llegó a correr.')
@@ -66,6 +66,7 @@ for f in sorted(glob.glob(SP + 'soak17-*.json')):
         t = issues.setdefault(k, {'n': 0, 'ex': []})
         t['n'] += v['n']
         t['ex'] += v['ex']
+NAMES = {'drone': 'Drones de ataque', 'fpv': 'Drones kamikaze', 'mlrs': 'Lanzacohetes múltiples', 'missileboat': 'Lanchas misileras'}
 strat = [g for g in games if g['tag'].endswith('/estrategico')]
 used = sum(1 for g in strat if g.get('mobile'))
 newu = {}
@@ -77,7 +78,7 @@ if monkey and games:
     rows['N12'] = (st(monkey['ok'] and len(games) == 30 and not issues), clean(
         f"Toques al azar: {monkey['ev']}. Partidas largas: {len(games)} de 20 minutos (10 modos, 7 mapas, 3 dificultades; {len(strat)} de ellas Personalizadas con «Arsenal estratégico») con chequeos cada segundo; "
         f"el piloto fabricó y usó el Lanzador nuclear móvil en {used} de {len(strat)} (a los 7 minutos la prueba le da 30.000 monedas y una Fábrica); nadie lanzó más de un misil en esas partidas. "
-        f"Los bots entrenaron {', '.join(f'{v} {k}' for k, v in newu.items())} del equipo nuevo. Problemas: {iss}."))
+        f"Del equipo nuevo, los bots entrenaron: {', '.join(f'{NAMES.get(k, k)} {v}' for k, v in newu.items())}. Problemas: {iss}."))
 else:
     rows['N12'] = ('np', 'No terminaron: ' + ', '.join(x for x in missing if 'monkey' in x or 'soak' in x))
 
