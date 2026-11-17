@@ -496,6 +496,10 @@ class Game {
         }
       }
     }
+    // v1.7: territorio máximo de cada jugador en la partida (para el resultado: al perder, el actual siempre es 0).
+    const land = this.players.map(() => 0);
+    for (const c of this.cells) if (c.owner >= 0) land[c.owner]++;
+    for (const p of this.players) p.peakLand = Math.max(p.peakLand || 0, land[p.id] || 0);
     this.territoryDirty = false;
     this.territoryVersion++;
   }

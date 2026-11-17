@@ -1956,12 +1956,12 @@ class Lobby {
          <div><b>+${fmt(r.crystals)} cristales</b><span>${r.missions.length ? 'Incluye misiones' : 'Por jugar' + (win ? ' y ganar' : '')}</span></div>
          <div><b>Nivel ${r.level}</b><span>${r.levelUp ? '¡Subiste de nivel!' : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
     // v1.7: como en la UI 0.4: tres fichas arriba (Duración, Territorio, Experiencia) y los botones siempre a la vista.
-    const land = game.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0);
+    const land = Math.max(me.peakLand || 0, game.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0));
     return `
       <div class="endhero"><div><span class="lbl endchip">Partida finalizada</span><h2>${win ? '¡Victoria!' : 'Derrota'}</h2><p>${esc(text)}</p></div></div>
       <div class="endstats endmain" id="endmain">
         <div><b>${fmtTime(game.time)}</b><span>Duración</span></div>
-        <div><b>${fmt(land)}</b><span>Territorio (casillas)</span></div>
+        <div><b>${fmt(land)}</b><span>Territorio máximo (casillas)</span></div>
         <div class="xp"><b>${r.creator ? '—' : '+' + fmt(r.xp)}</b><span>Experiencia</span></div>
       </div>
       <div class="endstats endmore">

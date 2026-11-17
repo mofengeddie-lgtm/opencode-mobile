@@ -49,6 +49,10 @@ sacar las capturas, volver a armarlo y volver a publicarlo en el mismo enlace.
   Son la guía de aspecto de la interfaz web desde la v1.7: paneles azul noche, acento ámbar, celeste para
   la información y verde para lo que está bien. Las fotos de prensa de referencia no se guardan en el proyecto.
 
+- `docs/roblox/Equipamiento_Militar_2.md` (15 nov 2026): lista de equipo militar moderno del usuario como información
+  para mejorar el juego. La v1.7 tomó un primer lote (drones, lanzacohetes múltiple, lancha misilera); el resto queda
+  para lotes que el usuario elija.
+
 - `PRD_Faro_de_Ambar_v1_5.pdf` (6 nov 2026): PRD maestro para Roblox. Sus cifras marcadas como
   EJEMPLO no son precios aprobados.
 - Las capturas de otros juegos son referencias de composición. No copies nombres, números, mapas

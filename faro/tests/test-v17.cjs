@@ -478,7 +478,7 @@ const newGame = (page, opts = {}) => page.evaluate((o) => {
     const r = await page.evaluate((x0) => {
       const g = G0;
       const tiles = [...document.querySelectorAll('#endmain > div')].map((d) => ({ b: d.querySelector('b').textContent, s: d.querySelector('span').textContent }));
-      const land = g.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0);
+      const land = Math.max(g.players[0].peakLand || 0, g.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0));
       const xpAfter = Profile.data.xp;
       FARO.lobby.finish(g); FARO.lobby.endHtml(g);
       const row = document.querySelector('#enddialog .endrow').getBoundingClientRect();
@@ -490,9 +490,9 @@ const newGame = (page, opts = {}) => page.evaluate((o) => {
     await page.waitForFunction(() => FARO.game && FARO.game !== window.G0 && !FARO.game.preview, null, { timeout: 60000 });
     const re = await page.evaluate(() => ({ map: FARO.game.opts.mapKind, mode: FARO.game.opts.mode, over: FARO.game.over, t: FARO.game.time, endHidden: document.getElementById('end').hidden }));
     await close(page);
-    const ok = r.tiles.length === 3 && r.tiles[0].s === 'Duración' && r.tiles[0].b === r.time && /Territorio/.test(r.tiles[1].s) && r.tiles[1].b === r.land && r.tiles[2].s === 'Experiencia' && r.tiles[2].b === r.rxpText &&
+    const ok = r.tiles.length === 3 && r.tiles[0].s === 'Duración' && r.tiles[0].b === r.time && /Territorio/.test(r.tiles[1].s) && r.tiles[1].b === r.land && Number(r.land) > 0 && r.tiles[2].s === 'Experiencia' && r.tiles[2].b === r.rxpText &&
       r.gained === r.rxp && r.again === 0 && r.rowVisible && r.btns.includes('Revancha') && r.btns.includes('Volver al vestíbulo') && tapA && re.map === 'bay' && re.mode === 'conquest' && !re.over && re.t < 5 && re.endHidden;
-    add('N10', ok, `«${r.title}» con ${r.tiles.map((t) => `${t.s} ${t.b}`).join(' · ')} (partida ${r.time}, territorio ${r.land} casillas, XP ganada ${r.rxp}); botones siempre a la vista (${r.rowVisible}): ${r.btns.join(', ')} · ` +
+    add('N10', ok, `«${r.title}» con ${r.tiles.map((t) => `${t.s} ${t.b}`).join(' · ')} (partida ${r.time}, territorio máximo ${r.land} casillas, XP ganada ${r.rxp}); botones siempre a la vista (${r.rowVisible}): ${r.btns.join(', ')} · ` +
       `la XP sube ${r.gained} una vez y nada más al volver a armar la pantalla (+${r.again}) · «Revancha»: partida nueva en el mismo mapa y modo (${re.map}, ${re.mode}), en ${re.t.toFixed(1)} s`);
   });
 

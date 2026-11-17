@@ -8,7 +8,7 @@ Empiezas con tu Núcleo, una Granja y un Constructor: entrena más, levanta tu b
 islas y mantén el **Faro** (un 50 % más de monedas). Los rivales son bots que construyen,
 mejoran, capturan, cruzan el mar y atacan.
 
-**Versión actual:** 1.6 · PRD y PDF en `docs/prd/` · documento completo en `docs/documento/`.
+**Versión actual:** 1.7 · PRD y PDF en `docs/prd/` · documento completo en `docs/documento/` · sitio web del juego en `site/`.
 
 ## Cómo jugar
 
@@ -34,6 +34,17 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
+
+## Novedades de la v1.7
+
+- **Arsenal** en el vestíbulo: «Conoce tu ejército», con buscador, filtros y la ficha de cada tropa y edificio.
+- **Equipo nuevo:** Dron de ataque y Dron kamikaze (Helipuerto), Lanzacohetes múltiple (Fábrica: salva de 6 cohetes con daño en área) y Lancha misilera (Puerto). Los bots también los usan.
+- **Lanzador DF-17** con modelo nuevo (antes «Lanzador de misiles», mismos números).
+- **Arsenal estratégico** (opción de Personalizado): Lanzador nuclear móvil y un solo uso estratégico por jugador y partida, con contador 1/1 → 0/1 y ventana «¿Usar ahora?». El AIR DEFENSE de nivel 4 comparte ese uso.
+- **Interfaz como en la UI 0.4 del usuario:** barra de arriba con Monedas, Ingresos, Población, Energía y Partida; vida del grupo, orden actual, «Centrar» y «Quitar selección»; lista de pasajeros; plazas reservadas en la cola; resultado con Duración, Territorio máximo y Experiencia.
+- **Carga en 3 pasos y perfil seguro:** si el perfil guardado no se puede leer, no se pisa y el juego pregunta.
+- **Ajustes:** tamaño de la interfaz (100 a 130 %) y «Reducir destellos».
+- **v1.6.1 del usuario** incluida: luz nueva y mar vivo con reflejos y espuma.
 
 ## Novedades de la v1.6
 
