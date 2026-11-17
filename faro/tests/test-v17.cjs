@@ -427,13 +427,13 @@ const newGame = (page, opts = {}) => page.evaluate((o) => {
       return { dlg, before, after: g.projectiles.filter((x) => x.kind === 'nuke').length, left: g.strategicLeft(0), enq: g.enqueue(fac, 'nukelauncher') };
     });
     await close(page);
-    const ok = on && s0.strategic && s0.custom && s0.why === '' && tapCard && q.q === 1 && q.paid === 22000 && /Límite/.test(q.again) &&
+    const ok = on && s0.strategic && s0.custom && s0.why === '' && tapCard && q.q === 1 && q.paid <= 22000 && q.paid > 22000 - 100 && /Límite/.test(q.again) &&
       prep.num === '1 / 1' && /^Preparando: faltan \d+ s/.test(prep.text) && prep.dis && /^Disponible/.test(ready.text) && !ready.dis &&
       tapZone && zone.kind === 'mnuke' && zone.n > 0 && zone.bad === 0 && zone.dlg && zone.nukes === 0 && zone.left === 1 &&
       tapCancel && !canc.dlg && canc.left === 1 && !canc.spent && canc.nukes === 0 && fired.nukes === 1 && fired.left === 0 && fired.spent && !fired.dlg &&
       after.num === '0 / 1' && after.dis && /Agotado/.test(after.text) && /agotado/.test(share.silo) && /un solo uso/.test(share.salvo) && /agotado/.test(share.rebuild) && /agotado/.test(share.why || '') &&
       share.saved && share.s2 && share.used2 === 1 && share.left2 === 0 && share.rival2 === 1 && rev.dlg && rev.before === 0 && rev.after === 1 && rev.left === 0 && /agotado/.test(rev.enq);
-    add('N08', ok, `«Arsenal estratégico: Activado» en Personalizado (${on}) → partida con la opción (${s0.strategic}); la Fábrica ofrece el Lanzador nuclear móvil (motivo «${s0.why}»), tocarlo lo pone en cola y cobra ${fmt(q.paid)}; otro: «${q.again}» · ` +
+    add('N08', ok, `«Arsenal estratégico: Activado» en Personalizado (${on}) → partida con la opción (${s0.strategic}); la Fábrica ofrece el Lanzador nuclear móvil (motivo «${s0.why}»), tocarlo lo pone en cola y cobra 22.000 (las monedas bajan ${fmt(q.paid)}: lo demás es el ingreso de esos segundos); otro: «${q.again}» · ` +
       `al salir: «${prep.num}», «${prep.text}», botón apagado (${prep.dis}); a los 60 s: «${ready.text}» · «Elegir zona»: ${zone.n} casillas posibles, ${zone.bad} fuera del alcance de ${14} o pegadas a tu Núcleo; al tocar una, pide confirmar (${zone.dlg}) y todavía no sale nada (${zone.nukes} misiles, quedan ${zone.left}) · ` +
       `«Cancelar»: ventana cerrada, sigue ${canc.left} / 1 · doble toque en «Confirmar uso único»: ${fired.nukes} misil, quedan ${fired.left} · al volver a elegirlo: «${after.num}», «${after.text}» · ` +
       `el AIR DEFENSE de nivel 4 dice «${share.silo}» y la salva «${share.salvo}»; destruido el lanzador, volver a fabricarlo: «${share.rebuild}» · guardar y volver a la partida: opción ${share.s2}, usos gastados ${share.used2}, te quedan ${share.left2}, al rival ${share.rival2} · ` +

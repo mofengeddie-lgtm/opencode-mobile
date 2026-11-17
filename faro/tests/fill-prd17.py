@@ -40,7 +40,7 @@ st = lambda ok: 'ok' if ok else 'fail'
 # Primera corrida y repetición de las que fallaron por un error de la prueba (se dice en las decisiones).
 web = {r['id']: r for r in (load('results-v17.json') or [])}
 first_fail = [k for k, r in web.items() if not r['ok'] and k != 'errores']
-for f in glob.glob(SP + 'results-v17-N*.json'):
+for f in sorted(glob.glob(SP + 'results-v17-N*.json'), key=os.path.getmtime):  # la repetición más nueva gana
     for r in json.load(open(f)):
         if r['id'] != 'errores' or not r['ok']:
             web[r['id']] = dict(r, redo=True)
