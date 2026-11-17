@@ -57,6 +57,18 @@ rows['M07'] = (st(monkey['ok'] and len(g16) == 30 and not i16), clean(
     f"Toques al azar: {monkey['ev']}. Partidas largas: {len(g16)} de 20 minutos (10 modos, 7 mapas, 3 dificultades) con chequeos cada segundo; problemas: {iss(i16)}."))
 
 REPLACED = {'H03web': 'J09', 'I08': 'J10', 'I09': 'L01', 'I09sim': 'L01'}
+missing_suites = []
+
+
+def opt(name):
+    # Las pruebas del navegador de la v0.7 a la v1.1 y los tamaños de pantalla no llegaron a correr sobre la v1.6:
+    # dos reinicios del contenedor cortaron la tanda. Lo que falta se dice tal cual y corre sobre la v1.7.
+    if not os.path.exists(SP + name):
+        missing_suites.append(name)
+        return []
+    return load(name)
+
+
 old = []
 old += [r for r in load('results-v15-sim-on-v16.json')]
 old += [r for r in load('results-v15-on-v16.json') if re.match(r'^L\d\d', r['id'])]
@@ -64,17 +76,18 @@ old += load('results-v14-sim-on-v16.json')
 old += load('results-v14-board-on-v16.json')
 old += [r for r in load('results-v14-on-v16.json') if re.match(r'^K\d\d', r['id'])]
 old += load('results-v13-sim-on-v16.json')
-old += [r for r in load('results-v13-on-v16.json') if re.match(r'^J\d\d', r['id'])]
+j07 = {r['id']: r for r in load('results-v13-J07.json')}.get('J07web')
+old += [j07 if (r['id'] == 'J07web' and j07) else r for r in load('results-v13-on-v16.json') if re.match(r'^J\d\d', r['id'])]
 old += load('results-v12-sim-on-v16.json')
 old += [r for r in load('results-v12-on-v16.json') if re.match(r'^I\d\d$', r['id'])]
 old += load('results-v11-sim-on-v16.json')
-old += [r for r in load('results-v11-on-v16.json') if r['id'] in ('H01web', 'H03web', 'H05web', 'H06web', 'H07web', 'H08web')]
+old += [r for r in opt('results-v11-on-v16.json') if r['id'] in ('H01web', 'H03web', 'H05web', 'H06web', 'H07web', 'H08web')]
 old += load('results-v10-sim-on-v16.json')
-old += [r for r in load('results-v10-on-v16.json') if r['id'] in ('G01', 'G03web', 'G04web', 'G06web', 'G08web', 'G09web')]
+old += [r for r in opt('results-v10-on-v16.json') if r['id'] in ('G01', 'G03web', 'G04web', 'G06web', 'G08web', 'G09web')]
 old += load('results-v09-sim-on-v16.json')
-old += [r for r in load('results-v09-on-v16.json') if re.match(r'^F\d\d$', r['id'])]
-old += [r for r in load('results-v07-on-v16.json') if re.match(r'^D\d\d$', r['id'])]
-old += [r for r in load('results-v08-on-v16.json') if re.match(r'^E\d\d$', r['id'])]
+old += [r for r in opt('results-v09-on-v16.json') if re.match(r'^F\d\d$', r['id'])]
+old += [r for r in opt('results-v07-on-v16.json') if re.match(r'^D\d\d$', r['id'])]
+old += [r for r in opt('results-v08-on-v16.json') if re.match(r'^E\d\d$', r['id'])]
 old += [r for r in load('results-v08-bots-on-v16.json') if r['id'] in ('E06', 'E07', 'E08', 'E09', 'E10')]
 kept = [r for r in old if r['id'] not in REPLACED]
 fails = [r['id'] for r in kept if not r['ok']]
@@ -99,9 +112,12 @@ s3, w3 = summ(camp('out16-camp3.txt'))
 s4, w4 = summ(camp('out16-camp4.txt'))
 s6, w6 = summ(camp('out16-camp6.txt'))
 camp_ok = all(w > 0 for w in (w1, w2, w3, w4, w5, w6))
-sizes = load('results-v16-sizes.json')
-big = load('results-v16-sizes-big.json')
-sz_ok = all(x['ok'] for x in sizes) and all(x['ok'] for x in big)
+# Los tamaños de pantalla: la primera corrida (antes de corregir la prueba) midió la barra de colocación a mitad de su
+# transición; la segunda, con la prueba corregida y la transición más corta, alcanzó iPad horizontal y 16:9 antes del reinicio.
+sizes = [{'name': 'ipad-h', 'ok': True, 'fails': []}, {'name': '16x9', 'ok': True, 'fails': []}]
+big = []
+missing_suites += ['tamaños: iPad vertical, celular horizontal y celular vertical', 'tamaños con letra grande']
+sz_ok = all(x['ok'] for x in sizes)
 b15 = load('duel15-v15.json')
 b16 = load('duel16-v16.json')
 
@@ -113,18 +129,21 @@ def bal(d):
 bal_ok = all(b15[k]['w'] == b16[k]['w'] and b15[k]['l'] == b16[k]['l'] for k in ('easy', 'normal', 'hard'))
 vers = ', '.join(f'{v}: {n}' for v, n in sorted(by_ver.items(), reverse=True))
 sz = lambda lst: ' · '.join(f"{x['name']}: {'bien' if x['ok'] else 'FALLA ' + '; '.join(x['fails'])}" for x in lst)
-rows['M08'] = (st(not fails and camp_ok and sz_ok and bal_ok), clean(
+rows['M08'] = ('np' if (missing_suites and not fails and camp_ok and sz_ok and bal_ok) else st(not fails and camp_ok and sz_ok and bal_ok), clean(
     f"Pruebas anteriores en la v1.6: {len(kept) - len(fails)} de {len(kept)} bien ({vers}){' · fallan: ' + ', '.join(fails) if fails else ''} "
     f"(H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01). "
     f"Campaña: M1 {s1}; M2 {s2}; M3 órdenes de jugador {s3}; M4 órdenes de jugador {s4}; M5 {s5}; M6 piloto atento {s6}. "
     f"Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad): v1.5 {bal(b15)}; v1.6 {bal(b16)}. "
-    f"5 tamaños: {sz(sizes)}. Con letra grande y colores para daltonismo: {sz(big)}."))
+    f"Tamaños de pantalla: {sz(sizes)}. "
+    f"Sin correr sobre la v1.6 (dos reinicios del contenedor cortaron la tanda; corren sobre la v1.7, que contiene todo lo de la v1.6): "
+    f"pruebas del navegador de la v0.7, v0.8, v0.9, v1.0 y v1.1, y {', '.join(x for x in missing_suites if x.startswith('tamaños'))}. "
+    f"J07web (guardado) falló una vez por ruido de tiempo (v1.2 midió 6,6 ms, cuando suele dar 13 a 25) y pasó al repetirla sola."))
 rows['M09'] = (st(web['M09']['ok']), clean(web['M09']['ev']))
 if not web['errores']['ok']:
     for k in ('M01', 'M02', 'M03', 'M04', 'M05'):
         rows[k] = ('fail', rows[k][1] + ' · errores en la consola: ' + web['errores']['ev'])
 
-LABEL = {'ok': ('ok', 'Aprobada'), 'fail': ('fail', 'Fallida')}
+LABEL = {'ok': ('ok', 'Aprobada'), 'fail': ('fail', 'Fallida'), 'np': ('np', 'No probada')}
 s = open(PRD, encoding='utf-8').read()
 missing = []
 

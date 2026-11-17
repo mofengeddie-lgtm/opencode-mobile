@@ -2,7 +2,28 @@
 
 Una entrada por versión, de la más nueva a la más vieja. **Cada versión nueva agrega aquí sus mejoras y partes importantes** antes de publicarse (regla del proyecto). El detalle completo de cada una está en su PRD (`docs/prd/`).
 
-## v1.6 · 13-14 nov 2026
+## v1.7 · 15-17 nov 2026
+
+- Basada en tu «Dirección visual UI 0.4» y tu PRD Roblox v1.8 (guardados en `docs/roblox/`).
+- Arsenal en el vestíbulo, «Conoce tu ejército»: todas las tropas y edificios con su miniatura real, buscador (sin importar tildes), filtros y ficha con precio, comunidad, tiempo, quién lo produce y contra qué es fuerte o débil.
+- Equipo nuevo, primer lote de tu lista: Dron de ataque y Dron kamikaze (Helipuerto), Lanzacohetes múltiple (Fábrica, salva de 6 cohetes con daño en área) y Lancha misilera (Puerto). Modelos hechos con Blender. Los bots también los usan, en poca cantidad.
+- Lanzador DF-17: el Lanzador de misiles cambia de nombre y estrena modelo según tu propuesta (mismos números).
+- Lanzador nuclear móvil y opción «Arsenal estratégico» en Personalizado: un solo uso estratégico por jugador y partida, con preparación de 60 s, contador 1/1 → 0/1 y ventana «¿Usar ahora?» con «Confirmar uso único». El AIR DEFENSE de nivel 4 comparte ese uso. Sin la opción, todo sigue como antes.
+- Barra de arriba como en tu UI 0.4: Monedas, Ingresos, Población, Energía y Partida.
+- Barra de selección: nombre del grupo, «Vida del grupo · N %», orden actual, «Centrar» y «Quitar selección»; lista de pasajeros con nombre; plazas reservadas y «Comunidad al terminar» en la cola.
+- Carga en 3 pasos (Recursos esenciales, Tu perfil, La partida) y perfil seguro: si lo guardado no se puede leer no se pisa (queda una copia) y se pregunta; un dato con el tipo equivocado se repara solo.
+- Resultado con tres fichas (Duración, Territorio, Experiencia), «Revancha» y botones siempre a la vista.
+- Ajustes: «Tamaño de la interfaz» (100 a 130 %) y «Reducir destellos».
+- Sitio web del juego (`site/`) con capturas reales, el ejército, los mapas, la bitácora y el botón «Jugar».
+<!-- PRUEBAS_V17 -->
+
+## v1.6.1 · 16 nov 2026 (del usuario)
+
+- Luz nueva: menos luz de relleno, colores más vivos y, en Alta calidad, sombras que se ven; en la pausa se puede volver a la luz clásica.
+- Mar vivo: reflejos que se mueven y espuma en las orillas (2 dibujos más por cuadro).
+- Áreas táctiles de 44 px que faltaban (avisos del borde, botones chicos).
+
+## v1.6 · 13-15 nov 2026
 
 - Pantalla de carga real: muestra cada fase (página, motor 3D, modelos «k de n», cielo, perfil) con barra; si algo falla lo dice en palabras simples y ofrece «Reintentar». Tope de 90 s por si se queda trabada.
 - Error real arreglado: si el motor 3D no llegaba, la carga se quedaba en «Abriendo el juego…» sin aviso. Ahora se revisa justo después de pedirlo.

@@ -234,15 +234,16 @@ const newGame = (page, extra = '') => page.evaluate((x) => {
         const m = document.getElementById('modal');
         const t = m && !m.hidden ? m.innerText : '';
         const small = [...m.querySelectorAll('button')].filter((b) => b.getClientRects().length && (b.getBoundingClientRect().height < 43.5 || b.getBoundingClientRect().width < 43.5)).length;
-        return { open: !!m && !m.hidden, ver: /Versión 1\.6/.test(t), news: m.querySelectorAll('.about-news li').length, credits: /Poly Haven/.test(t) && /CMU/.test(t) && /three\.js/.test(t) && /Blender/.test(t), small };
+        // v1.7: la versión y la cantidad de novedades salen del juego (antes estaban fijas en «1.6» y 5).
+        return { v: GAME_VERSION, want: ABOUT_NEWS.length, open: !!m && !m.hidden, ver: t.includes('Versión ' + GAME_VERSION), news: m.querySelectorAll('.about-news li').length, credits: /Poly Haven/.test(t) && /CMU/.test(t) && /three\.js/.test(t) && /Blender/.test(t), small };
       });
       await page.screenshot({ path: `${SP}/shots/v16-m05-${w}x${h}.png` });
       const closed = await tapBtn(page, '#modal .row [data-act="close"]');
       await page.waitForTimeout(300);
       const gone = await page.evaluate(() => document.getElementById('modal').hidden);
-      const ok = free && r.open && r.ver && r.news === 5 && r.credits && r.small === 0 && closed && gone;
+      const ok = free && r.open && r.ver && r.news === r.want && r.credits && r.small === 0 && closed && gone;
       if (!ok) okAll = false;
-      out.push(`${name}: se abre desde el vestíbulo (${r.open}), dice «Versión 1.6» (${r.ver}), ${r.news} novedades, créditos de Blender, Poly Haven, CMU y three.js (${r.credits}); botones de menos de 44 px: ${r.small}; «Cerrar» la cierra (${gone})`);
+      out.push(`${name}: se abre desde el vestíbulo (${r.open}), dice «Versión ${r.v}» (${r.ver}), ${r.news} novedades de ${r.want}, créditos de Blender, Poly Haven, CMU y three.js (${r.credits}); botones de menos de 44 px: ${r.small}; «Cerrar» la cierra (${gone})`);
       errsAll.push(...page.errs);
       await page.context().close();
     }

@@ -540,15 +540,20 @@ class Bot {
       if (counter && mix.inf >= 0.6) return r < 0.55 ? 'jeep' : 'tank';
       if (mix.air > 0 && aaHave < 1) return 'aa';
       if (T < 300) return r < 0.5 ? 'jeep' : 'lighttank';
-      return r < 0.16 ? 'lighttank' : r < 0.34 ? 'tank' : r < 0.5 ? 'heavytank' : r < 0.6 ? 'jeep' : r < 0.7 ? 'arty'
-        : r < 0.8 ? 'missiletruck' : r < 0.9 ? 'launcher' : 'apc';
+      // v1.7: también el Lanzacohetes múltiple.
+      return r < 0.16 ? 'lighttank' : r < 0.34 ? 'tank' : r < 0.5 ? 'heavytank' : r < 0.6 ? 'jeep' : r < 0.65 ? 'arty'
+        : r < 0.7 ? 'mlrs' : r < 0.8 ? 'missiletruck' : r < 0.9 ? 'launcher' : 'apc';
     }
     if (cat === 'sea') {
       if (counter && mix.air >= 0.15 && r < 0.4) return 'frigate';
       if (counter && mix.sea >= 0.25) return r < 0.5 ? 'destroyer' : 'sub';
       if (T > 900 && this.p.coins > UNITS.carrier.cost * 1.2 && !units.some((u) => u.type === 'carrier') && r < 0.5) return 'carrier';
-      return r < 0.45 ? 'destroyer' : r < 0.7 ? 'speedboat' : r < 0.85 ? 'frigate' : 'sub';
+      // v1.7: también la Lancha misilera.
+      return r < 0.45 ? 'destroyer' : r < 0.6 ? 'speedboat' : r < 0.7 ? 'missileboat' : r < 0.85 ? 'frigate' : 'sub';
     }
+    // v1.7: drones del Helipuerto (baratos) en parte de las veces; el kamikaze sobre todo contra vehículos.
+    if (r < 0.2) return 'drone';
+    if (r < 0.28 && (!counter || mix.veh >= 0.2)) return 'fpv';
     // El Apache no tiene límite (v0.9): con dinero de sobra, el bot lleva tantos Apaches como Helicópteros.
     const nApache = units.filter((u) => u.type === 'apache').length;
     const nHeli = units.filter((u) => u.type === 'heli').length;

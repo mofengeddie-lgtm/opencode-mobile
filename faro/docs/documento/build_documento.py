@@ -78,7 +78,8 @@ def prds():
 CODE_FILES = (
     ['src/index.template.html'] + sorted(os.path.relpath(p, FARO) for p in glob.glob(os.path.join(FARO, 'src', 'js', '*.js'))) +
     ['build.mjs'] + sorted(os.path.relpath(p, FARO) for p in glob.glob(os.path.join(FARO, 'blender', '*.py'))) +
-    ['docs/pdf.cjs', 'docs/doc_style.py', 'docs/roblox/build_prd_roblox.py', 'docs/documento/build_documento.py', 'README.md', 'AGENTS.md']
+    ['docs/pdf.cjs', 'docs/doc_style.py', 'docs/roblox/build_prd_roblox.py', 'docs/documento/build_documento.py',
+     'site/build_site.py', 'site/capture.cjs', 'README.md', 'AGENTS.md']
 )
 DESC = {
     'src/index.template.html': 'Estructura de la página y todos los estilos de la interfaz.',
@@ -89,6 +90,8 @@ DESC = {
     'docs/doc_style.py': 'Estilo común de los documentos.',
     'docs/roblox/build_prd_roblox.py': 'Arma el PDF del PRD Roblox v1.6 con sus imágenes.',
     'docs/documento/build_documento.py': 'Arma este documento.',
+    'site/build_site.py': 'Arma el sitio web del juego (una sola página con las capturas y el ejército).',
+    'site/capture.cjs': 'Saca del juego real las capturas y las fichas que usa el sitio web.',
 }
 
 
