@@ -27,6 +27,13 @@ los archivos y el código, que se amplía cada vez que hay una mejora.** Es apar
 3. Si agregas archivos de código o herramientas, súmalos a `CODE_FILES` en `build_documento.py`.
    Las pruebas van en `tests/` (el documento las lista).
 
+## Sitio web del juego (desde la v1.7)
+
+Pedido del usuario: un sitio web solo para su juego. Está en `site/`: `capture.cjs` saca capturas reales y las fichas
+del juego (`img/`, `data.json`), y `python3 faro/site/build_site.py` arma `site/index.html` (página completa para
+cualquier alojamiento) y `site/sitio_artifact.html` (la que se publica como artifact). En cada versión nueva: volver a
+sacar las capturas, volver a armarlo y volver a publicarlo en el mismo enlace.
+
 ## Fuentes del usuario
 
 - `docs/roblox/PRD_Faro_de_Ambar_v1_6.md` (13 nov 2026): PRD y plan de inicio para Roblox escrito por
