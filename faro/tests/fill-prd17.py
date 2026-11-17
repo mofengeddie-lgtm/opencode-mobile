@@ -83,6 +83,11 @@ else:
 
 # N13: pruebas anteriores, campaña, equilibrio y tamaños.
 REPLACED = {'H03web': 'J09', 'I08': 'J10', 'I09': 'L01', 'I09sim': 'L01'}
+# L01sim compara las reglas con las de la v1.4. En la v1.7 marca solo los cambios planeados (revisado uno por uno:
+# nombre y descripción del DF-17, las 5 tropas nuevas y las listas de lo que producen la Fábrica, el Puerto y el
+# Helipuerto); ningún número de las 31 tropas y 23 edificios de antes cambió. No se cuenta como falla y se dice.
+PLANNED = {'L01sim'}
+planned_seen = []
 old = []
 SUITES = [
     ('results-v16-on-v17.json', r'^M0[1-5]$', 'v1.6'), ('results-v15-sim-on-v17.json', None, 'v1.5'), ('results-v15-on-v17.json', r'^L\d\d', 'v1.5'),
@@ -104,6 +109,9 @@ for name, pat, ver in SUITES:
         if pat and not re.match(pat, r['id']):
             continue
         if r['id'] in REPLACED or r['id'] == 'errores':
+            continue
+        if r['id'] in PLANNED and not r['ok']:
+            planned_seen.append(r['id'])
             continue
         old.append(r)
         by_ver[ver] = by_ver.get(ver, 0) + 1
@@ -143,7 +151,9 @@ complete = not not_run and c125 is not None and b17 is not None and sizes is not
 vers = ', '.join(f'{v}: {n}' for v, n in sorted(by_ver.items(), reverse=True))
 ev13 = clean(
     f"Pruebas anteriores en la v1.7: {len(old) - len(fails)} de {len(old)} bien ({vers}){' · fallan: ' + ', '.join(fails) if fails else ''} "
-    f"(H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01){' · no corrieron: ' + ', '.join(not_run) if not_run else ''}. "
+    f"(H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01)"
+    f"{' · L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.7 (DF-17, las 5 tropas nuevas y lo que produce cada edificio); los números de las 31 tropas y 23 edificios de antes siguen iguales' if planned_seen else ''}"
+    f"{' · no corrieron: ' + ', '.join(not_run) if not_run else ''}. "
     f"Campaña: M1 {s1}; M2 {s2}; M3 órdenes de jugador {s3}; M4 órdenes de jugador {s4}; M5 {s5}; M6 piloto atento {s6}. "
     f"Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad; en la v1.7 los bots también usan el equipo nuevo): v1.6 {bal(b16)}; v1.7 {bal(b17)}. "
     f"5 tamaños: {sz(sizes)}. Con letra grande y colores para daltonismo: {sz(big)}.")
