@@ -105,6 +105,10 @@ for name, pat, ver in SUITES:
     if data is None:
         not_run.append(name.replace('results-', '').replace('-on-v17.json', ''))
         continue
+    # I03 (tabla de la Liga) se repitió sola al final: su resultado más nuevo reemplaza al de la tanda.
+    if name == 'results-v12-on-v17.json' and os.path.exists(SP + 'results-v12-I03.json') and os.path.getmtime(SP + 'results-v12-I03.json') > os.path.getmtime(SP + name):
+        redo = {r['id']: r for r in json.load(open(SP + 'results-v12-I03.json'))}
+        data = [dict(redo['I03'], redo=True) if r['id'] == 'I03' and 'I03' in redo else r for r in data]
     for r in data:
         if pat and not re.match(pat, r['id']):
             continue

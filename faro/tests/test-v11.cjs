@@ -130,7 +130,8 @@ const add = (id, ok, ev) => { results.push({ id, ok: !!ok, ev }); console.log(`$
   await page.waitForSelector('#end:not([hidden])', { timeout: 15000 });
   const end1 = await page.evaluate(() => ({ spec: !!document.getElementById('btn-spectate'), charts: document.querySelectorAll('#enddialog .histchart').length, lines: document.querySelectorAll('#enddialog .histchart polyline').length, legend: document.querySelectorAll('#enddialog .histlegend span').length, table: !!document.querySelector('#enddialog .histtable table') }));
   // Pasar el dedo por la gráfica muestra los valores del momento.
-  const box = await page.evaluate(() => { const r = document.querySelector('#enddialog .histchart svg').getBoundingClientRect(); return { x: r.left + r.width * 0.6, y: r.top + r.height * 0.5 }; });
+  // v1.7: la pantalla final es más alta; como una persona, primero se desplaza hasta la gráfica.
+  const box = await page.evaluate(() => { const svg = document.querySelector('#enddialog .histchart svg'); svg.scrollIntoView({ block: 'center' }); const r = svg.getBoundingClientRect(); return { x: r.left + r.width * 0.6, y: r.top + r.height * 0.5 }; });
   await page.mouse.move(box.x, box.y);
   await page.waitForTimeout(200);
   const tip = await page.evaluate(() => { const t = document.querySelector('#enddialog .histtip'); return t && !t.hidden ? t.innerText.replace(/\n/g, ' ') : ''; });

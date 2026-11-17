@@ -616,7 +616,7 @@ body.spectating #buildpanel, body.spectating #btn-build, body.spectating #selpan
 }
 @media (max-width: 520px) {
   .lobby-tabs { order: 3; width: 100%; justify-content: stretch; }
-  .lobby-tabs button { flex: 1; padding: 0 8px; }
+  .lobby-tabs button { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 13px; letter-spacing: 0.03em; }
   .play-row { grid-template-columns: 1fr 1fr; }
   .play-row .gold { grid-column: 1 / -1; order: -1; }
   .endstats { grid-template-columns: repeat(2, 1fr); }
@@ -939,6 +939,11 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
 .uiscale .lbl b { color: var(--gold); font-family: var(--font-display); font-size: 13px; }
 #ui-scale { width: 100%; min-height: 44px; accent-color: var(--gold); touch-action: pan-x; cursor: pointer; }
 /* ---------- v1.7: Arsenal, opción estratégica y resultado ---------- */
+/* Con 4 pestañas (Jugar, Arsenal, Tienda, Inventario), en el celular vertical van en dos filas para que todas se vean. */
+@media (max-width: 440px) {
+  .lobby-tabs { flex-wrap: wrap; }
+  .lobby-tabs button { flex: 1 1 calc(50% - 4px); }
+}
 .fieldnote { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 .fieldnote b { color: var(--text); }
 .arshead { display: flex; justify-content: space-between; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
