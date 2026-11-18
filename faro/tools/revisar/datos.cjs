@@ -39,7 +39,9 @@ for (const [k, u] of Object.entries(UNITS)) {
 const buildings = {};
 for (const [k, b] of Object.entries(BUILDINGS)) {
   const tab = (BUILD_TABS.find((t) => t.items.includes(k)) || {}).name || null;
-  buildings[k] = Object.assign(pick(b, ['name', 'cat', 'cost', 'energy', 'hp', 'build', 'limit', 'income', 'vision', 'claim', 'desc', 'produces', 'strategic']), {
+  // «energy» de un edificio es lo que cuesta en energía (energyCost); lo que produce va en «energyRate».
+  buildings[k] = Object.assign(pick(b, ['name', 'cat', 'cost', 'hp', 'build', 'limit', 'income', 'vision', 'claim', 'detect', 'desc', 'produces', 'strategic']), {
+    energy: b.energyCost || 0, energyRate: b.energy || 0,
     tab, weapon: b.weapon ? pick(b.weapon, ['dmg', 'cd', 'range', 'proj']) : null,
   });
 }

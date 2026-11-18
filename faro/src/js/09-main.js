@@ -56,6 +56,8 @@ const App = {
       const us = Number(localStorage.getItem('faro-uiscale'));
       this.uiScale = us >= 100 && us <= 130 ? us : this.bigText ? 115 : 100;
       this.calm = localStorage.getItem('faro-calm') === '1';
+      // v1.8: giro de la cámara del vestíbulo.
+      this.orbit = localStorage.getItem('faro-orbit') !== '0';
       // v1.5: ya no hay decoraciones de temporada (Calabazas, Invierno).
       localStorage.removeItem('faro-season');
     } catch (err) { /* sin almacenamiento */ }
@@ -231,12 +233,47 @@ const App = {
   makePreview() {
     this.game = new Game({ ...this.opts });
     this.game.preview = true;
+    // v1.8: «Tu ejército»: tu base y un desfile de tropas detrás del vestíbulo (en la campaña, la isla de la misión).
+    const army = !this.opts.mission ? Showcase.build(this.game, { low: this.battery || this.quality === 'low' }) : 0;
     this.newRenderer(this.game);
     const r = this.renderer;
-    r.cam.tx = 0;
-    r.cam.tz = 0;
-    r.cam.dist = this.game.map.R * 2.3;
+    if (army) {
+      const core = this.game.players[0].core;
+      r.cam.tx = core.x;
+      r.cam.tz = core.z;
+      r.cam.dist = 11.5;
+      r.cam.pitch = 0.72;
+      this.aimShowcase();
+    } else {
+      r.cam.tx = 0;
+      r.cam.tz = 0;
+      r.cam.dist = this.game.map.R * 2.3;
+    }
+    document.body.classList.toggle('army', !!army);
+    const tag = $('armytag');
+    if (tag) {
+      tag.hidden = !army;
+      $('armytag-n').textContent = army ? `${army} en el desfile` : '';
+    }
     this.selection = [];
+  },
+
+  // v1.8: la cámara mira un poco más allá del Núcleo, para que tu base quede en la ventana de la portada.
+  aimShowcase() {
+    const g = this.game;
+    const r = this.renderer;
+    if (!g || !g.showcase || !r) return;
+    const core = g.players[0].core;
+    const off = r.cam.dist * 0.24;
+    r.cam.tx = core.x + Math.sin(r.cam.yaw) * off;
+    r.cam.tz = core.z + Math.cos(r.cam.yaw) * off;
+  },
+
+  // v1.8: la cámara del vestíbulo gira sola (se puede apagar en Ajustes · Cámara).
+  setOrbit(on) {
+    this.orbit = !!on;
+    try { localStorage.setItem('faro-orbit', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    if (this.ui) this.ui.updateA11yBtns();
   },
 
   // Opciones de la partida: las del vestíbulo, el aspecto equipado y el modo creador.
@@ -656,7 +693,8 @@ const App = {
           this.renderer.drawMinimap($('minimap'));
         }
       } else if (this.renderer) {
-        this.renderer.cam.yaw += dt * 0.05;
+        if (this.orbit !== false) this.renderer.cam.yaw += dt * 0.05;
+        this.aimShowcase();
         this.renderer.frame(dt, this.time, []);
       }
     } catch (err) {

@@ -9,6 +9,15 @@ const unitCat = (u) => (u.cls === 'ship' || u.cls === 'sub' ? 'sea' : u.cls);
 const FAST_UNITS = { jeep: 'veh', speedboat: 'sea', ranger: 'inf', heli: 'air' };
 const ECO_TYPES = ['farm', 'mine', 'pump', 'rig'];
 
+// v1.8: tropas nuevas que los bots usan en lugar de otras con el mismo papel (salen del mismo edificio).
+const AI_SWAP_CHANCE = 0.3;
+const AI_SWAPS = {
+  rifle: ['soldier', 'gunner'], rocket: ['atguided'], sniper: ['mortar'], shotgun: ['soldier'],
+  jeep: ['armoredcar'], lighttank: ['armoredcar'], tank: ['tankdestroyer'], apc: ['ifv'], arty: ['howitzer', 'towedgun'], mlrs: ['thermo'],
+  speedboat: ['gunboat', 'patrolboat'], destroyer: ['corvette'],
+  fighter: ['attackjet'], bomber: ['heavybomber', 'gunship'],
+};
+
 class Bot {
   constructor(game, pid) {
     this.g = game;
@@ -517,7 +526,16 @@ class Bot {
     return { type: this.unitFor(best, mix, have, units), btype: cats[best], since: T };
   }
 
+  // v1.8: en Normal y Difícil, a veces cambia la tropa elegida por una nueva del catálogo con el mismo papel
+  // (y del mismo edificio). Así los bots también usan las tropas nuevas sin gastar distinto.
   unitFor(cat, mix, have, units) {
+    const pick = this.unitFor17(cat, mix, have, units);
+    const swaps = AI_SWAPS[pick];
+    if (!swaps || this.g.opts.difficulty === 'easy' || Math.random() >= AI_SWAP_CHANCE) return pick;
+    return swaps[Math.floor(Math.random() * swaps.length)];
+  }
+
+  unitFor17(cat, mix, have, units) {
     const T = this.g.time;
     const r = Math.random();
     const counter = this.tac.counter && mix.total >= 3;

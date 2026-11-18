@@ -360,7 +360,39 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   #selpanel { max-height: calc(50vh - 44px - var(--bottom)); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
 }
 /* ---------- vestíbulo ---------- */
-.lobby { flex-direction: column; gap: 12px; background: linear-gradient(180deg, rgba(8,15,21,0.82), rgba(8,15,21,0.55) 60%, rgba(8,15,21,0.7)); }
+.lobby { flex-direction: column; gap: 12px; background: linear-gradient(180deg, rgba(8,15,21,0.78), rgba(8,15,21,0.18) 34%, rgba(8,15,21,0.12) 62%, rgba(8,15,21,0.6)); }
+/* v1.8: «Tu ejército»: la escena 3D del fondo se ve; los paneles llevan su propio fondo. */
+.lobby .lmenu, .lobby .lside .lcard, .lobby .sidebtn { backdrop-filter: blur(3px); }
+.armytag { position: absolute; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(12,20,28,0.78); border: 1px solid var(--line); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.armytag span { color: var(--info, #7dd3ff); font-weight: 700; }
+.armytag b { color: var(--text); font-weight: 600; letter-spacing: 0.02em; text-transform: none; }
+.armytag i { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+@media (max-width: 760px) { .armytag { display: none; } }
+/* La portada deja ver la escena 3D en vivo (tu base y tu ejército) en vez de la imagen fija. */
+body.army .cover.hero { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: inset 0 0 0 1px rgba(242,171,56,0.35); }
+body.army .cover.hero .cover-img { display: none; }
+body.army .cover::before { background: linear-gradient(90deg, rgba(8,15,21,0.78), rgba(8,15,21,0.32) 44%, rgba(8,15,21,0) 66%), linear-gradient(0deg, rgba(8,15,21,0.5), rgba(8,15,21,0) 42%); }
+/* v1.8: Ajustes «A tu manera» (pantalla 13 de la UI 0.4). */
+.settings { max-width: 860px; }
+.setgrid { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 12px; min-height: 0; }
+.setnav { display: grid; gap: 4px; align-content: start; padding: 8px; background: var(--raise, rgba(255,255,255,0.04)); border-radius: 10px; }
+.setnav button[data-setsec] { min-height: 44px; text-align: left; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--text); font-weight: 600; cursor: pointer; }
+.setnav button[data-setsec][aria-selected="true"] { border-color: var(--gold); color: var(--gold); background: var(--raise-2); }
+.setnav .btn { margin-top: 12px; }
+.setpane { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.setpane[hidden] { display: none; }
+.setpane h3 { margin: 0; font-size: 20px; }
+.setpane .btn { justify-content: flex-start; }
+.setrow { display: grid; gap: 6px; }
+.setfoot { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.taphelp { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: rgba(255,255,255,0.03); }
+.taphelp b { color: var(--gold); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (max-width: 640px) { .setgrid { grid-template-columns: minmax(0, 1fr); } .setnav { grid-template-columns: repeat(3, minmax(0, 1fr)); } .setnav .btn { margin-top: 0; } }
+/* v1.8: Centro de investigación. */
+.research { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.research .btn { flex-direction: column; align-items: flex-start; gap: 2px; min-height: 64px; padding: 8px 10px; text-align: left; }
+.research .btn small { font-size: 11px; color: var(--muted); font-weight: 500; }
+.research .btn em { font-style: normal; font-size: 11px; color: var(--gold); }
 .lobby-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .brand-sm { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; }
 .brand-sm svg { width: 34px; height: 34px; }
@@ -937,7 +969,7 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
 /* Con 4 pestañas (Jugar, Arsenal, Tienda, Inventario), en el celular vertical van en dos filas para que todas se vean. */
 @media (max-width: 440px) {
   .lobby-tabs { flex-wrap: wrap; }
-  .lobby-tabs button { flex: 1 1 calc(50% - 4px); }
+  .lobby-tabs button { flex: 1 1 calc(33.33% - 4px); padding: 0 4px; }
 }
 .fieldnote { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 .fieldnote b { color: var(--text); }
@@ -1229,13 +1261,14 @@ window.FaroBoot = (function () {
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.7</span>
+      <span class="version" id="game-version">v1.8</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
       <button type="button" role="tab" data-view="arsenal" aria-selected="false">Arsenal</button>
       <button type="button" role="tab" data-view="shop" aria-selected="false">Tienda</button>
       <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
+      <button type="button" role="tab" data-view="missions" aria-selected="false">Misiones</button>
     </nav>
     <div class="lobby-res">
       <button class="btn icon musicbtn" id="btn-music-lobby" type="button" aria-label="Música">
@@ -1246,6 +1279,8 @@ window.FaroBoot = (function () {
     </div>
   </header>
   <div class="lobby-body" id="lobby-body"></div>
+  <!-- v1.8: etiqueta de la escena 3D del fondo (tu base y tu ejército). -->
+  <div class="armytag" id="armytag" hidden><i aria-hidden="true"></i><span>Tu ejército</span><b id="armytag-n"></b></div>
 </div>
 <div id="modal" class="screen overlay-dim" hidden>
   <div class="dialog panel wide" id="modal-body"></div>
@@ -1258,7 +1293,7 @@ window.FaroBoot = (function () {
       <button class="btn gold" id="btn-resume" type="button">Continuar</button>
       <button class="btn" id="btn-restart" type="button">Reiniciar</button>
     </div>
-    <div>
+    <div id="set-quality">
       <div class="lbl" style="margin-bottom:6px">Gráficos</div>
       <div class="seg3">
         <button class="btn" type="button" data-quality="auto">Automática</button>
@@ -1267,7 +1302,7 @@ window.FaroBoot = (function () {
       </div>
       <p class="small-note" id="quality-note"></p>
     </div>
-    <div>
+    <div id="set-light">
       <div class="lbl" style="margin-bottom:6px">Iluminación</div>
       <div class="seg2">
         <button class="btn" type="button" data-light="new" aria-pressed="true">Nueva</button>
@@ -1284,13 +1319,13 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" id="btn-calm" aria-pressed="false">Reducir destellos: no</button>
       </div>
       <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa. Reducir destellos: sin fogonazos de disparo y con el destello del misil muy suave.</p>
-      <div class="uiscale">
+      <div class="uiscale" id="ui-scale-wrap">
         <label class="lbl" for="ui-scale">Tamaño de la interfaz: <b id="ui-scale-val">100 %</b></label>
         <input type="range" id="ui-scale" min="100" max="130" step="5" value="100" aria-describedby="ui-scale-note">
         <p class="small-note" id="ui-scale-note"></p>
       </div>
     </div>
-    <div>
+    <div id="set-music">
       <div class="lbl" style="margin-bottom:6px">Música</div>
       <div class="seg3 seg4">
         <button class="btn" type="button" data-music="0">Apagada</button>
@@ -1299,7 +1334,7 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" data-music="1">Alta</button>
       </div>
     </div>
-    <ul class="help">
+    <ul class="help" id="help-list">
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
@@ -1325,7 +1360,39 @@ window.FaroBoot = (function () {
     <div class="row">
       <button class="btn" id="btn-sound2" type="button">Sonido: sí</button>
       <button class="btn" id="btn-fps" type="button">Contador de cuadros: no</button>
+      <button class="btn" id="btn-pause-settings" type="button">Ajustes</button>
       <button class="btn danger" id="btn-quit" type="button">Salir al menú</button>
+    </div>
+  </div>
+</div>
+
+<!-- v1.8: Ajustes «A tu manera» (pantalla 13 de la UI 0.4): los controles de la pausa, ordenados por secciones. -->
+<div id="settings" class="screen overlay-dim" hidden>
+  <div class="dialog panel wide settings" role="dialog" aria-labelledby="settings-title">
+    <h2 id="settings-title">A tu manera</h2>
+    <div class="setgrid">
+      <nav class="setnav" role="tablist" aria-label="Secciones de ajustes">
+        <button type="button" role="tab" data-setsec="interfaz" aria-selected="true">Interfaz</button>
+        <button type="button" role="tab" data-setsec="sonido" aria-selected="false">Sonido</button>
+        <button type="button" role="tab" data-setsec="camara" aria-selected="false">Cámara</button>
+        <button type="button" role="tab" data-setsec="accesibilidad" aria-selected="false">Accesibilidad</button>
+        <button type="button" role="tab" data-setsec="controles" aria-selected="false">Controles</button>
+        <button class="btn" type="button" id="btn-settings-back">Volver</button>
+      </nav>
+      <div>
+        <section class="setpane" data-setpane="interfaz"><h3>Interfaz y lectura</h3></section>
+        <section class="setpane" data-setpane="sonido" hidden><h3>Sonido</h3></section>
+        <section class="setpane" data-setpane="camara" hidden><h3>Cámara e imagen</h3>
+          <div class="setrow"><button class="btn" type="button" id="btn-orbit" aria-pressed="true">Giro de la cámara en el vestíbulo: sí</button>
+            <p class="small-note">La escena «Tu ejército» del vestíbulo gira despacio. En la partida, gira la cámara con dos dedos (o Q y E).</p></div>
+        </section>
+        <section class="setpane" data-setpane="accesibilidad" hidden><h3>Accesibilidad</h3></section>
+        <section class="setpane" data-setpane="controles" hidden><h3>Controles</h3>
+          <div class="taphelp"><b>Controles táctiles</b><p>Toque: seleccionar · Arrastre: mover la cámara · Pellizco: acercar · Cancelar: salir de la orden.</p></div>
+        </section>
+        <div class="setfoot"><span class="small-note">Se guardan solos en este iPad.</span>
+          <button class="btn" type="button" id="btn-settings-reset">Restablecer</button></div>
+      </div>
     </div>
   </div>
 </div>

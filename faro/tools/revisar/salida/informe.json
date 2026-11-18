@@ -1,12 +1,12 @@
 {
- "at": "2026-11-18 01:03",
+ "at": "2026-11-18 01:32",
  "game": {
   "file": "/home/user/opencode-mobile/faro/faro.html",
-  "sha": "0ce4c5a60b0564b5f409d2adcf95131b588d90e6",
-  "version": "1.7",
-  "units": 36,
-  "buildings": 23,
-  "models": 80
+  "sha": "b6cc8d9bc3603a621a0758852eca2a37179dc68d",
+  "version": "1.8",
+  "units": 93,
+  "buildings": 42,
+  "models": 156
  },
  "sources": [
   "PRD_Faro_de_Ambar_v1_8.md",
@@ -16,21 +16,21 @@
  ],
  "summary": {
   "catalog_total": 110,
-  "catalog_ok": 38,
-  "catalog_present": 44,
-  "catalog_warn": 6,
+  "catalog_ok": 110,
+  "catalog_present": 110,
+  "catalog_warn": 0,
   "units_total": 78,
-  "units_ok": 24,
+  "units_ok": 78,
   "bld_total": 32,
-  "bld_ok": 14,
-  "models_ok": 44,
+  "bld_ok": 32,
+  "models_ok": 110,
   "equip_total": 57,
-  "equip_ok": 25,
+  "equip_ok": 57,
   "ui_total": 19,
-  "ui_ok": 13,
+  "ui_ok": 19,
   "plan_total": 85,
-  "plan_ok": 0,
-  "extras": 10
+  "plan_ok": 85,
+  "extras": 11
  },
  "catalog": [
   {
@@ -233,14 +233,14 @@
    "ui": "Productor: Cuartel. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Cuartel",
    "key": "scout",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Explorador",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -254,14 +254,14 @@
    "ui": "Productor: Cuartel. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Cuartel",
    "key": "soldier",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Soldado",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -276,9 +276,9 @@
    "producer": "Cuartel",
    "key": "medic",
    "present": true,
-   "game_name": "Médico",
-   "name_state": "corto",
-   "name_note": "en el juego: «Médico»",
+   "game_name": "Médico de campaña",
+   "name_state": "igual",
+   "name_note": "",
    "model": true,
    "prod_state": "igual",
    "prod_note": "",
@@ -296,14 +296,14 @@
    "ui": "Productor: Cuartel. Grupo asignado, alcance de la bonificación y aviso de efecto ya aplicado.",
    "producer": "Cuartel",
    "key": "officer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Oficial de campo",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -317,14 +317,14 @@
    "ui": "Productor: Cuartel. Enlace activo, compañeros cubiertos y estado interrumpido.",
    "producer": "Cuartel",
    "key": "radioman",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Operador de comunicaciones",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -338,14 +338,14 @@
    "ui": "Productor: Cuartel. Obstáculo seleccionado, progreso de despeje y motivo de acción bloqueada.",
    "producer": "Cuartel",
    "key": "sapper",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Zapador",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -359,14 +359,14 @@
    "ui": "Productor: Cuartel. Preparado, trasladándose, recargando y zona de efecto de juego.",
    "producer": "Cuartel",
    "key": "mortar",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Equipo de mortero",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -380,14 +380,14 @@
    "ui": "Productor: Cuartel. Transporte asignado, plazas ocupadas y disponibilidad de desembarco.",
    "producer": "Cuartel",
    "key": "paratrooper",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Paracaidista",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -401,14 +401,14 @@
    "ui": "Productor: Cuartel. Transporte naval asignado, estado embarcado y costa válida.",
    "producer": "Cuartel",
    "key": "marine",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Infante de marina",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -464,14 +464,14 @@
    "ui": "Productor: Fábrica. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Fábrica",
    "key": "armoredcar",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Blindado ligero",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -528,9 +528,9 @@
    "producer": "Fábrica",
    "key": "apc",
    "present": true,
-   "game_name": "Transporte blindado",
-   "name_state": "corto",
-   "name_note": "en el juego: «Transporte blindado»",
+   "game_name": "Transporte blindado de personal",
+   "name_state": "igual",
+   "name_note": "",
    "model": true,
    "prod_state": "igual",
    "prod_note": "",
@@ -548,14 +548,14 @@
    "ui": "Productor: Fábrica. Pasajeros, objetivo actual y capacidad restante.",
    "producer": "Fábrica",
    "key": "ifv",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Vehículo de combate de infantería",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -569,14 +569,14 @@
    "ui": "Productor: Fábrica. Ocupación, pasajeros y estado de desembarco.",
    "producer": "Fábrica",
    "key": "trooptruck",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Camión de tropas",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -590,14 +590,14 @@
    "ui": "Productor: Fábrica. Asistencia activada, pacientes cercanos y estado en traslado.",
    "producer": "Fábrica",
    "key": "ambulance",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Ambulancia militar",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -611,14 +611,14 @@
    "ui": "Productor: Fábrica. Vehículo atendido, progreso de reparación y coste de juego si corresponde.",
    "producer": "Fábrica",
    "key": "recovery",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Vehículo de recuperación",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -632,14 +632,14 @@
    "ui": "Productor: Fábrica. Carga disponible, unidades atendidas y regreso a depósito.",
    "producer": "Fábrica",
    "key": "supplytruck",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Camión de suministros",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -653,14 +653,14 @@
    "ui": "Productor: Fábrica. Reserva de abastecimiento, autonomía recuperada y modo logístico activo.",
    "producer": "Fábrica",
    "key": "tanker",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Camión cisterna militar",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -674,14 +674,14 @@
    "ui": "Productor: Fábrica. Grupos vinculados, estado desplegado y bonificaciones no acumulables.",
    "producer": "Fábrica",
    "key": "commandveh",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Vehículo de mando",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -695,14 +695,14 @@
    "ui": "Productor: Fábrica. Radar activo, área de detección y contactos confirmados.",
    "producer": "Fábrica",
    "key": "mobileradar",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Radar móvil",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -716,14 +716,14 @@
    "ui": "Productor: Fábrica. Desplegado, recarga, objetivo y aviso de zona de impacto de juego.",
    "producer": "Fábrica",
    "key": "howitzer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Obús autopropulsado",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -737,14 +737,14 @@
    "ui": "Productor: Fábrica. Desplegada o remolcada, transporte asignado y recarga.",
    "producer": "Fábrica",
    "key": "towedgun",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Artillería remolcada",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -779,14 +779,14 @@
    "ui": "Productor: Fábrica. Tipo de objetivo válido, recarga y bonificación de juego contra blindados.",
    "producer": "Fábrica",
    "key": "tankdestroyer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Cazacarros",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -800,14 +800,14 @@
    "ui": "Productor: Fábrica. Modo terrestre o acuático, pasajeros y transición de costa válida.",
    "producer": "Fábrica",
    "key": "amphib",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Transporte anfibio",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -821,14 +821,14 @@
    "ui": "Productor: Fábrica. Paso compatible, despliegue, paso activo y retirada.",
    "producer": "Fábrica",
    "key": "bridgelayer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Vehículo lanzapuentes",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -842,14 +842,14 @@
    "ui": "Productor: Fábrica. Celdas marcadas, progreso de despeje y ruta bloqueada.",
    "producer": "Fábrica",
    "key": "clearer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Vehículo de despeje",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -863,14 +863,14 @@
    "ui": "Productor: Fábrica. Solar o escombro seleccionado, progreso y resultado previsto.",
    "producer": "Fábrica",
    "key": "dozer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Topadora blindada",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -884,14 +884,14 @@
    "ui": "Productor: Helipuerto / Hangar de helicópteros. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Helipuerto / Hangar de helicópteros",
    "key": "scoutdrone",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dron explorador",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -905,14 +905,14 @@
    "ui": "Productor: Centro de drones. Carga transportada, destino y estado de entrega.",
    "producer": "Centro de drones",
    "key": "cargodrone",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dron de carga",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -931,12 +931,10 @@
    "name_state": "igual",
    "name_note": "",
    "model": true,
-   "prod_state": "distinto",
-   "prod_note": "en el juego: Helipuerto",
-   "state": "aviso",
-   "problems": [
-    "productor distinto"
-   ]
+   "prod_state": "igual",
+   "prod_note": "también en Helipuerto",
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 44,
@@ -949,14 +947,14 @@
    "ui": "Productor: Centro de drones. Zona protegida y tipo de objetivo permitido.",
    "producer": "Centro de drones",
    "key": "interceptor",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dron interceptor",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -970,14 +968,14 @@
    "ui": "Productor: Puerto. Área explorada, detección y orden de retorno al puerto.",
    "producer": "Puerto",
    "key": "navaldrone",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dron naval de superficie",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -991,14 +989,14 @@
    "ui": "Productor: Puerto. Modo de inspección, descubrimiento y regreso.",
    "producer": "Puerto",
    "key": "subdrone",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dron submarino",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1054,14 +1052,14 @@
    "ui": "Productor: Helipuerto / Hangar de helicópteros. Plazas ocupadas, embarque y estado de la zona de aterrizaje.",
    "producer": "Helipuerto / Hangar de helicópteros",
    "key": "transheli",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Helicóptero de transporte",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1075,14 +1073,14 @@
    "ui": "Productor: Helipuerto / Hangar de helicópteros. Unidad asistida, disponibilidad de apoyo y retorno.",
    "producer": "Helipuerto / Hangar de helicópteros",
    "key": "rescueheli",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Helicóptero de rescate",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1096,14 +1094,14 @@
    "ui": "Productor: Helipuerto / Hangar de helicópteros. Estado de detección, contacto revelado y objetivo permitido.",
    "producer": "Helipuerto / Hangar de helicópteros",
    "key": "navalheli",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Helicóptero de patrulla naval",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1118,16 +1116,14 @@
    "producer": "Aeropuerto militar",
    "key": "fighter",
    "present": true,
-   "game_name": "Caza furtivo",
-   "name_state": "distinto",
-   "name_note": "en el juego: «Caza furtivo»",
+   "game_name": "Avión de combate furtivo",
+   "name_state": "corto",
+   "name_note": "en el juego: «Avión de combate furtivo» (más largo)",
    "model": true,
    "prod_state": "igual",
    "prod_note": "",
-   "state": "aviso",
-   "problems": [
-    "nombre distinto"
-   ]
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 46,
@@ -1140,14 +1136,14 @@
    "ui": "Productor: Aeropuerto militar. Zona de apoyo, orden pendiente y disponibilidad de nueva salida.",
    "producer": "Aeropuerto militar",
    "key": "attackjet",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Avión de apoyo terrestre",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1161,14 +1157,14 @@
    "ui": "Productor: Aeropuerto militar. Aviso de habilidad, zona seleccionada y tiempo de disponibilidad del juego.",
    "producer": "Aeropuerto militar",
    "key": "heavybomber",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Bombardero convencional",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1182,14 +1178,14 @@
    "ui": "Productor: Aeropuerto militar. Carga, origen, destino y cola de desembarque.",
    "producer": "Aeropuerto militar",
    "key": "transportplane",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Avión de transporte militar",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1203,14 +1199,14 @@
    "ui": "Productor: Aeropuerto militar. Área de visión aportada, duración de la habilidad y orden de retirada.",
    "producer": "Aeropuerto militar",
    "key": "awacs",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Avión de vigilancia aérea",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1224,14 +1220,14 @@
    "ui": "Productor: Aeropuerto militar. Suministros disponibles, receptor aliado y estado del servicio.",
    "producer": "Aeropuerto militar",
    "key": "tankerplane",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Avión de reabastecimiento",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1245,14 +1241,14 @@
    "ui": "Productor: Aeropuerto militar. Habilidad activa, zona afectada y tiempo de recuperación del juego.",
    "producer": "Aeropuerto militar",
    "key": "ewplane",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Avión de apoyo electrónico",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1371,14 +1367,14 @@
    "ui": "Productor: Puerto. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Puerto",
    "key": "gunboat",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Cañonera",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1392,14 +1388,14 @@
    "ui": "Productor: Puerto. Vida, selección, función, objetivo y estado de la orden.",
    "producer": "Puerto",
    "key": "battleship",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Acorazado",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1413,14 +1409,14 @@
    "ui": "Productor: Puerto. Ruta de patrulla, avistamientos y orden de regreso.",
    "producer": "Puerto",
    "key": "patrolboat",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Patrullera costera",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1434,14 +1430,14 @@
    "ui": "Productor: Puerto. Objetivo, estado de escolta y salud.",
    "producer": "Puerto",
    "key": "corvette",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Corbeta",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1456,17 +1452,14 @@
    "producer": "Astillero mayor",
    "key": "frigate",
    "present": true,
-   "game_name": "Fragata antiaérea",
-   "name_state": "distinto",
-   "name_note": "en el juego: «Fragata antiaérea»",
+   "game_name": "Fragata de escolta",
+   "name_state": "igual",
+   "name_note": "",
    "model": true,
-   "prod_state": "distinto",
-   "prod_note": "en el juego: Puerto",
-   "state": "aviso",
-   "problems": [
-    "nombre distinto",
-    "productor distinto"
-   ]
+   "prod_state": "igual",
+   "prod_note": "también en Puerto",
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 48,
@@ -1479,14 +1472,14 @@
    "ui": "Productor: Astillero mayor. Grupo asignado, habilidad de apoyo y disponibilidad.",
    "producer": "Astillero mayor",
    "key": "cruiser",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Crucero de mando",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1505,12 +1498,10 @@
    "name_state": "igual",
    "name_note": "",
    "model": true,
-   "prod_state": "distinto",
-   "prod_note": "en el juego: Puerto",
-   "state": "aviso",
-   "problems": [
-    "productor distinto"
-   ]
+   "prod_state": "igual",
+   "prod_note": "también en Puerto",
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 48,
@@ -1523,14 +1514,14 @@
    "ui": "Productor: Astillero mayor. Carga, punto de desembarque y estado de la rampa.",
    "producer": "Astillero mayor",
    "key": "landingship",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Buque de desembarco",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1544,14 +1535,14 @@
    "ui": "Productor: Puerto. Reserva de suministros, destinatario y disponibilidad de servicio.",
    "producer": "Puerto",
    "key": "logship",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Buque logístico",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1565,14 +1556,14 @@
    "ui": "Productor: Astillero mayor. Unidades atendidas, plazas de apoyo y estado de recuperación.",
    "producer": "Astillero mayor",
    "key": "hospitalship",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Buque hospital",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1586,14 +1577,14 @@
    "ui": "Productor: Puerto. Carga, tipo de terreno permitido y desembarque.",
    "producer": "Puerto",
    "key": "hovercraft",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Aerodeslizador militar",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1607,14 +1598,14 @@
    "ui": "Productor: Puerto. Obstáculo detectado, tarea de despeje y progreso.",
    "producer": "Puerto",
    "key": "minesweeper",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Dragaminas",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1628,14 +1619,14 @@
    "ui": "Productor: Puerto. Obstáculos disponibles, zona válida y límite por jugador.",
    "producer": "Puerto",
    "key": "minelayer",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Buque minador",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1649,14 +1640,14 @@
    "ui": "Productor: Astillero mayor. Estado de detección, observación y orden de retirada.",
    "producer": "Astillero mayor",
    "key": "reconsub",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Submarino de reconocimiento",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
-   "prod_state": "—",
+   "model": true,
+   "prod_state": "igual",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -1734,16 +1725,14 @@
    "producer": null,
    "key": "wind",
    "present": true,
-   "game_name": "Eólica",
-   "name_state": "distinto",
-   "name_note": "en el juego: «Eólica»",
+   "game_name": "Molino eólico",
+   "name_state": "corto",
+   "name_note": "en el juego: «Molino eólico» (más largo)",
    "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "aviso",
-   "problems": [
-    "nombre distinto"
-   ]
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 51,
@@ -1966,14 +1955,14 @@
    "ui": "Construcción en territorio propio. Vida, nivel, actividad, capacidad, cola y motivo de bloqueo.",
    "producer": null,
    "key": "corral",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Corral de ganadería",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2009,16 +1998,14 @@
    "producer": null,
    "key": "hospital",
    "present": true,
-   "game_name": "Enfermería",
-   "name_state": "distinto",
-   "name_note": "en el juego: «Enfermería»",
+   "game_name": "Hospital de campaña",
+   "name_state": "igual",
+   "name_note": "",
    "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "aviso",
-   "problems": [
-    "nombre distinto"
-   ]
+   "state": "ok",
+   "problems": []
   },
   {
    "sec": 53,
@@ -2031,14 +2018,14 @@
    "ui": "Construcción en territorio propio. Vehículo atendido, cola y salida bloqueada.",
    "producer": null,
    "key": "workshop",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Taller de mantenimiento",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2052,14 +2039,14 @@
    "ui": "Construcción en territorio propio. Rama elegida, progreso y requisitos pendientes.",
    "producer": null,
    "key": "research",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Centro de investigación",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2073,14 +2060,14 @@
    "ui": "Construcción en territorio propio. Cobertura de juego, energía y estado de detección.",
    "producer": null,
    "key": "radarstation",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Estación de radar",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2115,14 +2102,14 @@
    "ui": "Construcción en territorio propio. Drones activos, cola y plazas disponibles.",
    "producer": null,
    "key": "dronecenter",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Centro de drones",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2136,14 +2123,14 @@
    "ui": "Construcción en territorio propio. Buque en construcción, acceso al mar y espacio de salida.",
    "producer": null,
    "key": "shipyard",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Astillero mayor",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2157,14 +2144,14 @@
    "ui": "Construcción en territorio propio. Servicios disponibles, cola y unidades vinculadas.",
    "producer": null,
    "key": "depot",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Depósito logístico",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2178,14 +2165,14 @@
    "ui": "Construcción en territorio propio. Grupos asignados, punto de reunión y estado de conexión de juego.",
    "producer": null,
    "key": "hq",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Centro de mando avanzado",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2199,14 +2186,14 @@
    "ui": "Construcción en territorio propio. Producción, consumo y déficit de energía de la base.",
    "producer": null,
    "key": "powerplant",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Central de energía",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2220,14 +2207,14 @@
    "ui": "Construcción en territorio propio. Plazas ocupadas, guarnición y orden de evacuar.",
    "producer": null,
    "key": "bunker",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Búnker de guarnición",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2241,14 +2228,14 @@
    "ui": "Construcción en territorio propio. Abierta, cerrada, obstruida y permisos de paso.",
    "producer": null,
    "key": "gate",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Puerta reforzada",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2262,14 +2249,14 @@
    "ui": "Construcción en territorio propio. Extremos válidos, ocupación y disponibilidad del cruce.",
    "producer": null,
    "key": "bridge",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Puente modular",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2283,14 +2270,14 @@
    "ui": "Construcción en territorio propio. Cola de embarque, capacidad reservada y destino.",
    "producer": null,
    "key": "dock",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Muelle logístico",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2304,14 +2291,14 @@
    "ui": "Construcción en territorio propio. Zona visible, estado de operación y aviso de enemigo detectado.",
    "producer": null,
    "key": "watchtower",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Torre de observación",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2325,14 +2312,14 @@
    "ui": "Construcción en territorio propio. Objetivo válido, estado de ataque y sector de juego cubierto.",
    "producer": null,
    "key": "coastal",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
+   "present": true,
+   "game_name": "Batería de defensa costera",
+   "name_state": "igual",
    "name_note": "",
-   "model": false,
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   },
   {
@@ -2346,14 +2333,14 @@
    "ui": "Construcción en territorio propio. Modalidad elegida, cuota estratégica, preparación, aviso y munición disponible.",
    "producer": null,
    "key": "silo",
-   "present": false,
-   "game_name": null,
-   "name_state": "—",
-   "name_note": "",
-   "model": false,
+   "present": true,
+   "game_name": "Complejo estratégico",
+   "name_state": "corto",
+   "name_note": "en el juego: «Complejo estratégico»",
+   "model": true,
    "prod_state": "—",
    "prod_note": "",
-   "state": "falta",
+   "state": "ok",
    "problems": []
   }
  ],
@@ -2371,10 +2358,10 @@
    "name": "DF-5C (misil del Silo)",
    "key": "silo",
    "src": "PRD 1.8 · sección 55",
-   "present": false,
-   "game_name": null,
-   "model": false,
-   "state": "falta"
+   "present": true,
+   "game_name": "Complejo estratégico",
+   "model": true,
+   "state": "ok"
   }
  ],
  "equipment": [
@@ -2383,7 +2370,7 @@
    "name": "F-35 Lightning II (avión furtivo)",
    "kind": "unidad",
    "key": "fighter",
-   "where": "Caza furtivo",
+   "where": "Avión de combate furtivo",
    "src": "texto del PDF («F-35»)",
    "state": "ok"
   },
@@ -2401,36 +2388,36 @@
    "name": "A-10 Thunderbolt II (ataque a tierra)",
    "kind": "unidad",
    "key": "attackjet",
-   "where": "attackjet",
+   "where": "Avión de apoyo terrestre",
    "src": "texto del PDF («A-10»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
    "name": "AC-130 Ghostrider (avión artillado)",
    "kind": "unidad",
    "key": "gunship",
-   "where": "gunship",
+   "where": "Avión artillado",
    "src": "texto del PDF («AC-130»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
    "name": "B-1B Lancer (bombardero pesado)",
    "kind": "unidad",
    "key": "heavybomber",
-   "where": "heavybomber",
+   "where": "Bombardero convencional",
    "src": "texto del PDF («B-1B»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
    "name": "B-52 Stratofortress (bombardero pesado)",
    "kind": "unidad",
    "key": "heavybomber",
-   "where": "heavybomber",
+   "where": "Bombardero convencional",
    "src": "texto del PDF («B-52»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
@@ -2446,9 +2433,9 @@
    "name": "MH-60R Seahawk (helicóptero naval)",
    "kind": "unidad",
    "key": "navalheli",
-   "where": "navalheli",
+   "where": "Helicóptero de patrulla naval",
    "src": "texto del PDF («Seahawk»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
@@ -2473,7 +2460,7 @@
    "name": "Misil aire-aire AIM-120 AMRAAM",
    "kind": "arma",
    "key": "fighter",
-   "where": "Caza furtivo (arma de esta tropa)",
+   "where": "Avión de combate furtivo (arma de esta tropa)",
    "src": "texto del PDF («AIM-120»)",
    "state": "ok"
   },
@@ -2482,18 +2469,18 @@
    "name": "Misil antirradar AGM-88 HARM",
    "kind": "arma",
    "key": "ewplane",
-   "where": "ewplane (arma de esta tropa)",
+   "where": "Avión de apoyo electrónico (arma de esta tropa)",
    "src": "texto del PDF («HARM»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
    "name": "Bombas guiadas JDAM y Paveway",
    "kind": "arma",
    "key": "heavybomber",
-   "where": "heavybomber (arma de esta tropa)",
+   "where": "Bombardero convencional (arma de esta tropa)",
    "src": "texto del PDF («JDAM»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Aérea",
@@ -2509,9 +2496,9 @@
    "name": "Aviones de carga gigantes (C-17 Globemaster III)",
    "kind": "unidad",
    "key": "transportplane",
-   "where": "transportplane",
+   "where": "Avión de transporte militar",
    "src": "imagen 18 del PDF (captura)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
@@ -2536,7 +2523,7 @@
    "name": "Fragatas",
    "kind": "unidad",
    "key": "frigate",
-   "where": "Fragata antiaérea",
+   "where": "Fragata de escolta",
    "src": "texto del PDF («Fragatas»)",
    "state": "ok"
   },
@@ -2545,18 +2532,18 @@
    "name": "Corbetas",
    "kind": "unidad",
    "key": "corvette",
-   "where": "corvette",
+   "where": "Corbeta",
    "src": "texto del PDF («Corbetas»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Interceptor SM-3 (Aegis)",
    "kind": "arma",
    "key": "cruiser",
-   "where": "cruiser (arma de esta tropa)",
+   "where": "Crucero de mando (arma de esta tropa)",
    "src": "texto del PDF («SM-3»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
@@ -2572,18 +2559,18 @@
    "name": "Submarino estratégico (clase Ohio, Trident II)",
    "kind": "unidad",
    "key": "stratsub",
-   "where": "stratsub",
+   "where": "Submarino estratégico",
    "src": "texto del PDF («Ohio»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Misil de crucero Tomahawk",
    "kind": "arma",
    "key": "cruiser",
-   "where": "cruiser (arma de esta tropa)",
+   "where": "Crucero de mando (arma de esta tropa)",
    "src": "texto del PDF («Tomahawk»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
@@ -2599,54 +2586,54 @@
    "name": "Buques anfibios de desembarco",
    "kind": "unidad",
    "key": "landingship",
-   "where": "landingship",
+   "where": "Buque de desembarco",
    "src": "texto del PDF («Buques Anfibios»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Aerodeslizadores (LCAC)",
    "kind": "unidad",
    "key": "hovercraft",
-   "where": "hovercraft",
+   "where": "Aerodeslizador militar",
    "src": "texto del PDF («aerodeslizadores»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Cañón naval Mk 45",
    "kind": "arma",
    "key": "corvette",
-   "where": "corvette (arma de esta tropa)",
+   "where": "Corbeta (arma de esta tropa)",
    "src": "texto del PDF («Mk 45»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Sistema Phalanx CIWS",
    "kind": "unidad",
    "key": "ciws",
-   "where": "ciws",
+   "where": "Defensa de punto",
    "src": "texto del PDF («Phalanx»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Minas navales",
    "kind": "unidad",
    "key": "minelayer",
-   "where": "minelayer",
+   "where": "Buque minador",
    "src": "texto del PDF («Minas Navales»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Naval",
    "name": "Cañones láser en destructores",
    "kind": "unidad",
    "key": "laser",
-   "where": "laser",
+   "where": "Torre láser",
    "src": "imagen 14 del PDF (captura)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2662,27 +2649,27 @@
    "name": "Artillería autopropulsada (obuses)",
    "kind": "unidad",
    "key": "howitzer",
-   "where": "howitzer",
+   "where": "Obús autopropulsado",
    "src": "texto del PDF («Artillería Autopropulsada»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Obús remolcado M777",
    "kind": "unidad",
    "key": "towedgun",
-   "where": "towedgun",
+   "where": "Artillería remolcada",
    "src": "texto del PDF («M777»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Morteros",
    "kind": "unidad",
    "key": "mortar",
-   "where": "mortar",
+   "where": "Equipo de mortero",
    "src": "texto del PDF («Morteros»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2707,9 +2694,9 @@
    "name": "Lanzacohetes termobárico TOS-1A",
    "kind": "unidad",
    "key": "thermo",
-   "where": "thermo",
+   "where": "Lanzacohetes termobárico",
    "src": "texto del PDF («TOS-1A»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2734,9 +2721,9 @@
    "name": "Misil balístico intercontinental (ICBM)",
    "kind": "unidad",
    "key": "silo",
-   "where": "silo",
+   "where": "Complejo estratégico",
    "src": "texto del PDF («ICBM»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2752,18 +2739,18 @@
    "name": "Cúpula de Hierro y C-RAM",
    "kind": "unidad",
    "key": "ciws",
-   "where": "ciws",
+   "where": "Defensa de punto",
    "src": "texto del PDF («C-RAM»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Misil portátil Javelin",
    "kind": "unidad",
    "key": "atguided",
-   "where": "atguided",
+   "where": "Equipo antitanque",
    "src": "texto del PDF («Javelin»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2788,18 +2775,18 @@
    "name": "Ametralladora rotativa (Minigun)",
    "kind": "unidad",
    "key": "gunner",
-   "where": "gunner",
+   "where": "Ametrallador pesado",
    "src": "texto del PDF («Minigun»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Carga lineal MICLIC",
    "kind": "arma",
    "key": "sapper",
-   "where": "sapper (arma de esta tropa)",
+   "where": "Zapador (arma de esta tropa)",
    "src": "texto del PDF («MICLIC»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
@@ -2815,45 +2802,45 @@
    "name": "Láser HELIOS",
    "kind": "unidad",
    "key": "laser",
-   "where": "laser",
+   "where": "Torre láser",
    "src": "texto del PDF («HELIOS»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Rifles antidrones",
    "kind": "unidad",
    "key": "antidrone",
-   "where": "antidrone",
+   "where": "Soldado antidrones",
    "src": "texto del PDF («Antidrones»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Terrestre",
    "name": "Perros robot",
    "kind": "unidad",
    "key": "robodog",
-   "where": "robodog",
+   "where": "Perro robot",
    "src": "texto del PDF («Perros Robot»)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Capturas",
    "name": "Logística e ingeniería (camiones, grúas, ambulancias)",
    "kind": "unidad",
    "key": "supplytruck",
-   "where": "supplytruck",
+   "where": "Camión de suministros",
    "src": "imagen 9 del PDF (captura)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Capturas",
    "name": "Equipamiento individual del soldado (visión nocturna)",
    "kind": "unidad",
    "key": "soldier",
-   "where": "soldier",
+   "where": "Soldado",
    "src": "imagen 16 del PDF (captura)",
-   "state": "falta"
+   "state": "ok"
   },
   {
    "group": "Capturas",
@@ -2910,29 +2897,22 @@
   {
    "screen": "02 Vestíbulo",
    "what": "Pestañas Jugar, Arsenal, Inventario y Misiones",
-   "missing": [
-    "data-view=\"missions\""
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-03.jpg"
   },
   {
    "screen": "02 Vestíbulo",
    "what": "Tutorial y Ajustes en el menú del vestíbulo",
-   "missing": [
-    "data-act=\"settings\""
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-03.jpg"
   },
   {
    "screen": "02 Vestíbulo",
    "what": "Escena «Tu ejército» detrás del vestíbulo (base y tropas en 3D)",
-   "missing": [
-    "const Showcase",
-    "Tu ejército"
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-03.jpg"
   },
   {
@@ -2945,10 +2925,8 @@
   {
    "screen": "03 Modos",
    "what": "Modo «Campo de pruebas» para ver y probar todas las tropas",
-   "missing": [
-    "Campo de pruebas"
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-04.jpg"
   },
   {
@@ -2996,12 +2974,8 @@
   {
    "screen": "09 Arsenal",
    "what": "Arsenal con buscador y filtros (Tierra, Drones, Helicópteros, Aviación, Mar, Estratégico)",
-   "missing": [
-    "'Drones'",
-    "'Helicópteros'",
-    "'Aviación'"
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-10.jpg"
   },
   {
@@ -3028,16 +3002,8 @@
   {
    "screen": "13 Ajustes",
    "what": "«A tu manera»: secciones Interfaz, Sonido, Cámara, Accesibilidad y Controles, y Restablecer",
-   "missing": [
-    "id=\"settings\"",
-    "data-setsec=\"interfaz\"",
-    "data-setsec=\"sonido\"",
-    "data-setsec=\"camara\"",
-    "data-setsec=\"accesibilidad\"",
-    "data-setsec=\"controles\"",
-    "Restablecer"
-   ],
-   "state": "falta",
+   "missing": [],
+   "state": "ok",
    "img": "/home/user/opencode-mobile/faro/docs/roblox/ui-0.4/ui04-14.jpg"
   },
   {
@@ -3053,701 +3019,681 @@
    "key": "scout",
    "name": "Explorador",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "soldier",
    "name": "Soldado",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "officer",
    "name": "Oficial de campo",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "radioman",
    "name": "Operador de comunicaciones",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "sapper",
    "name": "Zapador",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "mortar",
    "name": "Equipo de mortero",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "paratrooper",
    "name": "Paracaidista",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "marine",
    "name": "Infante de marina",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "atguided",
    "name": "Equipo antitanque",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "gunner",
    "name": "Ametrallador pesado",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "antidrone",
    "name": "Soldado antidrones",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "robodog",
    "name": "Perro robot",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "armoredcar",
    "name": "Blindado ligero",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "ifv",
    "name": "Vehículo de combate de infantería",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "trooptruck",
    "name": "Camión de tropas",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "ambulance",
    "name": "Ambulancia militar",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "recovery",
    "name": "Vehículo de recuperación",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "supplytruck",
    "name": "Camión de suministros",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "tanker",
    "name": "Camión cisterna militar",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "commandveh",
    "name": "Vehículo de mando",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "mobileradar",
    "name": "Radar móvil",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "howitzer",
    "name": "Obús autopropulsado",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "towedgun",
    "name": "Artillería remolcada",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "tankdestroyer",
    "name": "Cazacarros",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "amphib",
    "name": "Transporte anfibio",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "bridgelayer",
    "name": "Vehículo lanzapuentes",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "clearer",
    "name": "Vehículo de despeje",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "dozer",
    "name": "Topadora blindada",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "thermo",
    "name": "Lanzacohetes termobárico",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "scoutdrone",
    "name": "Dron explorador",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "cargodrone",
    "name": "Dron de carga",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "interceptor",
    "name": "Dron interceptor",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "navaldrone",
    "name": "Dron naval de superficie",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "subdrone",
    "name": "Dron submarino",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "transheli",
    "name": "Helicóptero de transporte",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "rescueheli",
    "name": "Helicóptero de rescate",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "navalheli",
    "name": "Helicóptero de patrulla naval",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "attackjet",
    "name": "Avión de apoyo terrestre",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "heavybomber",
    "name": "Bombardero convencional",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "transportplane",
    "name": "Avión de transporte militar",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "awacs",
    "name": "Avión de vigilancia aérea",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "tankerplane",
    "name": "Avión de reabastecimiento",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "ewplane",
    "name": "Avión de apoyo electrónico",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "gunship",
    "name": "Avión artillado",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "gunboat",
    "name": "Cañonera",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "battleship",
    "name": "Acorazado",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "patrolboat",
    "name": "Patrullera costera",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "corvette",
    "name": "Corbeta",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "cruiser",
    "name": "Crucero de mando",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "landingship",
    "name": "Buque de desembarco",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "logship",
    "name": "Buque logístico",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "hospitalship",
    "name": "Buque hospital",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "hovercraft",
    "name": "Aerodeslizador militar",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "minesweeper",
    "name": "Dragaminas",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "minelayer",
    "name": "Buque minador",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "reconsub",
    "name": "Submarino de reconocimiento",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "stratsub",
    "name": "Submarino estratégico",
    "kind": "unit",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "corral",
    "name": "Corral de ganadería",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "powerplant",
    "name": "Central de energía",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "workshop",
    "name": "Taller de mantenimiento",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "research",
    "name": "Centro de investigación",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "radarstation",
    "name": "Estación de radar",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "dronecenter",
    "name": "Centro de drones",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "shipyard",
    "name": "Astillero mayor",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "depot",
    "name": "Depósito logístico",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "hq",
    "name": "Centro de mando avanzado",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "bunker",
    "name": "Búnker de guarnición",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "gate",
    "name": "Puerta reforzada",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "bridge",
    "name": "Puente modular",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "dock",
    "name": "Muelle logístico",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "watchtower",
    "name": "Torre de observación",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "coastal",
    "name": "Batería de defensa costera",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "silo",
    "name": "Complejo estratégico",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "ciws",
    "name": "Defensa de punto",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "laser",
    "name": "Torre láser",
    "kind": "building",
-   "present": false,
+   "present": true,
    "diff": [],
-   "state": "falta"
+   "state": "ok"
   },
   {
    "key": "fighter",
    "name": "Avión de combate furtivo",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Caza furtivo»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "medic",
    "name": "Médico de campaña",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Médico»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "hospital",
    "name": "Hospital de campaña",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Enfermería»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "frigate",
    "name": "Fragata de escolta",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Fragata antiaérea»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "wind",
    "name": "Molino eólico",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Eólica»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "apc",
    "name": "Transporte blindado de personal",
    "kind": "renombre",
-   "present": false,
-   "diff": [
-    "hoy: «Transporte blindado»"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "drone",
    "name": "Dron de ataque",
    "kind": "productor",
-   "present": false,
-   "diff": [
-    "falta productor dronecenter"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "fpv",
    "name": "Dron kamikaze",
    "kind": "productor",
-   "present": false,
-   "diff": [
-    "falta productor dronecenter"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "frigate",
-   "name": "Fragata antiaérea",
+   "name": "Fragata de escolta",
    "kind": "productor",
-   "present": false,
-   "diff": [
-    "falta productor shipyard"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   },
   {
    "key": "carrier",
    "name": "Portaaviones",
    "kind": "productor",
-   "present": false,
-   "diff": [
-    "falta productor shipyard"
-   ],
-   "state": "falta"
+   "present": true,
+   "diff": [],
+   "state": "ok"
   }
  ],
  "extras": [
@@ -3799,6 +3745,11 @@
   {
    "key": "outpost",
    "name": "Puesto avanzado",
+   "kind": "Edificio"
+  },
+  {
+   "key": "seamine",
+   "name": "Mina naval",
    "kind": "Edificio"
   }
  ]

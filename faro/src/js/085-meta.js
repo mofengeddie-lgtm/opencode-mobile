@@ -100,17 +100,30 @@ const ABOUT_NEWS = [
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.
-const ARSENAL_FILTERS = [['all', 'Todos'], ['inf', 'Infantería'], ['land', 'Tierra'], ['sea', 'Mar'], ['air', 'Aire'], ['bld', 'Edificios'], ['strat', 'Estratégico']];
-const ARSENAL_NEW = ['nukelauncher', 'drone', 'fpv', 'mlrs', 'missileboat'];
+// v1.8: los filtros del PRD 1.8 del usuario (sección 56): drones, helicópteros y aviación por separado.
+const ARSENAL_FILTERS = [['all', 'Todos'], ['inf', 'Infantería'], ['land', 'Tierra'], ['drone', 'Drones'], ['heli', 'Helicópteros'],
+  ['plane', 'Aviación'], ['sea', 'Mar'], ['bld', 'Edificios'], ['strat', 'Estratégico']];
+// v1.8: todo lo que entró del catálogo del usuario se marca «Nuevo».
+const ARSENAL_NEW = ['scout', 'soldier', 'officer', 'radioman', 'sapper', 'mortar', 'paratrooper', 'marine', 'atguided', 'gunner', 'antidrone',
+  'robodog', 'armoredcar', 'ifv', 'trooptruck', 'ambulance', 'recovery', 'supplytruck', 'tanker', 'commandveh', 'mobileradar', 'howitzer',
+  'towedgun', 'tankdestroyer', 'amphib', 'bridgelayer', 'clearer', 'dozer', 'thermo', 'scoutdrone', 'cargodrone', 'interceptor', 'navaldrone',
+  'subdrone', 'transheli', 'rescueheli', 'navalheli', 'attackjet', 'heavybomber', 'transportplane', 'awacs', 'tankerplane', 'ewplane', 'gunship',
+  'gunboat', 'battleship', 'patrolboat', 'corvette', 'cruiser', 'landingship', 'logship', 'hospitalship', 'hovercraft', 'minesweeper',
+  'minelayer', 'reconsub', 'stratsub', 'corral', 'powerplant', 'workshop', 'research', 'radarstation', 'dronecenter', 'shipyard', 'depot', 'hq',
+  'bunker', 'gate', 'coastal', 'ciws', 'laser', 'watchtower', 'silo', 'bridge', 'dock'];
 const ARSENAL_ON = { land: 'en tierra', landcoast: 'en tierra junto al agua', coast: 'en el agua junto a la orilla', shallowcoast: 'en agua baja junto a la costa', deep: 'en mar profundo' };
 function arsenalItems() {
   const out = [];
   for (const [k, d] of Object.entries(UNITS)) {
-    const fam = d.strategic ? 'strat' : d.cls === 'inf' ? 'inf' : d.cls === 'veh' ? 'land' : d.cls === 'air' ? 'air' : 'sea';
-    out.push({ key: k, kind: 'unit', def: d, fam, also: d.strategic ? ['land'] : [] });
+    // v1.8: aire separado en drones, helicópteros y aviación (los drones de mar también están en «Drones»).
+    const air = d.drone ? 'drone' : d.plane ? 'plane' : 'heli';
+    const fam = d.strategic ? 'strat' : d.cls === 'inf' ? 'inf' : d.cls === 'veh' ? 'land' : d.cls === 'air' ? air : 'sea';
+    const also = d.strategic ? [d.mover === 'sea' ? 'sea' : 'land'] : (k === 'navaldrone' || k === 'subdrone') ? ['drone'] : [];
+    out.push({ key: k, kind: 'unit', def: d, fam, also });
   }
   for (const [k, d] of Object.entries(BUILDINGS)) {
-    out.push({ key: k, kind: 'bld', def: d, fam: 'bld', also: k === 'antinuke' || k === 'aadef' ? ['strat'] : [] });
+    if (k === 'seamine') continue;
+    out.push({ key: k, kind: 'bld', def: d, fam: 'bld', also: k === 'antinuke' || k === 'aadef' || k === 'silo' ? ['strat'] : [] });
   }
   return out;
 }
@@ -121,7 +134,7 @@ function arsenalRole(it) {
     return tab ? tab.name : it.key === 'core' ? 'Base' : 'Especial';
   }
   if (d.strategic) return 'Estratégico';
-  return { inf: 'Infantería', veh: 'Vehículo', ship: 'Barco', sub: 'Submarino', air: d.plane ? 'Avión' : 'Aeronave' }[d.cls] || '';
+  return { inf: 'Infantería', veh: 'Vehículo', ship: d.drone ? 'Dron naval' : 'Barco', sub: 'Submarino', air: d.drone ? 'Dron' : d.plane ? 'Avión' : 'Helicóptero' }[d.cls] || '';
 }
 // Sin tildes ni mayúsculas, para buscar «canon» y encontrar «Cañón».
 function plainText(s) {
@@ -765,8 +778,11 @@ class Lobby {
     $('creator-badge').hidden = !Creator.active();
     document.querySelectorAll('#lobby-tabs [data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === this.view)));
     const body = $('lobby-body');
+    const ver = $('game-version');
+    if (ver) ver.textContent = 'v' + GAME_VERSION;
     body.classList.toggle('wide', this.view !== 'play');
-    if (this.view === 'shop') body.innerHTML = this.shopHtml();
+    if (this.view === 'missions') body.innerHTML = this.missionsViewHtml();
+    else if (this.view === 'shop') body.innerHTML = this.shopHtml();
     else if (this.view === 'inv') body.innerHTML = this.invHtml();
     else if (this.view === 'arsenal') body.innerHTML = this.arsenalHtml();
     else body.innerHTML = this.leftHtml() + `<div class="lmain">${this.mainHtml()}</div>` + this.sideHtml();
@@ -792,7 +808,8 @@ class Lobby {
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
       ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
-      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
+      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}
+      <button type="button" data-act="settings"><span class="lm-label">Ajustes</span><small>A tu manera</small></button>${off('Servidores')}
     </nav>`;
   }
 
@@ -841,7 +858,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Núcleo nuevo', 'Edificios con tu color', 'Fichas de tropas', 'Portada nueva', 'Errores arreglados'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Todo tu catálogo: 93 tropas', 'Tu ejército en la portada', 'Campo de pruebas', 'Ajustes a tu manera', 'Programa revisor'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="hero-play">
           <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>Jugar</span></button>
@@ -970,6 +987,29 @@ class Lobby {
         <p class="queue">Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.</p>
         <ol class="ladder" id="ladder">${ladderRows(P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
       <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Liga 3 vs 3.</p>'}</section>`;
+  }
+
+  // v1.8: misiones (lo mismo que la ventana de Misiones), también como pestaña del vestíbulo (UI 0.4, pantalla 02).
+  missionsInner() {
+    const P = this.P;
+    const row = (m, i, kind) => {
+      const d = MISSION_BY_ID[m.id];
+      const prog = Math.min(d.goal, m.prog);
+      return `<div class="mission ${m.done ? 'done' : ''}"><span>${esc(d.text)}</span>
+        <span>${m.done ? 'Hecha' : `${prog} / ${d.goal}`}${kind === 'daily' && !m.done && !P.missions.rerolled ? ` <button class="mini-btn" type="button" data-act="reroll-m" data-v="${i}">Cambiar</button>` : ''}</span>
+        <div class="xpbar"><i style="width:${(prog / d.goal) * 100}%"></i></div></div>`;
+    };
+    return `<p>Cada misión da ${XP_REWARD.mission} XP y cristales (${MISSION_CRYSTALS.daily} las diarias, ${MISSION_CRYSTALS.weekly} las semanales). Se completan al terminar una partida.</p>
+      <h3>Diarias${P.missions.rerolled ? ' · ya cambiaste una hoy' : ' · puedes cambiar 1 al día'}</h3>${P.missions.daily.map((m, i) => row(m, i, 'daily')).join('')}
+      <h3>Semanales</h3>${P.missions.weekly.map((m, i) => row(m, i, 'weekly')).join('')}`;
+  }
+
+  missionsViewHtml() {
+    const can = Profile.dailyClaimable();
+    const passN = Profile.passClaimable();
+    return `<section class="lcard panel missionsview"><h2>Misiones</h2>${this.missionsInner()}
+      <div class="row"><button class="btn ${can ? 'gold' : ''}" type="button" data-act="modal" data-m="daily">Premio diario${can ? ' · ¡listo!' : ''}</button>
+        <button class="btn ${passN ? 'gold' : ''}" type="button" data-act="modal" data-m="pass">Pase del Faro${passN ? ` · ${passN} para reclamar` : ''}</button></div></section>`;
   }
 
   sideHtml() {
@@ -1241,6 +1281,8 @@ class Lobby {
         ${Profile.passClaimable() ? '<div class="row"><button class="btn gold" type="button" data-act="passall">Reclamar todo</button></div>' : ''}
         <div class="tiers">${tiers.join('')}</div>`;
     } else if (n === 'missions') {
+      html = head('Misiones') + this.missionsInner();
+    } else if (n === 'missions-old') {
       const row = (m, i, kind) => {
         const d = MISSION_BY_ID[m.id];
         const prog = Math.min(d.goal, m.prog);
@@ -1326,6 +1368,8 @@ class Lobby {
       this.sub = b.dataset.sub;
       this.syncOpts();
       this.render();
+    } else if (act === 'settings') {
+      app.ui.openSettings();
     } else if (act === 'play') {
       this.syncOpts();
       app.startGame();
@@ -1687,7 +1731,9 @@ class Lobby {
     const me = game.players[0];
     const win = game.result === 'victory';
     const out = { xp: 0, crystals: 0, lines: [], missions: [], levelUp: false, creator: !!game.creator, tutorial: null };
-    if (game.creator) {
+    if (game.creator || game.mode.sandbox) {
+      // v1.8: el Campo de pruebas no da XP, cristales ni misiones.
+      if (game.mode.sandbox) out.lines.push('Campo de pruebas: sin XP, cristales ni misiones');
       game.reward = out;
       return out;
     }

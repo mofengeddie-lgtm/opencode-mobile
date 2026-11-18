@@ -365,7 +365,39 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
   #selpanel { max-height: calc(50vh - 44px - var(--bottom)); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
 }
 /* ---------- vestíbulo ---------- */
-.lobby { flex-direction: column; gap: 12px; background: linear-gradient(180deg, rgba(8,15,21,0.82), rgba(8,15,21,0.55) 60%, rgba(8,15,21,0.7)); }
+.lobby { flex-direction: column; gap: 12px; background: linear-gradient(180deg, rgba(8,15,21,0.78), rgba(8,15,21,0.18) 34%, rgba(8,15,21,0.12) 62%, rgba(8,15,21,0.6)); }
+/* v1.8: «Tu ejército»: la escena 3D del fondo se ve; los paneles llevan su propio fondo. */
+.lobby .lmenu, .lobby .lside .lcard, .lobby .sidebtn { backdrop-filter: blur(3px); }
+.armytag { position: absolute; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(12,20,28,0.78); border: 1px solid var(--line); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.armytag span { color: var(--info, #7dd3ff); font-weight: 700; }
+.armytag b { color: var(--text); font-weight: 600; letter-spacing: 0.02em; text-transform: none; }
+.armytag i { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+@media (max-width: 760px) { .armytag { display: none; } }
+/* La portada deja ver la escena 3D en vivo (tu base y tu ejército) en vez de la imagen fija. */
+body.army .cover.hero { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: inset 0 0 0 1px rgba(242,171,56,0.35); }
+body.army .cover.hero .cover-img { display: none; }
+body.army .cover::before { background: linear-gradient(90deg, rgba(8,15,21,0.78), rgba(8,15,21,0.32) 44%, rgba(8,15,21,0) 66%), linear-gradient(0deg, rgba(8,15,21,0.5), rgba(8,15,21,0) 42%); }
+/* v1.8: Ajustes «A tu manera» (pantalla 13 de la UI 0.4). */
+.settings { max-width: 860px; }
+.setgrid { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 12px; min-height: 0; }
+.setnav { display: grid; gap: 4px; align-content: start; padding: 8px; background: var(--raise, rgba(255,255,255,0.04)); border-radius: 10px; }
+.setnav button[data-setsec] { min-height: 44px; text-align: left; padding: 0 12px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--text); font-weight: 600; cursor: pointer; }
+.setnav button[data-setsec][aria-selected="true"] { border-color: var(--gold); color: var(--gold); background: var(--raise-2); }
+.setnav .btn { margin-top: 12px; }
+.setpane { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.setpane[hidden] { display: none; }
+.setpane h3 { margin: 0; font-size: 20px; }
+.setpane .btn { justify-content: flex-start; }
+.setrow { display: grid; gap: 6px; }
+.setfoot { display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.taphelp { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: rgba(255,255,255,0.03); }
+.taphelp b { color: var(--gold); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (max-width: 640px) { .setgrid { grid-template-columns: minmax(0, 1fr); } .setnav { grid-template-columns: repeat(3, minmax(0, 1fr)); } .setnav .btn { margin-top: 0; } }
+/* v1.8: Centro de investigación. */
+.research { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.research .btn { flex-direction: column; align-items: flex-start; gap: 2px; min-height: 64px; padding: 8px 10px; text-align: left; }
+.research .btn small { font-size: 11px; color: var(--muted); font-weight: 500; }
+.research .btn em { font-style: normal; font-size: 11px; color: var(--gold); }
 .lobby-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .brand-sm { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; }
 .brand-sm svg { width: 34px; height: 34px; }
@@ -942,7 +974,7 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
 /* Con 4 pestañas (Jugar, Arsenal, Tienda, Inventario), en el celular vertical van en dos filas para que todas se vean. */
 @media (max-width: 440px) {
   .lobby-tabs { flex-wrap: wrap; }
-  .lobby-tabs button { flex: 1 1 calc(50% - 4px); }
+  .lobby-tabs button { flex: 1 1 calc(33.33% - 4px); padding: 0 4px; }
 }
 .fieldnote { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 .fieldnote b { color: var(--text); }
@@ -1234,13 +1266,14 @@ window.FaroBoot = (function () {
     <div class="brand-sm">
       <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" fill="#1a2834" stroke="#f2ab38" stroke-width="3"/><path d="M26 50h12l-2-24h-8z" fill="#eef1f3"/><path d="M27.2 40h9.6l.5 5h-10.6zM28 31h8l.4 4h-8.8z" fill="#c0392b"/><rect x="27" y="20" width="10" height="6" rx="1" fill="#f2ab38"/><path d="M26 20l6-6 6 6z" fill="#eef1f3"/><path d="M37 21l15-6v10z" fill="#f2ab38" opacity=".55"/><path d="M27 21 12 15v10z" fill="#f2ab38" opacity=".35"/></svg>
       <b>Faro de <span>Ámbar</span></b>
-      <span class="version">v1.7</span>
+      <span class="version" id="game-version">v1.8</span>
     </div>
     <nav class="lobby-tabs" id="lobby-tabs" role="tablist">
       <button type="button" role="tab" data-view="play" aria-selected="true">Jugar</button>
       <button type="button" role="tab" data-view="arsenal" aria-selected="false">Arsenal</button>
       <button type="button" role="tab" data-view="shop" aria-selected="false">Tienda</button>
       <button type="button" role="tab" data-view="inv" aria-selected="false">Inventario</button>
+      <button type="button" role="tab" data-view="missions" aria-selected="false">Misiones</button>
     </nav>
     <div class="lobby-res">
       <button class="btn icon musicbtn" id="btn-music-lobby" type="button" aria-label="Música">
@@ -1251,6 +1284,8 @@ window.FaroBoot = (function () {
     </div>
   </header>
   <div class="lobby-body" id="lobby-body"></div>
+  <!-- v1.8: etiqueta de la escena 3D del fondo (tu base y tu ejército). -->
+  <div class="armytag" id="armytag" hidden><i aria-hidden="true"></i><span>Tu ejército</span><b id="armytag-n"></b></div>
 </div>
 <div id="modal" class="screen overlay-dim" hidden>
   <div class="dialog panel wide" id="modal-body"></div>
@@ -1263,7 +1298,7 @@ window.FaroBoot = (function () {
       <button class="btn gold" id="btn-resume" type="button">Continuar</button>
       <button class="btn" id="btn-restart" type="button">Reiniciar</button>
     </div>
-    <div>
+    <div id="set-quality">
       <div class="lbl" style="margin-bottom:6px">Gráficos</div>
       <div class="seg3">
         <button class="btn" type="button" data-quality="auto">Automática</button>
@@ -1272,7 +1307,7 @@ window.FaroBoot = (function () {
       </div>
       <p class="small-note" id="quality-note"></p>
     </div>
-    <div>
+    <div id="set-light">
       <div class="lbl" style="margin-bottom:6px">Iluminación</div>
       <div class="seg2">
         <button class="btn" type="button" data-light="new" aria-pressed="true">Nueva</button>
@@ -1289,13 +1324,13 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" id="btn-calm" aria-pressed="false">Reducir destellos: no</button>
       </div>
       <p class="small-note">Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa. Reducir destellos: sin fogonazos de disparo y con el destello del misil muy suave.</p>
-      <div class="uiscale">
+      <div class="uiscale" id="ui-scale-wrap">
         <label class="lbl" for="ui-scale">Tamaño de la interfaz: <b id="ui-scale-val">100 %</b></label>
         <input type="range" id="ui-scale" min="100" max="130" step="5" value="100" aria-describedby="ui-scale-note">
         <p class="small-note" id="ui-scale-note"></p>
       </div>
     </div>
-    <div>
+    <div id="set-music">
       <div class="lbl" style="margin-bottom:6px">Música</div>
       <div class="seg3 seg4">
         <button class="btn" type="button" data-music="0">Apagada</button>
@@ -1304,7 +1339,7 @@ window.FaroBoot = (function () {
         <button class="btn" type="button" data-music="1">Alta</button>
       </div>
     </div>
-    <ul class="help">
+    <ul class="help" id="help-list">
       <li><b>Mover el mapa:</b> arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).</li>
       <li><b>Ordenar:</b> toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.</li>
       <li><b>Varias tropas:</b> botón Recuadro y arrastra (o Mayús + arrastrar).</li>
@@ -1330,7 +1365,39 @@ window.FaroBoot = (function () {
     <div class="row">
       <button class="btn" id="btn-sound2" type="button">Sonido: sí</button>
       <button class="btn" id="btn-fps" type="button">Contador de cuadros: no</button>
+      <button class="btn" id="btn-pause-settings" type="button">Ajustes</button>
       <button class="btn danger" id="btn-quit" type="button">Salir al menú</button>
+    </div>
+  </div>
+</div>
+
+<!-- v1.8: Ajustes «A tu manera» (pantalla 13 de la UI 0.4): los controles de la pausa, ordenados por secciones. -->
+<div id="settings" class="screen overlay-dim" hidden>
+  <div class="dialog panel wide settings" role="dialog" aria-labelledby="settings-title">
+    <h2 id="settings-title">A tu manera</h2>
+    <div class="setgrid">
+      <nav class="setnav" role="tablist" aria-label="Secciones de ajustes">
+        <button type="button" role="tab" data-setsec="interfaz" aria-selected="true">Interfaz</button>
+        <button type="button" role="tab" data-setsec="sonido" aria-selected="false">Sonido</button>
+        <button type="button" role="tab" data-setsec="camara" aria-selected="false">Cámara</button>
+        <button type="button" role="tab" data-setsec="accesibilidad" aria-selected="false">Accesibilidad</button>
+        <button type="button" role="tab" data-setsec="controles" aria-selected="false">Controles</button>
+        <button class="btn" type="button" id="btn-settings-back">Volver</button>
+      </nav>
+      <div>
+        <section class="setpane" data-setpane="interfaz"><h3>Interfaz y lectura</h3></section>
+        <section class="setpane" data-setpane="sonido" hidden><h3>Sonido</h3></section>
+        <section class="setpane" data-setpane="camara" hidden><h3>Cámara e imagen</h3>
+          <div class="setrow"><button class="btn" type="button" id="btn-orbit" aria-pressed="true">Giro de la cámara en el vestíbulo: sí</button>
+            <p class="small-note">La escena «Tu ejército» del vestíbulo gira despacio. En la partida, gira la cámara con dos dedos (o Q y E).</p></div>
+        </section>
+        <section class="setpane" data-setpane="accesibilidad" hidden><h3>Accesibilidad</h3></section>
+        <section class="setpane" data-setpane="controles" hidden><h3>Controles</h3>
+          <div class="taphelp"><b>Controles táctiles</b><p>Toque: seleccionar · Arrastre: mover la cámara · Pellizco: acercar · Cancelar: salir de la orden.</p></div>
+        </section>
+        <div class="setfoot"><span class="small-note">Se guardan solos en este iPad.</span>
+          <button class="btn" type="button" id="btn-settings-reset">Restablecer</button></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1417,6 +1484,14 @@ const RESEARCH = {
   engines: { name: 'Motores', pct: 0.15, cost: 2500, time: 45, desc: '+15 % de velocidad a tus aeronaves.' },
 };
 const MINES = { limit: 8, every: 4 };
+// v1.8: en qué sección de «A tu manera» va cada control de la pausa.
+const SETTINGS_LAYOUT = {
+  interfaz: ['ui-scale-wrap', 'btn-bigtext', 'btn-fps'],
+  sonido: ['set-music', 'btn-sound2'],
+  camara: ['set-quality', 'set-light'],
+  accesibilidad: ['btn-cvd', 'btn-calm', 'btn-battery'],
+  controles: ['help-list'],
+};
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
@@ -2228,7 +2303,12 @@ const MODES = {
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
   tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento en otra isla.', players: 2, teams: [0, 1], tutorial: true, coins: 6000 },
+  // v1.8: para mirar y probar todo el catálogo. El rival no ataca, hay Arsenal estratégico y no da XP ni misiones.
+  sandbox: { name: 'Campo de pruebas', desc: 'Todos los productores ya hechos, 500.000 monedas y energía de sobra. El rival no ataca: prueba cada tropa y edificio. No da XP.',
+    players: 2, teams: [0, 1], coins: 500000, energy: 9999, lobby: true, sandbox: true, strategic: true },
 };
+// v1.8: lo que ya está construido al empezar el Campo de pruebas (lo que no cabe en tu isla, lo construyes tú).
+const SANDBOX_BUILDINGS = ['barracks', 'factory', 'helipad', 'airport', 'dronecenter', 'research', 'harbor', 'shipyard', 'house', 'house', 'powerplant'];
 
 const MAPS = {
   archipelago: { name: 'Archipiélago Ámbar', desc: 'Islas en círculo unidas por puentes de arena.' },
@@ -4000,6 +4080,8 @@ class Game {
       }
     }
     this.recomputeTerritory();
+    // v1.8: Campo de pruebas: tus productores ya construidos y dos Ingenieros más.
+    if (mode.sandbox) this.setupSandbox();
     this.refreshEconomy();
     // Personalidades repartidas según la semilla del mapa: cada bot es distinto.
     const order = PERSONALITY_ORDER.slice();
@@ -4012,9 +4094,21 @@ class Game {
       p.persona = opts.personas && opts.personas[p.id] ? opts.personas[p.id] : order[i % order.length];
       return new Bot(this, p.id);
     });
+    // v1.8: en el Campo de pruebas el rival no juega.
+    if (mode.sandbox) this.bots = [];
     // Campaña (v0.7): preparación de la misión y seguimiento de su meta.
     this.camp = null;
     if (opts.mission) Campaign.setup(this);
+  }
+
+  setupSandbox() {
+    const p = this.players[0];
+    const home = this.cells[p.core.cell];
+    for (const t of SANDBOX_BUILDINGS) {
+      const c = this.cells.filter((x) => !this.placeInvalid(0, t, x.i, true)).sort((a, b) => this.map.dist(a, home) - this.map.dist(b, home))[0];
+      if (c) this.addBuilding(0, t, c.i, true);
+    }
+    for (const ci of this.freeCellsNear(home.i, 'land', 0, 2)) this.addUnit(0, 'engineer', ci);
   }
 
   // ---------- consultas básicas ----------
@@ -4470,7 +4564,7 @@ class Game {
     for (const u of this.units) if (u.alive) this.players[u.owner].popUsed += u.def.pop;
     for (const p of this.players) {
       p.popCap += this.popBonus(p);
-      if (this.creator && p.id === 0) p.popCap = MAX_POP;
+      if ((this.creator || this.mode.sandbox) && p.id === 0) p.popCap = MAX_POP;
       p.popCap = Math.min(MAX_POP, p.popCap);
       p.baseIncome = p.income;
       p.income = Math.round(p.income * (1 + p.bonus));
@@ -7553,6 +7647,15 @@ const unitCat = (u) => (u.cls === 'ship' || u.cls === 'sub' ? 'sea' : u.cls);
 const FAST_UNITS = { jeep: 'veh', speedboat: 'sea', ranger: 'inf', heli: 'air' };
 const ECO_TYPES = ['farm', 'mine', 'pump', 'rig'];
 
+// v1.8: tropas nuevas que los bots usan en lugar de otras con el mismo papel (salen del mismo edificio).
+const AI_SWAP_CHANCE = 0.3;
+const AI_SWAPS = {
+  rifle: ['soldier', 'gunner'], rocket: ['atguided'], sniper: ['mortar'], shotgun: ['soldier'],
+  jeep: ['armoredcar'], lighttank: ['armoredcar'], tank: ['tankdestroyer'], apc: ['ifv'], arty: ['howitzer', 'towedgun'], mlrs: ['thermo'],
+  speedboat: ['gunboat', 'patrolboat'], destroyer: ['corvette'],
+  fighter: ['attackjet'], bomber: ['heavybomber', 'gunship'],
+};
+
 class Bot {
   constructor(game, pid) {
     this.g = game;
@@ -8061,7 +8164,16 @@ class Bot {
     return { type: this.unitFor(best, mix, have, units), btype: cats[best], since: T };
   }
 
+  // v1.8: en Normal y Difícil, a veces cambia la tropa elegida por una nueva del catálogo con el mismo papel
+  // (y del mismo edificio). Así los bots también usan las tropas nuevas sin gastar distinto.
   unitFor(cat, mix, have, units) {
+    const pick = this.unitFor17(cat, mix, have, units);
+    const swaps = AI_SWAPS[pick];
+    if (!swaps || this.g.opts.difficulty === 'easy' || Math.random() >= AI_SWAP_CHANCE) return pick;
+    return swaps[Math.floor(Math.random() * swaps.length)];
+  }
+
+  unitFor17(cat, mix, have, units) {
     const T = this.g.time;
     const r = Math.random();
     const counter = this.tac.counter && mix.total >= 3;
@@ -11909,6 +12021,16 @@ class UI {
     $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
     $('btn-calm').addEventListener('click', () => app.setCalm(!app.calm));
     $('ui-scale').addEventListener('input', (e) => app.setUiScale(Number(e.target.value)));
+    // v1.8: Ajustes «A tu manera».
+    $('btn-pause-settings').addEventListener('click', () => this.openSettings());
+    $('btn-settings-back').addEventListener('click', () => this.closeSettings());
+    $('btn-settings-reset').addEventListener('click', () => this.resetSettings());
+    $('btn-orbit').addEventListener('click', () => app.setOrbit(app.orbit === false));
+    $('settings').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-setsec]');
+      if (t) this.showSettingsSection(t.dataset.setsec);
+      else if (e.target === $('settings')) this.closeSettings();
+    });
     // v1.7: ventana de confirmación del uso estratégico.
     $('strat').addEventListener('click', (e) => {
       if (e.target.closest('#btn-strat-ok')) this.confirmStrategic();
@@ -12050,6 +12172,64 @@ class UI {
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
   }
 
+  // ---------- v1.8: Ajustes «A tu manera» ----------
+  // Los controles son los mismos de la pausa: al abrir se acomodan por secciones y al cerrar vuelven a su lugar.
+  openSettings(sec = 'interfaz') {
+    if (!this.setMoved) {
+      this.setMoved = [];
+      for (const [pane, ids] of Object.entries(SETTINGS_LAYOUT)) {
+        const box = document.querySelector(`[data-setpane="${pane}"]`);
+        const after = box.querySelector('h3');
+        let ref = after.nextSibling;
+        for (const id of ids) {
+          const el = $(id);
+          if (!el) continue;
+          this.setMoved.push([el, el.parentNode, el.nextSibling]);
+          box.insertBefore(el, ref);
+        }
+      }
+    }
+    $('settings').hidden = false;
+    this.showSettingsSection(sec);
+    this.app.sound.play('click');
+  }
+
+  showSettingsSection(sec) {
+    document.querySelectorAll('#settings [data-setsec]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.setsec === sec)));
+    document.querySelectorAll('#settings [data-setpane]').forEach((p) => { p.hidden = p.dataset.setpane !== sec; });
+  }
+
+  closeSettings() {
+    if (this.setMoved) {
+      for (let i = this.setMoved.length - 1; i >= 0; i--) {
+        const [el, parent, next] = this.setMoved[i];
+        parent.insertBefore(el, next);
+      }
+      this.setMoved = null;
+    }
+    $('settings').hidden = true;
+  }
+
+  // Vuelve todo a como viene el juego: calidad automática, luz nueva, sin ahorro, colores normales, 100 %,
+  // con destellos, sin contador, música media, sonido y giro de la cámara.
+  resetSettings() {
+    const app = this.app;
+    app.setQuality('auto');
+    app.setLight('new');
+    if (app.battery) app.setBattery(false);
+    if (app.cvd) app.setCvd(false);
+    app.setUiScale(100);
+    app.setCalm(false);
+    app.toggleFps(false);
+    app.setOrbit(true);
+    app.music.setLevel(0.6);
+    if (!app.sound.on) app.sound.toggle();
+    this.updateMusicBtns();
+    this.updateSoundBtn();
+    this.updateA11yBtns();
+    this.toast('Ajustes restablecidos', 'good');
+  }
+
   updateLightBtns() {
     const pref = lightPref();
     document.querySelectorAll('[data-light]').forEach((b) => {
@@ -12072,6 +12252,7 @@ class UI {
     set('btn-bigtext', app.bigText, 'Letra grande');
     // v1.7: tamaño de la interfaz y menos destellos.
     set('btn-calm', app.calm, 'Reducir destellos');
+    set('btn-orbit', app.orbit !== false, 'Giro de la cámara en el vestíbulo');
     const sl = $('ui-scale');
     if (sl) {
       sl.value = String(app.uiScale || 100);
@@ -14175,17 +14356,30 @@ const ABOUT_NEWS = [
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.
-const ARSENAL_FILTERS = [['all', 'Todos'], ['inf', 'Infantería'], ['land', 'Tierra'], ['sea', 'Mar'], ['air', 'Aire'], ['bld', 'Edificios'], ['strat', 'Estratégico']];
-const ARSENAL_NEW = ['nukelauncher', 'drone', 'fpv', 'mlrs', 'missileboat'];
+// v1.8: los filtros del PRD 1.8 del usuario (sección 56): drones, helicópteros y aviación por separado.
+const ARSENAL_FILTERS = [['all', 'Todos'], ['inf', 'Infantería'], ['land', 'Tierra'], ['drone', 'Drones'], ['heli', 'Helicópteros'],
+  ['plane', 'Aviación'], ['sea', 'Mar'], ['bld', 'Edificios'], ['strat', 'Estratégico']];
+// v1.8: todo lo que entró del catálogo del usuario se marca «Nuevo».
+const ARSENAL_NEW = ['scout', 'soldier', 'officer', 'radioman', 'sapper', 'mortar', 'paratrooper', 'marine', 'atguided', 'gunner', 'antidrone',
+  'robodog', 'armoredcar', 'ifv', 'trooptruck', 'ambulance', 'recovery', 'supplytruck', 'tanker', 'commandveh', 'mobileradar', 'howitzer',
+  'towedgun', 'tankdestroyer', 'amphib', 'bridgelayer', 'clearer', 'dozer', 'thermo', 'scoutdrone', 'cargodrone', 'interceptor', 'navaldrone',
+  'subdrone', 'transheli', 'rescueheli', 'navalheli', 'attackjet', 'heavybomber', 'transportplane', 'awacs', 'tankerplane', 'ewplane', 'gunship',
+  'gunboat', 'battleship', 'patrolboat', 'corvette', 'cruiser', 'landingship', 'logship', 'hospitalship', 'hovercraft', 'minesweeper',
+  'minelayer', 'reconsub', 'stratsub', 'corral', 'powerplant', 'workshop', 'research', 'radarstation', 'dronecenter', 'shipyard', 'depot', 'hq',
+  'bunker', 'gate', 'coastal', 'ciws', 'laser', 'watchtower', 'silo', 'bridge', 'dock'];
 const ARSENAL_ON = { land: 'en tierra', landcoast: 'en tierra junto al agua', coast: 'en el agua junto a la orilla', shallowcoast: 'en agua baja junto a la costa', deep: 'en mar profundo' };
 function arsenalItems() {
   const out = [];
   for (const [k, d] of Object.entries(UNITS)) {
-    const fam = d.strategic ? 'strat' : d.cls === 'inf' ? 'inf' : d.cls === 'veh' ? 'land' : d.cls === 'air' ? 'air' : 'sea';
-    out.push({ key: k, kind: 'unit', def: d, fam, also: d.strategic ? ['land'] : [] });
+    // v1.8: aire separado en drones, helicópteros y aviación (los drones de mar también están en «Drones»).
+    const air = d.drone ? 'drone' : d.plane ? 'plane' : 'heli';
+    const fam = d.strategic ? 'strat' : d.cls === 'inf' ? 'inf' : d.cls === 'veh' ? 'land' : d.cls === 'air' ? air : 'sea';
+    const also = d.strategic ? [d.mover === 'sea' ? 'sea' : 'land'] : (k === 'navaldrone' || k === 'subdrone') ? ['drone'] : [];
+    out.push({ key: k, kind: 'unit', def: d, fam, also });
   }
   for (const [k, d] of Object.entries(BUILDINGS)) {
-    out.push({ key: k, kind: 'bld', def: d, fam: 'bld', also: k === 'antinuke' || k === 'aadef' ? ['strat'] : [] });
+    if (k === 'seamine') continue;
+    out.push({ key: k, kind: 'bld', def: d, fam: 'bld', also: k === 'antinuke' || k === 'aadef' || k === 'silo' ? ['strat'] : [] });
   }
   return out;
 }
@@ -14196,7 +14390,7 @@ function arsenalRole(it) {
     return tab ? tab.name : it.key === 'core' ? 'Base' : 'Especial';
   }
   if (d.strategic) return 'Estratégico';
-  return { inf: 'Infantería', veh: 'Vehículo', ship: 'Barco', sub: 'Submarino', air: d.plane ? 'Avión' : 'Aeronave' }[d.cls] || '';
+  return { inf: 'Infantería', veh: 'Vehículo', ship: d.drone ? 'Dron naval' : 'Barco', sub: 'Submarino', air: d.drone ? 'Dron' : d.plane ? 'Avión' : 'Helicóptero' }[d.cls] || '';
 }
 // Sin tildes ni mayúsculas, para buscar «canon» y encontrar «Cañón».
 function plainText(s) {
@@ -14840,8 +15034,11 @@ class Lobby {
     $('creator-badge').hidden = !Creator.active();
     document.querySelectorAll('#lobby-tabs [data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === this.view)));
     const body = $('lobby-body');
+    const ver = $('game-version');
+    if (ver) ver.textContent = 'v' + GAME_VERSION;
     body.classList.toggle('wide', this.view !== 'play');
-    if (this.view === 'shop') body.innerHTML = this.shopHtml();
+    if (this.view === 'missions') body.innerHTML = this.missionsViewHtml();
+    else if (this.view === 'shop') body.innerHTML = this.shopHtml();
     else if (this.view === 'inv') body.innerHTML = this.invHtml();
     else if (this.view === 'arsenal') body.innerHTML = this.arsenalHtml();
     else body.innerHTML = this.leftHtml() + `<div class="lmain">${this.mainHtml()}</div>` + this.sideHtml();
@@ -14867,7 +15064,8 @@ class Lobby {
       ${item('tutorial', 'Tutorial', this.P.tutorialDone ? 'hecho' : 'premio')}
       ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
       ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
-      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}${off('Servidores')}
+      ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}
+      <button type="button" data-act="settings"><span class="lm-label">Ajustes</span><small>A tu manera</small></button>${off('Servidores')}
     </nav>`;
   }
 
@@ -14916,7 +15114,7 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Núcleo nuevo', 'Edificios con tu color', 'Fichas de tropas', 'Portada nueva', 'Errores arreglados'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['Todo tu catálogo: 93 tropas', 'Tu ejército en la portada', 'Campo de pruebas', 'Ajustes a tu manera', 'Programa revisor'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="hero-play">
           <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>Jugar</span></button>
@@ -15045,6 +15243,29 @@ class Lobby {
         <p class="queue">Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.</p>
         <ol class="ladder" id="ladder">${ladderRows(P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
       <section class="lcard panel"><h3>Últimas partidas · ${R.wins || 0} de ${R.games || 0} ganadas</h3>${hist ? `<ul class="rankhist">${hist}</ul>` : '<p class="queue">Todavía no jugaste la Liga 3 vs 3.</p>'}</section>`;
+  }
+
+  // v1.8: misiones (lo mismo que la ventana de Misiones), también como pestaña del vestíbulo (UI 0.4, pantalla 02).
+  missionsInner() {
+    const P = this.P;
+    const row = (m, i, kind) => {
+      const d = MISSION_BY_ID[m.id];
+      const prog = Math.min(d.goal, m.prog);
+      return `<div class="mission ${m.done ? 'done' : ''}"><span>${esc(d.text)}</span>
+        <span>${m.done ? 'Hecha' : `${prog} / ${d.goal}`}${kind === 'daily' && !m.done && !P.missions.rerolled ? ` <button class="mini-btn" type="button" data-act="reroll-m" data-v="${i}">Cambiar</button>` : ''}</span>
+        <div class="xpbar"><i style="width:${(prog / d.goal) * 100}%"></i></div></div>`;
+    };
+    return `<p>Cada misión da ${XP_REWARD.mission} XP y cristales (${MISSION_CRYSTALS.daily} las diarias, ${MISSION_CRYSTALS.weekly} las semanales). Se completan al terminar una partida.</p>
+      <h3>Diarias${P.missions.rerolled ? ' · ya cambiaste una hoy' : ' · puedes cambiar 1 al día'}</h3>${P.missions.daily.map((m, i) => row(m, i, 'daily')).join('')}
+      <h3>Semanales</h3>${P.missions.weekly.map((m, i) => row(m, i, 'weekly')).join('')}`;
+  }
+
+  missionsViewHtml() {
+    const can = Profile.dailyClaimable();
+    const passN = Profile.passClaimable();
+    return `<section class="lcard panel missionsview"><h2>Misiones</h2>${this.missionsInner()}
+      <div class="row"><button class="btn ${can ? 'gold' : ''}" type="button" data-act="modal" data-m="daily">Premio diario${can ? ' · ¡listo!' : ''}</button>
+        <button class="btn ${passN ? 'gold' : ''}" type="button" data-act="modal" data-m="pass">Pase del Faro${passN ? ` · ${passN} para reclamar` : ''}</button></div></section>`;
   }
 
   sideHtml() {
@@ -15316,6 +15537,8 @@ class Lobby {
         ${Profile.passClaimable() ? '<div class="row"><button class="btn gold" type="button" data-act="passall">Reclamar todo</button></div>' : ''}
         <div class="tiers">${tiers.join('')}</div>`;
     } else if (n === 'missions') {
+      html = head('Misiones') + this.missionsInner();
+    } else if (n === 'missions-old') {
       const row = (m, i, kind) => {
         const d = MISSION_BY_ID[m.id];
         const prog = Math.min(d.goal, m.prog);
@@ -15401,6 +15624,8 @@ class Lobby {
       this.sub = b.dataset.sub;
       this.syncOpts();
       this.render();
+    } else if (act === 'settings') {
+      app.ui.openSettings();
     } else if (act === 'play') {
       this.syncOpts();
       app.startGame();
@@ -15762,7 +15987,9 @@ class Lobby {
     const me = game.players[0];
     const win = game.result === 'victory';
     const out = { xp: 0, crystals: 0, lines: [], missions: [], levelUp: false, creator: !!game.creator, tutorial: null };
-    if (game.creator) {
+    if (game.creator || game.mode.sandbox) {
+      // v1.8: el Campo de pruebas no da XP, cristales ni misiones.
+      if (game.mode.sandbox) out.lines.push('Campo de pruebas: sin XP, cristales ni misiones');
       game.reward = out;
       return out;
     }
@@ -16254,6 +16481,95 @@ class Music {
   }
 }
 
+// ---- 087-showcase.js ----
+'use strict';
+// v1.8: «Tu ejército» detrás del vestíbulo. La partida de fondo arma tu base con edificios y un desfile de
+// tropas, vehículos, barcos y aeronaves, como la imagen del sitio y la pantalla 02 de la UI 0.4 del usuario.
+// Es solo para mirar: los bots no juegan, nadie dispara y la partida de fondo no avanza.
+
+const SHOWCASE = {
+  // Edificios alrededor del Núcleo (tipo y nivel). Los que no caben en el mapa elegido se saltan.
+  buildings: [['barracks', 2], ['factory', 2], ['helipad', 1], ['airport', 1], ['turret', 3], ['aadef', 2], ['house', 2],
+    ['wind', 1], ['hospital', 2], ['radarstation', 1], ['watchtower', 1], ['bunker', 1], ['depot', 1], ['dronecenter', 1],
+    ['harbor', 1], ['shipyard', 1], ['farm', 1]],
+  land: 26, sea: 7, air: 7,
+  // Con «Más fluido» o «Ahorro de batería», un desfile más chico.
+  low: 0.55,
+  // Siempre en el desfile: la cara del ejército (también de las tropas nuevas).
+  featured: ['soldier', 'rifle', 'ranger', 'marine', 'officer', 'tank', 'heavytank', 'ifv', 'howitzer', 'apache', 'fighter', 'destroyer', 'corvette'],
+};
+
+const Showcase = {
+  // Arma la escena en la partida g. Devuelve cuántas tropas desfilan.
+  build(g, opts = {}) {
+    g.showcase = true;
+    g.bots = [];
+    const p = g.players[0];
+    const core = p.core;
+    const home = g.cells[core.cell];
+    core.level = 3;
+    core.maxHp = g.bMaxHp(core.def, 3);
+    core.hp = core.maxHp;
+    const rng = mulberry32((g.opts.seed || 1) + 991);
+    const shuffle = (a) => {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    // Edificios: en la casilla libre de tu territorio más cercana al Núcleo.
+    const free = (t) => g.cells.filter((c) => !g.placeInvalid(0, t, c.i, true))
+      .sort((a, b) => g.map.dist(a, home) - g.map.dist(b, home))[0];
+    for (const [t, lv] of SHOWCASE.buildings) {
+      const c = free(t);
+      if (!c) continue;
+      const b = g.addBuilding(0, t, c.i, true);
+      b.level = Math.min(lv, b.def.maxLevel);
+      b.maxHp = g.bMaxHp(b.def, b.level);
+      b.hp = b.maxHp;
+    }
+    // Tropas: las fijas y el resto al azar (cambian cada vez que vuelves al vestíbulo).
+    const k = opts.low ? SHOWCASE.low : 1;
+    const isAir = (d) => d.mover === 'air';
+    const isSea = (d) => d.mover === 'sea' || (d.mover === 'amphib' && d.cls === 'ship');
+    const ok = (key) => !UNITS[key].strategic && key !== 'builder';
+    const pick = (test, n) => {
+      const fixed = SHOWCASE.featured.filter((t) => test(UNITS[t]));
+      const rest = shuffle(Object.keys(UNITS).filter((t) => ok(t) && test(UNITS[t]) && !fixed.includes(t)));
+      return [...fixed, ...rest].slice(0, Math.max(1, Math.round(n * k)));
+    };
+    const landT = pick((d) => !isAir(d) && !isSea(d), SHOWCASE.land)
+      .sort((a, b) => (UNITS[a].cls === 'inf' ? 0 : 1) - (UNITS[b].cls === 'inf' ? 0 : 1));
+    const seaT = pick(isSea, SHOWCASE.sea);
+    const airT = pick(isAir, SHOWCASE.air);
+    const face = Math.atan2(home.x, home.z);
+    let n = 0;
+    const place = (types, cells) => {
+      types.forEach((t, i) => {
+        if (cells[i] === undefined) return;
+        const u = g.addUnit(0, t, cells[i]);
+        u.yaw = face + (rng() - 0.5) * 0.5;
+        n++;
+      });
+    };
+    const landCells = g.freeCellsNear(home.i, 'land', 0, landT.length + 6).filter((ci) => ci !== home.i);
+    place(landT, [...new Set(landCells)]);
+    if (seaT.length) {
+      const seaCells = [...new Set(g.freeCellsNear(home.i, 'sea', 0, seaT.length * 2))].filter((_, i) => i % 2 === 0);
+      if (seaCells.length && TERRAIN[g.cells[seaCells[0]].t].water) place(seaT, seaCells);
+    }
+    // Aeronaves: sobre la base, un poco más afuera que las tropas.
+    const ring = g.cells.filter((c) => {
+      const d = g.map.dist(c, home);
+      return d >= 2 && d <= 4;
+    });
+    place(airT, shuffle(ring.map((c) => c.i)));
+    g.showcaseCount = n;
+    return n;
+  },
+};
+
 // ---- 09-main.js ----
 'use strict';
 // Arranque y bucle principal.
@@ -16313,6 +16629,8 @@ const App = {
       const us = Number(localStorage.getItem('faro-uiscale'));
       this.uiScale = us >= 100 && us <= 130 ? us : this.bigText ? 115 : 100;
       this.calm = localStorage.getItem('faro-calm') === '1';
+      // v1.8: giro de la cámara del vestíbulo.
+      this.orbit = localStorage.getItem('faro-orbit') !== '0';
       // v1.5: ya no hay decoraciones de temporada (Calabazas, Invierno).
       localStorage.removeItem('faro-season');
     } catch (err) { /* sin almacenamiento */ }
@@ -16488,12 +16806,47 @@ const App = {
   makePreview() {
     this.game = new Game({ ...this.opts });
     this.game.preview = true;
+    // v1.8: «Tu ejército»: tu base y un desfile de tropas detrás del vestíbulo (en la campaña, la isla de la misión).
+    const army = !this.opts.mission ? Showcase.build(this.game, { low: this.battery || this.quality === 'low' }) : 0;
     this.newRenderer(this.game);
     const r = this.renderer;
-    r.cam.tx = 0;
-    r.cam.tz = 0;
-    r.cam.dist = this.game.map.R * 2.3;
+    if (army) {
+      const core = this.game.players[0].core;
+      r.cam.tx = core.x;
+      r.cam.tz = core.z;
+      r.cam.dist = 11.5;
+      r.cam.pitch = 0.72;
+      this.aimShowcase();
+    } else {
+      r.cam.tx = 0;
+      r.cam.tz = 0;
+      r.cam.dist = this.game.map.R * 2.3;
+    }
+    document.body.classList.toggle('army', !!army);
+    const tag = $('armytag');
+    if (tag) {
+      tag.hidden = !army;
+      $('armytag-n').textContent = army ? `${army} en el desfile` : '';
+    }
     this.selection = [];
+  },
+
+  // v1.8: la cámara mira un poco más allá del Núcleo, para que tu base quede en la ventana de la portada.
+  aimShowcase() {
+    const g = this.game;
+    const r = this.renderer;
+    if (!g || !g.showcase || !r) return;
+    const core = g.players[0].core;
+    const off = r.cam.dist * 0.24;
+    r.cam.tx = core.x + Math.sin(r.cam.yaw) * off;
+    r.cam.tz = core.z + Math.cos(r.cam.yaw) * off;
+  },
+
+  // v1.8: la cámara del vestíbulo gira sola (se puede apagar en Ajustes · Cámara).
+  setOrbit(on) {
+    this.orbit = !!on;
+    try { localStorage.setItem('faro-orbit', on ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+    if (this.ui) this.ui.updateA11yBtns();
   },
 
   // Opciones de la partida: las del vestíbulo, el aspecto equipado y el modo creador.
@@ -16913,7 +17266,8 @@ const App = {
           this.renderer.drawMinimap($('minimap'));
         }
       } else if (this.renderer) {
-        this.renderer.cam.yaw += dt * 0.05;
+        if (this.orbit !== false) this.renderer.cam.yaw += dt * 0.05;
+        this.aimShowcase();
         this.renderer.frame(dt, this.time, []);
       }
     } catch (err) {

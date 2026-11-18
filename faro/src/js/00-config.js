@@ -60,6 +60,14 @@ const RESEARCH = {
   engines: { name: 'Motores', pct: 0.15, cost: 2500, time: 45, desc: '+15 % de velocidad a tus aeronaves.' },
 };
 const MINES = { limit: 8, every: 4 };
+// v1.8: en qué sección de «A tu manera» va cada control de la pausa.
+const SETTINGS_LAYOUT = {
+  interfaz: ['ui-scale-wrap', 'btn-bigtext', 'btn-fps'],
+  sonido: ['set-music', 'btn-sound2'],
+  camara: ['set-quality', 'set-light'],
+  accesibilidad: ['btn-cvd', 'btn-calm', 'btn-battery'],
+  controles: ['help-list'],
+};
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
@@ -871,7 +879,12 @@ const MODES = {
   teams: { name: 'Equipos 2 vs 2', desc: 'Con Rojo como aliado', players: 4, teams: [0, 0, 1, 1] },
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
   tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento en otra isla.', players: 2, teams: [0, 1], tutorial: true, coins: 6000 },
+  // v1.8: para mirar y probar todo el catálogo. El rival no ataca, hay Arsenal estratégico y no da XP ni misiones.
+  sandbox: { name: 'Campo de pruebas', desc: 'Todos los productores ya hechos, 500.000 monedas y energía de sobra. El rival no ataca: prueba cada tropa y edificio. No da XP.',
+    players: 2, teams: [0, 1], coins: 500000, energy: 9999, lobby: true, sandbox: true, strategic: true },
 };
+// v1.8: lo que ya está construido al empezar el Campo de pruebas (lo que no cabe en tu isla, lo construyes tú).
+const SANDBOX_BUILDINGS = ['barracks', 'factory', 'helipad', 'airport', 'dronecenter', 'research', 'harbor', 'shipyard', 'house', 'house', 'powerplant'];
 
 const MAPS = {
   archipelago: { name: 'Archipiélago Ámbar', desc: 'Islas en círculo unidas por puentes de arena.' },

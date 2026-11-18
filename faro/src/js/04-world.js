@@ -96,6 +96,8 @@ class Game {
       }
     }
     this.recomputeTerritory();
+    // v1.8: Campo de pruebas: tus productores ya construidos y dos Ingenieros más.
+    if (mode.sandbox) this.setupSandbox();
     this.refreshEconomy();
     // Personalidades repartidas según la semilla del mapa: cada bot es distinto.
     const order = PERSONALITY_ORDER.slice();
@@ -108,9 +110,21 @@ class Game {
       p.persona = opts.personas && opts.personas[p.id] ? opts.personas[p.id] : order[i % order.length];
       return new Bot(this, p.id);
     });
+    // v1.8: en el Campo de pruebas el rival no juega.
+    if (mode.sandbox) this.bots = [];
     // Campaña (v0.7): preparación de la misión y seguimiento de su meta.
     this.camp = null;
     if (opts.mission) Campaign.setup(this);
+  }
+
+  setupSandbox() {
+    const p = this.players[0];
+    const home = this.cells[p.core.cell];
+    for (const t of SANDBOX_BUILDINGS) {
+      const c = this.cells.filter((x) => !this.placeInvalid(0, t, x.i, true)).sort((a, b) => this.map.dist(a, home) - this.map.dist(b, home))[0];
+      if (c) this.addBuilding(0, t, c.i, true);
+    }
+    for (const ci of this.freeCellsNear(home.i, 'land', 0, 2)) this.addUnit(0, 'engineer', ci);
   }
 
   // ---------- consultas básicas ----------
@@ -566,7 +580,7 @@ class Game {
     for (const u of this.units) if (u.alive) this.players[u.owner].popUsed += u.def.pop;
     for (const p of this.players) {
       p.popCap += this.popBonus(p);
-      if (this.creator && p.id === 0) p.popCap = MAX_POP;
+      if ((this.creator || this.mode.sandbox) && p.id === 0) p.popCap = MAX_POP;
       p.popCap = Math.min(MAX_POP, p.popCap);
       p.baseIncome = p.income;
       p.income = Math.round(p.income * (1 + p.bonus));

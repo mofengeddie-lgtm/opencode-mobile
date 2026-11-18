@@ -162,6 +162,16 @@ class UI {
     $('btn-bigtext').addEventListener('click', () => app.setBigText(!app.bigText));
     $('btn-calm').addEventListener('click', () => app.setCalm(!app.calm));
     $('ui-scale').addEventListener('input', (e) => app.setUiScale(Number(e.target.value)));
+    // v1.8: Ajustes «A tu manera».
+    $('btn-pause-settings').addEventListener('click', () => this.openSettings());
+    $('btn-settings-back').addEventListener('click', () => this.closeSettings());
+    $('btn-settings-reset').addEventListener('click', () => this.resetSettings());
+    $('btn-orbit').addEventListener('click', () => app.setOrbit(app.orbit === false));
+    $('settings').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-setsec]');
+      if (t) this.showSettingsSection(t.dataset.setsec);
+      else if (e.target === $('settings')) this.closeSettings();
+    });
     // v1.7: ventana de confirmación del uso estratégico.
     $('strat').addEventListener('click', (e) => {
       if (e.target.closest('#btn-strat-ok')) this.confirmStrategic();
@@ -303,6 +313,64 @@ class UI {
     mm.addEventListener('pointercancel', () => { this.mmDrag = false; });
   }
 
+  // ---------- v1.8: Ajustes «A tu manera» ----------
+  // Los controles son los mismos de la pausa: al abrir se acomodan por secciones y al cerrar vuelven a su lugar.
+  openSettings(sec = 'interfaz') {
+    if (!this.setMoved) {
+      this.setMoved = [];
+      for (const [pane, ids] of Object.entries(SETTINGS_LAYOUT)) {
+        const box = document.querySelector(`[data-setpane="${pane}"]`);
+        const after = box.querySelector('h3');
+        let ref = after.nextSibling;
+        for (const id of ids) {
+          const el = $(id);
+          if (!el) continue;
+          this.setMoved.push([el, el.parentNode, el.nextSibling]);
+          box.insertBefore(el, ref);
+        }
+      }
+    }
+    $('settings').hidden = false;
+    this.showSettingsSection(sec);
+    this.app.sound.play('click');
+  }
+
+  showSettingsSection(sec) {
+    document.querySelectorAll('#settings [data-setsec]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.setsec === sec)));
+    document.querySelectorAll('#settings [data-setpane]').forEach((p) => { p.hidden = p.dataset.setpane !== sec; });
+  }
+
+  closeSettings() {
+    if (this.setMoved) {
+      for (let i = this.setMoved.length - 1; i >= 0; i--) {
+        const [el, parent, next] = this.setMoved[i];
+        parent.insertBefore(el, next);
+      }
+      this.setMoved = null;
+    }
+    $('settings').hidden = true;
+  }
+
+  // Vuelve todo a como viene el juego: calidad automática, luz nueva, sin ahorro, colores normales, 100 %,
+  // con destellos, sin contador, música media, sonido y giro de la cámara.
+  resetSettings() {
+    const app = this.app;
+    app.setQuality('auto');
+    app.setLight('new');
+    if (app.battery) app.setBattery(false);
+    if (app.cvd) app.setCvd(false);
+    app.setUiScale(100);
+    app.setCalm(false);
+    app.toggleFps(false);
+    app.setOrbit(true);
+    app.music.setLevel(0.6);
+    if (!app.sound.on) app.sound.toggle();
+    this.updateMusicBtns();
+    this.updateSoundBtn();
+    this.updateA11yBtns();
+    this.toast('Ajustes restablecidos', 'good');
+  }
+
   updateLightBtns() {
     const pref = lightPref();
     document.querySelectorAll('[data-light]').forEach((b) => {
@@ -325,6 +393,7 @@ class UI {
     set('btn-bigtext', app.bigText, 'Letra grande');
     // v1.7: tamaño de la interfaz y menos destellos.
     set('btn-calm', app.calm, 'Reducir destellos');
+    set('btn-orbit', app.orbit !== false, 'Giro de la cámara en el vestíbulo');
     const sl = $('ui-scale');
     if (sl) {
       sl.value = String(app.uiScale || 100);

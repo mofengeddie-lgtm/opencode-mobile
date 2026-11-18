@@ -1,0 +1,45 @@
+{
+ "at": "2026-11-18T01:37:51.846Z",
+ "results": {
+  "O04": {
+   "status": "ok",
+   "evidence": "93 de 93 tropas producidas y movidas (nuevas: 57 de 57)"
+  },
+  "O05": {
+   "status": "ok",
+   "evidence": "18 de 18 edificios nuevos terminados · corral da monedas: sí · central da energía: sí · centro de drones produce: sí · astillero produce: sí · taller repara vehículos: sí · muelle repara barcos: sí · centro de mando gana territorio: sí"
+  },
+  "O06": {
+   "status": "ok",
+   "evidence": "marine en agua baja: sí · marine no en mar profundo: sí · soldado no en agua: sí · barco no en tierra: sí · marine llegó al agua: sí · aerodeslizador subió a la costa: sí"
+  },
+  "O07": {
+   "status": "ok",
+   "evidence": "puente tendido: sí · pagó el puente: sí · tierra cruza: sí · barcos no: sí · soldado sobre el puente: sí · puerta: tuyos pasan: sí · puerta: enemigos no: sí · cerrada: nadie: sí"
+  },
+  "O08": {
+   "status": "ok",
+   "evidence": "mando +15 % (no se suman): sí · suministros +20 % recarga: sí · combustible +20 % vehículos: sí · daño ×1,15: sí · interferencia −40 %: sí"
+  },
+  "O09": {
+   "status": "ok",
+   "evidence": "submarino oculto sin detector: sí · la Patrullera lo descubre: sí · mina sembrada: sí · el enemigo no ve la mina: sí · mina explota con barco enemigo (500): sí · Dragaminas la quita: sí"
+  },
+  "O10": {
+   "status": "ok",
+   "evidence": "8 soldados subieron: sí · bajaron lejos, en tierra: sí · del avión, en paracaídas: sí · Paracaidista cae en la reunión: sí"
+  },
+  "O11": {
+   "status": "ok",
+   "evidence": "entran 4 (no 5): sí · daño ×2 con 4 adentro: sí · salen vivos al caer: sí"
+  },
+  "O12": {
+   "status": "ok",
+   "evidence": "cuesta 2500: sí · una a la vez: sí · sin dinero no empieza: sí · Blindaje +10 % vida: sí · Puntería +10 % daño: sí · Motores lista: sí"
+  },
+  "O13": {
+   "status": "ok",
+   "evidence": "sin el modificador no aparecen: sí · silo: primero se prepara: sí · silo lanza el DF-5C: sí · después, el lanzador móvil no puede (0/1): sí · ni el submarino estratégico: sí"
+  }
+ }
+}
