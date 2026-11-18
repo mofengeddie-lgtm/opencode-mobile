@@ -4,7 +4,7 @@
    "tag": "conquest/dunes/hard/5340",
    "result": "defeat",
    "time": 837,
-   "ms": 11384,
+   "ms": 24523,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -19,7 +19,7 @@
    "tag": "duos/archipelago/easy/5357/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 8342,
+   "ms": 19041,
    "nukes": {
     "0": 1
    },
@@ -43,7 +43,7 @@
    "tag": "league/open/normal/5374",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 12024,
+   "ms": 19458,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -58,7 +58,7 @@
    "tag": "king/continent/hard/5391/estrategico",
    "result": "defeat",
    "time": 394,
-   "ms": 5490,
+   "ms": 7954,
    "nukes": {},
    "mobile": 0,
    "used": [
@@ -80,7 +80,7 @@
    "tag": "blitz/bay/easy/5408",
    "result": "victory",
    "time": 1459,
-   "ms": 11704,
+   "ms": 19589,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -95,7 +95,7 @@
    "tag": "duel/reef/normal/5425/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 5671,
+   "ms": 8041,
    "nukes": {
     "0": 1
    },
@@ -119,7 +119,7 @@
    "tag": "ffa/mesa/hard/5442",
    "result": "defeat",
    "time": 786,
-   "ms": 3382,
+   "ms": 4611,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -134,7 +134,7 @@
    "tag": "big/dunes/easy/5459/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 7659,
+   "ms": 11535,
    "nukes": {
     "0": 1
    },
@@ -158,7 +158,7 @@
    "tag": "teams/archipelago/normal/5476",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 2915,
+   "ms": 3556,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -173,7 +173,7 @@
    "tag": "fog/open/hard/5493/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 25170,
+   "ms": 24957,
    "nukes": {
     "0": 1
    },

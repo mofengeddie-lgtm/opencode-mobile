@@ -96,6 +96,7 @@ const ABOUT_NEWS = [
   '«Tu ejército» en la portada: tu base y un desfile de tropas en 3D detrás del vestíbulo.',
   'Modo «Campo de pruebas»: todo construido y mucho dinero para probar cada tropa y edificio.',
   'Ajustes «A tu manera» por secciones, pestaña Misiones y filtros nuevos en el Arsenal.',
+  'Zona de creadores con contraseña (botón «Creadores» del vestíbulo).',
   'Nombres de tu catálogo: Médico de campaña, Hospital de campaña, Fragata de escolta, Molino eólico y Avión de combate furtivo.',
 ];
 
@@ -661,22 +662,77 @@ function passReward(t) {
 }
 
 // ---------- modo creador (solo la cuenta dueña del juego) ----------
+// v1.8: zona de creadores con contraseña. Se guarda solo la huella SHA-256 (con sal) de la contraseña, nunca la contraseña.
+// Se pide otra vez cada vez que se abre el juego (queda abierta mientras la pestaña siga abierta). Tras 5 intentos fallidos,
+// hay que esperar 60 s. Ojo: en una página web esto frena a los jugadores, no a quien sepa leer el código; en Roblox la
+// contraseña se comprobará en el servidor.
+const CREATOR_PASS = { salt: 'faro-ambar|creadores|', hash: '4659ef1a787caaa20a5786b97d05eaa2ef23fc625f078fb571e1692d415f8f97', tries: 5, wait: 60 };
+const CREATOR_KEY = 'faro-creator-ok';
+
 const Creator = {
   owner: false,
+  platform: false,
+  byPass: false,
   checked: false,
 
   // La plataforma de Claude dice si quien abre el enlace es el dueño. Sin plataforma, nadie lo es.
+  // v1.8: también es creador quien entró con la contraseña en esta pestaña.
   async detect() {
     try {
       if (window.claude && typeof window.claude.use === 'function') {
         const user = await window.claude.use('user');
-        this.owner = !!(user && (await user.isOwner()));
+        this.platform = !!(user && (await user.isOwner()));
       }
     } catch (err) {
-      this.owner = false;
+      this.platform = false;
     }
+    try { this.byPass = sessionStorage.getItem(CREATOR_KEY) === CREATOR_PASS.hash; } catch (err) { /* sin almacenamiento */ }
+    this.owner = this.platform || this.byPass;
     this.checked = true;
     return this.owner;
+  },
+
+  // Segundos que faltan para poder volver a intentar (0 si se puede).
+  lockLeft() {
+    try {
+      const until = Number(sessionStorage.getItem('faro-creator-lock') || 0);
+      return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+    } catch (err) {
+      return 0;
+    }
+  },
+
+  // Devuelve null si la contraseña es correcta; si no, el motivo.
+  tryPassword(pw) {
+    const left = this.lockLeft();
+    if (left > 0) return `Demasiados intentos. Espera ${left} s.`;
+    const ok = sha256Hex(CREATOR_PASS.salt + String(pw || '').trim()) === CREATOR_PASS.hash;
+    let fails = 0;
+    try { fails = Number(sessionStorage.getItem('faro-creator-fails') || 0); } catch (err) { /* sin almacenamiento */ }
+    if (!ok) {
+      fails++;
+      try {
+        sessionStorage.setItem('faro-creator-fails', String(fails >= CREATOR_PASS.tries ? 0 : fails));
+        if (fails >= CREATOR_PASS.tries) sessionStorage.setItem('faro-creator-lock', String(Date.now() + CREATOR_PASS.wait * 1000));
+      } catch (err) { /* sin almacenamiento */ }
+      return fails >= CREATOR_PASS.tries ? `Contraseña incorrecta. Espera ${CREATOR_PASS.wait} s para volver a intentar.`
+        : `Contraseña incorrecta (${CREATOR_PASS.tries - fails} ${CREATOR_PASS.tries - fails === 1 ? 'intento' : 'intentos'} más).`;
+    }
+    this.byPass = true;
+    this.owner = true;
+    try {
+      sessionStorage.setItem(CREATOR_KEY, CREATOR_PASS.hash);
+      sessionStorage.removeItem('faro-creator-fails');
+    } catch (err) { /* sin almacenamiento */ }
+    return null;
+  },
+
+  // Cerrar la zona: deja de ser creador en esta pestaña (salvo el dueño confirmado por la plataforma).
+  lock() {
+    this.byPass = false;
+    this.owner = this.platform;
+    try { sessionStorage.removeItem(CREATOR_KEY); } catch (err) { /* sin almacenamiento */ }
+    if (!this.owner && Profile.data) Profile.data.creator.on = false;
   },
 
   active() {
@@ -721,6 +777,21 @@ class Lobby {
     $('modal').addEventListener('submit', (e) => {
       e.preventDefault();
       if (e.target.id === 'code-form') this.redeem($('code-input').value);
+      // v1.8: contraseña de la zona de creadores.
+      if (e.target.id === 'creator-form') {
+        const err = Creator.tryPassword($('creator-pw').value);
+        if (err) {
+          this.app.sound.play('error');
+          this.openModal('creatorpw', { msg: err });
+          const box = $('creator-pw');
+          if (box && !box.disabled) box.focus();
+        } else {
+          this.app.ui.toast('Zona de creadores abierta', 'good');
+          this.app.sound.play('done');
+          this.render();
+          this.openModal('creator');
+        }
+      }
     });
     this.syncOpts(true);
     this.render();
@@ -809,7 +880,8 @@ class Lobby {
       ${item('ranks', 'Rangos', rankName(this.P.ranked.points))}
       ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
       ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}
-      <button type="button" data-act="settings"><span class="lm-label">Ajustes</span><small>A tu manera</small></button>${off('Servidores')}
+      <button type="button" data-act="settings"><span class="lm-label">Ajustes</span><small>A tu manera</small></button>
+      <button type="button" data-act="creatorzone" id="btn-creatorzone"><span class="lm-label">Creadores</span><small>${Creator.owner ? 'abierta' : 'con contraseña'}</small></button>${off('Servidores')}
     </nav>`;
   }
 
@@ -1320,14 +1392,24 @@ class Lobby {
         ${D.msg ? `<div class="advice" id="bk-msg">${esc(D.msg)}</div>` : ''}`;
     } else if (n === 'creator') {
       const C = P.creator;
-      html = head('Modo creador') + `<p>Solo lo ves tú: la plataforma confirma que eres el dueño de este juego. Los demás jugadores no pueden abrirlo.</p>
+      html = head('Zona de creadores') + `<p>${Creator.platform ? 'Solo lo ves tú: la plataforma confirma que eres el dueño de este juego.' : 'Entraste con la contraseña de creadores. Se vuelve a pedir cada vez que abres el juego.'} Los demás jugadores no pueden abrirla.</p>
         <div class="field"><label>Monedas y energía infinitas · todo desbloqueado</label><div class="seg">
           <button type="button" data-act="creator" data-k="on" data-v="true" class="${C.on ? 'on' : ''}">Activado</button>
           <button type="button" data-act="creator" data-k="on" data-v="false" class="${!C.on ? 'on' : ''}">Apagado</button></div></div>
         <div class="field"><label>Construcción rápida</label><div class="seg">
           <button type="button" data-act="creator" data-k="instant" data-v="true" class="${C.instant ? 'on' : ''}">Sí</button>
           <button type="button" data-act="creator" data-k="instant" data-v="false" class="${!C.instant ? 'on' : ''}">No</button></div></div>
-        <p>Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.</p>`;
+        <p>Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.</p>
+        ${Creator.byPass ? '<div class="row"><button class="btn" type="button" data-act="creatorlock" id="btn-creatorlock">Cerrar la zona de creadores</button></div>' : ''}`;
+    } else if (n === 'creatorpw') {
+      const D = this.modalData || {};
+      const left = Creator.lockLeft();
+      html = head('Zona de creadores') + `<p>Solo para los creadores del juego. Escribe la contraseña para entrar.</p>
+        <form id="creator-form" class="field"><label for="creator-pw">Contraseña</label>
+          <input type="password" id="creator-pw" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="32" ${left ? 'disabled' : ''}>
+          <button class="btn gold" type="submit" id="btn-creator-enter" ${left ? 'disabled' : ''}>Entrar</button></form>
+        ${D.msg ? `<div class="advice" id="creator-msg" role="alert">${esc(D.msg)}</div>` : ''}
+        <p class="sec">Se vuelve a pedir cada vez que abres el juego. Después de ${CREATOR_PASS.tries} intentos fallidos hay que esperar ${CREATOR_PASS.wait} s.</p>`;
     } else if (n === 'chestopen') {
       const r = this.modalData;
       if (r.kind === 'frags') {
@@ -1370,6 +1452,15 @@ class Lobby {
       this.render();
     } else if (act === 'settings') {
       app.ui.openSettings();
+    } else if (act === 'creatorzone') {
+      if (Creator.owner) this.openModal('creator');
+      else this.openModal('creatorpw');
+    } else if (act === 'creatorlock') {
+      Creator.lock();
+      Profile.save();
+      this.closeModal();
+      this.render();
+      app.ui.toast('Zona de creadores cerrada', 'info');
     } else if (act === 'play') {
       this.syncOpts();
       app.startGame();

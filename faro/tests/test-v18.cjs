@@ -250,6 +250,48 @@ const tapBtn = async (page, sel) => {
     add('O19', pass, `faro.html: ${(size / 1048576).toFixed(2)} MB (máx. 6) · cuadros por segundo con 90 tropas (Más fluido, Chromium sin tarjeta gráfica): v1.7 ${fps17.toFixed(2)} · v1.8 ${fps18.toFixed(2)} · carga hasta el vestíbulo: v1.7 ${(load17 / 1000).toFixed(1)} s · v1.8 ${(load18 / 1000).toFixed(1)} s`);
   });
 
+  // ---------- O21: zona de creadores con contraseña (la contraseña llega por CREATOR_PW; no se escribe en el código) ----------
+  await run('O21', async () => {
+    const PW = process.env.CREATOR_PW || '';
+    if (!PW) { add('O21', false, 'falta CREATOR_PW para probar'); return; }
+    const page = await open(browser, 1180, 820);
+    const before = await page.evaluate(() => ({ owner: Creator.owner, side: !!document.querySelector('[data-m="creator"]'), src: document.documentElement.outerHTML.length }));
+    const plain = await page.evaluate((pw) => document.documentElement.outerHTML.includes(pw), PW);
+    await tapBtn(page, '#btn-creatorzone');
+    await page.waitForTimeout(400);
+    await settle(page);
+    const asks = await page.evaluate(() => !!document.getElementById('creator-pw'));
+    await page.fill('#creator-pw', '000000');
+    await tapBtn(page, '#btn-creator-enter');
+    await page.waitForTimeout(300);
+    const bad = await page.evaluate(() => ({ owner: Creator.owner, msg: (document.getElementById('creator-msg') || {}).textContent || '' }));
+    await page.fill('#creator-pw', PW);
+    await tapBtn(page, '#btn-creator-enter');
+    await page.waitForTimeout(400);
+    const good = await page.evaluate(() => ({ owner: Creator.owner, modal: FARO.lobby.modal, side: !!document.querySelector('[data-m="creator"]') }));
+    // Encender el modo creador y empezar una partida: monedas infinitas.
+    await tapBtn(page, '[data-act="creator"][data-k="on"][data-v="true"]');
+    const inf = await page.evaluate(() => { FARO.lobby.closeModal(); FARO.startGame(); FARO.game.update(0.1); return { creator: FARO.game.creator, coins: FARO.game.players[0].coins }; });
+    // Abrir el juego otra vez (pestaña nueva): se vuelve a pedir.
+    const ctx2 = await browser.newContext({ viewport: { width: 1180, height: 820 } });
+    const p2 = await ctx2.newPage();
+    p2.setDefaultTimeout(240000);
+    await p2.route('**/three.min.js', (r) => r.fulfill({ path: THREE_JS, contentType: 'application/javascript' }));
+    await H.routes(p2);
+    await p2.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
+    await p2.goto(GAME, { timeout: 240000 });
+    await p2.waitForFunction(() => window.FARO && window.FARO.loaded, null, { timeout: 240000 });
+    await p2.waitForTimeout(500);
+    const again = await p2.evaluate(() => ({ owner: Creator.owner, active: Creator.active() }));
+    // 5 intentos fallidos: hay que esperar.
+    const locked = await p2.evaluate(() => { let r = ''; for (let i = 0; i < 5; i++) r = Creator.tryPassword('1'); return { r, left: Creator.lockLeft(), sixth: Creator.tryPassword('2') }; });
+    await ctx2.close();
+    await close(page);
+    const pass = !before.owner && !before.side && !plain && asks && !bad.owner && /incorrecta/.test(bad.msg) && good.owner && good.modal === 'creator' && good.side &&
+      inf.creator && inf.coins >= 999999 && !again.owner && !again.active && locked.left > 50 && /Espera/.test(locked.sixth);
+    add('O21', pass, `al abrir: creador ${before.owner ? 'sí' : 'no'} · la contraseña no aparece escrita en la página: ${!plain ? 'sí' : 'NO'} · «Creadores» pide contraseña: ${asks ? 'sí' : 'no'} · contraseña mala: «${bad.msg}» · contraseña buena: zona abierta ${good.owner ? 'sí' : 'no'} (ventana «${good.modal}») · modo creador en partida: monedas ${Math.round(inf.coins)} · al abrir el juego de nuevo: se vuelve a pedir (${!again.owner ? 'sí' : 'no'}) · 5 intentos fallidos: espera ${locked.left} s («${locked.sixth}»)`);
+  });
+
   const errs = [...new Set(errsAll)];
   add('errores', errs.length === 0, errs.length ? errs.slice(0, 5).join(' | ') : 'sin errores de página');
   fs.writeFileSync(`${FARO}/tests/results-v18${only ? '-' + only.join('') : ''}.json`, JSON.stringify(results, null, 1));

@@ -4,7 +4,7 @@
    "tag": "conquest/archipelago/easy/5000",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 6797,
+   "ms": 12994,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -19,7 +19,7 @@
    "tag": "duos/open/normal/5017/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 11989,
+   "ms": 26758,
    "nukes": {
     "0": 1
    },
@@ -43,7 +43,7 @@
    "tag": "league/continent/hard/5034",
    "result": "victory",
    "time": 786,
-   "ms": 9310,
+   "ms": 21687,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -58,7 +58,7 @@
    "tag": "king/bay/easy/5051/estrategico",
    "result": "victory",
    "time": 1034,
-   "ms": 6850,
+   "ms": 10836,
    "nukes": {
     "0": 1
    },
@@ -82,7 +82,7 @@
    "tag": "blitz/reef/normal/5068",
    "result": "victory",
    "time": 1653,
-   "ms": 5366,
+   "ms": 12464,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -97,7 +97,7 @@
    "tag": "duel/mesa/hard/5085/estrategico",
    "result": "defeat",
    "time": 377,
-   "ms": 3651,
+   "ms": 6486,
    "nukes": {},
    "mobile": 0,
    "used": [
@@ -119,7 +119,7 @@
    "tag": "ffa/dunes/easy/5102",
    "result": "victory",
    "time": 993,
-   "ms": 1610,
+   "ms": 2416,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -134,7 +134,7 @@
    "tag": "big/archipelago/normal/5119/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 7166,
+   "ms": 10940,
    "nukes": {
     "0": 1
    },
@@ -158,7 +158,7 @@
    "tag": "teams/open/hard/5136",
    "result": "defeat",
    "time": 607,
-   "ms": 2870,
+   "ms": 4662,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -173,7 +173,7 @@
    "tag": "fog/continent/easy/5153/estrategico",
    "result": "victory",
    "time": 1071,
-   "ms": 2999,
+   "ms": 4903,
    "nukes": {
     "0": 1
    },
@@ -194,12 +194,5 @@
    }
   }
  ],
- "issues": {
-  "atascada en «board»": {
-   "n": 1,
-   "ex": [
-    "duos/open/normal/5017 t=590 heavytank#632 (j0) casilla 172 transporte barge path=0/0"
-   ]
-  }
- }
+ "issues": {}
 }

@@ -1047,6 +1047,7 @@ class Game {
       if (!this.canBoard(u, t)) continue;
       u.state = 'board';
       u.boardTarget = t;
+      u.boardWait = 0;
       u.target = null;
       u.repathT = 0;
     }
@@ -2494,7 +2495,19 @@ class Game {
           u.repathT = 1;
           this.setPath(u, t.cell);
           // Ya está lo más cerca que puede llegar a pie: que el transporte venga a buscarla.
-          if (!u.path.length) this.callTransport(u, t);
+          if (!u.path.length) {
+            this.callTransport(u, t);
+            // v1.8: si el transporte no viene en 30 s (va lleno o está ocupado en otra cosa), deja de esperarlo.
+            u.boardWait = (u.boardWait || 0) + 1;
+            if (u.boardWait > 30) {
+              u.state = 'idle';
+              u.boardTarget = null;
+              u.boardWait = 0;
+              this.markUnreach(u, t, 30);
+              if (u.owner === 0) this.toast(0, `${u.def.name} dejó de esperar a ${t.def.name}: no pudo venir a buscarla`, 'info');
+              break;
+            }
+          } else u.boardWait = 0;
         }
         this.followPath(u, dt);
         break;

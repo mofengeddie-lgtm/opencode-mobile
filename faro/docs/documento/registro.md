@@ -15,6 +15,8 @@ Una entrada por versión, de la más nueva a la más vieja. **Cada versión nuev
 - Modo «Campo de pruebas»: todos los productores hechos, 500.000 monedas, el rival no ataca, Arsenal estratégico encendido y sin XP.
 - Ajustes «A tu manera» por secciones (tu pantalla 13), pestaña «Misiones» (tu pantalla 02) y filtros del Arsenal por drones, helicópteros y aviación (tu PRD 1.8, sección 56).
 - Los bots en Normal y Difícil usan algunas tropas nuevas con el mismo papel.
+- Zona de creadores con contraseña (pedida durante esta versión): botón «Creadores» en el vestíbulo; abre el modo creador; se vuelve a pedir cada vez que se abre el juego; 5 intentos y luego 60 s de espera. Se guarda solo la huella SHA-256 de la contraseña.
+- Arreglo encontrado por las partidas largas: una tropa podía quedarse esperando para siempre una Barcaza que no venía; ahora deja de esperar a los 30 s y los bots no la vuelven a mandar.
 - Documento completo: capítulos nuevos con tus documentos e imágenes (modelos 0.2, escenas, UI 0.4, la lista de equipamiento y qué muestra cada imagen de su PDF), tu catálogo con su estado y el informe del revisor.
 - Pruebas: __PRUEBAS18__
 

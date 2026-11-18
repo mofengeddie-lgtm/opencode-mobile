@@ -4,7 +4,7 @@
    "tag": "conquest/bay/normal/5170",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 6211,
+   "ms": 21364,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -19,7 +19,7 @@
    "tag": "duos/reef/hard/5187/estrategico",
    "result": "defeat",
    "time": 807,
-   "ms": 6316,
+   "ms": 19527,
    "nukes": {
     "0": 1
    },
@@ -43,7 +43,7 @@
    "tag": "league/mesa/easy/5204",
    "result": "victory",
    "time": 948,
-   "ms": 2788,
+   "ms": 6006,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -58,7 +58,7 @@
    "tag": "king/dunes/normal/5221/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 11740,
+   "ms": 26423,
    "nukes": {
     "0": 1
    },
@@ -82,7 +82,7 @@
    "tag": "blitz/archipelago/hard/5238",
    "result": "defeat",
    "time": 831,
-   "ms": 5294,
+   "ms": 11595,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -97,7 +97,7 @@
    "tag": "duel/open/easy/5255/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 6773,
+   "ms": 12353,
    "nukes": {},
    "mobile": 1,
    "used": [
@@ -119,7 +119,7 @@
    "tag": "ffa/continent/normal/5272",
    "result": "defeat",
    "time": 977,
-   "ms": 1711,
+   "ms": 3028,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -133,8 +133,8 @@
   {
    "tag": "big/bay/hard/5289/estrategico",
    "result": "defeat",
-   "time": 910,
-   "ms": 15609,
+   "time": 621,
+   "ms": 12799,
    "nukes": {
     "0": 1
    },
@@ -148,7 +148,7 @@
     0
    ],
    "newUnits": {
-    "drone": 1,
+    "drone": 0,
     "fpv": 0,
     "mlrs": 0,
     "missileboat": 0
@@ -158,7 +158,7 @@
    "tag": "teams/reef/easy/5306",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 2078,
+   "ms": 2661,
    "nukes": {},
    "mobile": 0,
    "used": null,
@@ -173,7 +173,7 @@
    "tag": "fog/mesa/normal/5323/estrategico",
    "result": "sin terminar",
    "time": 1200,
-   "ms": 8488,
+   "ms": 6787,
    "nukes": {
     "0": 1
    },
@@ -194,12 +194,5 @@
    }
   }
  ],
- "issues": {
-  "atascada en «board»": {
-   "n": 1,
-   "ex": [
-    "big/bay/hard/5289 t=494 tank#3244 (j4) casilla 1059 transporte barge path=0/0"
-   ]
-  }
- }
+ "issues": {}
 }

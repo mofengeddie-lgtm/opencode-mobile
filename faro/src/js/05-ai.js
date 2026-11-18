@@ -785,6 +785,8 @@ class Bot {
       const pick = [];
       for (const u of units) {
         if (u.mover !== 'land' || !u.def.weapon || u.inside || u.role !== 'home' || u.state !== 'idle') continue;
+        // v1.8: no vuelve a mandar a subir a quien ya esperó a esta Barcaza y no pudo llegar.
+        if (g.isUnreach(u, t)) continue;
         const need = u.cls === 'veh' ? 2 : 1;
         if (need <= slots) {
           pick.push(u);

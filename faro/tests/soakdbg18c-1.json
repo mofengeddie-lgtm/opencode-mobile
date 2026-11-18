@@ -1,0 +1,29 @@
+{
+ "games": [
+  {
+   "tag": "duos/open/normal/5017/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 10161,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 1
+   }
+  }
+ ],
+ "issues": {}
+}

@@ -40,6 +40,7 @@ TESTS = [
     ('O17', 'Bots con tropas nuevas', 'En Normal y Difícil los bots usan algunas tropas nuevas; 30 partidas largas sin errores, sin bloqueos y sin tropas atascadas.'),
     ('O18', 'Sin regresiones', 'Las pruebas de las versiones anteriores siguen pasando; la campaña y el balance de lo que ya existía quedan iguales (las tropas viejas no cambian sus números).'),
     ('O19', 'Tamaño y velocidad', 'faro.html pesa 6 MB o menos; carga y fluidez en partida no empeoran más de un 15 % frente a la v1.7 (Chromium; el iPad físico lo pruebas tú).'),
+    ('O21', 'Zona de creadores con contraseña (agregado)', 'El botón «Creadores» del vestíbulo pide la contraseña que diste; la mala no entra, la buena abre la zona y el modo creador; se vuelve a pedir cada vez que se abre el juego; tras 5 intentos fallidos hay que esperar 60 s; la contraseña no aparece escrita en la página.'),
     ('O20', 'Documento, sitio y PDF', 'El documento completo suma tus documentos e imágenes, el catálogo con estado y el informe del revisor; el sitio se vuelve a armar con todas las tropas y se publica.'),
 ]
 
@@ -293,6 +294,8 @@ li {{ margin-bottom: 3px; }}
   {shots_html()}
   <h3>Campo de pruebas</h3>
   <p>Modo nuevo en «Elige un modo»: un mapa tranquilo con todos los productores ya construidos, 500.000 monedas y energía de sobra; los bots no atacan. Sirve para mirar y probar cada tropa y edificio. No cuenta para rangos ni misiones.</p>
+  <h3>Zona de creadores con contraseña (agregado durante la v1.8)</h3>
+  <p>Pediste, mientras se hacía esta versión, una zona solo para los creadores que pida contraseña al entrar. En el menú del vestíbulo hay un botón «Creadores»: pide la contraseña que diste y, si es correcta, abre la zona con el modo creador (monedas y energía infinitas, construcción rápida). Se vuelve a pedir cada vez que se abre el juego; después de 5 intentos fallidos hay que esperar 60 s. El juego guarda solo una huella (SHA-256) de la contraseña, no la contraseña. En una página web esto frena a los jugadores, pero no a quien sepa leer el código; en Roblox la contraseña se comprobará en el servidor.</p>
   <h3>Ajustes «A tu manera» y Misiones (tu UI 0.4)</h3>
   <ul>
     <li>Ajustes con secciones como tu pantalla 13: Interfaz (tamaño, letra grande), Sonido (música, efectos), Cámara (giro, cámara al ataque), Accesibilidad (daltonismo, reducir destellos, ahorro de batería) y Controles (ayuda táctil). Botón «Restablecer». Se abre desde el vestíbulo y desde la pausa.</li>

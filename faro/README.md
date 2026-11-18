@@ -43,6 +43,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 - **Campo de pruebas**: todo construido y mucho dinero para probar cada tropa y edificio.
 - **Ajustes «A tu manera»**, pestaña **Misiones** y filtros nuevos del **Arsenal**.
 - **Programa revisor** (`faro/tools/revisar/revisar.py`): dice qué de tus documentos está en el juego, con tus imágenes.
+- **Zona de creadores** con contraseña (botón «Creadores» del vestíbulo).
 
 ## Novedades de la v1.7
 

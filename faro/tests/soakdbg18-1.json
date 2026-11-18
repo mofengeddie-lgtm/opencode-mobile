@@ -1,0 +1,36 @@
+{
+ "games": [
+  {
+   "tag": "duos/open/normal/5017/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 11868,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 1
+   }
+  }
+ ],
+ "issues": {
+  "atascada en «board»": {
+   "n": 1,
+   "ex": [
+    "duos/open/normal/5017 t=590 heavytank#275 (j0) casilla 172 transporte barge path=0/0"
+   ]
+  }
+ }
+}
