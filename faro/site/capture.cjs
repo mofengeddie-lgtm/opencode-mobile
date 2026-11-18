@@ -1,4 +1,4 @@
-// Capturas reales de la v1.7 para el sitio del juego (escenas armadas a mano, sin HUD donde conviene).
+// Capturas reales de la v1.8 para el sitio del juego (antes v1.7) (escenas armadas a mano, sin HUD donde conviene).
 const H = require('../helpers.cjs');
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -37,17 +37,19 @@ const S = (n) => `${SP}/site/shots/${n}.png`;
     p.core.level = 3;
     const put = (t, lv) => { const c = g.cells.filter((x) => !g.placeInvalid(0, t, x.i, true)).sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core))[0]; if (!c) return null; const b = g.addBuilding(0, t, c.i, true); if (lv) b.level = lv; return b; };
     put('barracks'); put('factory', 2); put('turret', 3); put('helipad'); put('farm'); put('farm'); put('house'); put('house', 2); put('solar'); put('wind'); put('aadef', 2); put('turret', 2);
-    window.HARBOR = put('harbor'); put('mine'); put('house');
+    window.HARBOR = put('harbor'); put('mine'); put('house'); put('radarstation'); put('bunker'); put('dronecenter'); put('depot');
     g.refreshEconomy(); g.recomputeTerritory && g.recomputeTerritory();
     const land = g.cells.filter((c) => c.land && !c.bld && g.passable(c, 'land', 0) && g.map.dist(c, core) >= 2 && g.map.dist(c, core) <= 4).sort((a, b) => g.map.dist(a, core) - g.map.dist(b, core));
-    const types = ['rifle', 'rifle', 'rocket', 'tank', 'mlrs', 'launcher', 'nukelauncher', 'heavytank', 'rifle', 'sniper', 'aa', 'apc', 'medic', 'ranger'];
+    // v1.8: también las tropas nuevas del catálogo del usuario.
+    const types = ['soldier', 'rifle', 'atguided', 'tank', 'mlrs', 'launcher', 'howitzer', 'heavytank', 'marine', 'officer', 'aa', 'ifv', 'medic', 'ranger',
+      'tankdestroyer', 'thermo', 'robodog', 'gunner', 'mortar', 'commandveh'];
     window.ARMY = types.map((t, i) => g.addUnit(0, t, land[(i * 2) % land.length].i));
     const sky = g.cells.filter((c) => g.map.dist(c, core) === 3);
-    window.AIR = [g.addUnit(0, 'heli', sky[0].i), g.addUnit(0, 'drone', sky[3].i), g.addUnit(0, 'fpv', sky[5].i), g.addUnit(0, 'apache', sky[8 % sky.length].i)];
+    window.AIR = ['heli', 'drone', 'scoutdrone', 'apache', 'transheli', 'attackjet', 'fighter'].map((t, i) => g.addUnit(0, t, sky[(i * 3) % sky.length].i));
     for (const u of [...ARMY, ...AIR]) u.hold = true;
     const hc = g.cells[HARBOR.cell];
     const sea = g.cells.filter((c) => (c.t === 'shallow' || c.t === 'deep') && !c.bld && g.map.dist(c, hc) >= 1 && g.map.dist(c, hc) <= 4).sort((a, b) => g.map.dist(a, hc) - g.map.dist(b, hc));
-    window.NAVY = ['missileboat', 'destroyer', 'speedboat', 'frigate', 'barge', 'carrier', 'sub'].map((t, i) => g.addUnit(0, t, sea[(i * 2 + 1) % sea.length].i));
+    window.NAVY = ['missileboat', 'destroyer', 'corvette', 'frigate', 'hovercraft', 'carrier', 'cruiser', 'battleship', 'patrolboat'].map((t, i) => g.addUnit(0, t, sea[(i * 2 + 1) % sea.length].i));
     for (const u of NAVY) u.hold = true;
     FARO.setSelection([]);
     FARO.focusCore();

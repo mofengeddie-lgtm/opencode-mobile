@@ -1,0 +1,205 @@
+{
+ "games": [
+  {
+   "tag": "conquest/bay/normal/5170",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 6211,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "duos/reef/hard/5187/estrategico",
+   "result": "defeat",
+   "time": 807,
+   "ms": 6316,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "league/mesa/easy/5204",
+   "result": "victory",
+   "time": 948,
+   "ms": 2788,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "king/dunes/normal/5221/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 11740,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 2
+   }
+  },
+  {
+   "tag": "blitz/archipelago/hard/5238",
+   "result": "defeat",
+   "time": 831,
+   "ms": 5294,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 2
+   }
+  },
+  {
+   "tag": "duel/open/easy/5255/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 6773,
+   "nukes": {},
+   "mobile": 1,
+   "used": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 9
+   }
+  },
+  {
+   "tag": "ffa/continent/normal/5272",
+   "result": "defeat",
+   "time": 977,
+   "ms": 1711,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 1
+   }
+  },
+  {
+   "tag": "big/bay/hard/5289/estrategico",
+   "result": "defeat",
+   "time": 910,
+   "ms": 15609,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 1,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "teams/reef/easy/5306",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 2078,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "fog/mesa/normal/5323/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 8488,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 1
+   }
+  }
+ ],
+ "issues": {
+  "atascada en «board»": {
+   "n": 1,
+   "ex": [
+    "big/bay/hard/5289 t=494 tank#3244 (j4) casilla 1059 transporte barge path=0/0"
+   ]
+  }
+ }
+}

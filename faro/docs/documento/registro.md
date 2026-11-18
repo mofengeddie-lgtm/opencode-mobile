@@ -2,6 +2,22 @@
 
 Una entrada por versión, de la más nueva a la más vieja. **Cada versión nueva agrega aquí sus mejoras y partes importantes** antes de publicarse (regla del proyecto). El detalle completo de cada una está en su PRD (`docs/prd/`).
 
+## v1.8 · 18 nov 2026
+
+- Pedido: «faltan muchos elementos de la documentación y de las imágenes que te di: son todas las tropas nuevas; agrega las que faltan; la imagen de la portada se ve en la web pero no en el juego; y antes, un PRD y un PDF completos, y un programa solo para revisar si el juego tiene los elementos de mis archivos».
+- Programa revisor (`tools/revisar/`): lee tu PRD 1.8 (110 entradas del catálogo), tu lista de equipamiento, tu UI 0.4 y las imágenes de tus modelos, y el archivo real del juego. Informe en HTML, PDF y JSON con tus imágenes junto a las miniaturas del juego. Antes de esta versión: 38 de 110 completos; después: 110 de 110.
+- 57 tropas nuevas: 11 de infantería (Explorador, Soldado, Oficial de campo, Operador de comunicaciones, Zapador, Equipo de mortero, Paracaidista, Infante de marina, Equipo antitanque, Ametrallador pesado, Soldado antidrones), 18 de tierra (del Blindado ligero a la Topadora blindada, el Lanzacohetes termobárico y el Perro robot), 5 drones, 3 helicópteros, 7 aviones, 12 barcos y el Submarino estratégico.
+- 19 edificios nuevos: Corral, Central de energía, Centro de drones, Astillero mayor, Taller, Centro de investigación, Estación de radar, Depósito logístico, Centro de mando avanzado, Búnker de guarnición, Puerta reforzada, Batería costera, Defensa de punto, Torre láser, Torre de observación, Complejo estratégico, Puente modular, Muelle logístico y la Mina naval. Pestaña nueva «Apoyo».
+- 76 modelos 3D nuevos con Blender (`blender/models_v18.py`), en el estilo de tus modelos 0.2.
+- Sistemas nuevos: anfibios, puente, puerta que se abre y se cierra, búnker con soldados adentro, auras de mando, suministros, combustible e interferencia, detección de lo oculto, minas navales, investigación, transporte aéreo y paracaídas, silo DF-5C, defensa de punto en barcos y armas contra drones.
+- Nombres de tu catálogo: Médico de campaña, Hospital de campaña, Fragata de escolta, Molino eólico, Avión de combate furtivo y Transporte blindado de personal. Lo que ya existía no cambia sus números.
+- Portada: «Tu ejército» detrás del vestíbulo, en vivo: tu base con edificios y un desfile de unas 40 tropas, vehículos, barcos y aeronaves; la tarjeta de la portada deja ver la escena y la cámara gira sola.
+- Modo «Campo de pruebas»: todos los productores hechos, 500.000 monedas, el rival no ataca, Arsenal estratégico encendido y sin XP.
+- Ajustes «A tu manera» por secciones (tu pantalla 13), pestaña «Misiones» (tu pantalla 02) y filtros del Arsenal por drones, helicópteros y aviación (tu PRD 1.8, sección 56).
+- Los bots en Normal y Difícil usan algunas tropas nuevas con el mismo papel.
+- Documento completo: capítulos nuevos con tus documentos e imágenes (modelos 0.2, escenas, UI 0.4, la lista de equipamiento y qué muestra cada imagen de su PDF), tu catálogo con su estado y el informe del revisor.
+- Pruebas: __PRUEBAS18__
+
 ## v1.7 · 15-17 nov 2026
 
 - Basada en tu «Dirección visual UI 0.4» y tu PRD Roblox v1.8 (guardados en `docs/roblox/`).

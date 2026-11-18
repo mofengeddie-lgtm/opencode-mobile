@@ -277,7 +277,7 @@ p { margin: 0 0 8px; }
 .meta { color: var(--muted); font-size: 9pt; margin-bottom: 12px; }
 .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0 14px; }
 .tile { background: var(--soft); border-radius: 8px; padding: 8px 10px; }
-.tile b { display: block; font-size: 17pt; color: var(--teal); }
+.tile b { display: block; font-size: 15pt; color: var(--teal); white-space: nowrap; }
 .tile span { font-size: 8.5pt; }
 .bar { height: 8px; border-radius: 4px; background: #e3e7e5; overflow: hidden; margin-top: 4px; }
 .bar i { display: block; height: 100%; background: var(--teal); }

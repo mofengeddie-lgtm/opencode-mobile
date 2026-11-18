@@ -35,6 +35,15 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
 
+## Novedades de la v1.8
+
+- **Todo tu catálogo en el juego**: las 78 tropas y 32 edificios de tu PRD 1.8 (57 tropas y 19 edificios nuevos), con modelo 3D de Blender cada uno, y el equipo de tu lista de equipamiento.
+- **Sistemas nuevos**: anfibios, Puente modular, Puerta reforzada, Búnker con soldados, mando, suministros, combustible, interferencia, minas navales, Centro de investigación, transporte aéreo y paracaídas, silo DF-5C.
+- **«Tu ejército» en la portada**: tu base y un desfile de tropas en 3D detrás del vestíbulo.
+- **Campo de pruebas**: todo construido y mucho dinero para probar cada tropa y edificio.
+- **Ajustes «A tu manera»**, pestaña **Misiones** y filtros nuevos del **Arsenal**.
+- **Programa revisor** (`faro/tools/revisar/revisar.py`): dice qué de tus documentos está en el juego, con tus imágenes.
+
 ## Novedades de la v1.7
 
 - **Arsenal** en el vestíbulo: «Conoce tu ejército», con buscador, filtros y la ficha de cada tropa y edificio.

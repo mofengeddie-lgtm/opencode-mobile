@@ -79,7 +79,10 @@ CODE_FILES = (
     ['src/index.template.html'] + sorted(os.path.relpath(p, FARO) for p in glob.glob(os.path.join(FARO, 'src', 'js', '*.js'))) +
     ['build.mjs'] + sorted(os.path.relpath(p, FARO) for p in glob.glob(os.path.join(FARO, 'blender', '*.py'))) +
     ['docs/pdf.cjs', 'docs/doc_style.py', 'docs/roblox/build_prd_roblox.py', 'docs/documento/build_documento.py',
-     'site/build_site.py', 'site/capture.cjs', 'README.md', 'AGENTS.md']
+     'site/build_site.py', 'site/capture.cjs'] +
+    # v1.8: programa revisor (compara el juego con los documentos del usuario).
+    ['tools/revisar/revisar.py', 'tools/revisar/plan_v18.py', 'tools/revisar/datos.cjs', 'tools/revisar/fotos.cjs',
+     'tools/revisar/extraer_refs.py', 'tools/revisar/prd_v18.py', 'README.md', 'AGENTS.md']
 )
 DESC = {
     'src/index.template.html': 'Estructura de la página y todos los estilos de la interfaz.',
@@ -92,7 +95,105 @@ DESC = {
     'docs/documento/build_documento.py': 'Arma este documento.',
     'site/build_site.py': 'Arma el sitio web del juego (una sola página con las capturas y el ejército).',
     'site/capture.cjs': 'Saca del juego real las capturas y las fichas que usa el sitio web.',
+    'tools/revisar/revisar.py': 'Programa revisor: ¿el juego tiene lo de los documentos del usuario? Informe en HTML, PDF y JSON.',
+    'tools/revisar/plan_v18.py': 'Nombre del usuario → clave del juego, plan de la v1.8, equipamiento y revisiones de la UI 0.4.',
+    'tools/revisar/datos.cjs': 'Lee del archivo del juego los datos de tropas, edificios y modelos 3D.',
+    'tools/revisar/fotos.cjs': 'Abre el juego en Chromium y guarda la miniatura 3D de cada tropa y edificio.',
+    'tools/revisar/extraer_refs.py': 'Saca las imágenes de los modelos del usuario de su PDF v1.8.',
+    'tools/revisar/prd_v18.py': 'Arma el PRD v1.8 a partir del plan y del informe del revisor.',
 }
+
+# v1.8: qué muestra cada imagen del PDF «Equipamiento militar 2» del usuario (las capturas y fotos de prensa no se
+# copian al proyecto porque son de otros sitios; aquí queda qué muestran y qué tropa salió de cada una).
+EQUIP_PAGES = [
+    ('4', 'Imagen 1', 'Guía (en chino) de 23 términos de arte para juegos: píxel, low-poly, vóxel, acuarela, etc.', 'Referencia de estilo; el juego sigue con bloques tipo Roblox.'),
+    ('5', 'Imágenes 2 y 3', 'Dos escenas de islas hexagonales con base, faro, granjas y mar.', 'Confirman el aspecto del mapa (que no se cambia).'),
+    ('6', 'Imagen 4', 'Guía de ángulos de cámara: cenital, isométrica, 2.5D, lateral, primera y tercera persona.', 'La cámara del juego ya es isométrica giratoria.'),
+    ('7', 'Imagen 5', 'Guía de interfaz: 9-slice, zona segura y dibujo vectorial.', 'Zona segura y botones que no se deforman (ya en la UI).'),
+    ('8', 'Imagen 6', 'Guía de sprites, texturas, polígonos y shaders.', 'Referencia técnica.'),
+    ('9', 'Imagen 7', 'Lanzador de misil grande sobre camión (desfile).', 'Lanzador nuclear móvil.'),
+    ('9', 'Imagen 8', 'Lanzadores DF-17 en desfile.', 'Lanzador DF-17.'),
+    ('10', 'Imagen 9', 'Búsqueda: drones MQ-9, misiles hipersónicos DF-17, logística e ingeniería.', 'Dron de ataque, Lanzador DF-17, Camión de suministros, Ambulancia, Vehículo de recuperación.'),
+    ('10', 'Imagen 10', 'Búsqueda: aviación de combate F-35, poder naval (Ford), drones.', 'Avión de combate furtivo, Portaaviones, drones.'),
+    ('11', 'Imágenes 11 y 12', 'Búsqueda: portaaviones Ford, drones MQ-9, tanques Abrams, F-35.', 'Portaaviones, Dron de ataque, Tanque pesado, Avión de combate furtivo.'),
+    ('12', 'Imagen 13', 'Búsqueda: tanques y blindados (Abrams).', 'Tanque pesado, Blindado ligero, Vehículo de combate de infantería.'),
+    ('12', 'Imagen 14', 'Búsqueda: cañones láser en destructores; fuerzas espaciales y satélites.', 'Torre láser. Satélites: fuera del juego.'),
+    ('13', 'Imagen 15', 'Búsqueda: buques de desembarco anfibio y aerodeslizadores (LCAC).', 'Buque de desembarco, Aerodeslizador militar.'),
+    ('13', 'Imagen 16', 'Búsqueda: helicópteros de ataque (Apache) y equipo individual del soldado (visión nocturna).', 'Apache Guardián, Soldado.'),
+    ('14', 'Imagen 17', 'Búsqueda: submarinos nucleares (interior y exterior); helicópteros de ataque.', 'Submarino, Submarino estratégico.'),
+    ('14', 'Imagen 18', 'Búsqueda: bombarderos furtivos B-2, aviones de carga C-17, escudos antimisiles (Cúpula de Hierro, Patriot).', 'Bombardero furtivo, Avión de transporte militar, Escudo antimisiles, Defensa de punto.'),
+    ('15', 'Imagen 19', 'Búsqueda: artillería autopropulsada, HIMARS y A-10.', 'Obús autopropulsado, Lanzacohetes múltiple, Avión de apoyo terrestre.'),
+]
+UI04 = [('ui04-02.jpg', '01 Carga'), ('ui04-03.jpg', '02 Vestíbulo'), ('ui04-04.jpg', '03 Modos'), ('ui04-05.jpg', '04 Partida'),
+        ('ui04-06.jpg', '05 Construcción'), ('ui04-07.jpg', '06 Producción'), ('ui04-08.jpg', '07 Puerto y transporte'), ('ui04-09.jpg', '08 Aviación'),
+        ('ui04-10.jpg', '09 Arsenal'), ('ui04-11.jpg', '10 Lanzador estratégico'), ('ui04-12.jpg', '11 Inventario'), ('ui04-13.jpg', '12 Misiones'),
+        ('ui04-14.jpg', '13 Ajustes'), ('ui04-15.jpg', '14 Resultado'), ('ref-nuclear-movil.jpg', 'Referencia 1 · Lanzador nuclear móvil'),
+        ('ref-df-17.jpg', 'Referencia 2 · DF-17')]
+
+
+def user_docs_html():
+    """Capítulos 09-11 (v1.8): documentos e imágenes del usuario, su catálogo con estado y el informe del revisor."""
+    rd = os.path.join(FARO, 'docs', 'roblox')
+    refs = os.path.join(rd, 'modelos-0.2')
+    out = []
+    names = {'builder': 'Constructor', 'engineer': 'Ingeniero', 'rifle': 'Artillero', 'shotgun': 'Escopetero', 'ranger': 'Ranger', 'sniper': 'Francotirador',
+             'breaker': 'Rompedor', 'hunter': 'Cazador', 'rocket': 'Cohetero', 'tank': 'Tanque', 'aa': 'Camión antiaéreo', 'speedboat': 'Lancha rápida',
+             'boatEng': 'Barco constructor', 'barge': 'Barcaza', 'destroyer': 'Destructor', 'sub': 'Submarino', 'heli': 'Helicóptero', 'apache': 'Apache Guardián',
+             'core': 'Núcleo', 'farm': 'Granja', 'wind': 'Molino', 'house': 'Casa', 'pump': 'Bomba de petróleo', 'rig': 'Plataforma petrolera',
+             'barracks': 'Cuartel', 'factory': 'Fábrica', 'harbor': 'Puerto', 'helipad': 'Helipuerto', 'wall': 'Muro', 'turret': 'Torreta', 'aadef': 'Antiaéreo'}
+    figs = ''.join(f'<figure><img src="../roblox/modelos-0.2/{k}.jpg" alt=""><figcaption>{esc(n)}</figcaption></figure>' for k, n in names.items()
+                   if os.path.exists(os.path.join(refs, k + '.jpg')))
+    ui = ''.join(f'<figure><img src="../roblox/ui-0.4/{f}" alt=""><figcaption>{esc(t)}</figcaption></figure>' for f, t in UI04 if os.path.exists(os.path.join(rd, 'ui-0.4', f)))
+    eqmd = open(os.path.join(rd, 'Equipamiento_Militar_2.md'), encoding='utf-8').read().split('\n', 2)[-1]
+    eqrows = ''.join(f'<tr><td>{p}</td><td>{esc(i)}</td><td>{esc(w)}</td><td>{esc(t)}</td></tr>' for p, i, w, t in EQUIP_PAGES)
+    out.append(f'''<section><div class="eyebrow">09 · Tus documentos</div><h2>Tus documentos e imágenes</h2>
+  <p>Todo lo que mandaste para el juego, guardado en <code>faro/docs/roblox/</code>. Los textos se guardan sin cambios; las imágenes de tus modelos se sacaron de tu PDF v1.8 con <code>tools/revisar/extraer_refs.py</code>.</p>
+  <table><thead><tr><th style="width:30%">Documento</th><th>Qué trae</th></tr></thead><tbody>
+  <tr><td>PRD Roblox v1.6 (13 nov 2026)</td><td>Plan de 5 etapas para Roblox Studio + Luau.</td></tr>
+  <tr><td>PRD Roblox v1.8 (14 nov 2026)</td><td>Auditoría del código Luau, catálogo de 78 tropas y 32 edificios (secciones 37-54), DF-5C y lanzador de un misil, UI del arsenal y mejoras profesionales. Con 31 imágenes de modelos 0.2 y 2 escenas.</td></tr>
+  <tr><td>Dirección visual UI 0.4 (14 nov 2026)</td><td>14 pantallas de interfaz y 2 propuestas de vehículos.</td></tr>
+  <tr><td>Equipamiento militar 2 (15 nov 2026)</td><td>Lista de equipo militar moderno: texto y 19 imágenes en 15 páginas.</td></tr>
+  </tbody></table>
+  <h3>Tus modelos 0.2 (PDF v1.8, páginas 3 a 12)</h3>
+  <div class="figs f6">{figs}</div>
+  <h3>Tus escenas (PDF v1.8, páginas 13 y 14)</h3>
+  <div class="figs"><figure><img src="../roblox/modelos-0.2/escena-base.jpg" alt=""><figcaption>Vista propuesta · Base terrestre</figcaption></figure>
+    <figure><img src="../roblox/modelos-0.2/escena-costa.jpg" alt=""><figcaption>Vista propuesta · Costa y puerto</figcaption></figure></div>
+  <h3>Tu Dirección visual UI 0.4</h3>
+  <div class="figs f4">{ui}</div>
+  <h3>Tu lista «Equipamiento militar moderno» (texto completo)</h3>
+  {md(eqmd)}
+  <h3>Qué muestra cada imagen de ese PDF</h3>
+  <p>Las capturas de búsquedas y las fotos de prensa no se copian al proyecto (son de otros sitios). Esto es lo que muestra cada una y qué tropa del juego salió de ella.</p>
+  <table><thead><tr><th style="width:7%">Pág.</th><th style="width:14%">Imagen</th><th>Qué muestra</th><th style="width:32%">En el juego</th></tr></thead><tbody>{eqrows}</tbody></table>
+  </section>''')
+    rep = os.path.join(FARO, 'tools', 'revisar', 'salida', 'informe.json')
+    if os.path.exists(rep):
+        r = json.load(open(rep, encoding='utf-8'))
+        S = r['summary']
+        st = {'ok': 'En el juego', 'aviso': 'Con aviso', 'falta': 'Falta', 'fuera': 'Fuera', 'fuente': 'No está en tu archivo'}
+        rows = []
+        for i in r['catalog']:
+            img = f'<img class="mini" src="../roblox/modelos-0.2/{i["key"]}.jpg" alt="">' if i['key'] and os.path.exists(os.path.join(refs, i['key'] + '.jpg')) else ''
+            rows.append(f'<tr><td>{img}{esc(i["name"])}</td><td>{esc(i["group"])}</td><td><code>{esc(i["key"] or "—")}</code></td><td>{esc(i["game_name"] or "—")}</td>'
+                        f'<td>{esc(i["producer"] or "—")}</td><td>{"sí" if i["model"] else "no"}</td><td>{st.get(i["state"], i["state"])}</td></tr>')
+        ex = ''.join(f'<tr><td>{esc(e["name"])}</td><td>{esc(e["kind"])}</td><td><code>{esc(e["key"])}</code></td></tr>' for e in r['extras'])
+        out.append(f'''<section><div class="eyebrow">10 · Tu catálogo</div><h2>Tu catálogo con su estado en el juego</h2>
+  <p>Las {S['catalog_total']} entradas de las secciones 37-54 de tu PRD 1.8, en tu orden, con la clave que tienen en el juego, el nombre que se ve, el productor que pusiste, si tienen modelo 3D y su estado. Sale del último informe del programa revisor ({esc(r['at'])}, juego v{esc(r['game']['version'])}).</p>
+  <table class="cat"><thead><tr><th>Tu nombre</th><th>Grupo</th><th>Clave</th><th>En el juego</th><th>Productor</th><th>3D</th><th>Estado</th></tr></thead><tbody>{''.join(rows)}</tbody></table>
+  <h3>Tropas y edificios del juego que no están en tu catálogo</h3>
+  <p>Vienen de versiones anteriores o de tu lista de equipamiento. Se quedan; los puedes quitar o renombrar cuando quieras.</p>
+  <table><thead><tr><th>Nombre</th><th>Tipo</th><th>Clave</th></tr></thead><tbody>{ex}</tbody></table></section>''')
+        out.append(f'''<section><div class="eyebrow">11 · Programa revisor</div><h2>El programa revisor y su último informe</h2>
+  <p>Desde la v1.8, <code>faro/tools/revisar/revisar.py</code> lee tus archivos (PRD 1.8, equipamiento, UI 0.4 e imágenes de tus modelos) y el archivo real del juego, y dice qué está y qué falta. Escribe <code>salida/informe.html</code>, <code>informe.pdf</code> e <code>informe.json</code>, con tus imágenes al lado de las miniaturas del juego.</p>
+  <div class="tiles"><div class="tile"><b>{S['catalog_ok']} de {S['catalog_total']}</b><span>tu catálogo</span></div><div class="tile"><b>{S['equip_ok']} de {S['equip_total']}</b><span>equipamiento militar</span></div>
+    <div class="tile"><b>{S['ui_ok']} de {S['ui_total']}</b><span>pantallas UI 0.4</span></div></div>
+  <pre><code>python3 faro/tools/revisar/revisar.py            # revisa faro/faro.html
+python3 faro/tools/revisar/revisar.py --fotos    # además saca las miniaturas 3D del juego
+python3 faro/tools/revisar/revisar.py --estricto # termina con error si falta algo</code></pre>
+  <p>Revisa archivos y datos: que cada elemento exista, con modelo, tu nombre y tu productor, y que la interfaz tenga lo de tus pantallas. Cómo funciona cada tropa en una partida lo comprueban las pruebas del PRD.</p></section>''')
+    return '\n'.join(out)
+
 
 
 def first_comment(path):
@@ -253,6 +354,9 @@ python3 faro/docs/documento/build_documento.py              # este documento (y 
   <div class="note">Lo que el prototipo web ya probó (reglas, controles en iPad, bots, campaña, Barcaza, Cúpula, progreso) sirve de referencia para las pruebas CA-01 a CA-16 del plan de Roblox. Los modelos GLB de <code>faro/assets/models/</code> se pueden importar en Roblox Studio (3D Importer).</div>
   </section>''')
 
+    # ---------- 9-11 (v1.8): tus documentos, tu catálogo y el revisor ----------
+    parts.append(user_docs_html())
+
     # ---------- anexo: código ----------
     parts.append(f'''<section><div class="eyebrow">Anexo</div><h2>El código completo, archivo por archivo</h2>
   <p>{len(files)} archivos, {total_lines:,} líneas, en el orden en que se arma el juego: la página, la lógica y el dibujo (<code>src/js/</code>, que se ejecutan en orden de nombre), el armado, los modelos de Blender, las herramientas de documentos y las reglas del proyecto. El archivo final <code>faro.html</code> no se imprime porque es este mismo código unido a los modelos.</p>
@@ -268,6 +372,17 @@ python3 faro/docs/documento/build_documento.py              # este documento (y 
   .codefile h3 { margin-top: 0; }
   pre.code { font-size: 6.4pt; line-height: 1.28; padding: 6px 8px; background: #fbfbfa; }
   pre.code .ln { color: #9aa6a3; user-select: none; }
+  .figs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0 12px; }
+  .figs.f4 { grid-template-columns: repeat(4, 1fr); }
+  .figs.f6 { grid-template-columns: repeat(6, 1fr); }
+  .figs figure { margin: 0; page-break-inside: avoid; }
+  .figs img { width: 100%; display: block; border-radius: 6px; border: 1px solid #d9dfdc; }
+  .figs figcaption { font-size: 7.5pt; color: #5d6b70; margin-top: 2px; }
+  table.cat { font-size: 7.5pt; }
+  img.mini { width: 26px; height: 26px; object-fit: contain; vertical-align: middle; margin-right: 4px; border-radius: 4px; background: #22262a; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0; }
+  .tile { background: #f1f3f1; border-radius: 8px; padding: 8px 10px; }
+  .tile b { display: block; color: #1b6b63; font-size: 13pt; }
 </style>'''
     title = f'Faro de Ámbar · Documento completo v{cat["V"]}'
     doc = head(title, f'{hoy.day} {MES3[hoy.month - 1]} {hoy.year}', 'Documento completo') + extra + '\n'.join(parts) + '\n</body>\n</html>\n'

@@ -6,6 +6,7 @@ Las pruebas salen «Pendiente»; al terminar las rellena tests/fill-prd18.py con
 import html
 import json
 import os
+import sys
 
 import plan_v18 as PLAN
 
@@ -86,6 +87,12 @@ def equip_table() -> str:
     return '\n'.join(out)
 
 
+# Resultado del revisor sobre el juego publicado antes de esta versión (v1.7, 18 nov 2026).
+BEFORE = {'catalog': (38, 110), 'units': (24, 78), 'bld': (14, 32), 'equip': (25, 57), 'ui': (13, 19)}
+FINAL = None  # resultados de las pruebas (id → {status, evidence}) cuando se arma el PRD final
+CHIP = {'ok': ('ok', 'Aprobada'), 'fail': ('fail', 'Fallida'), 'np': ('np', 'No probada'), 'pend': ('pend', 'Pendiente')}
+
+
 def report_block() -> str:
     if not os.path.exists(REPORT):
         return '<p class="note">Todavía no hay informe del revisor.</p>'
@@ -98,7 +105,12 @@ def report_block() -> str:
     warn = [f'{i["name"]}: {", ".join(i["problems"])}' for i in r['catalog'] if i['state'] == 'aviso']
     tiles = [('Tu catálogo', s['catalog_ok'], s['catalog_total']), ('Tropas', s['units_ok'], s['units_total']), ('Edificios', s['bld_ok'], s['bld_total']),
              ('Equipamiento', s['equip_ok'], s['equip_total']), ('Pantallas UI 0.4', s['ui_ok'], s['ui_total'])]
-    out = ['<div class="tiles t5">'] + [f'<div class="tile"><b>{a} de {b}</b><span>{E(t)}</span></div>' for t, a, b in tiles] + ['</div>']
+    out = []
+    if FINAL is not None:
+        names = [('Tu catálogo', 'catalog'), ('Tropas', 'units'), ('Edificios', 'bld'), ('Equipamiento', 'equip'), ('Pantallas UI 0.4', 'ui')]
+        out.append('<h3>Antes · juego v1.7</h3><div class="tiles t5">' + ''.join(f'<div class="tile"><b>{BEFORE[k][0]} de {BEFORE[k][1]}</b><span>{E(t)}</span></div>' for t, k in names) + '</div>')
+        out.append(f'<h3>Después · juego v{E(r["game"]["version"])}</h3>')
+    out += ['<div class="tiles t5">'] + [f'<div class="tile"><b>{a} de {b}</b><span>{E(t)}</span></div>' for t, a, b in tiles] + ['</div>']
     out.append(f'<p class="small">Informe del {E(r["at"])} sobre el juego v{E(r["game"]["version"])} publicado ({r["game"]["units"]} tropas, '
                f'{r["game"]["buildings"]} edificios, {r["game"]["models"]} modelos 3D). «En el juego» = existe, con modelo, tu nombre y tu productor.</p>')
     out.append('<table><thead><tr><th style="width:30%">Grupo de tu catálogo</th><th>Lo que falta hoy</th></tr></thead><tbody>')
@@ -113,9 +125,33 @@ def report_block() -> str:
     return '\n'.join(out)
 
 
+def test_rows() -> str:
+    rows = []
+    for c, t, d in TESTS:
+        r = (FINAL or {}).get(c, {'status': 'pend', 'evidence': '—'})
+        cls, label = CHIP[r['status']]
+        rows.append(f'<tr><td>{c}</td><td><b>{E(t)}</b><br>{E(d)}</td><td><span class="chip {cls}">{label}</span></td><td class="small">{E(r["evidence"])}</td></tr>')
+    return '\n'.join(rows)
+
+
+def shots_html() -> str:
+    img = os.path.join(FARO, 'docs', 'prd', 'img-v18')
+    figs = [('vestibulo-ipad-horizontal.png', 'Vestíbulo v1.8 en iPad horizontal: tu base en vivo en la portada.'),
+            ('vestibulo-ipad-vertical.png', 'iPad vertical.'), ('vestibulo-celular.png', 'Celular vertical.')]
+    have = [(f, t) for f, t in figs if os.path.exists(os.path.join(img, f))]
+    if FINAL is None or not have:
+        return ''
+    return '<div class="figs f3">' + ''.join(f'<figure><img src="img-v18/{f}" alt=""><figcaption>{E(t)}</figcaption></figure>' for f, t in have) + '</div>'
+
+
 def main() -> None:
+    global FINAL
+    if '--final' in sys.argv:
+        FINAL = json.load(open(sys.argv[sys.argv.index('--final') + 1], encoding='utf-8'))
     n_u, n_b = len(PLAN.NEW_UNITS), len(PLAN.NEW_BLD)
-    tests = '\n'.join(f'<tr><td>{c}</td><td><b>{E(t)}</b><br>{E(d)}</td><td><span class="chip pend">Pendiente</span></td><td class="small">—</td></tr>' for c, t, d in TESTS)
+    tests = test_rows()
+    estado = 'Plan · pendiente de programar' if FINAL is None else 'Terminada (pruebas abajo)'
+    oks = sum(1 for r in (FINAL or {}).values() if r['status'] == 'ok')
     fam_sections = '\n'.join(f'<h3>{E(name)} · {sum(1 for u in PLAN.NEW_UNITS if u["fam"] == f)}</h3>{unit_table(f)}' for f, name in FAMS)
     renames = ', '.join(f'{E(k)} → «{E(v)}»' for k, v in PLAN.RENAMES.items())
     doc = f"""<!doctype html>
@@ -161,6 +197,7 @@ li {{ margin-bottom: 3px; }}
 .small {{ font-size: 8pt; color: var(--muted); }}
 .figs {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 12px; }}
 .figs.f4 {{ grid-template-columns: repeat(4, 1fr); }}
+.figs.f3 {{ grid-template-columns: 2fr 1fr 0.75fr; align-items: start; }}
 .figs figure {{ margin: 0; }}
 .figs img {{ width: 100%; display: block; border-radius: 6px; border: 1px solid var(--line); }}
 .figs figcaption {{ font-size: 8.5pt; color: var(--muted); margin-top: 3px; }}
@@ -173,7 +210,7 @@ li {{ margin-bottom: 3px; }}
   <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
   <h1>Faro de Ámbar</h1>
   <p class="sub">PRD del prototipo web · versión 1.8</p>
-  <p class="meta">18 de noviembre de 2026 · Estado: <b id="estado">Plan · pendiente de programar</b> · Fuente: tu pedido «falta mucho de la documentación y de las imágenes que te di: son todas las tropas nuevas; revísalas otra vez y agrega las que faltan; la imagen de la portada se ve en la web pero no en el juego, repárala; y sigue mejorando todo; antes, un PRD y un PDF completos, y un programa solo para revisar si el juego tiene los elementos de mis archivos, con los datos, la información y las imágenes».</p>
+  <p class="meta">18 de noviembre de 2026 · Estado: <b id="estado">{estado}</b> · Fuente: tu pedido «falta mucho de la documentación y de las imágenes que te di: son todas las tropas nuevas; revísalas otra vez y agrega las que faltan; la imagen de la portada se ve en la web pero no en el juego, repárala; y sigue mejorando todo; antes, un PRD y un PDF completos, y un programa solo para revisar si el juego tiene los elementos de mis archivos, con los datos, la información y las imágenes».</p>
   <div class="tiles">
     <div class="tile"><b>Todas tus tropas</b><span>{n_u} tropas y {n_b} edificios nuevos, con modelo 3D de Blender cada uno: tu catálogo de 110 pasa a estar completo en el juego.</span></div>
     <div class="tile"><b>Tu ejército en la portada</b><span>La escena con la base y todo el ejército que ves en el sitio (y en tu pantalla 02) pasa a estar detrás del vestíbulo del juego. Más un modo «Campo de pruebas».</span></div>
@@ -190,8 +227,8 @@ li {{ margin-bottom: 3px; }}
 </section>
 
 <section>
-  <h2>2. Qué tiene hoy el juego (programa revisor)</h2>
-  <p>Este es el resultado real del programa revisor sobre el juego publicado (v1.7), antes de cambiar nada. Lo vuelvo a correr al final y el PRD final trae el nuevo resultado.</p>
+  <h2>2. {'Qué tenía el juego y qué tiene ahora' if FINAL is not None else 'Qué tiene hoy el juego'} (programa revisor)</h2>
+  <p>{'Resultado real del programa revisor antes de esta versión (juego v1.7) y sobre el juego terminado. «En el juego» = existe, con modelo 3D, tu nombre y tu productor; cómo funciona cada uno en una partida lo dicen las pruebas de la sección 9.' if FINAL is not None else 'Este es el resultado real del programa revisor sobre el juego publicado (v1.7), antes de cambiar nada. Lo vuelvo a correr al final y el PRD final trae el nuevo resultado.'}</p>
   {report_block()}
   <h3>Cómo se revisa</h3>
   <ul>
@@ -253,6 +290,7 @@ li {{ margin-bottom: 3px; }}
     <li>Cada vez que vuelves al vestíbulo cambian algunas tropas del desfile (muestra también las nuevas). Etiqueta «Tu ejército» arriba, como en tu maqueta.</li>
     <li>Con «Ahorro de batería» o «Más fluido» la escena es más chica y se mueve menos; al entrar a una partida se apaga para no gastar.</li>
   </ul>
+  {shots_html()}
   <h3>Campo de pruebas</h3>
   <p>Modo nuevo en «Elige un modo»: un mapa tranquilo con todos los productores ya construidos, 500.000 monedas y energía de sobra; los bots no atacan. Sirve para mirar y probar cada tropa y edificio. No cuenta para rangos ni misiones.</p>
   <h3>Ajustes «A tu manera» y Misiones (tu UI 0.4)</h3>
@@ -285,8 +323,8 @@ li {{ margin-bottom: 3px; }}
 </section>
 
 <section>
-  <h2>9. Pruebas de aceptación</h2>
-  <p>Se llenan al terminar con el resultado real. Las pruebas en Chromium no sustituyen una prueba en tu iPad.</p>
+  <h2>9. Pruebas de aceptación{f' · {oks} de {len(TESTS)} aprobadas' if FINAL is not None else ''}</h2>
+  <p>{'Resultado real de cada prueba, con su evidencia. Las pruebas en Chromium (sin tarjeta gráfica) no sustituyen una prueba en tu iPad: eso lo pruebas tú.' if FINAL is not None else 'Se llenan al terminar con el resultado real. Las pruebas en Chromium no sustituyen una prueba en tu iPad.'}</p>
   <table id="pruebas"><thead><tr><th style="width:7%">N.º</th><th>Prueba</th><th style="width:12%">Estado</th><th style="width:26%">Evidencia</th></tr></thead><tbody>
 {tests}
   </tbody></table>

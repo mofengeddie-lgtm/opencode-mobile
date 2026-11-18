@@ -25,11 +25,15 @@ def img(name):
 
 units = [i for i in D['items'] if i['kind'] == 'unit']
 blds = [i for i in D['items'] if i['kind'] == 'bld']
-FAMS = [('all', 'Todos'), ('inf', 'Infantería'), ('land', 'Tierra'), ('sea', 'Mar'), ('air', 'Aire'), ('bld', 'Edificios'), ('new', 'Nuevo en la 1.7')]
+FAMS = [('all', 'Todos'), ('inf', 'Infantería'), ('land', 'Tierra'), ('drone', 'Drones'), ('heli', 'Helicópteros'), ('plane', 'Aviación'),
+        ('sea', 'Mar'), ('bld', 'Edificios'), ('new', 'Nuevo en la 1.8')]
 
 
 def fam_of(i):
-    return 'land' if i['fam'] == 'strat' else i['fam']
+    # v1.8: el juego separa el aire en drones, helicópteros y aviación; lo estratégico va con su familia.
+    if i['fam'] == 'strat':
+        return 'sea' if i.get('role') == 'Estratégico' and i['key'] == 'stratsub' else 'land'
+    return 'heli' if i['fam'] == 'air' else i['fam']
 
 
 cards = '\n'.join(
@@ -42,6 +46,7 @@ modes = '\n'.join(f'<li><b>{E(m["name"])}</b><span>{E(m["desc"])}</span></li>' f
 first = D['items'][next(k for k, i in enumerate(D['items']) if i['isNew'])]
 
 LOG = [
+    ('1.8', '18 nov 2026', 'Todo el catálogo del PRD 1.8: 57 tropas y 19 edificios nuevos con su modelo 3D, sistemas nuevos (anfibios, puentes, puertas, búnker, auras, minas, investigación, paracaídas), «Tu ejército» en la portada del juego, Campo de pruebas, Ajustes «A tu manera» y programa revisor.'),
     ('1.7', '15-17 nov 2026', 'Arsenal «Conoce tu ejército», Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera, Lanzador DF-17 con modelo nuevo, Lanzador nuclear móvil de un solo uso, selección con vida del grupo y orden actual, carga en 3 pasos y tamaño de la interfaz.'),
     ('1.6.1', '16 nov 2026', 'Luz nueva y mar vivo: reflejos que se mueven, espuma en las orillas y sombras que se ven. Áreas táctiles de 44 px.'),
     ('1.6', '13-15 nov 2026', 'Pantalla de carga real, motivos junto a cada acción, alcance al colocar defensas y ventana «Acerca de».'),

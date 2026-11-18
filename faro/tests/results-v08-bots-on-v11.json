@@ -1,0 +1,32 @@
+[
+ {
+  "id": "E06",
+  "name": "Defensa en equipo: al atacar la base de un bot acuden 7 de cada 10 de sus tropas cercanas y levanta una Torreta de ese lado",
+  "ok": true,
+  "ev": "continent: acuden 8 de 8 tropas cercanas, Torreta a 0° del lado del ataque; a los 4 s pelean 7 · archipelago: acuden 8 de 8 tropas cercanas, Torreta a 19° del lado del ataque; a los 4 s pelean 7 · bay: acuden 8 de 8 tropas cercanas, Torreta a 0° del lado del ataque; a los 4 s pelean 7"
+ },
+ {
+  "id": "E07",
+  "name": "Las oleadas se forman en línea al reunirse y avanzan atacando",
+  "ok": true,
+  "ev": "continent/normal: reunidas en línea 3/3, avanzan atacando 3/3 · archipelago/normal: reunidas en línea 3/3, avanzan atacando 3/3 · continent/hard: reunidas en línea 3/3, avanzan atacando 3/3 · archipelago/hard: reunidas en línea 3/3, avanzan atacando 3/3"
+ },
+ {
+  "id": "E08",
+  "name": "Fuego concentrado: con varios enemigos a tiro, el bot dispara primero al más débil",
+  "ok": true,
+  "ev": "el bot elige al de 120 de vida (había 260, 120 y 200); el jugador sigue eligiendo el más cercano (260); en 10 peleas de 8 Artilleros contra 8, el mismo lado termina con 5.4 tropas vivas sin fuego concentrado y 5.3 con él (en peleas iguales casi no cambia el resultado)"
+ },
+ {
+  "id": "E09",
+  "name": "Hostigamiento: en Normal y Difícil hay ataques chicos a Granjas o Minas alejadas",
+  "ok": true,
+  "ev": "9 de 10 partidas de 15 min con hostigamiento (5 mapas × Normal/Difícil); ejemplos: archipelago/normal 5 (Ranger+Ranger→Granja, primero a 315 s); archipelago/hard 5 (Ranger+Jeep→Granja, primero a 295 s); continent/normal 4 (Ranger+Ranger→Granja, primero a 275 s); continent/hard 6 (Jeep+Jeep→Granja, primero a 287 s); en Fácil: 0"
+ },
+ {
+  "id": "E10",
+  "name": "Aliados coordinados en Liga 3 vs 3: atacan al mismo rival y ayudan al aliado atacado",
+  "ok": true,
+  "ev": "oleadas al mismo rival que un aliado: 24 de 25 (96 %); ayuda al aliado atacado: archipelago bot 3 manda 4 tropas a los 4 s · continent bot 3 manda 2 tropas a los 5 s · bay sin ayuda; ayudas en total: 9/4/3"
+ }
+]

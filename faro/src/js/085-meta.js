@@ -90,13 +90,13 @@ const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', '
 const MAP_THUMBS = {};
 // Lo que trae esta versión (ventana «Acerca de»).
 const ABOUT_NEWS = [
-  'Arsenal: «Conoce tu ejército», con buscador, filtros y la ficha de cada tropa y edificio.',
-  'Equipo nuevo: Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera.',
-  'Lanzador DF-17 con modelo nuevo y Lanzador nuclear móvil de un solo uso (opción «Arsenal estratégico» en Personalizado).',
-  'Selección más clara: vida del grupo, orden actual, «Centrar» y lista de pasajeros.',
-  'Carga en 3 pasos y un perfil que no se pierde si no se pudo leer.',
-  'Ajustes: tamaño de la interfaz y «Reducir destellos».',
-  'Luz nueva y mar vivo (reflejos que se mueven y espuma en las orillas); en la pausa puedes volver a la luz clásica.',
+  'Todo tu catálogo: 57 tropas y 19 edificios nuevos (infantería, blindados, artillería, drones, helicópteros, aviones y flota), cada uno con su modelo 3D.',
+  'Sistemas nuevos: anfibios, Puente modular, Puerta reforzada, Búnker con soldados adentro, mando, suministros, combustible, interferencia, minas navales y Centro de investigación.',
+  'Transporte aéreo y paracaidistas; Complejo estratégico y Submarino estratégico (comparten el uso único del Arsenal estratégico).',
+  '«Tu ejército» en la portada: tu base y un desfile de tropas en 3D detrás del vestíbulo.',
+  'Modo «Campo de pruebas»: todo construido y mucho dinero para probar cada tropa y edificio.',
+  'Ajustes «A tu manera» por secciones, pestaña Misiones y filtros nuevos en el Arsenal.',
+  'Nombres de tu catálogo: Médico de campaña, Hospital de campaña, Fragata de escolta, Molino eólico y Avión de combate furtivo.',
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.

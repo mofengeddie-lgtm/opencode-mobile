@@ -1,0 +1,37 @@
+{
+ "ok": true,
+ "easy": {
+  "trained": 300,
+  "newUnits": 0,
+  "share": 0,
+  "types": {}
+ },
+ "normal": {
+  "trained": 512,
+  "newUnits": 35,
+  "share": 0.068359375,
+  "types": {
+   "soldier": 12,
+   "gunner": 7,
+   "mortar": 5,
+   "atguided": 6,
+   "gunboat": 1,
+   "armoredcar": 3,
+   "tankdestroyer": 1
+  }
+ },
+ "hard": {
+  "trained": 598,
+  "newUnits": 59,
+  "share": 0.09866220735785954,
+  "types": {
+   "soldier": 18,
+   "gunner": 10,
+   "mortar": 7,
+   "atguided": 8,
+   "armoredcar": 1,
+   "tankdestroyer": 5,
+   "corvette": 10
+  }
+ }
+}

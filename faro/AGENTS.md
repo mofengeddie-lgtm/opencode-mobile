@@ -34,6 +34,13 @@ del juego (`img/`, `data.json`), y `python3 faro/site/build_site.py` arma `site/
 cualquier alojamiento) y `site/sitio_artifact.html` (la que se publica como artifact). En cada versión nueva: volver a
 sacar las capturas, volver a armarlo y volver a publicarlo en el mismo enlace.
 
+## Programa revisor (desde la v1.8)
+
+Pedido del usuario: un programa solo para revisar si el juego tiene los elementos de sus archivos. Está en `tools/revisar/`:
+`python3 faro/tools/revisar/revisar.py [--fotos] [--estricto]` compara `faro/faro.html` con el catálogo del PRD 1.8, la lista de
+equipamiento y la UI 0.4, y escribe `salida/informe.html`, `.pdf` y `.json`. En cada versión: correrlo antes de publicar; si se
+agrega o cambia una tropa o edificio del catálogo, actualizar `plan_v18.py` (nombre del usuario → clave del juego).
+
 ## Fuentes del usuario
 
 - `docs/roblox/PRD_Faro_de_Ambar_v1_6.md` (13 nov 2026): PRD y plan de inicio para Roblox escrito por
@@ -50,8 +57,10 @@ sacar las capturas, volver a armarlo y volver a publicarlo en el mismo enlace.
   la información y verde para lo que está bien. Las fotos de prensa de referencia no se guardan en el proyecto.
 
 - `docs/roblox/Equipamiento_Militar_2.md` (15 nov 2026): lista de equipo militar moderno del usuario como información
-  para mejorar el juego. La v1.7 tomó un primer lote (drones, lanzacohetes múltiple, lancha misilera); el resto queda
-  para lotes que el usuario elija.
+  para mejorar el juego. La v1.7 tomó un primer lote; la v1.8 agregó el resto (`tools/revisar/plan_v18.py` dice dónde quedó
+  cada sistema; la mina Claymore y los satélites quedan fuera, con su motivo).
+- `docs/roblox/modelos-0.2/`: las 31 imágenes de los modelos 0.2 y las 2 escenas del PDF v1.8 del usuario (sacadas con
+  `tools/revisar/extraer_refs.py`). Son la referencia de estilo de los modelos de Blender.
 
 - `PRD_Faro_de_Ambar_v1_5.pdf` (6 nov 2026): PRD maestro para Roblox. Sus cifras marcadas como
   EJEMPLO no son precios aprobados.
