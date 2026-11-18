@@ -385,7 +385,7 @@ class Input {
       return;
     }
     // Tropas seleccionadas + toque en tu transporte (Barcaza, Lancha, Jeep, Transporte, Portaaviones) = subir.
-    if (target && target.owner === 0 && (target.def.capacity || target.def.hangar)) {
+    if (target && target.owner === 0 && (target.def.capacity || target.def.hangar || target.def.garrison)) {
       const landers = mine.filter((u) => g.canBoard(u, target));
       if (landers.length) {
         g.orderBoard(landers, target);
@@ -512,6 +512,8 @@ class Input {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
     } else if (p.kind === 'mnuke') {
       cells = p.unit.alive ? g.cells.filter((c) => !g.mobileNukeInvalid(p.unit, c.i)).map((c) => c.i) : [];
+    } else if (p.kind === 'silo') {
+      cells = p.building.alive ? g.cells.filter((c) => !g.siloInvalid(p.building, c.i)).map((c) => c.i) : [];
     } else if (p.kind === 'nuke3') {
       const silos = g.readySilos(0).slice(0, 3);
       cells = silos.length < 3 || g.salvoInvalid(0) ? [] : g.cells.filter((c) => silos.every((b) => !g.nukeInvalid(b, c.i))).map((c) => c.i);
@@ -561,9 +563,9 @@ class Input {
       this.r.addMoveMarker(cell.i, 0xf5c542);
       this.app.ui.toast('El ingeniero va en camino (cuesta 800 al llegar)');
       this.cancelPlacement();
-    } else if (p.kind === 'mnuke' || (p.kind === 'nuke' && g.strategic)) {
+    } else if (p.kind === 'mnuke' || p.kind === 'silo' || (p.kind === 'nuke' && g.strategic)) {
       // v1.7: con Arsenal estratégico el uso es único: primero se revisa la zona y se confirma.
-      const err = p.kind === 'mnuke' ? g.mobileNukeInvalid(p.unit, cell.i) : g.nukeInvalid(p.building, cell.i);
+      const err = p.kind === 'mnuke' ? g.mobileNukeInvalid(p.unit, cell.i) : p.kind === 'silo' ? g.siloInvalid(p.building, cell.i) : g.nukeInvalid(p.building, cell.i);
       if (err) {
         this.app.ui.toast(err, 'bad');
         this.app.sound.play('error');

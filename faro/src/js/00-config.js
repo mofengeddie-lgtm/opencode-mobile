@@ -10,7 +10,7 @@ function terrainColor(mapKind, t) {
   return pal && pal[t] !== undefined ? pal[t] : TERRAIN[t].color;
 }
 const GAME_NAME = 'Faro de Ámbar';
-const GAME_VERSION = '1.7';
+const GAME_VERSION = '1.8';
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -53,6 +53,13 @@ const NUKE = { cost: 20000, cooldown: 180, range: 40, radius: 3, dmg: 4000, flig
 // uso estratégico por partida: el misil del AIR DEFENSE de nivel 4 o el del Lanzador nuclear móvil.
 // prep: segundos de preparación al salir de la Fábrica; range: alcance del lanzador móvil en casillas.
 const STRATEGIC = { uses: 1, prep: 60, range: 14 };
+// v1.8: Centro de investigación (una a la vez; valen para todo tu ejército) y minas navales del Buque minador.
+const RESEARCH = {
+  armor: { name: 'Blindaje', pct: 0.1, cost: 2500, time: 45, desc: '+10 % de vida a tus vehículos.' },
+  aim: { name: 'Puntería', pct: 0.1, cost: 2500, time: 45, desc: '+10 % de daño a tu infantería.' },
+  engines: { name: 'Motores', pct: 0.15, cost: 2500, time: 45, desc: '+15 % de velocidad a tus aeronaves.' },
+};
+const MINES = { limit: 8, every: 4 };
 // Casa: nivel 1 (+10 de comunidad) y nivel 2 = Apartamento (+20 más). Precio de la mejora.
 const HOUSE_LEVELS = [0, 1500];
 // Reparación del Ingeniero: vida por segundo y pausa tras recibir daño.
@@ -145,7 +152,8 @@ const BUILDINGS = {
     builtBy: 'land', desc: '+3 de energía cada 10 s. En cualquier tierra.',
   },
   wind: {
-    fem: true, name: 'Eólica', cat: 'energy', cost: 300, hp: 400, build: 6, energy: 5, on: 'land', limit: 8,
+    // v1.8: nombre del catálogo del usuario («Molino»); mismos números.
+    name: 'Molino eólico', cat: 'energy', cost: 300, hp: 400, build: 6, energy: 5, on: 'land', limit: 8,
     builtBy: 'land', desc: '+5 de energía cada 10 s. En cualquier tierra.',
   },
   hydro: {
@@ -162,23 +170,28 @@ const BUILDINGS = {
   },
   barracks: {
     name: 'Cuartel', cat: 'prod', cost: 1000, hp: 900, build: 10, on: 'land', limit: 3, builtBy: 'land',
-    produces: ['builder', 'engineer', 'rifle', 'shotgun', 'ranger', 'sniper', 'breaker', 'hunter', 'rocket', 'medic'],
-    desc: 'Entrena los 10 soldados: del Constructor al Cohetero, y el Médico.',
+    produces: ['builder', 'engineer', 'rifle', 'shotgun', 'ranger', 'sniper', 'breaker', 'hunter', 'rocket', 'medic',
+      'scout', 'soldier', 'officer', 'radioman', 'sapper', 'mortar', 'paratrooper', 'marine', 'atguided', 'gunner', 'antidrone'],
+    desc: 'Entrena los 21 soldados: del Constructor al Paracaidista.',
   },
   factory: {
     fem: true, name: 'Fábrica', cat: 'prod', cost: 3000, energyCost: 50, hp: 1500, build: 16, on: 'land', limit: 2, builtBy: 'land',
-    produces: ['jeep', 'apc', 'lighttank', 'tank', 'heavytank', 'aa', 'arty', 'mlrs', 'missiletruck', 'launcher', 'nukelauncher'],
-    desc: 'Fabrica tanques, camiones antiaéreos, jeeps y lanzamisiles.',
+    produces: ['jeep', 'armoredcar', 'apc', 'ifv', 'trooptruck', 'lighttank', 'tank', 'heavytank', 'tankdestroyer', 'aa', 'arty',
+      'mlrs', 'thermo', 'howitzer', 'towedgun', 'missiletruck', 'launcher', 'ambulance', 'recovery', 'supplytruck', 'tanker',
+      'commandveh', 'mobileradar', 'amphib', 'bridgelayer', 'clearer', 'dozer', 'robodog', 'nukelauncher'],
+    desc: 'Fabrica tanques, artillería, transportes y vehículos de apoyo.',
   },
   harbor: {
     name: 'Puerto', cat: 'prod', cost: 2200, hp: 1300, build: 14, on: 'coast', limit: 2, builtBy: 'land',
-    produces: ['speedboat', 'missileboat', 'boatEng', 'barge', 'lander', 'frigate', 'destroyer', 'sub', 'carrier'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
-    desc: 'En agua junto a la orilla. Construye los 5 barcos y repara los cercanos.',
+    produces: ['speedboat', 'missileboat', 'boatEng', 'barge', 'lander', 'patrolboat', 'gunboat', 'corvette', 'frigate', 'destroyer',
+      'battleship', 'sub', 'carrier', 'logship', 'hovercraft', 'minesweeper', 'minelayer', 'navaldrone', 'subdrone'],
+    heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    desc: 'En agua junto a la orilla. Construye los barcos y repara los cercanos.',
   },
   helipad: {
     name: 'Helipuerto', cat: 'prod', cost: 4000, energyCost: 80, hp: 1000, build: 18, on: 'land', limit: 6, builtBy: 'land',
-    produces: ['fpv', 'drone', 'heli', 'apache'], heal: { cls: ['air'], rate: 40, range: 2 },
-    desc: 'Produce el Helicóptero y el Apache Guardián, y repara a los helicópteros cercanos. Hasta 6.',
+    produces: ['scoutdrone', 'fpv', 'drone', 'heli', 'apache', 'transheli', 'rescueheli', 'navalheli'], heal: { cls: ['air'], rate: 40, range: 2 },
+    desc: 'Produce helicópteros y drones, y repara a las aeronaves cercanas. Hasta 6.',
   },
   turret: {
     fem: true, name: 'Torreta', cat: 'def', cost: 1500, hp: 1100, build: 10, on: 'land', limit: 20, vision: 5, builtBy: 'land', maxLevel: 4,
@@ -207,7 +220,8 @@ const BUILDINGS = {
     desc: 'Muralla que bloquea a las tropas enemigas y se une con los muros vecinos. Las tuyas pasan.',
   },
   hospital: {
-    fem: true, name: 'Enfermería', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2, builtBy: 'land',
+    // v1.8: nombre del catálogo del usuario; mismos números.
+    name: 'Hospital de campaña', cat: 'def', cost: 2000, hp: 700, build: 12, on: 'land', limit: 2, builtBy: 'land',
     heal: { cls: ['inf', 'veh'], pct: 0.03, range: 2 },
     healLevels: [null, { pct: 0.03, range: 2, name: 'Clínica' }, { pct: 0.05, range: 2, name: 'Mini hospital' }, { pct: 0.08, range: 3, name: 'Hospital grande' }],
     desc: 'Cura infantería y vehículos cercanos. Nivel 1 clínica (3 %/s), nivel 2 mini hospital (5 %/s), nivel 3 hospital grande (8 %/s).',
@@ -215,8 +229,9 @@ const BUILDINGS = {
   // v0.9: Aeropuerto militar (caza y bombardero furtivos) y Escudo antimisiles (derriba el misil nuclear).
   airport: {
     name: 'Aeropuerto militar', cat: 'prod', cost: 6000, energyCost: 100, hp: 1800, build: 22, on: 'land', limit: 2, builtBy: 'land',
-    produces: ['fighter', 'bomber'], heal: { cls: ['air'], rate: 40, range: 2 },
-    desc: 'Pista y hangares: fabrica el Caza furtivo y el Bombardero furtivo, y repara aviones cercanos.',
+    produces: ['fighter', 'bomber', 'attackjet', 'heavybomber', 'gunship', 'transportplane', 'awacs', 'tankerplane', 'ewplane'],
+    heal: { cls: ['air'], rate: 40, range: 2 },
+    desc: 'Pista y hangares: fabrica los aviones y repara a los cercanos.',
   },
   antinuke: {
     name: 'Escudo antimisiles', cat: 'def', cost: 9000, energyCost: 120, hp: 1400, build: 20, on: 'land', limit: 2, builtBy: 'land',
@@ -228,14 +243,114 @@ const BUILDINGS = {
   outpost: {
     name: 'Puesto avanzado', cat: null, cost: 800, hp: 800, build: 8, claim: 2, vision: 4, limit: 6, maxLevel: 1,
     desc: 'Amplía tu territorio. Lo fundan los ingenieros y los barcos constructores.',
+  },  // ---------- v1.8: edificios del catálogo del usuario (PRD 1.8, secciones 51-54) y de su lista de equipamiento ----------
+  // Números de juego propuestos para probar. aura: efectos sobre tropas cercanas (ver Game.updateAuras).
+  corral: {
+    name: 'Corral de ganadería', cat: 'eco', cost: 600, hp: 500, build: 7, income: 280, on: 'land', limit: 8, builtBy: 'land',
+    desc: '+280 monedas/min. En cualquier tierra.',
+  },
+  powerplant: {
+    fem: true, name: 'Central de energía', cat: 'energy', cost: 3000, hp: 1200, build: 14, energy: 25, on: 'land', limit: 2, builtBy: 'land',
+    desc: '+25 de energía cada 10 s: la energía más fuerte.',
+  },
+  dronecenter: {
+    name: 'Centro de drones', cat: 'prod', cost: 2200, energyCost: 20, hp: 1100, build: 12, on: 'land', limit: 2, builtBy: 'land',
+    produces: ['drone', 'fpv', 'cargodrone', 'interceptor'], heal: { cls: ['air'], rate: 30, range: 2, droneOnly: true },
+    desc: 'Produce drones y repara a los drones cercanos.',
+  },
+  shipyard: {
+    name: 'Astillero mayor', cat: 'prod', cost: 4000, energyCost: 30, hp: 2200, build: 18, on: 'coast', limit: 1, builtBy: 'land',
+    produces: ['frigate', 'cruiser', 'carrier', 'landingship', 'hospitalship', 'reconsub', 'stratsub'], heal: { cls: ['ship', 'sub'], rate: 25, range: 2 },
+    desc: 'En agua junto a la orilla. Construye los buques grandes y los repara.',
+  },
+  workshop: {
+    name: 'Taller de mantenimiento', cat: 'sup', cost: 1800, hp: 1200, build: 10, on: 'land', limit: 3, builtBy: 'land',
+    heal: { cls: ['veh'], rate: 30, range: 2 },
+    desc: 'Repara los vehículos cercanos (30 de vida por segundo).',
+  },
+  research: {
+    name: 'Centro de investigación', cat: 'sup', cost: 3000, energyCost: 20, hp: 1400, build: 14, on: 'land', limit: 1, builtBy: 'land',
+    maxLevel: 1,
+    desc: 'Investiga mejoras para todo tu ejército: Blindaje, Puntería y Motores.',
+  },
+  radarstation: {
+    fem: true, name: 'Estación de radar', cat: 'sup', cost: 2000, energyCost: 30, hp: 900, build: 10, on: 'land', limit: 2, builtBy: 'land',
+    vision: 12, detect: 8,
+    desc: 'Ve 12 casillas y descubre aviones furtivos, submarinos y minas a 8.',
+  },
+  depot: {
+    name: 'Depósito logístico', cat: 'sup', cost: 2500, hp: 1300, build: 12, on: 'land', limit: 2, builtBy: 'land', energy: 5,
+    aura: [{ kind: 'supply', pct: 0.2, range: 3 }],
+    desc: 'Suministros: tus tropas a 3 casillas recargan un 20 % más rápido. +5 de energía cada 10 s.',
+  },
+  hq: {
+    name: 'Centro de mando avanzado', cat: 'sup', cost: 3500, energyCost: 20, hp: 2400, build: 16, on: 'land', limit: 1, builtBy: 'land',
+    claim: 3, vision: 6, maxLevel: 1, aura: [{ kind: 'dmg', pct: 0.1, range: 3 }],
+    desc: 'Gana territorio (3 casillas) y da +10 % de daño a tus tropas a 3 casillas.',
+  },
+  bunker: {
+    name: 'Búnker de guarnición', cat: 'def', cost: 1600, hp: 2000, build: 10, on: 'land', limit: 6, vision: 5, builtBy: 'land', maxLevel: 1,
+    garrison: 4, garrisonDmg: 0.25,
+    weapon: { dmg: 30, cd: 0.6, range: 4, proj: 'bullet', mult: { inf: 1.3, veh: 0.8, ship: 0.7, air: 0.6, bld: 0.5, sub: 0 } },
+    desc: 'Dispara solo. Caben 4 soldados: cada uno suma un 25 % de daño. Si cae, salen.',
+  },
+  gate: {
+    fem: true, name: 'Puerta reforzada', cat: 'def', cost: 400, hp: 2500, build: 5, on: 'land', limit: 10, builtBy: 'land', maxLevel: 1,
+    desc: 'Muro con puerta: abierta deja pasar a tus tropas y aliados; cerrada no pasa nadie.',
+  },
+  coastal: {
+    fem: true, name: 'Batería de defensa costera', cat: 'def', cost: 3000, energyCost: 20, hp: 1800, build: 14, on: 'landcoast', limit: 4, vision: 7,
+    builtBy: 'land',
+    weapon: { dmg: 220, cd: 3, range: 7, proj: 'shell', mult: { inf: 0.5, veh: 0.8, ship: 1.8, air: 0, bld: 0.8, sub: 1 } },
+    desc: 'Cañón de 7 casillas contra barcos (×1,8). En tierra junto al agua.',
+  },
+  ciws: {
+    fem: true, name: 'Defensa de punto', cat: 'def', cost: 1800, energyCost: 20, hp: 900, build: 10, on: 'land', limit: 6, vision: 4, builtBy: 'land',
+    maxLevel: 1, pointDefense: { range: 3, cd: 1 }, prefersAir: true,
+    weapon: { dmg: 16, cd: 0.12, range: 3, proj: 'bullet', droneMult: 2, mult: { inf: 0.3, veh: 0.2, ship: 0.2, air: 1.2, bld: 0, sub: 0 } },
+    desc: 'Derriba misiles y cohetes a 3 casillas (uno por segundo) y dispara a drones y aeronaves.',
+  },
+  laser: {
+    fem: true, name: 'Torre láser', cat: 'def', cost: 2500, energyCost: 40, hp: 900, build: 12, on: 'land', limit: 4, vision: 6, builtBy: 'land',
+    maxLevel: 1, prefersAir: true,
+    weapon: { dmg: 60, cd: 0.8, range: 5, proj: 'laser', droneMult: 2, mult: { inf: 0.2, veh: 0.1, ship: 0.1, air: 1.4, bld: 0, sub: 0 } },
+    desc: 'Rayo contra aeronaves a 5 casillas; el doble contra drones.',
+  },
+  watchtower: {
+    fem: true, name: 'Torre de observación', cat: 'def', cost: 600, hp: 600, build: 6, on: 'land', limit: 6, builtBy: 'land', maxLevel: 1,
+    vision: 9, detect: 4,
+    desc: 'Ve 9 casillas y descubre lo oculto a 4.',
+  },
+  silo: {
+    name: 'Complejo estratégico', cat: 'def', cost: 15000, energyCost: 100, hp: 3000, build: 30, on: 'land', limit: 1, builtBy: 'land', maxLevel: 1,
+    strategic: true,
+    desc: 'Solo con «Arsenal estratégico»: lanza el DF-5C (misil nuclear). Comparte tu único uso estratégico.',
+  },
+  bridge: {
+    name: 'Puente modular', cat: 'sup', cost: 800, hp: 1000, build: 8, on: 'shallowcoast', limit: 10, builtBy: 'land', maxLevel: 1,
+    anyTerritory: true, walkable: true,
+    desc: 'En agua poco profunda junto a tierra: las tropas de tierra cruzan por encima. Los barcos ya no pasan.',
+  },
+  dock: {
+    name: 'Muelle logístico', cat: 'sup', cost: 1500, hp: 1000, build: 8, on: 'coast', limit: 3, builtBy: 'land',
+    heal: { cls: ['ship', 'sub'], rate: 20, range: 2 },
+    desc: 'En agua junto a la orilla: repara los barcos cercanos (20 por segundo).',
+  },
+  // Mina naval (la siembra el Buque minador; no se construye desde el menú).
+  seamine: {
+    fem: true, name: 'Mina naval', cat: null, cost: 0, hp: 200, build: 0, maxLevel: 1, stealth: true, walkable: true, sea: true,
+    mine: { dmg: 500, range: 1 },
+    desc: 'Oculta bajo el agua: explota con el primer barco enemigo que pasa cerca.',
   },
 };
 
 const BUILD_TABS = [
-  { id: 'eco', name: 'Economía', items: ['farm', 'pump', 'mine', 'rig', 'house'] },
-  { id: 'energy', name: 'Energía', items: ['solar', 'wind', 'hydro', 'tidal', 'wave'] },
-  { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad', 'airport'] },
-  { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'antinuke', 'wall', 'hospital', 'miniturret'] },
+  { id: 'eco', name: 'Economía', items: ['farm', 'pump', 'mine', 'rig', 'house', 'corral'] },
+  { id: 'energy', name: 'Energía', items: ['solar', 'wind', 'hydro', 'tidal', 'wave', 'powerplant'] },
+  { id: 'prod', name: 'Producción', items: ['barracks', 'factory', 'harbor', 'helipad', 'airport', 'dronecenter', 'shipyard'] },
+  { id: 'def', name: 'Defensa', items: ['turret', 'aadef', 'antinuke', 'wall', 'gate', 'bunker', 'coastal', 'ciws', 'laser', 'watchtower', 'hospital', 'miniturret', 'silo'] },
+  // v1.8: pestaña nueva con los edificios de apoyo del catálogo del usuario.
+  { id: 'sup', name: 'Apoyo', items: ['workshop', 'research', 'radarstation', 'depot', 'hq', 'bridge', 'dock'] },
 ];
 
 // Cúpula: se compra con el Núcleo en nivel 3; nivel 3 da escudo personal a tus tropas.
@@ -327,7 +442,7 @@ const UNITS = {
     desc: 'Lanza misiles de largo alcance solo contra edificios. Necesita escolta.',
   },
   apc: {
-    name: 'Transporte blindado', cls: 'veh', mover: 'land', cost: 2000, energy: 15, hp: 1600, speed: 2.0, pop: 2, build: 10, capacity: 6, carries: 'inf',
+    name: 'Transporte blindado de personal', cls: 'veh', mover: 'land', cost: 2000, energy: 15, hp: 1600, speed: 2.0, pop: 2, build: 10, capacity: 6, carries: 'inf',
     weapon: { dmg: 14, cd: 0.3, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.4, ship: 0.3, air: 0.3, bld: 0.3, sub: 0 } },
     desc: 'Lleva 6 soldados protegidos y tiene una ametralladora.',
   },
@@ -344,7 +459,7 @@ const UNITS = {
     desc: 'Camión largo con un solo misil nuclear: un uso por partida. No pelea; necesita escolta.',
   },
   medic: {
-    name: 'Médico', cls: 'inf', mover: 'land', cost: 900, hp: 220, speed: 1.6, pop: 1, build: 8, vision: 3,
+    name: 'Médico de campaña', cls: 'inf', mover: 'land', cost: 900, hp: 220, speed: 1.6, pop: 1, build: 8, vision: 3,
     healAura: { cls: ['inf'], pct: 0.05, range: 1 },
     desc: 'Cura a los soldados cercanos (5 % de su vida por segundo). No pelea.',
   },
@@ -367,7 +482,9 @@ const UNITS = {
     desc: 'Más rápida y resistente que la Barcaza: lleva 10 lugares (un vehículo ocupa 2) y desembarca en la playa.',
   },
   frigate: {
-    name: 'Fragata antiaérea', cls: 'ship', mover: 'sea', cost: 3600, energy: 30, detects: true, hp: 2200, speed: 1.7, pop: 3, build: 14,
+    // v1.8: «Fragata de escolta» del catálogo del usuario; mismos números y defensa de punto (derriba misiles y cohetes cerca).
+    name: 'Fragata de escolta', cls: 'ship', mover: 'sea', cost: 3600, energy: 30, detects: true, hp: 2200, speed: 1.7, pop: 3, build: 14,
+    pointDefense: { range: 2, cd: 2 },
     weapon: { dmg: 95, cd: 1.3, range: 6, proj: 'missile', mult: { inf: 0.3, veh: 0.3, ship: 0.6, air: 2.1, bld: 0.3, sub: 0.4 } },
     desc: 'Barco con misiles antiaéreos de largo alcance. Protege a la flota de aviones y helicópteros.',
   },
@@ -405,7 +522,7 @@ const UNITS = {
     desc: 'Cañón de 30 mm, cohetes y misiles guiados de largo alcance contra tanques. Bengalas: esquiva un misil antiaéreo cada 20 s.',
   },
   fighter: {
-    name: 'Caza furtivo', cls: 'air', mover: 'air', cost: 6000, energy: 60, hp: 1400, speed: 3.6, pop: 3, build: 18, plane: true,
+    name: 'Avión de combate furtivo', cls: 'air', mover: 'air', cost: 6000, energy: 60, hp: 1400, speed: 3.6, pop: 3, build: 18, plane: true,
     weapon: { dmg: 140, cd: 1.2, range: 5, proj: 'missile', mult: { inf: 0.1, veh: 0.2, ship: 0.2, air: 2.3, bld: 0.3, sub: 0 } },
     desc: 'Caza de quinta generación: muy rápido, misiles aire-aire. Limpia el cielo de aviones y helicópteros.',
   },
@@ -419,12 +536,12 @@ const UNITS = {
   // splash: daño en área: a los enemigos a «r» casillas del impacto les llega la parte «pct» del daño.
   // salvo: cohetes por descarga (salen de a uno). kamikaze: se destruye al atacar.
   drone: {
-    name: 'Dron de ataque', cls: 'air', mover: 'air', cost: 2600, energy: 25, hp: 520, speed: 2.6, pop: 1, build: 10, vision: 6,
+    name: 'Dron de ataque', cls: 'air', mover: 'air', cost: 2600, energy: 25, hp: 520, speed: 2.6, pop: 1, build: 10, vision: 6, drone: true,
     weapon: { dmg: 110, cd: 3.2, range: 5, proj: 'missile', mult: { inf: 0.8, veh: 1.3, ship: 1, air: 0, bld: 0.8, sub: 0 } },
     desc: 'Avión sin piloto: barato, ve lejos y dispara un misil guiado. Poca vida: cuídalo de los antiaéreos.',
   },
   fpv: {
-    name: 'Dron kamikaze', cls: 'air', mover: 'air', cost: 900, energy: 5, hp: 90, speed: 3.4, pop: 1, build: 5, kamikaze: true,
+    name: 'Dron kamikaze', cls: 'air', mover: 'air', cost: 900, energy: 5, hp: 90, speed: 3.4, pop: 1, build: 5, kamikaze: true, drone: true,
     weapon: { dmg: 380, cd: 1, range: 1, proj: 'ram', splash: { r: 0.6, pct: 0.5 }, mult: { inf: 1, veh: 1.5, ship: 1, air: 0, bld: 0.8, sub: 0 } },
     desc: 'Se estrella contra su blanco y explota: sirve una sola vez. Muy frágil; fuerte contra vehículos.',
   },
@@ -437,6 +554,293 @@ const UNITS = {
     name: 'Lancha misilera', cls: 'ship', mover: 'sea', cost: 2600, energy: 20, hp: 800, speed: 2.4, pop: 2, build: 11,
     weapon: { dmg: 260, cd: 5, range: 5, proj: 'missile', mult: { inf: 0.2, veh: 0.5, ship: 1.6, air: 0, bld: 0.9, sub: 0 } },
     desc: 'Rápida y frágil: misiles antibuque de largo alcance. Ataca por sorpresa a los barcos grandes.',
+  },  // ---------- v1.8: tropas del catálogo del usuario (PRD 1.8, secciones 37-50) y de su lista de equipamiento ----------
+  // Números de juego propuestos para probar. Campos nuevos: aura (ver Game.updateAuras), detect (casillas a las que
+  // descubre lo oculto), mover 'amphib' (tierra y agua poco profunda), airlift (baja tropas en cualquier tierra),
+  // para (cae en paracaídas), layBridge, layMine, demine, droneMult (más daño a drones), defMult (más daño a defensas),
+  // wallMult (más daño a muros), onlyType (solo ataca ese edificio).
+  scout: {
+    name: 'Explorador', cls: 'inf', mover: 'land', cost: 250, hp: 140, speed: 2.0, pop: 1, build: 4, vision: 6, captureMult: 1.5,
+    weapon: { dmg: 8, cd: 0.8, range: 3, proj: 'bullet', mult: { inf: 1.1, veh: 0.4, ship: 0.3, air: 0.3, bld: 0.3, sub: 0 } },
+    desc: 'Ve 6 casillas y captura Banderas y el Faro un 50 % más rápido. Pelea poco.',
+  },
+  soldier: {
+    name: 'Soldado', cls: 'inf', mover: 'land', cost: 300, hp: 220, speed: 1.5, pop: 1, build: 4,
+    weapon: { dmg: 13, cd: 0.7, range: 3, proj: 'bullet', mult: { inf: 1.1, veh: 0.5, ship: 0.4, air: 0.3, bld: 0.5, sub: 0 } },
+    desc: 'Combatiente básico y barato. Bueno en número.',
+  },
+  officer: {
+    name: 'Oficial de campo', cls: 'inf', mover: 'land', cost: 1200, hp: 260, speed: 1.5, pop: 1, build: 8,
+    aura: [{ kind: 'dmg', pct: 0.15, range: 2 }],
+    weapon: { dmg: 10, cd: 0.8, range: 3, proj: 'bullet', mult: { inf: 1.1, veh: 0.4, ship: 0.3, air: 0.3, bld: 0.3, sub: 0 } },
+    desc: 'Mando: tus tropas a 2 casillas hacen un 15 % más de daño (no se suma con otro mando).',
+  },
+  radioman: {
+    name: 'Operador de comunicaciones', cls: 'inf', mover: 'land', cost: 900, hp: 200, speed: 1.5, pop: 1, build: 7, vision: 8, detect: 3,
+    weapon: { dmg: 8, cd: 0.8, range: 3, proj: 'bullet', mult: { inf: 1.1, veh: 0.4, ship: 0.3, air: 0.3, bld: 0.3, sub: 0 } },
+    desc: 'Ve 8 casillas y descubre submarinos, minas y furtivos a 3.',
+  },
+  sapper: {
+    name: 'Zapador', cls: 'inf', mover: 'land', cost: 800, hp: 300, speed: 1.5, pop: 1, build: 7, demine: true,
+    weapon: { dmg: 60, cd: 2.5, range: 1, proj: 'bullet', wallMult: 4, mult: { inf: 0.5, veh: 0.8, ship: 0.5, air: 0, bld: 3, sub: 0 } },
+    desc: 'Cargas explosivas: ×3 a edificios y ×4 a muros. Desactiva minas cercanas.',
+  },
+  mortar: {
+    name: 'Equipo de mortero', cls: 'inf', mover: 'land', cost: 1100, hp: 300, speed: 1.1, pop: 2, build: 9,
+    weapon: { dmg: 70, cd: 4, range: 6, proj: 'shell', splash: { r: 0.8, pct: 0.5 }, mult: { inf: 1.3, veh: 0.7, ship: 0.6, air: 0, bld: 0.9, sub: 0 } },
+    desc: 'Tiro curvo de 6 casillas con daño en área.',
+  },
+  paratrooper: {
+    name: 'Paracaidista', cls: 'inf', mover: 'land', cost: 900, hp: 300, speed: 1.6, pop: 1, build: 8, para: true,
+    weapon: { dmg: 20, cd: 0.6, range: 3, proj: 'bullet', mult: { inf: 1.15, veh: 0.6, ship: 0.5, air: 0.35, bld: 0.5, sub: 0 } },
+    desc: 'Si tienes Aeropuerto militar, cae en paracaídas en el punto de reunión. Los aviones de transporte lo llevan.',
+  },
+  marine: {
+    name: 'Infante de marina', cls: 'inf', mover: 'amphib', cost: 800, hp: 320, speed: 1.5, pop: 1, build: 7,
+    weapon: { dmg: 18, cd: 0.6, range: 3, proj: 'bullet', mult: { inf: 1.15, veh: 0.6, ship: 0.7, air: 0.35, bld: 0.5, sub: 0 } },
+    desc: 'Anfibio: camina por el agua poco profunda de la costa.',
+  },
+  atguided: {
+    name: 'Equipo antitanque', cls: 'inf', mover: 'land', cost: 1600, hp: 240, speed: 1.2, pop: 1, build: 9,
+    weapon: { dmg: 180, cd: 4, range: 6, proj: 'missile', mult: { inf: 0.3, veh: 2, ship: 1.2, air: 0, bld: 0.8, sub: 0 } },
+    desc: 'Misil guiado de 6 casillas que cae sobre el techo de los tanques (×2 a vehículos).',
+  },
+  gunner: {
+    name: 'Ametrallador pesado', cls: 'inf', mover: 'land', cost: 1000, hp: 340, speed: 1.2, pop: 1, build: 8,
+    weapon: { dmg: 9, cd: 0.12, range: 3, proj: 'bullet', mult: { inf: 1.4, veh: 0.4, ship: 0.3, air: 0.4, bld: 0.3, sub: 0 } },
+    desc: 'Ametralladora rotativa: lluvia de balas contra infantería.',
+  },
+  antidrone: {
+    name: 'Soldado antidrones', cls: 'inf', mover: 'land', cost: 700, hp: 220, speed: 1.5, pop: 1, build: 6,
+    weapon: { dmg: 40, cd: 0.8, range: 4, proj: 'bolt', droneMult: 6, mult: { inf: 0.3, veh: 0.2, ship: 0.1, air: 0.5, bld: 0.1, sub: 0 } },
+    desc: 'Fusil inhibidor: corta la señal de los drones (×6). Poco daño a lo demás.',
+  },
+  robodog: {
+    name: 'Perro robot', cls: 'veh', mover: 'land', cost: 1200, energy: 5, hp: 400, speed: 2.4, pop: 1, build: 7, vision: 7, detect: 3,
+    desc: 'Patrulla con cámaras: ve 7 casillas y descubre lo oculto a 3. No pelea.',
+  },
+  armoredcar: {
+    name: 'Blindado ligero', cls: 'veh', mover: 'land', cost: 1900, energy: 10, hp: 1000, speed: 2.4, pop: 2, build: 9,
+    weapon: { dmg: 30, cd: 0.6, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.8, ship: 0.6, air: 0.4, bld: 0.5, sub: 0 } },
+    desc: 'Rápido, con ruedas y cañón automático.',
+  },
+  ifv: {
+    name: 'Vehículo de combate de infantería', cls: 'veh', mover: 'land', cost: 2800, energy: 20, hp: 1700, speed: 1.8, pop: 3, build: 12,
+    capacity: 4, carries: 'inf',
+    weapon: { dmg: 45, cd: 0.8, range: 4, proj: 'shell', mult: { inf: 1.1, veh: 1, ship: 0.8, air: 0.4, bld: 0.7, sub: 0 } },
+    desc: 'Lleva 4 soldados y pelea con su cañón.',
+  },
+  trooptruck: {
+    name: 'Camión de tropas', cls: 'veh', mover: 'land', cost: 1200, energy: 5, hp: 700, speed: 2.2, pop: 2, build: 7, capacity: 8, carries: 'inf',
+    desc: 'Lleva 8 soldados. Poca protección.',
+  },
+  ambulance: {
+    fem: true, name: 'Ambulancia militar', cls: 'veh', mover: 'land', cost: 1500, energy: 10, hp: 800, speed: 2.2, pop: 2, build: 8,
+    healAura: { cls: ['inf'], pct: 0.06, range: 2 },
+    desc: 'Cura a los soldados a 2 casillas (6 % de su vida por segundo).',
+  },
+  recovery: {
+    name: 'Vehículo de recuperación', cls: 'veh', mover: 'land', cost: 2200, energy: 15, hp: 1800, speed: 1.4, pop: 2, build: 10,
+    healAura: { cls: ['veh'], pct: 0.04, range: 1 },
+    desc: 'Repara los vehículos de al lado (4 % de su vida por segundo).',
+  },
+  supplytruck: {
+    name: 'Camión de suministros', cls: 'veh', mover: 'land', cost: 1600, energy: 10, hp: 800, speed: 2.0, pop: 2, build: 8,
+    aura: [{ kind: 'supply', pct: 0.2, range: 2 }],
+    desc: 'Suministros: tus tropas a 2 casillas recargan un 20 % más rápido.',
+  },
+  tanker: {
+    name: 'Camión cisterna militar', cls: 'veh', mover: 'land', cost: 1500, energy: 5, hp: 900, speed: 2.0, pop: 2, build: 8,
+    aura: [{ kind: 'fuel', pct: 0.2, range: 2, cls: ['veh'] }],
+    desc: 'Combustible: tus vehículos a 2 casillas van un 20 % más rápido.',
+  },
+  commandveh: {
+    name: 'Vehículo de mando', cls: 'veh', mover: 'land', cost: 3000, energy: 20, hp: 1600, speed: 1.6, pop: 3, build: 12,
+    aura: [{ kind: 'dmg', pct: 0.15, range: 3 }],
+    weapon: { dmg: 14, cd: 0.4, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.4, ship: 0.3, air: 0.4, bld: 0.3, sub: 0 } },
+    desc: 'Mando: +15 % de daño a tus tropas a 3 casillas (no se suma con el Oficial).',
+  },
+  mobileradar: {
+    name: 'Radar móvil', cls: 'veh', mover: 'land', cost: 2400, energy: 20, hp: 900, speed: 1.5, pop: 2, build: 10, vision: 10, detect: 8,
+    desc: 'Ve 10 casillas y descubre aviones furtivos, submarinos y minas a 8.',
+  },
+  howitzer: {
+    name: 'Obús autopropulsado', cls: 'veh', mover: 'land', cost: 4600, energy: 40, hp: 1500, speed: 0.9, pop: 3, build: 16,
+    weapon: { dmg: 220, cd: 5, range: 8, proj: 'shell', splash: { r: 0.8, pct: 0.5 }, mult: { inf: 1, veh: 1, ship: 0.9, air: 0, bld: 1.3, sub: 0 } },
+    desc: 'Artillería de 8 casillas con daño en área.',
+  },
+  towedgun: {
+    fem: true, name: 'Artillería remolcada', cls: 'veh', mover: 'land', cost: 2600, energy: 10, hp: 800, speed: 0.7, pop: 2, build: 11,
+    weapon: { dmg: 170, cd: 5, range: 7, proj: 'shell', splash: { r: 0.7, pct: 0.5 }, mult: { inf: 1, veh: 0.9, ship: 0.8, air: 0, bld: 1.2, sub: 0 } },
+    desc: 'Cañón de 7 casillas barato y lento.',
+  },
+  tankdestroyer: {
+    name: 'Cazacarros', cls: 'veh', mover: 'land', cost: 3600, energy: 30, hp: 1900, speed: 1.4, pop: 3, build: 14,
+    weapon: { dmg: 200, cd: 2.6, range: 5, proj: 'shell', mult: { inf: 0.6, veh: 1.8, ship: 1.1, air: 0, bld: 1, sub: 0 } },
+    desc: 'Cañón largo de 5 casillas, especialista contra tanques (×1,8).',
+  },
+  amphib: {
+    name: 'Transporte anfibio', cls: 'veh', mover: 'amphib', cost: 2400, energy: 15, hp: 1500, speed: 1.8, pop: 2, build: 10, capacity: 6, carries: 'inf',
+    weapon: { dmg: 12, cd: 0.4, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.4, ship: 0.4, air: 0.3, bld: 0.3, sub: 0 } },
+    desc: 'Anfibio: va por tierra y por agua poco profunda. Lleva 6 soldados.',
+  },
+  bridgelayer: {
+    name: 'Vehículo lanzapuentes', cls: 'veh', mover: 'land', cost: 2600, energy: 20, hp: 1600, speed: 1.4, pop: 2, build: 10, layBridge: true,
+    desc: '«Tender puente»: pone un Puente modular en el agua poco profunda de al lado (paga el puente).',
+  },
+  clearer: {
+    name: 'Vehículo de despeje', cls: 'veh', mover: 'land', cost: 2000, energy: 15, hp: 2000, speed: 1.3, pop: 2, build: 9, demine: true,
+    weapon: { dmg: 90, cd: 2, range: 1, proj: 'shell', mult: { inf: 0.6, veh: 0.6, ship: 0.5, air: 0, bld: 2.5, sub: 0 } },
+    desc: 'Abre paso: rompe muros y obras (×2,5) y desactiva minas cercanas.',
+  },
+  dozer: {
+    fem: true, name: 'Topadora blindada', cls: 'veh', mover: 'land', cost: 1800, energy: 10, hp: 2200, speed: 1.3, pop: 2, build: 9,
+    builds: 'land', buildRate: 2, repairs: true,
+    desc: 'Construye y repara como un Ingeniero, con blindaje.',
+  },
+  thermo: {
+    name: 'Lanzacohetes termobárico', cls: 'veh', mover: 'land', cost: 5200, energy: 45, hp: 1300, speed: 1.0, pop: 3, build: 18,
+    weapon: { dmg: 60, cd: 10, range: 5, proj: 'rocket', salvo: 8, splash: { r: 1, pct: 0.6 }, mult: { inf: 1.6, veh: 0.7, ship: 0.6, air: 0, bld: 1, sub: 0 } },
+    desc: 'Salva de 8 cohetes: nube de fuego muy fuerte contra infantería.',
+  },
+  scoutdrone: {
+    name: 'Dron explorador', cls: 'air', mover: 'air', cost: 800, energy: 5, hp: 150, speed: 3.2, pop: 1, build: 5, vision: 8, drone: true,
+    desc: 'Ve 8 casillas desde el aire. No pelea.',
+  },
+  cargodrone: {
+    name: 'Dron de carga', cls: 'air', mover: 'air', cost: 1200, energy: 10, hp: 250, speed: 2.6, pop: 1, build: 6, drone: true,
+    aura: [{ kind: 'supply', pct: 0.2, range: 2 }],
+    desc: 'Suministros desde el aire: tus tropas a 2 casillas recargan un 20 % más rápido.',
+  },
+  interceptor: {
+    name: 'Dron interceptor', cls: 'air', mover: 'air', cost: 1400, energy: 10, hp: 300, speed: 3.6, pop: 1, build: 6, drone: true, prefersAir: true,
+    weapon: { dmg: 60, cd: 1, range: 3, proj: 'missile', droneMult: 2, mult: { inf: 0, veh: 0, ship: 0, air: 1, bld: 0, sub: 0 } },
+    desc: 'Caza drones y helicópteros (×2 a drones).',
+  },
+  navaldrone: {
+    name: 'Dron naval de superficie', cls: 'ship', mover: 'sea', cost: 1000, energy: 5, hp: 400, speed: 3.0, pop: 1, build: 6, vision: 7, detect: 3,
+    desc: 'Explora el mar: ve 7 casillas y descubre submarinos y minas a 3.',
+  },
+  subdrone: {
+    name: 'Dron submarino', cls: 'sub', mover: 'sea', cost: 1200, energy: 5, hp: 300, speed: 2.0, pop: 1, build: 6, stealth: true, detect: 3,
+    desc: 'Va oculto bajo el agua y descubre submarinos y minas a 3.',
+  },
+  transheli: {
+    name: 'Helicóptero de transporte', cls: 'air', mover: 'air', cost: 5000, energy: 40, hp: 2000, speed: 2.4, pop: 3, build: 14,
+    capacity: 8, carries: 'inf', airlift: true,
+    desc: 'Lleva 8 soldados y los baja en cualquier tierra.',
+  },
+  rescueheli: {
+    name: 'Helicóptero de rescate', cls: 'air', mover: 'air', cost: 4000, energy: 30, hp: 1600, speed: 2.5, pop: 3, build: 12,
+    healAura: { cls: ['inf', 'air'], pct: 0.05, range: 2 },
+    desc: 'Cura a los soldados y repara las aeronaves a 2 casillas.',
+  },
+  navalheli: {
+    name: 'Helicóptero de patrulla naval', cls: 'air', mover: 'air', cost: 6000, energy: 50, hp: 2000, speed: 2.3, pop: 4, build: 16, detect: 4,
+    weapon: { dmg: 200, cd: 4, range: 3, proj: 'torpedo', waterOnly: true, mult: { ship: 1, sub: 2, bld: 0.6 } },
+    desc: 'Descubre submarinos a 4 casillas y los ataca con torpedos (×2).',
+  },
+  attackjet: {
+    name: 'Avión de apoyo terrestre', cls: 'air', mover: 'air', cost: 7000, energy: 60, hp: 2600, speed: 2.4, pop: 4, build: 20, plane: true,
+    weapon: { dmg: 40, cd: 0.25, range: 3, proj: 'bullet', mult: { inf: 1, veh: 1.8, ship: 1, air: 0, bld: 0.8, sub: 0 } },
+    desc: 'Cañón de 30 mm: vuela bajo y destruye tanques (×1,8).',
+  },
+  heavybomber: {
+    name: 'Bombardero convencional', cls: 'air', mover: 'air', cost: 11000, energy: 100, hp: 4200, speed: 1.6, pop: 6, build: 30, plane: true,
+    prefersBld: true,
+    weapon: { dmg: 900, cd: 7, range: 1, proj: 'bomb', splash: { r: 1, pct: 0.4 }, mult: { inf: 0.6, veh: 0.8, ship: 1, air: 0, bld: 2, sub: 0 } },
+    desc: 'Bombardero pesado con bombas guiadas: destruye bases. Se ve en el radar.',
+  },
+  transportplane: {
+    name: 'Avión de transporte militar', cls: 'air', mover: 'air', cost: 6000, energy: 50, hp: 3000, speed: 2.0, pop: 4, build: 18, plane: true,
+    capacity: 10, carries: 'inf', airlift: true,
+    desc: 'Lleva 10 soldados y los lanza en paracaídas en cualquier tierra.',
+  },
+  awacs: {
+    name: 'Avión de vigilancia aérea', cls: 'air', mover: 'air', cost: 7500, energy: 60, hp: 2200, speed: 1.8, pop: 4, build: 20, plane: true,
+    vision: 14, detect: 8,
+    desc: 'Ve 14 casillas y descubre aviones furtivos y submarinos a 8.',
+  },
+  tankerplane: {
+    name: 'Avión de reabastecimiento', cls: 'air', mover: 'air', cost: 6500, energy: 50, hp: 2600, speed: 2.0, pop: 4, build: 18, plane: true,
+    healAura: { cls: ['air'], pct: 0.03, range: 3 },
+    desc: 'Repara tus aeronaves a 3 casillas (3 % de su vida por segundo).',
+  },
+  ewplane: {
+    name: 'Avión de apoyo electrónico', cls: 'air', mover: 'air', cost: 8000, energy: 70, hp: 2400, speed: 2.2, pop: 4, build: 22, plane: true,
+    prefersBld: true, aura: [{ kind: 'jam', pct: 0.4, range: 4 }],
+    weapon: { dmg: 300, cd: 8, range: 6, proj: 'missile', defMult: 2, mult: { inf: 0, veh: 0.3, ship: 0.3, air: 0, bld: 1, sub: 0 } },
+    desc: 'Interferencia: las defensas enemigas a 4 casillas disparan un 40 % más lento. Misil antirradar (×2 a defensas).',
+  },
+  gunship: {
+    name: 'Avión artillado', cls: 'air', mover: 'air', cost: 9500, energy: 80, hp: 3800, speed: 1.4, pop: 5, build: 26, plane: true,
+    weapon: { dmg: 120, cd: 1.5, range: 5, proj: 'shell', splash: { r: 0.8, pct: 0.5 }, mult: { inf: 1.3, veh: 1, ship: 0.9, air: 0, bld: 1, sub: 0 } },
+    desc: 'Da vueltas sobre el blanco y dispara de costado con daño en área.',
+  },
+  gunboat: {
+    fem: true, name: 'Cañonera', cls: 'ship', mover: 'sea', cost: 2200, energy: 15, hp: 1300, speed: 2.0, pop: 2, build: 10,
+    weapon: { dmg: 90, cd: 1.8, range: 4, proj: 'shell', mult: { inf: 1, veh: 1, ship: 1, air: 0, bld: 1.2, sub: 0 } },
+    desc: 'Apoyo naval barato contra la costa.',
+  },
+  battleship: {
+    name: 'Acorazado', cls: 'ship', mover: 'sea', cost: 12000, energy: 100, hp: 7000, speed: 0.9, pop: 6, build: 34,
+    weapon: { dmg: 400, cd: 4, range: 7, proj: 'shell', salvo: 2, splash: { r: 0.8, pct: 0.5 }, mult: { inf: 1, veh: 1, ship: 1.3, air: 0, bld: 1.5, sub: 0.5 } },
+    desc: 'El buque más fuerte: salvas de 2 obuses a 7 casillas contra bases y barcos.',
+  },
+  patrolboat: {
+    fem: true, name: 'Patrullera costera', cls: 'ship', mover: 'sea', cost: 1600, energy: 10, hp: 900, speed: 2.6, pop: 1, build: 8, vision: 7, detect: 3,
+    weapon: { dmg: 16, cd: 0.5, range: 3, proj: 'bullet', mult: { inf: 1.2, veh: 0.5, ship: 0.7, air: 0.5, bld: 0.4, sub: 0 } },
+    desc: 'Vigila la costa: ve 7 casillas y descubre submarinos a 3.',
+  },
+  corvette: {
+    fem: true, name: 'Corbeta', cls: 'ship', mover: 'sea', cost: 3200, energy: 25, hp: 2000, speed: 2.0, pop: 3, build: 12, detects: true,
+    pointDefense: { range: 2, cd: 2 },
+    weapon: { dmg: 80, cd: 1.2, range: 5, proj: 'shell', mult: { inf: 1, veh: 1, ship: 1.1, air: 0.6, bld: 1, sub: 0.8 } },
+    desc: 'Cañón de proa y defensa de punto: derriba misiles y cohetes cerca.',
+  },
+  cruiser: {
+    name: 'Crucero de mando', cls: 'ship', mover: 'sea', cost: 9000, energy: 80, hp: 5200, speed: 1.1, pop: 5, build: 28, detects: true,
+    pointDefense: { range: 3, cd: 1.5 }, aura: [{ kind: 'dmg', pct: 0.15, range: 3, cls: ['ship', 'sub'] }],
+    weapon: { dmg: 260, cd: 3, range: 7, proj: 'missile', mult: { inf: 0.8, veh: 1, ship: 1.4, air: 1.2, bld: 1.3, sub: 0.6 } },
+    desc: 'Misiles de 7 casillas, mando naval (+15 % de daño a tus barcos cerca) y defensa de punto.',
+  },
+  landingship: {
+    name: 'Buque de desembarco', cls: 'ship', mover: 'sea', cost: 4200, energy: 30, hp: 3200, speed: 1.4, pop: 4, build: 16, capacity: 12,
+    desc: 'Lleva 12 lugares (un vehículo ocupa 2) y los baja en la costa.',
+  },
+  logship: {
+    name: 'Buque logístico', cls: 'ship', mover: 'sea', cost: 3500, energy: 20, hp: 2600, speed: 1.3, pop: 3, build: 14,
+    healAura: { cls: ['ship', 'sub'], pct: 0.02, range: 3 }, aura: [{ kind: 'supply', pct: 0.2, range: 3, cls: ['ship', 'sub'] }],
+    desc: 'Repara tus barcos a 3 casillas y los hace recargar un 20 % más rápido.',
+  },
+  hospitalship: {
+    name: 'Buque hospital', cls: 'ship', mover: 'sea', cost: 4000, energy: 20, hp: 3000, speed: 1.2, pop: 3, build: 14,
+    healAura: { cls: ['ship', 'sub', 'inf'], pct: 0.03, range: 3 },
+    desc: 'Repara tus barcos y cura a tus soldados a 3 casillas.',
+  },
+  hovercraft: {
+    name: 'Aerodeslizador militar', cls: 'ship', mover: 'amphib', cost: 2600, energy: 20, hp: 1400, speed: 2.8, pop: 2, build: 10, capacity: 6,
+    desc: 'Anfibio: va por el agua y sube a la costa. Lleva 6 lugares (también vehículos).',
+  },
+  minesweeper: {
+    name: 'Dragaminas', cls: 'ship', mover: 'sea', cost: 2000, energy: 15, hp: 1400, speed: 1.8, pop: 2, build: 10, detect: 3, demine: true,
+    weapon: { dmg: 120, cd: 1, range: 3, proj: 'bullet', onlyType: 'seamine', mult: { bld: 1 } },
+    desc: 'Descubre y destruye minas a 3 casillas.',
+  },
+  minelayer: {
+    name: 'Buque minador', cls: 'ship', mover: 'sea', cost: 2500, energy: 20, hp: 1500, speed: 1.6, pop: 2, build: 10, layMine: true,
+    desc: '«Sembrar mina»: deja una mina oculta donde está (hasta 8). Explota con barcos enemigos.',
+  },
+  reconsub: {
+    name: 'Submarino de reconocimiento', cls: 'sub', mover: 'sea', cost: 3000, energy: 25, hp: 1200, speed: 1.8, pop: 2, build: 12,
+    stealth: true, vision: 8, detect: 3,
+    desc: 'Oculto: ve 8 casillas y descubre submarinos y minas a 3.',
+  },
+  // Solo con «Arsenal estratégico»: comparte el uso único con el Lanzador nuclear móvil y el Complejo estratégico.
+  stratsub: {
+    name: 'Submarino estratégico', cls: 'sub', mover: 'sea', cost: 24000, energy: 100, hp: 2600, speed: 1.2, pop: 5, build: 40,
+    limit: 1, strategic: true, stealth: true,
+    desc: 'Oculto, con un solo misil nuclear: un uso por partida. No pelea.',
   },
 };
 

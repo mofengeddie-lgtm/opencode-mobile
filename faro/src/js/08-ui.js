@@ -1080,6 +1080,8 @@ class UI {
       text = p.valid && p.valid.size
         ? `Toca la zona del <b>misil del Lanzador nuclear móvil</b> (alcance ${STRATEGIC.range} casillas). Después te pide confirmar.`
         : 'No hay ninguna zona al alcance del lanzador: acércalo más.';
+    } else if (p.kind === 'silo') {
+      text = `Toca la zona del <b>DF-5C</b> (alcance ${NUKE.range} casillas). Después te pide confirmar.`;
     } else if (p.kind === 'nuke') {
       text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s${this.app.game.strategic ? ' · uso único: después te pide confirmar' : ''}`;
     } else if (p.kind === 'allyattack') {
@@ -1102,7 +1104,9 @@ class UI {
   // ---------- panel de construcción ----------
   renderBuildList() {
     const tab = BUILD_TABS.find((t) => t.id === this.tab);
-    $('blist').innerHTML = tab.items.map((k) => {
+    const g0 = this.app.game;
+    // v1.8: el Complejo estratégico solo aparece con «Arsenal estratégico».
+    $('blist').innerHTML = tab.items.filter((k) => !g0 || g0.buildable(k)).map((k) => {
       const d = BUILDINGS[k];
       return `<button class="bitem" type="button" data-b="${k}">
         <img src="${Thumbs.get(k, PLAYER_COLORS[0])}" alt="">
@@ -1170,7 +1174,10 @@ class UI {
     } else if (first.kind === 'bld') {
       sig += `|${first.built}|${first.queue.map((q) => q.type).join('.')}|${first.rally >= 0}|${this.demolishArm}|${first.level}` +
         `|${first.upgrading ? first.upgrading.level + ':' + Math.floor(first.upgrading.progress * 20) : ''}|${first.built ? '' : Math.floor(first.progress * 20)}` +
-        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}|${first.loop ? 1 : 0}${first.loopWait || ''}`;
+        `|${g.time - first.lastWork > 1.5}|${first.lastType || ''}|${first.loop ? 1 : 0}${first.loopWait || ''}` +
+        // v1.8: investigación, puerta, guarnición y silo.
+        `|${first.researching ? first.researching.key + Math.floor(first.researching.t) : ''}${first.type === 'research' ? JSON.stringify(p.research || {}) + (p.coins >= RESEARCH.armor.cost) : ''}` +
+        `|${first.closed ? 'c' : ''}${first.cargo ? 'g' + first.cargo.length : ''}${first.type === 'silo' ? g.siloState(first) + Math.ceil(Math.max(0, (first.builtAt || 0) + STRATEGIC.prep - g.time)) : ''}`;
       if (first.def.produces) {
         sig += '|' + g.producesOf(first).map((t) => p.coins >= UNITS[t].cost && p.energy >= (UNITS[t].energy || 0)).join('') + (g.strategic ? 'q' + g.strategicLeft(0) : '');
       }
@@ -1192,7 +1199,9 @@ class UI {
         sel.map((u) => (u.cargo ? u.cargo.length : '')).join('') + `|${this.app.formation}|${this.app.input.amoveArm}` +
         `|${sel.map((u) => `${u.patrol ? 'p' : ''}${u.hold ? 'h' : ''}${u.vet || 0}:${u.kills || 0}`).join(',')}|${g.players[0].autoRepair !== false}` +
         // v1.7: estado del Lanzador nuclear móvil y pasajeros en camino.
-        `|${sel.map((u) => (u.def.strategic ? g.mobileState(u) + Math.ceil(Math.max(0, (u.armAt || 0) - g.time)) : '') + (u.cargo ? 'b' + g.units.filter((x) => x.alive && !x.inside && x.boardTarget === u).length : '')).join('')}`;
+        `|${sel.map((u) => (u.def.strategic ? g.mobileState(u) + Math.ceil(Math.max(0, (u.armAt || 0) - g.time)) : '') + (u.cargo ? 'b' + g.units.filter((x) => x.alive && !x.inside && x.boardTarget === u).length : '')).join('')}` +
+        // v1.8: lanzapuentes y minador (cambia el motivo del botón).
+        `|${sel.map((u) => (u.def.layBridge ? g.layBridgeInvalid(u) : u.def.layMine ? g.layMineInvalid(u) : '')).join('')}`;
       // Aviones (v1.0): estado, bombas y si el bombardero está oculto.
       for (const u of sel) if (u.def.plane) sig += `|${this.planeState(u)}${u.type === 'bomber' ? Math.ceil(Math.max(0, u.cd || 0)) + (g.time - (u.lastShot || -99) < 3 ? 'v' : 'o') : ''}`;
     }
@@ -1277,7 +1286,7 @@ class UI {
     const text = st === 'prep' ? `Preparando: faltan ${secs} s. Después podrás elegir la zona.`
       : st === 'ready' ? `Disponible. Alcance: ${STRATEGIC.range} casillas. Un Escudo antimisiles lo puede derribar.`
         : st === 'spent' ? 'Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.'
-          : 'Agotado: ya usaste tu único uso estratégico con otro lanzador o con el AIR DEFENSE.';
+          : 'Agotado: ya usaste tu único uso estratégico con otro lanzador, el silo o el AIR DEFENSE.';
     return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · uso único</span>
       <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b>
       <span class="strattext" id="strat-text">${text}</span>
@@ -1289,7 +1298,7 @@ class UI {
     const g = this.app.game;
     this.strat = { p, ci, busy: false };
     const c = g.cells[ci];
-    const who = p.kind === 'mnuke' ? 'Lanzador nuclear móvil' : 'AIR DEFENSE de nivel 4';
+    const who = p.kind === 'mnuke' ? p.unit.def.name : p.kind === 'silo' ? 'Complejo estratégico (DF-5C)' : 'AIR DEFENSE de nivel 4';
     const zone = c.owner >= 0 ? `territorio de ${esc(g.players[c.owner].name)}` : 'zona sin dueño';
     $('strat-body').innerHTML = `<span class="lbl stratchip">Arsenal estratégico · revisar uso</span>
       <h2>¿Usar ahora?</h2>
@@ -1313,7 +1322,7 @@ class UI {
     s.busy = true;
     const app = this.app;
     const g = app.game;
-    const err = s.p.kind === 'mnuke' ? g.launchMobileNuke(s.p.unit, s.ci) : g.launchNuke(s.p.building, s.ci);
+    const err = s.p.kind === 'mnuke' ? g.launchMobileNuke(s.p.unit, s.ci) : s.p.kind === 'silo' ? g.launchSilo(s.p.building, s.ci) : g.launchNuke(s.p.building, s.ci);
     this.closeStrategic();
     if (err) {
       this.toast(err, 'bad');
@@ -1449,6 +1458,7 @@ class UI {
       html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
       html += `<div class="queue">Defensa de punto: derriba misiles y cohetes enemigos a ${b.def.pointDefense.range} casillas · derribados: <b>${b.pdKills || 0}</b></div>`;
     }
+    if (b.built) html += this.extraBuildingHtml(b);
     const acts = [];
     if (own && b.built && !b.upgrading && b.level < maxLv) {
       // v0.9: antes de pagar, qué vas a ganar con la mejora.
@@ -1464,6 +1474,52 @@ class UI {
       acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
     }
     if (acts.length) html += `<div class="actions mainacts">${acts.join('')}</div>`;
+    return html;
+  }
+
+  // v1.8: Centro de investigación, Puerta reforzada, Búnker de guarnición, Complejo estratégico y defensas nuevas.
+  extraBuildingHtml(b) {
+    const g = this.app.game;
+    const p = g.players[0];
+    const d = b.def;
+    let html = '';
+    if (b.type === 'research') {
+      const r = b.researching;
+      html += '<div class="research" id="research">' + Object.entries(RESEARCH).map(([k, R]) => {
+        const done = p.research && p.research[k];
+        const now = r && r.key === k;
+        const why = done ? 'Lista' : now ? `${Math.floor((r.t / R.time) * 100)} %` : g.researchInvalid(b, k) || `${fmt(R.cost)} · ${R.time} s`;
+        return `<button class="btn ${done ? 'good' : now ? 'gold' : ''}" type="button" data-act="research" data-v="${k}" ${done || now || g.researchInvalid(b, k) ? 'disabled' : ''}>
+          <b>${esc(R.name)}</b><small>${esc(R.desc)}</small><em>${esc(why)}</em></button>`;
+      }).join('') + '</div>';
+    }
+    if (b.type === 'gate') {
+      html += `<div class="actions"><button class="btn ${b.closed ? 'danger' : 'good'}" type="button" data-act="gate" id="btn-gate">${b.closed ? 'Abrir puerta' : 'Cerrar puerta'}</button>
+        <span class="queue" style="flex:1 1 200px">${b.closed ? 'Cerrada: no pasa nadie.' : 'Abierta: pasan tus tropas y las de tus aliados.'}</span></div>`;
+    }
+    if (d.garrison) {
+      const n = b.cargo ? b.cargo.length : 0;
+      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>Guarnición</b><span id="pax-count">${n} / ${d.garrison} soldados · +${Math.round(n * d.garrisonDmg * 100)} % de daño</span></div>` +
+        (n ? `<ul class="paxlist">${b.cargo.map((u) => `<li class="on"><img src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt=""><span>${esc(u.def.name)}</span><em>adentro</em></li>`).join('')}</ul>`
+          : '<div class="queue">Selecciona soldados y toca el Búnker para que entren.</div>') + '</div>';
+      if (n) html += `<div class="actions"><button class="btn gold" type="button" data-act="unload">${bi('unload')}Sacar soldados</button></div>`;
+    }
+    if (b.type === 'silo' && g.strategic) {
+      const st = g.siloState(b);
+      const left = st === 'spent' || st === 'quota' ? 0 : 1;
+      const secs = Math.ceil(Math.max(0, (b.builtAt || 0) + STRATEGIC.prep - g.time));
+      const text = st === 'prep' ? `Preparando el DF-5C: faltan ${secs} s.` : st === 'ready' ? `DF-5C listo. Alcance: ${NUKE.range} casillas. Un Escudo antimisiles lo puede derribar.`
+        : st === 'spent' ? 'Agotado: el silo ya lanzó su misil.' : 'Agotado: ya usaste tu único uso estratégico.';
+      html += `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · DF-5C · uso único</span>
+        <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b><span class="strattext" id="strat-text">${text}</span>
+        <button class="btn danger" type="button" data-act="silo" id="btn-silo" ${st === 'ready' ? '' : 'disabled'}>${bi('strat')}Elegir zona</button></div>`;
+    }
+    const facts = [];
+    if (d.detect) facts.push(`Descubre lo oculto a ${d.detect} casillas`);
+    if (d.vision && d.vision >= 7) facts.push(`Ve ${d.vision} casillas`);
+    if (d.pointDefense && b.type !== 'antinuke') facts.push(`Derribados: ${b.pdKills || 0}`);
+    if (b.jam) facts.push(`<span style="color:#ffb4b5">Interferencia enemiga: dispara ${Math.round(b.jam * 100)} % más lento</span>`);
+    if (facts.length) html += `<div class="queue">${facts.join(' · ')}</div>`;
     return html;
   }
 
@@ -1502,7 +1558,7 @@ class UI {
       html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>${hangar ? 'Hangar' : 'Pasajeros'}</b><span id="pax-count">${g.cargoSlots(ship)} / ${cap} plazas${coming.length ? ` · ${coming.length} en camino` : ''}</span></div>` +
         (pax.length ? `<ul class="paxlist">${pax.map(([u, st]) => `<li class="${st === 'a bordo' ? 'on' : 'way'}"><img src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt=""><span>${esc(u.def.name)}</span><em>${st}</em></li>`).join('')}</ul>`
           : `<div class="queue">${how}</div>`) + '</div>';
-      const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' ? 'Desembarcar' : 'Bajar soldados';
+      const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' || ship.mover === 'amphib' ? 'Desembarcar' : ship.def.airlift && ship.def.plane ? 'Lanzar en paracaídas' : 'Bajar soldados';
       if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}${label}</button>`);
     }
     const planes = sel.filter((u) => u.def.plane);
@@ -1514,6 +1570,19 @@ class UI {
     }
     if (sel.some((u) => u.def.builds)) {
       html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
+    }
+    // v1.8: Vehículo lanzapuentes y Buque minador.
+    const layer = sel.find((u) => u.def.layBridge);
+    if (layer) {
+      const why = this.app.game.layBridgeInvalid(layer);
+      acts.push(`<button class="btn gold" type="button" data-act="laybridge" id="btn-laybridge" ${why ? 'disabled' : ''} title="${esc(why || 'Pone un Puente modular en el agua poco profunda de al lado')}">${bi('found')}Tender puente · ${fmt(BUILDINGS.bridge.cost)}</button>`);
+      if (why) html += `<div class="queue">${esc(why)}</div>`;
+    }
+    const mlayer = sel.find((u) => u.def.layMine);
+    if (mlayer) {
+      const why = this.app.game.layMineInvalid(mlayer);
+      acts.push(`<button class="btn gold" type="button" data-act="laymine" id="btn-laymine" ${why ? 'disabled' : ''}>${bi('found')}Sembrar mina · ${this.app.game.count(0, 'seamine')} / ${MINES.limit}</button>`);
+      if (why) html += `<div class="queue">${esc(why)}</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
@@ -1746,6 +1815,31 @@ class UI {
       } else {
         app.setSelection(res);
       }
+    } else if (act === 'research') {
+      const err = g.startResearch(b, btn.dataset.v);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else this.toast(`Investigando: ${RESEARCH[btn.dataset.v].name}`, 'good');
+      this.renderSel(true);
+    } else if (act === 'gate') {
+      g.toggleGate(b);
+      app.sound.play('click');
+      this.renderSel(true);
+    } else if (act === 'silo') {
+      const err = g.siloInvalid(b);
+      if (err) {
+        this.toast(err, 'bad');
+        app.sound.play('error');
+      } else app.input.startPlacement({ kind: 'silo', building: b });
+    } else if (act === 'laybridge' || act === 'laymine') {
+      const u = sel.find((x) => x.kind === 'unit' && (act === 'laybridge' ? x.def.layBridge : x.def.layMine));
+      const res = act === 'laybridge' ? g.layBridge(u) : g.layMine(u);
+      if (typeof res === 'string') {
+        this.toast(res, 'bad');
+        app.sound.play('error');
+      } else this.toast(act === 'laybridge' ? 'Tendiendo el puente…' : 'Mina sembrada (solo tú la ves)', 'good');
+      this.renderSel(true);
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
     } else if (act === 'center') {

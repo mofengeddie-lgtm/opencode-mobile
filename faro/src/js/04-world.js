@@ -264,15 +264,39 @@ class Game {
   passable(cell, mover, owner) {
     if (mover === 'air') return true;
     const T = TERRAIN[cell.t];
-    if (mover === 'land' ? !T.land : !T.water) return false;
     const b = cell.bld;
-    if (b) return b.type === 'wall' && !this.isEnemy(b.owner, owner);
+    // v1.8: Puente modular: lo cruzan las tropas de tierra y los anfibios (de cualquiera); los barcos ya no pasan.
+    if (b && b.type === 'bridge') return mover !== 'sea';
+    // v1.8: anfibios (Infante de marina, Transporte anfibio, Aerodeslizador): tierra y agua poco profunda.
+    if (mover === 'amphib') {
+      if (!T.land && !(T.water && cell.t !== 'deep')) return false;
+    } else if (mover === 'land' ? !T.land : !T.water) return false;
+    if (b) {
+      if (b.def.walkable) return true;
+      // Puerta reforzada: abierta como el Muro (pasan los tuyos y aliados); cerrada, nadie.
+      if (b.type === 'gate') return !b.closed && !this.isEnemy(b.owner, owner);
+      return b.type === 'wall' && !this.isEnemy(b.owner, owner);
+    }
     return true;
   }
 
+  // v1.8: ¿esta tropa puede «estar» en esa casilla? (para no quedar parada en el agua o en tierra por cortar un borde)
+  standsOn(u, c) {
+    if (u.mover === 'air') return true;
+    const T = TERRAIN[c.t];
+    if (c.bld && c.bld.type === 'bridge') return u.mover !== 'sea';
+    if (u.mover === 'amphib') return !!T.land || (!!T.water && c.t !== 'deep');
+    return !!T[u.mover === 'land' ? 'land' : 'water'];
+  }
+
   groundY(u, cell) {
-    if (u.mover === 'air') return 2.3;
+    if (u.mover === 'air') return u.dropT > this.time ? 0.3 + (u.dropT - this.time) * 1.6 : 2.3;
     if (u.mover === 'sea') return u.cls === 'sub' ? -0.1 : 0.02;
+    if (cell.bld && cell.bld.type === 'bridge') return 0.29;
+    // Anfibios en el agua: el barco flota y los soldados y vehículos van medio hundidos.
+    if (u.mover === 'amphib' && TERRAIN[cell.t].water) return u.cls === 'ship' ? 0.04 : -0.06;
+    // Paracaidista: baja desde el cielo.
+    if (u.dropT > this.time) return cell.h + (u.dropT - this.time) * 1.8;
     return cell.h;
   }
 
@@ -429,14 +453,21 @@ class Game {
       queue: [], rally: -1, alive: true, cd: 0, scanT: Math.random() * 0.3, autoTarget: null,
       onWater: !!TERRAIN[cell.t].water, healT: 0, aimYaw: 0, lastHit: -99, visible: true,
       rot: Math.floor(Math.random() * 6) * (Math.PI / 3),
+      // v1.8: guarnición del Búnker (soldados adentro).
+      cargo: def.garrison ? [] : null,
     };
     if (type === 'core' || type === 'harbor') b.rot = 0;
+    // v1.8: el puente se orienta hacia la tierra más cercana.
+    if (type === 'bridge') {
+      const land = cell.nb.map((ni) => this.cells[ni]).find((c) => TERRAIN[c.t].land);
+      if (land) b.rot = Math.atan2(land.x - cell.x, land.z - cell.z);
+    }
     if (built) this.resetShield(b);
     cell.bld = b;
     this.buildings.push(b);
     if (def.claim) this.territoryDirty = true;
-    // Aparta a las unidades que estaban sobre la casilla.
-    for (const u of this.units) {
+    // Aparta a las unidades que estaban sobre la casilla (no hace falta en puentes ni minas).
+    for (const u of def.walkable ? [] : this.units) {
       if (!u.alive || u.cell !== ci || u.mover === 'air') continue;
       const free = this.freeCellsNear(ci, u.mover, u.owner, 1)[0];
       const fc = this.cells[free];
@@ -467,6 +498,9 @@ class Game {
     u.y = this.groundY(u, cell);
     // v1.7: el Lanzador nuclear móvil sale «preparando» y con su único misil sin usar.
     if (def.strategic) { u.armAt = this.time + STRATEGIC.prep; u.spent = false; }
+    // v1.8: investigación «Blindaje»: +10 % de vida a los vehículos.
+    const res = this.players[owner] && this.players[owner].research;
+    if (res && res.armor && def.cls === 'veh') { u.maxHp *= 1 + RESEARCH.armor.pct; u.hp = u.maxHp; }
     this.units.push(u);
     return u;
   }
@@ -549,6 +583,18 @@ class Game {
     return n;
   }
 
+  hasBuilt(pid, type) {
+    return this.buildings.some((b) => b.alive && b.built && b.owner === pid && b.type === type);
+  }
+
+  // ¿Ve el jugador esa casilla? (con niebla: alguna tropa o edificio de su equipo cerca)
+  seesCell(pid, c) {
+    const team = this.players[pid].team;
+    const near = (e, r) => (e.x - c.x) ** 2 + (e.z - c.z) ** 2 <= (r * SQ3) ** 2;
+    return this.units.some((u) => u.alive && this.players[u.owner].team === team && near(u, u.def.vision || 3)) ||
+      this.buildings.some((b) => b.alive && this.players[b.owner].team === team && near(b, b.def.vision || 3));
+  }
+
   limitFor(pid, type) {
     const def = BUILDINGS[type];
     if (type === 'house') return HOUSE_LIMIT + 2 * this.players[pid].coresKilled;
@@ -565,8 +611,11 @@ class Game {
       if (this.rule === 'nofactory' && type === 'factory') return 'Desafío: sin Fábrica';
       if (this.rule === 'noair' && (type === 'helipad' || type === 'airport')) return 'Desafío: sin Helipuerto ni Aeropuerto';
     }
+    // v1.8: el Complejo estratégico solo existe con «Arsenal estratégico».
+    if (def.strategic && !this.strategic) return 'Solo con «Arsenal estratégico»';
     // Las estructuras de mar se ponen en su lugar del mar aunque esté fuera de tu territorio (punto 15).
-    if (def.sea) {
+    // v1.8: el Puente modular también (si no es territorio enemigo).
+    if (def.sea || def.anyTerritory) {
       if (c.owner >= 0 && c.owner !== pid && this.isEnemy(c.owner, pid)) return 'Es territorio enemigo';
     } else if (c.owner !== pid) {
       return 'Fuera de tu territorio';
@@ -614,7 +663,7 @@ class Game {
 
   // ---------- obras: constructores, ingenieros y barcos constructores ----------
   needsWork(b) {
-    return b.alive && ((!b.built && !b.def.selfBuild && b.type !== 'outpost') || !!b.upgrading);
+    return b.alive && ((!b.built && !b.def.selfBuild && !b.selfBuild && b.type !== 'outpost') || !!b.upgrading);
   }
 
   canBuildSite(u, b) {
@@ -966,10 +1015,17 @@ class Game {
   canBoard(u, t) {
     if (!u.alive || u.inside || u === t || !t.alive || this.isEnemy(u.owner, t.owner)) return false;
     if (t.def.hangar) return !!u.def.plane && u.type === 'fighter';
-    if (!t.def.capacity || u.mover !== 'land') return false;
+    // v1.8: Búnker de guarnición: solo tus soldados, en un Búnker terminado.
+    if (t.kind === 'bld') return !!t.def.garrison && t.built && t.owner === u.owner && u.cls === 'inf';
+    // v1.8: los anfibios de tierra (Infante de marina) también suben.
+    if (!t.def.capacity || (u.mover !== 'land' && !(u.mover === 'amphib' && u.cls !== 'ship'))) return false;
     if (t.def.carries === 'inf' && u.cls !== 'inf') return false;
     if (u.def.capacity) return false;
     return true;
+  }
+
+  capacityOf(t) {
+    return t.def.capacity || t.def.hangar || t.def.garrison || 0;
   }
 
   orderBoard(units, t) {
@@ -1023,7 +1079,7 @@ class Game {
 
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
-    if (this.cargoSlots(t) + need > (t.def.capacity || t.def.hangar)) {
+    if (this.cargoSlots(t) + need > this.capacityOf(t)) {
       this.toast(u.owner, `${t.def.name}: no queda lugar`, 'bad');
       u.state = 'idle';
       return false;
@@ -1040,7 +1096,7 @@ class Game {
   }
 
   unload(t) {
-    if (!t.cargo || !t.cargo.length) return `${t.def.name} va vacío`;
+    if (!t.cargo || !t.cargo.length) return `${t.def.name} va ${t.def.garrison ? 'sin soldados' : 'vacío'}`;
     const c0 = this.cells[t.cell];
     const spots = [];
     const mover = t.def.hangar ? 'air' : 'land';
@@ -1049,7 +1105,12 @@ class Game {
       const c = this.map.get(c0.q + off.q, c0.r + off.r);
       if (c && this.passable(c, mover, t.owner)) spots.push(c.i);
     }
-    if (!spots.length) return t.mover === 'sea' ? 'Acércate a la orilla para desembarcar' : 'No hay lugar para bajar';
+    if (!spots.length) {
+      if (t.mover === 'sea' || t.mover === 'amphib') return 'Acércate a la orilla para desembarcar';
+      return t.def.airlift ? 'Vuela sobre tierra para bajar a las tropas' : 'No hay lugar para bajar';
+    }
+    // v1.8: del avión de transporte bajan en paracaídas.
+    const para = !!(t.def.airlift && t.def.plane);
     t.cargo.forEach((u, i) => {
       const ci = spots[i % spots.length];
       const c = this.cells[ci];
@@ -1060,6 +1121,7 @@ class Game {
       u.y = c.h;
       u.state = 'idle';
       u.path = [];
+      if (para) u.dropT = this.time + 1.6;
     });
     const out = t.cargo;
     t.cargo = [];
@@ -1229,6 +1291,9 @@ class Game {
   canAttack(a, w, t) {
     if (!t.alive || t.inside || !this.isEnemy(a.owner, t.owner)) return false;
     if (t.def.stealth && !(t.seenBy & (1 << this.players[a.owner].team))) return false;
+    // v1.8: armas que solo atacan un tipo de edificio (el Dragaminas, a las minas) y minas que solo dañan los dragaminas.
+    if (w.onlyType) return t.type === w.onlyType;
+    if (t.type === 'seamine') return false;
     if (t.kind === 'bld') return w.waterOnly ? !!(t.onWater || t.coastal) : (w.mult.bld || 0) > 0;
     if (w.waterOnly) return t.cls === 'ship' || t.cls === 'sub';
     return (w.mult[t.cls] || 0) > 0;
@@ -1313,8 +1378,7 @@ class Game {
 
   fire(a, w, t, gun = 0) {
     if (a.def.stealth) a.lastShot = this.time;
-    const mult = t.kind === 'bld' ? w.mult.bld || 0 : w.mult[t.cls] || 0;
-    const dmg = w.dmg * mult * (1 + (a.vet || 0) * VETERAN.dmg);
+    const dmg = w.dmg * this.dmgMult(a, w, t) * (1 + (a.vet || 0) * VETERAN.dmg);
     let sx = a.x;
     const sy = this.muzzleY(a) + (gun && a.type === 'turret' ? 0.05 : 0);
     let sz = a.z;
@@ -1365,6 +1429,20 @@ class Game {
     this.emit('sound', { name: gun && a.type === 'turret' ? 'minigun' : w.proj, x: sx, z: sz });
   }
 
+  // v1.8: multiplicador de daño de un arma contra un blanco: clase, drones, defensas y muros, mando cercano,
+  // investigación «Puntería» y soldados dentro del Búnker.
+  dmgMult(a, w, t) {
+    let m = t.kind === 'bld' ? w.mult.bld || 0 : w.mult[t.cls] || 0;
+    if (w.droneMult && t.def.drone) m *= w.droneMult;
+    if (w.defMult && t.kind === 'bld' && t.def.weapon) m *= w.defMult;
+    if (w.wallMult && (t.type === 'wall' || t.type === 'gate')) m = w.wallMult;
+    let buff = 1 + (a.buffDmg || 0);
+    const res = this.players[a.owner] && this.players[a.owner].research;
+    if (res && res.aim && a.cls === 'inf') buff += RESEARCH.aim.pct;
+    if (a.kind === 'bld' && a.def.garrison && a.cargo) buff += a.cargo.length * a.def.garrisonDmg;
+    return m * buff;
+  }
+
   // v1.7: daño en área (Lanzacohetes múltiple, Dron kamikaze). A los enemigos a «r» casillas del impacto les llega
   // la parte «pct» del daño del arma, con el multiplicador de cada uno. No toca a los propios ni a los aliados.
   splashDamage(x, z, w, owner, src, except) {
@@ -1372,7 +1450,8 @@ class Game {
     for (const list of [this.units, this.buildings]) {
       for (const e of list) {
         if (!e.alive || e === except || e.inside || !this.isEnemy(owner, e.owner)) continue;
-        const mult = e.kind === 'bld' ? w.mult.bld || 0 : w.mult[e.cls] || 0;
+        if (e.type === 'seamine') continue;
+        const mult = src && src.alive !== undefined ? this.dmgMult(src, w, e) : e.kind === 'bld' ? w.mult.bld || 0 : w.mult[e.cls] || 0;
         if (!(mult > 0) || Math.hypot(e.x - x, e.z - z) > R) continue;
         this.damage(e, w.dmg * mult * w.splash.pct, owner, src);
       }
@@ -1548,7 +1627,9 @@ class Game {
     if (e.kind === 'unit') this.players[e.owner].stats.lost++;
     if (e.kind === 'bld') this.players[e.owner].stats.lostBld = (this.players[e.owner].stats.lostBld || 0) + 1;
     if (e.kind === 'bld' && e.owner === 0 && this.camp && !this.over) this.camp.lostBld++;
-    if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
+    // v1.8: del Búnker los soldados salen vivos; de los transportes que caen, no.
+    if (e.cargo && e.def.garrison && e.cargo.length) this.unload(e);
+    else if (e.cargo) for (const c of e.cargo) this.kill(c, killer);
     if (e.kind === 'bld') {
       const c = this.cells[e.cell];
       if (c.bld === e) c.bld = null;
@@ -1688,6 +1769,7 @@ class Game {
       }
     }
     this.updatePoints(dt);
+    this.updateAuras(dt);
 
     for (let i = 0; i < this.buildings.length; i++) {
       const b = this.buildings[i];
@@ -1791,6 +1873,7 @@ class Game {
     for (const pt of this.points) {
       const near = new Map();
       const close = new Set();
+      const fastCap = new Map();
       for (const u of this.units) {
         if (!u.alive || u.inside) continue;
         const d = Math.hypot(u.x - pt.x, u.z - pt.z);
@@ -1799,6 +1882,8 @@ class Game {
         close.add(team);
         if (d <= nearD && u.cls === 'inf') {
           if (!near.has(team)) near.set(team, u.owner);
+          // v1.8: el Explorador captura más rápido.
+          if (u.def.captureMult) fastCap.set(team, Math.max(fastCap.get(team) || 1, u.def.captureMult));
         }
       }
       const ownerTeam = pt.owner >= 0 ? this.players[pt.owner].team : -1;
@@ -1806,7 +1891,7 @@ class Game {
       if (pt.contested) continue;
       if (near.size === 1) {
         const [team, pid] = [...near.entries()][0];
-        const k = step / CAPTURE.time;
+        const k = (step / CAPTURE.time) * (fastCap.get(team) || 1);
         if (team === ownerTeam) {
           pt.prog = Math.min(1, pt.prog + k);
         } else if (pt.owner >= 0) {
@@ -1870,8 +1955,13 @@ class Game {
 
   updateStealth() {
     const detR = (3 * SQ3 + 0.5) ** 2;
-    for (const s of this.units) {
-      if (!s.alive || !s.def.stealth) continue;
+    // v1.8: detectores con alcance propio («detect» en casillas): radares, patrulleras, perro robot, torre…
+    const dets = [];
+    for (const u of this.units) if (u.alive && !u.inside && u.def.detect) dets.push(u);
+    for (const b of this.buildings) if (b.alive && b.built && b.def.detect) dets.push(b);
+    const stealthy = this.units.filter((s) => s.alive && s.def.stealth);
+    for (const b of this.buildings) if (b.alive && b.def.stealth) stealthy.push(b);
+    for (const s of stealthy) {
       if (this.time - (s.lastShot || -99) < 3) {
         s.seenBy = 0xff;
         continue;
@@ -1887,8 +1977,13 @@ class Game {
       for (const b of this.buildings) {
         if (!b.built) continue;
         // Puertos ven submarinos; AIR DEFENSE y Torretas de nivel 4 ven al bombardero furtivo de cerca.
-        if (b.type === 'harbor' && s.mover === 'sea') check(b);
+        if (b.type === 'harbor' && (s.mover === 'sea' || s.type === 'seamine')) check(b);
         else if (s.mover === 'air' && (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel))) check(b);
+      }
+      for (const e of dets) {
+        if (!e.alive || !this.isEnemy(e.owner, s.owner)) continue;
+        const R = (e.def.detect * SQ3 + 0.5) ** 2;
+        if ((e.x - s.x) ** 2 + (e.z - s.z) ** 2 <= R) mask |= 1 << this.players[e.owner].team;
       }
       s.seenBy = mask;
     }
@@ -1899,6 +1994,10 @@ class Game {
     const myTeam = this.players[0].team;
     this.updateStealth();
     const stealthy = (u) => u.def.stealth && !(u.seenBy & (1 << myTeam));
+    // v1.8: minas: solo se ven si son tuyas, de tu equipo o las descubrió un detector.
+    for (const b of this.buildings) {
+      if (b.def.stealth) b.visible = this.players[b.owner].team === myTeam || !!(b.seenBy & (1 << myTeam));
+    }
     if (!fog) {
       for (const u of this.units) u.visible = !u.inside && !stealthy(u);
       return;
@@ -1929,7 +2028,7 @@ class Game {
   updateBuilding(b, dt) {
     const def = b.def;
     // El trabajo de los constructores llega en workAcc; el Puesto avanzado se levanta solo.
-    const work = b.type === 'outpost' || this.creator && b.owner === 0 && this.opts.instantBuild ? dt * 3 : b.workAcc;
+    const work = b.type === 'outpost' || b.selfBuild || this.creator && b.owner === 0 && this.opts.instantBuild ? dt * 3 : b.workAcc;
     b.workAcc = 0;
     b.helped = work > 0;
     if (b.upgrading) {
@@ -1942,6 +2041,7 @@ class Game {
       if (b.progress >= 1) {
         b.progress = 1;
         b.built = true;
+        b.builtAt = this.time;
         this.players[b.owner].stats.built++;
         this.resetShield(b);
         this.emit('built', { b });
@@ -1975,6 +2075,8 @@ class Game {
         if (!err) this.players[b.owner].stats.looped = (this.players[b.owner].stats.looped || 0) + 1;
       }
     }
+    if (def.mine) this.updateMine(b, dt);
+    if (b.researching) this.updateResearch(b, dt);
     const w = this.weaponOf(b);
     if (w) {
       b.cd -= dt;
@@ -2017,7 +2119,8 @@ class Game {
             const t2 = b.autoTarget2 && b.autoTarget2.alive && this.inRange(b, w, b.autoTarget2) ? b.autoTarget2 : t;
             if (t2.alive) this.fire(b, w, t2, 1);
           }
-          b.cd = w.cd;
+          // v1.8: la interferencia enemiga (Avión de apoyo electrónico) hace que las defensas disparen más lento.
+          b.cd = w.cd * (1 + (b.jam || 0));
         }
       }
     }
@@ -2045,6 +2148,7 @@ class Game {
         const rr = (heal.range * SQ3 + 0.4) ** 2;
         for (const u of this.units) {
           if (!u.alive || u.inside || this.isEnemy(u.owner, b.owner) || !heal.cls.includes(u.cls) || u.hp >= u.maxHp) continue;
+          if (heal.droneOnly && !u.def.drone) continue;
           const dx = u.x - b.x;
           const dz = u.z - b.z;
           if (dx * dx + dz * dz > rr) continue;
@@ -2057,12 +2161,22 @@ class Game {
 
   spawnFrom(b, type) {
     const def = UNITS[type];
-    const ci = this.freeCellsNear(b.cell, def.mover, b.owner, 1)[0];
+    // v1.8: el Paracaidista cae en paracaídas en el punto de reunión si tienes Aeropuerto militar y ves esa casilla.
+    const rc = b.rally >= 0 ? this.cells[b.rally] : null;
+    const drop = def.para && rc && TERRAIN[rc.t].land && this.passable(rc, 'land', b.owner) && this.hasBuilt(b.owner, 'airport') &&
+      (!this.fog || b.owner !== 0 || this.seesCell(0, rc));
+    const ci = drop ? this.freeCellsNear(b.rally, 'land', b.owner, 1)[0] : this.freeCellsNear(b.cell, def.mover, b.owner, 1)[0];
     const u = this.addUnit(b.owner, type, ci);
+    if (drop) {
+      u.dropT = this.time + 1.6;
+      u.y = this.cells[ci].h + 3;
+      const st0 = this.players[b.owner].stats;
+      st0.paradrops = (st0.paradrops || 0) + 1;
+    }
     const st = this.players[b.owner].stats;
     st.trained++;
     if (def.builds === 'land') st.builders = (st.builders || 0) + 1;
-    if (b.rally >= 0) this.orderMove([u], b.rally, !!def.weapon);
+    if (b.rally >= 0 && !drop) this.orderMove([u], b.rally, !!def.weapon);
     if (b.owner === 0) this.emit('sound', { name: 'ready' });
     this.emit('spawned', { u, b });
     return u;
@@ -2084,8 +2198,11 @@ class Game {
     const dx = tx - u.x;
     const dz = tz - u.z;
     const d = Math.hypot(dx, dz);
-    let sp = u.def.speed * SQ3;
-    if (u.mover === 'land') sp /= TERRAIN[cells[u.cell].t].slow || 1;
+    let sp = u.def.speed * SQ3 * (1 + (u.buffSpd || 0));
+    // v1.8: investigación «Motores»: aeronaves un 15 % más rápidas.
+    const res = this.players[u.owner].research;
+    if (res && res.engines && u.mover === 'air') sp *= 1 + RESEARCH.engines.pct;
+    if (u.mover === 'land' || u.mover === 'amphib') sp /= TERRAIN[cells[u.cell].t].slow || 1;
     const step = sp * dt;
     if (d <= step) {
       u.x = tx;
@@ -2100,7 +2217,7 @@ class Game {
     const nc = this.map.atWorld(u.x, u.z);
     // v1.3: una tropa de tierra no pasa a «estar» en una casilla de agua (ni un barco en tierra)
     // aunque corte camino por el borde.
-    if (nc && (u.mover === 'air' || TERRAIN[nc.t][u.mover === 'land' ? 'land' : 'water'])) u.cell = nc.i;
+    if (nc && this.standsOn(u, nc)) u.cell = nc.i;
     return u.pathI >= u.path.length;
   }
 
@@ -2155,7 +2272,8 @@ class Game {
           this.fire(u, w, ft);
           // El Dron kamikaze se destruye al atacar.
           if (!u.alive) return;
-          u.cd = w.cd;
+          // v1.8: con suministros cerca recarga más rápido.
+          u.cd = w.cd / (1 + (u.buffCd || 0));
           u.lastShot = this.time;
           u.lastShotKind = w.proj;
           if (w.salvo > 1) {
@@ -2485,6 +2603,8 @@ class Game {
     if (!this.projectiles.length) return;
     // v1.1: Escudos antimisiles con su defensa de punto lista.
     const pds = this.buildings.filter((b) => b.alive && b.built && b.def.pointDefense);
+    // v1.8: también los barcos con defensa de punto (Corbeta, Crucero, Fragata de escolta).
+    for (const u of this.units) if (u.alive && !u.inside && u.def.pointDefense) pds.push(u);
     for (const p of this.projectiles) {
       p.time += dt;
       if (p.kind === 'nuke') {
@@ -2520,11 +2640,234 @@ class Game {
       b.pdKills = (b.pdKills || 0) + 1;
       this.pdKills = (this.pdKills || 0) + 1;
       const y = (p.sy || 0.5) + ((p.ty || 0) - (p.sy || 0.5)) * k + 0.4;
-      this.fx.push({ k: 'tracer', x1: b.x, y1: b.y + 1.3, z1: b.z, x2: x, y2: y, z2: z, color: 0xffe08a, heavy: true });
+      this.fx.push({ k: 'tracer', x1: b.x, y1: b.y + (b.kind === 'bld' ? 1.3 : 0.4), z1: b.z, x2: x, y2: y, z2: z, color: 0xffe08a, heavy: true });
       this.fx.push({ k: 'boom', x, y, z, s: 0.45, small: true });
       return true;
     }
     return false;
+  }
+
+  // ---------- v1.8: sistemas de las tropas y edificios nuevos ----------
+  // Auras cada 0,5 s. Mando (dmg): más daño a tus tropas cerca. Suministros (supply): recargan más rápido.
+  // Combustible (fuel): tus vehículos van más rápido. Interferencia (jam): las defensas enemigas disparan más lento.
+  // Entre varias fuentes del mismo tipo vale la mayor (no se suman).
+  updateAuras(dt) {
+    this._auraT = (this._auraT || 0) - dt;
+    if (this._auraT > 0) return;
+    this._auraT = 0.5;
+    const src = [];
+    for (const u of this.units) if (u.alive && !u.inside && u.def.aura) src.push(u);
+    for (const b of this.buildings) if (b.alive && b.built && b.def.aura) src.push(b);
+    for (const u of this.units) { u.buffDmg = 0; u.buffCd = 0; u.buffSpd = 0; }
+    for (const b of this.buildings) b.jam = 0;
+    if (!src.length) return;
+    const key = { dmg: 'buffDmg', supply: 'buffCd', fuel: 'buffSpd' };
+    for (const s of src) {
+      for (const a of s.def.aura) {
+        const R = (a.range * SQ3 + 0.4) ** 2;
+        if (a.kind === 'jam') {
+          for (const b of this.buildings) {
+            if (!b.alive || !b.def.weapon || !this.isEnemy(b.owner, s.owner)) continue;
+            if ((b.x - s.x) ** 2 + (b.z - s.z) ** 2 <= R) b.jam = Math.max(b.jam || 0, a.pct);
+          }
+          continue;
+        }
+        const k = key[a.kind];
+        for (const u of this.units) {
+          if (u === s || !u.alive || u.inside || this.isEnemy(u.owner, s.owner)) continue;
+          if (a.cls && !a.cls.includes(u.cls)) continue;
+          if (a.kind !== 'fuel' && !u.def.weapon) continue;
+          if ((u.x - s.x) ** 2 + (u.z - s.z) ** 2 <= R) u[k] = Math.max(u[k] || 0, a.pct);
+        }
+      }
+    }
+  }
+
+  // Mina naval: explota con el primer barco enemigo a 1 casilla; un desminador enemigo cerca la desactiva.
+  updateMine(b, dt) {
+    b.mineT = (b.mineT || 0) - dt;
+    if (b.mineT > 0) return;
+    b.mineT = 0.3;
+    const M = b.def.mine;
+    const R = M.range * SQ3 + 0.3;
+    for (const u of this.units) {
+      if (!u.alive || u.inside || !this.isEnemy(u.owner, b.owner)) continue;
+      const d = Math.hypot(u.x - b.x, u.z - b.z);
+      if (u.def.demine && d <= SQ3 + 0.3 && (b.seenBy & (1 << this.players[u.owner].team))) {
+        this.mineCleared = (this.mineCleared || 0) + 1;
+        if (u.owner === 0) this.toast(0, `${u.def.name} desactivó una mina`, 'good');
+        this.kill(b, u.owner);
+        return;
+      }
+      const onWater = TERRAIN[this.cells[u.cell].t].water;
+      if ((u.cls === 'ship' || u.cls === 'sub') && onWater && !u.def.demine && d <= R) {
+        this.fx.push({ k: 'boom', x: b.x, y: 0.2, z: b.z, s: 1.0 });
+        this.emit('sound', { name: 'boom', x: b.x, z: b.z });
+        this.minesExploded = (this.minesExploded || 0) + 1;
+        if (u.owner === 0) this.alert('mine', `¡Mina! ${u.def.name} chocó con una mina`, 'bad', b.x, b.z, 5);
+        this.damage(u, M.dmg, b.owner, b);
+        this.kill(b, -1);
+        return;
+      }
+    }
+  }
+
+  // Centro de investigación: una investigación a la vez; al terminar vale para todo el ejército del jugador.
+  researchInvalid(b, key) {
+    const R = RESEARCH[key];
+    if (!b || !b.alive || b.type !== 'research' || !b.built) return 'Necesita un Centro de investigación terminado';
+    if (!R) return 'Investigación desconocida';
+    const p = this.players[b.owner];
+    if (p.research && p.research[key]) return 'Ya investigada';
+    if (b.researching) return `Investigando ${RESEARCH[b.researching.key].name}`;
+    if (!(this.creator && b.owner === 0) && p.coins < R.cost) return `Monedas insuficientes (${fmt(R.cost)})`;
+    return null;
+  }
+
+  startResearch(b, key) {
+    const why = this.researchInvalid(b, key);
+    if (why) return why;
+    const p = this.players[b.owner];
+    if (!(this.creator && b.owner === 0)) p.coins -= RESEARCH[key].cost;
+    b.researching = { key, t: 0 };
+    if (b.owner === 0) this.emit('sound', { name: 'place' });
+    return null;
+  }
+
+  updateResearch(b, dt) {
+    const r = b.researching;
+    r.t += dt;
+    const R = RESEARCH[r.key];
+    if (r.t < R.time) return;
+    b.researching = null;
+    const p = this.players[b.owner];
+    p.research = p.research || {};
+    p.research[r.key] = true;
+    // Blindaje: los vehículos que ya existen también reciben la vida extra.
+    if (r.key === 'armor') {
+      for (const u of this.units) {
+        if (!u.alive || u.owner !== b.owner || u.cls !== 'veh') continue;
+        const add = u.maxHp * R.pct;
+        u.maxHp += add;
+        u.hp += add;
+      }
+    }
+    if (b.owner === 0) {
+      this.emit('toast', { text: `Investigación terminada: ${R.name}`, kind: 'good' });
+      this.emit('sound', { name: 'done' });
+    }
+  }
+
+  // Vehículo lanzapuentes: pone un Puente modular en una casilla de agua poco profunda de al lado (paga el puente).
+  bridgeSpot(u) {
+    const uc = this.cells[u.cell];
+    let best = -1;
+    let bd = Infinity;
+    for (const ni of uc.nb) {
+      const c = this.cells[ni];
+      if (c.t !== 'shallow' || c.bld || c.point || !this.map.isCoast(c)) continue;
+      if (c.owner >= 0 && this.isEnemy(c.owner, u.owner)) continue;
+      let d = Math.atan2(c.x - u.x, c.z - u.z) - u.yaw;
+      while (d > Math.PI) d -= Math.PI * 2;
+      while (d < -Math.PI) d += Math.PI * 2;
+      d = Math.abs(d);
+      if (d < bd) { bd = d; best = ni; }
+    }
+    return best;
+  }
+
+  layBridgeInvalid(u) {
+    if (!u || !u.alive || !u.def.layBridge) return 'Necesita un Vehículo lanzapuentes';
+    if (u.inside) return 'Bájalo del transporte primero';
+    const p = this.players[u.owner];
+    if (this.count(u.owner, 'bridge') >= this.limitFor(u.owner, 'bridge')) return `Límite alcanzado (${this.limitFor(u.owner, 'bridge')})`;
+    if (!(this.creator && u.owner === 0) && p.coins < BUILDINGS.bridge.cost) return `Monedas insuficientes (${fmt(BUILDINGS.bridge.cost)})`;
+    if (this.bridgeSpot(u) < 0) return 'Acércate a agua poco profunda junto a la orilla';
+    return null;
+  }
+
+  layBridge(u) {
+    const why = this.layBridgeInvalid(u);
+    if (why) return why;
+    const ci = this.bridgeSpot(u);
+    const p = this.players[u.owner];
+    if (!(this.creator && u.owner === 0)) p.coins -= BUILDINGS.bridge.cost;
+    const b = this.addBuilding(u.owner, 'bridge', ci);
+    b.selfBuild = true;
+    this.orderStop([u]);
+    if (u.owner === 0) this.emit('sound', { name: 'place' });
+    return b;
+  }
+
+  // Buque minador: siembra una mina oculta donde está (hasta 8 por jugador).
+  layMineInvalid(u) {
+    if (!u || !u.alive || !u.def.layMine) return 'Necesita un Buque minador';
+    const c = this.cells[u.cell];
+    if (!TERRAIN[c.t].water) return 'Solo en el agua';
+    if (c.bld) return 'Ya hay algo en esta casilla';
+    if (this.count(u.owner, 'seamine') >= MINES.limit) return `Límite de minas (${MINES.limit})`;
+    if ((u.mineAt || 0) > this.time) return `Preparando la mina: faltan ${Math.ceil(u.mineAt - this.time)} s`;
+    return null;
+  }
+
+  layMine(u) {
+    const why = this.layMineInvalid(u);
+    if (why) return why;
+    const b = this.addBuilding(u.owner, 'seamine', u.cell, true);
+    u.mineAt = this.time + MINES.every;
+    if (u.owner === 0) this.emit('sound', { name: 'place' });
+    return b;
+  }
+
+  toggleGate(b) {
+    if (!b || !b.alive || b.type !== 'gate') return 'No es una puerta';
+    b.closed = !b.closed;
+    if (b.closed) {
+      // Las tropas que estaban en la puerta salen a un lado.
+      for (const u of this.units) {
+        if (!u.alive || u.cell !== b.cell || u.mover === 'air') continue;
+        const free = this.freeCellsNear(b.cell, u.mover, u.owner, 1)[0];
+        const fc = this.cells[free];
+        u.x = fc.x + u.offX;
+        u.z = fc.z + u.offZ;
+        u.cell = free;
+      }
+    }
+    return null;
+  }
+
+  // Complejo estratégico (silo DF-5C): solo con «Arsenal estratégico»; comparte el uso único del jugador.
+  siloState(b) {
+    if (b.spent) return 'spent';
+    if (this.strategicLeft(b.owner) <= 0) return 'quota';
+    if (!b.built) return 'build';
+    return this.time < (b.builtAt || 0) + STRATEGIC.prep ? 'prep' : 'ready';
+  }
+
+  siloInvalid(b, ci) {
+    if (!b || !b.alive || b.type !== 'silo') return 'Necesita un Complejo estratégico';
+    if (!this.strategic) return 'Solo con «Arsenal estratégico»';
+    if (!b.built) return 'Termina primero la obra';
+    if (b.spent) return 'Agotado: ya lanzó su misil (0/1)';
+    if (this.strategicLeft(b.owner) <= 0) return 'Uso estratégico agotado (0/1)';
+    const left = (b.builtAt || 0) + STRATEGIC.prep - this.time;
+    if (left > 0) return `Preparando: faltan ${Math.ceil(left)} s`;
+    if (ci !== undefined) {
+      const c = this.cells[ci];
+      if (!c) return 'Casilla no válida';
+      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return 'Demasiado lejos';
+      const p = this.players[b.owner];
+      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return 'Muy cerca de tu Núcleo';
+    }
+    return null;
+  }
+
+  launchSilo(b, ci) {
+    const why = this.siloInvalid(b, ci);
+    if (why) return why;
+    b.spent = true;
+    this.fireNuke(b.owner, b, ci);
+    return null;
   }
 
   // ---------- misil nuclear (v0.9) ----------
@@ -2596,6 +2939,12 @@ class Game {
     return this.strategic ? list : list.filter((t) => !UNITS[t].strategic);
   }
 
+  // v1.8: edificios que se pueden construir en esta partida (el Complejo estratégico solo con Arsenal estratégico).
+  buildable(type) {
+    const d = BUILDINGS[type];
+    return !!d && (this.strategic || !d.strategic);
+  }
+
   // Estado del Lanzador nuclear móvil para la interfaz: 'prep', 'ready', 'spent' o 'quota' (el uso se gastó con otro).
   mobileState(u) {
     if (u.spent) return 'spent';
@@ -2604,7 +2953,7 @@ class Game {
   }
 
   mobileNukeInvalid(u, ci) {
-    if (!u || !u.alive || !u.def.strategic) return 'Necesita un Lanzador nuclear móvil';
+    if (!u || !u.alive || !u.def.strategic) return 'Necesita un lanzador estratégico';
     if (!this.strategic) return 'Solo con «Arsenal estratégico»';
     if (u.spent) return 'Agotado: ya usó su único misil (0/1)';
     if (this.strategicLeft(u.owner) <= 0) return 'Uso estratégico agotado (0/1)';

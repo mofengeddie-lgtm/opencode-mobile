@@ -931,6 +931,8 @@ class Renderer {
         this.vis.set(b.id, v);
       }
       if (b.type === 'wall') this.updateWall(b, v);
+      // v1.8: las minas enemigas no se ven si ningún detector las descubrió.
+      if (b.def.stealth) v.group.visible = b.visible !== false;
       // Humo de daño: un edificio con menos del 40 % de vida echa humo hasta que lo reparan.
       if (b.built && b.hp < b.maxHp * 0.4) {
         smoking++;
@@ -997,7 +999,17 @@ class Renderer {
       v.group.visible = seen;
       if (!seen) continue;
       let y = u.y;
-      if (u.mover === 'sea') y += Math.sin(time * 2.2 + u.id) * 0.025;
+      if (u.mover === 'sea' || (u.mover === 'amphib' && u.cls === 'ship')) y += Math.sin(time * 2.2 + u.id) * 0.025;
+      // v1.8: paracaídas mientras baja (Paracaidista y tropas lanzadas desde el avión).
+      const dropping = u.dropT > g.time;
+      if (dropping && !v.chute) {
+        v.chute = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2),
+          new THREE.MeshLambertMaterial({ color: PLAYER_COLORS[u.owner], side: THREE.DoubleSide }));
+        v.chute.position.y = 0.95;
+        v.chute.scale.y = 0.55;
+        v.group.add(v.chute);
+      }
+      if (v.chute) v.chute.visible = dropping;
       if (u.mover === 'air') y += Math.sin(time * 1.7 + u.id) * 0.06;
       if (u.def.plane) {
         this.updatePlane(u, v, dt, time, y);
