@@ -62,7 +62,7 @@ for f in sorted(glob.glob(os.path.join(FARO, 'tests', 'results-v18*.json')), key
         for x in d:
             if x.get('id', '').startswith('O'):
                 br[x['id']] = x
-for i in ('O14', 'O15', 'O16', 'O19'):
+for i in ('O14', 'O15', 'O16', 'O19', 'O21'):
     x = br.get(i)
     put(i, ('ok' if x['ok'] else 'fail') if x else 'np', x['ev'] if x else 'no corrió')
 
