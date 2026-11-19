@@ -148,6 +148,8 @@ section.alt { background: var(--deck); border-block: 1px solid var(--line); }
 .chip.on { color: var(--amber); border-color: var(--amber); background: rgba(242, 171, 56, 0.1); }
 .army { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 320px); gap: 14px; align-items: start; }
 .units { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; min-width: 0; }
+/* v1.8: el filtro oculta tarjetas con [hidden]; sin esta regla, «display: grid» las dejaba a la vista. */
+.unit[hidden] { display: none; }
 .unit { position: relative; display: grid; justify-items: center; gap: 2px; padding: 8px 6px 10px; border-radius: 10px; border: 1px solid transparent; background: var(--raise); color: var(--foam); text-align: center; cursor: pointer; font: inherit; min-width: 0; }
 .unit:hover { border-color: var(--line); }
 .unit.on { border-color: var(--sea); box-shadow: 0 0 0 1px var(--sea); }
