@@ -16,6 +16,8 @@ const errsAll = [];
 async function open(browser, w, h, { url = GAME, init = null } = {}) {
   const context = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true });
   const page = await context.newPage();
+  // v1.8: el vestíbulo con «Tu ejército» tarda más en dibujarse sin tarjeta gráfica: más tiempo para las capturas.
+  page.setDefaultTimeout(120000);
   page.errs = [];
   page.on('pageerror', (e) => page.errs.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('ERR_FAILED')) page.errs.push(m.text()); });

@@ -85,6 +85,8 @@ const INSIDE = ([sel, label, onlyX]) => {
   for (const [name, w, h] of sizes) {
     if (only && only !== name) continue;
     const page = await (await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true })).newPage();
+    // v1.8: el vestíbulo con «Tu ejército» tarda más en dibujarse sin tarjeta gráfica: más tiempo para las capturas.
+    page.setDefaultTimeout(120000);
     const errs = [];
     page.on('pageerror', (e) => errs.push(e.message));
     await page.route('**/three.min.js', (r) => r.fulfill({ path: SP + '/three/node_modules/three/build/three.min.js', contentType: 'application/javascript' }));

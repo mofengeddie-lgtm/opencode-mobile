@@ -1,7 +1,7 @@
 {
  "O01": {
   "status": "ok",
-  "evidence": "revisar.py --estricto: salida 0 · 110 de 110 «En el juego» (78 de 78 tropas, 32 de 32 edificios), 110 con modelo 3D · juego v1.8 · 2026-11-18 01:58"
+  "evidence": "revisar.py --estricto: salida 0 · 110 de 110 «En el juego» (78 de 78 tropas, 32 de 32 edificios), 110 con modelo 3D · juego v1.8 · 2026-11-20 16:18"
  },
  "O02": {
   "status": "ok",
@@ -67,13 +67,17 @@
   "status": "ok",
   "evidence": "faro.html: 4.07 MB (máx. 6) · cuadros por segundo con 90 tropas (Más fluido, Chromium sin tarjeta gráfica): v1.7 2.89 · v1.8 2.91 · carga hasta el vestíbulo: v1.7 4.3 s · v1.8 4.3 s"
  },
+ "O21": {
+  "status": "ok",
+  "evidence": "al abrir: creador no · la contraseña no aparece escrita en la página: sí · «Creadores» pide contraseña: sí · contraseña mala: «Contraseña incorrecta (4 intentos más).» · contraseña buena: zona abierta sí (ventana «creator») · modo creador en partida: monedas 1000001 · al abrir el juego de nuevo: se vuelve a pedir (sí) · 5 intentos fallidos: espera 60 s («Demasiados intentos. Espera 60 s.»)"
+ },
  "O17": {
   "status": "ok",
   "evidence": "tropas nuevas en los bots: Normal 38 (11 %), Difícil 69 (8 %), Fácil 0 · 30 partidas largas de 20 min con chequeos cada segundo: sin problemas"
  },
  "O18": {
   "status": "np",
-  "evidence": "la tanda de pruebas anteriores no terminó (van 65 bien, 4 mal)"
+  "evidence": "Pruebas anteriores en la v1.8: 124 de 124 bien (v1.7: 10, v1.6: 5, v1.5: 13, v1.4: 14, v1.3: 14, v1.2: 7, v1.1: 11, v1.0: 12, v0.9: 18, v0.8: 10, v0.7: 10) (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01) · L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.8: los 6 nombres de tu documento y las tropas y edificios nuevos · N05 (Arsenal) espera los conteos de la v1.7 (93 tropas y 41 edificios): ahora hay 134 tarjetas y filtros nuevos (drones con las aeronaves, estratégicos) · N14 (rendimiento de la v1.7) usa la meta vieja de 3,5 MB y compara contra la v1.6.1: el plan de la v1.8 la cambió por O19 (6 MB o menos y comparación con la v1.7); faro.html pesa 4,08 MB porque los 76 modelos nuevos suman 3,26 MB de modelos en total · repetidas a solas: N04 bien al repetirla sola (en la tanda: mal); N14 mal al repetirla sola (en la tanda: mal); K15web bien al repetirla sola (en la tanda: mal); J06web bien al repetirla sola (en la tanda: mal). Números: 36 tropas y 23 edificios de la v1.7, modos y dificultades iguales (sí). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 5 de 5 (3:11, 5:19, 3:07, 3:07, 3:06); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:53, 2:51); M5 ganó 2 de 3 (13:38, 26:34); M6 piloto atento ganó 6 de 6 (17:14, 23:15, 20:10, 21:02, 25:35, 21:31). Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad; en la v1.8 los bots también usan tropas nuevas): v1.7 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0; v1.8 Fácil 16-0-0, Normal 7-8-1, Difícil 0-16-0. 5 tamaños: no corrió. Con letra grande y colores para daltonismo: no corrió."
  },
  "O20": {
   "status": "ok",
