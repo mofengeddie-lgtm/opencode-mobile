@@ -1,0 +1,17 @@
+[
+ {
+  "id": "O14",
+  "ok": true,
+  "ev": "ipad-horizontal: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · al tocar Jugar: partida nueva sí, sin desfile sí (1 tropas tuyas) · con «Más fluido»: 22 tropas · ipad-vertical: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · celular: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta oculta, cámara gira sí · capturas en docs/prd/img-v18/"
+ },
+ {
+  "id": "O19",
+  "ok": true,
+  "ev": "faro.html: 4.07 MB (máx. 6) · cuadros por segundo con 90 tropas (Más fluido, Chromium sin tarjeta gráfica): v1.7 2.89 · v1.8 2.91 · carga hasta el vestíbulo: v1.7 4.3 s · v1.8 4.3 s"
+ },
+ {
+  "id": "errores",
+  "ok": true,
+  "ev": "sin errores de página"
+ }
+]

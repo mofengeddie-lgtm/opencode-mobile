@@ -1,0 +1,38 @@
+[
+ {
+  "id": "H01",
+  "name": "Alianzas: proponer (acepta o rechaza con su motivo), no se atacan, comparten visión, chat de aliados, romper",
+  "ok": true,
+  "ev": "respuestas: Rojo (Agresivo): no; Naranja (Constructor): acepta; Violeta (Almirante): acepta; Rosa (Guardián del Faro): acepta; Turquesa (Agresivo): no; otra vez al aliado: «Naranja ya es tu aliado»; aliados no enemigos: true; ves sus tropas: true; mensaje en el chat de aliados: true; su Artillero no te elige de blanco: true; a quien atacaste: «Rojo: «Hace poco me atacaste. No confío en ti.»»; romper: hecho (vuelven a ser rivales: true); si solo quedan aliados la alianza se rompe y la partida sigue: true; en Dúos: «En este modo no hay alianzas»"
+ },
+ {
+  "id": "H02",
+  "name": "Modo Dúos: 3 parejas que aparecen cerca; gana la última pareja",
+  "ok": true,
+  "ev": "archipelago: equipos 001122, tu pareja a 11 casillas y el rival más cerca a 23 · continent: equipos 001122, tu pareja a 12 casillas y el rival más cerca a 21 · open: equipos 001122, tu pareja a 12 casillas y el rival más cerca a 22; con una pareja rival en pie la partida sigue (true); al caer la última: victory"
+ },
+ {
+  "id": "H04",
+  "name": "El Escudo antimisiles derriba misiles y cohetes enemigos cerca, sin dejar de derribar el misil nuclear",
+  "ok": true,
+  "ev": "Lanzacohetes y Camión de misiles enemigos a 5 casillas durante 30 s: derribó 6 (vida y escudo del Escudo: 1680 → 1680); misil nuclear a 2 casillas: derribado (1)"
+ },
+ {
+  "id": "H06",
+  "name": "«¡Ayuda!» y «¡Ataquemos!»: los aliados responden y mandan tropas",
+  "ok": true,
+  "ev": "«¡Ayuda!»: tus 2 aliados mandan 1 y 2 tropas (3 van hacia tu Núcleo); «¡Ataquemos!» a Violeta: mandan 2 y 3 y lo eligen como blanco de sus oleadas (true); mensajes en el chat: 4"
+ },
+ {
+  "id": "H07",
+  "name": "Al perder, «Seguir mirando» deja ver la partida hasta el final",
+  "ok": true,
+  "ev": "al caer tu Núcleo: derrota (true); se puede seguir mirando (true); la partida siguió 60 s más sin terminar; cuando queda un imperio termina y muestra al ganador (Rojo)"
+ },
+ {
+  "id": "H08",
+  "name": "Historia de la partida para las gráficas: monedas por minuto y ejército de cada imperio",
+  "ok": true,
+  "ev": "18 muestras (cada 10 s), de 0 s a 172 s; última: monedas/min 0, 1860, 2460, 1860, 2460, 1860 · tropas 0, 2, 5, 1, 1, 2"
+ }
+]

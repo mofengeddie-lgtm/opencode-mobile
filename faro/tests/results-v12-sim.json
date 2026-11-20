@@ -1,0 +1,14 @@
+[
+ {
+  "id": "I06",
+  "name": "Mapas «Mesetas de Cobre» (ventaja de altura) y «Dunas Rojas» se generan bien y se pueden jugar",
+  "ok": true,
+  "ev": "mesa/conquest: mesetas 91, bases unidas al Faro true, fértil mín. 8 · mesa/ffa: mesetas 80, bases unidas al Faro true, fértil mín. 8 · mesa/duel: mesetas 44, bases unidas al Faro true, fértil mín. 8 · mesa/duos: mesetas 99, bases unidas al Faro true, fértil mín. 9 · mesa/league: mesetas 106, bases unidas al Faro true, fértil mín. 8 · dunes/conquest: dunas 37, bases unidas al Faro true, fértil mín. 8 · dunes/ffa: dunas 28, bases unidas al Faro true, fértil mín. 9 · dunes/duel: dunas 31, bases unidas al Faro true, fértil mín. 10 · dunes/duos: dunas 37, bases unidas al Faro true, fértil mín. 9 · dunes/league: dunas 50, bases unidas al Faro true, fértil mín. 9. Artillero (alcance 3) en la meseta contra uno abajo a 4 casillas: desde arriba llega (true), desde abajo no (true), en terreno llano a la misma distancia no llega (true). mesa: en 8 min los bots tienen 20 edificios y 13 tropas; dunes: en 8 min los bots tienen 28 edificios y 9 tropas"
+ },
+ {
+  "id": "I09sim",
+  "name": "Temporada según la fecha",
+  "ok": false,
+  "ev": "ya no existe: la v1.5 quitó las temporadas por fecha (la reemplaza L01)"
+ }
+]

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="17 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.7</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+#pruebas td:first-child { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+.figs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 12px; }
+.figs figure { margin: 0; }
+.figs img { width: 100%; display: block; border-radius: 6px; border: 1px solid var(--line); }
+.figs figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.7</p>
+  <p class="meta">17 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu pedido «sigamos, y más información para que mejoremos el juego», tu Dirección visual UI 0.4 (14 pantallas y 2 vehículos) y tu PRD Roblox v1.8</p>
+  <div class="tiles">
+    <div class="tile"><b>Tu UI 0.4 en el juego</b><span>Carga en 3 pasos, barra de arriba con etiquetas, barra de selección con vida del grupo y orden actual, y resultado con «Revancha».</span></div>
+    <div class="tile"><b>Arsenal y vehículos nuevos</b><span>«Conoce tu ejército» con búsqueda y filtros; Lanzador DF-17 y Lanzador nuclear móvil de un solo uso, modelados con Blender.</span></div>
+    <div class="tile"><b>Más sólido</b><span>El perfil nunca se pisa si no se pudo leer, como pide la auditoría de tu PRD 1.8.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Me mandaste tu Dirección visual UI 0.4 y tu PRD Roblox v1.8 como información para mejorar el juego. Los leí completos. Mucho de lo que piden ya existe en el prototipo web (misiones, inventario, motivos junto a la acción, colocación con aviso). La v1.7 trae lo que falta y se puede probar hoy en el iPad: el aspecto y el orden de tu UI 0.4 donde el juego todavía no lo sigue, el Arsenal, los dos vehículos de tus fotos y un perfil que no se pierde. El mapa no cambia.</p>
+  <div class="figs">
+    <figure><img src="../roblox/ui-0.4/ui04-05.jpg" alt="Tu maqueta «Partida y selección»"><figcaption>Tu maqueta 04 · Partida y selección (UI 0.4): la guía para la barra de arriba y la barra de selección.</figcaption></figure>
+    <figure><img src="../roblox/ui-0.4/ui04-10.jpg" alt="Tu maqueta «Arsenal»"><figcaption>Tu maqueta 09 · Arsenal y nuevo DF-17: la guía para «Conoce tu ejército».</figcaption></figure>
+  </div>
+
+  <h3>2. De dónde sale cada idea</h3>
+  <table>
+    <thead><tr><th style="width:36%">Lo que dicen tus documentos</th><th>Idea para la v1.7 web</th></tr></thead>
+    <tbody>
+      <tr><td>UI 0.4 · 01 Carga y recuperación: tres pasos con estado y una salida clara si el perfil no responde. «No se simula un porcentaje con un temporizador.»</td><td>La carga de la v1.6 ya mide lo real; ahora se muestra en tres pasos con su estado, y si el perfil no se puede leer lo dice y deja elegir.</td></tr>
+      <tr><td>PRD 1.8 · R-07, R-08 y R-09: «no reemplazar datos válidos por valores vacíos tras un fallo»; validar antes de aplicar.</td><td>Perfil seguro: si lo guardado no se puede leer, se guarda una copia y no se pisa; cada dato se valida al cargar.</td></tr>
+      <tr><td>UI 0.4 · 04 Partida y selección: recursos arriba con etiquetas, vida del grupo, orden actual, «Centrar» y «Quitar selección».</td><td>Barra de arriba con MONEDAS, INGRESOS, ENERGÍA, POBLACIÓN y PARTIDA; barra de selección con vida del grupo y orden actual.</td></tr>
+      <tr><td>UI 0.4 · 09 Arsenal y PRD 1.8 · sección 56: búsqueda, filtros por familia, tarjeta con miniatura real y ficha.</td><td>Pestaña «Arsenal» en el vestíbulo con todo lo que hoy existe en el juego (tropas y edificios).</td></tr>
+      <tr><td>UI 0.4 · Referencias 1 y 2 y PRD 1.8 · secciones 50, 55 y 57: Lanzador nuclear móvil de un solo misil (1/1 → 0/1) y Lanzador DF-17 convencional.</td><td>Dos modelos nuevos con Blender y el modificador «Arsenal estratégico» en Personalizado, apagado si no lo eliges.</td></tr>
+      <tr><td>UI 0.4 · 06 Producción y 07 Puerto y transporte: plazas reservadas, «Población tras completar», lista de pasajeros.</td><td>Lista de pasajeros con nombre y plazas; comunidad reservada y «Comunidad al terminar» en la cola.</td></tr>
+      <tr><td>UI 0.4 · 14 Resultado: tres fichas y «Revancha».</td><td>Resultado con tres fichas principales y botón «Revancha».</td></tr>
+      <tr><td>UI 0.4 · 13 Ajustes y PRD 1.8 · sección 56: escala de UI, reducir destellos y sacudidas.</td><td>Deslizador «Tamaño de la interfaz» y opción «Reducir destellos y sacudidas».</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:16%">Fecha</th><th>Qué trajo</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.9</td><td>6-8 nov 2026</td><td>Juego base, campaña, ejército de tierra, mar y aire, misil nuclear y suelo de la v0.6.</td></tr>
+      <tr><td>1.0-1.3</td><td>9-11 nov 2026</td><td>Botón «Construir», alianzas, Dúos, rueda, mapas nuevos y los 29 puntos de tu revisión.</td></tr>
+      <tr><td>1.4-1.5</td><td>12-13 nov 2026</td><td>Patrullar, veteranas, logros, opciones para el iPad, portada y Núcleo nuevos, sin temporadas del año.</td></tr>
+      <tr><td>1.6</td><td>13-15 nov 2026</td><td>Pantalla de carga real, transiciones, motivos junto a la acción, alcance al colocar, «Acerca de» y documento completo.</td></tr>
+      <tr><td>1.7</td><td>15-17 nov 2026</td><td>Arsenal, Dron de ataque, Dron kamikaze, Lanzacohetes múltiple, Lancha misilera, DF-17, Lanzador nuclear móvil con «Arsenal estratégico», selección y carga como en tu UI 0.4, perfil seguro y sitio web.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Detalle</div>
+  <h2>Cómo funciona cada cosa</h2>
+  <h3>A. Carga en 3 pasos y perfil seguro</h3>
+  <ul>
+    <li>Tres renglones: <b>1 Recursos esenciales</b> (motor 3D, modelos y cielo), <b>2 Tu perfil</b> y <b>3 La partida</b>. Cada uno dice «En espera», «Cargando…» o «Listo»; debajo sigue la barra con el avance real.</li>
+    <li>Si lo guardado en el iPad no se puede leer, el juego <b>no lo borra ni lo pisa</b>: guarda una copia aparte y muestra «No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.» con dos botones: «Reintentar» y «Empezar de nuevo» (la copia queda guardada).</li>
+    <li>Al cargar se revisa cada dato: si un número llegó como texto o falta una parte, se repara solo ese dato y el resto se conserva.</li>
+  </ul>
+  <h3>B. Barra de arriba y barra de selección</h3>
+  <ul>
+    <li>Arriba, cinco bloques con etiqueta: MONEDAS, INGRESOS (por minuto), ENERGÍA, POBLACIÓN y PARTIDA (tiempo). Tocar Monedas o Energía sigue abriendo el detalle.</li>
+    <li>Con varias tropas elegidas: nombre del grupo («Escuadra terrestre», «Flota», «Escuadrilla aérea» o «Grupo mixto»), cuántas son, barra «Vida del grupo · 86 %» y «Orden actual: moviéndose / atacando / patrullando / manteniendo posición / quietas».</li>
+    <li>Dos botones fijos junto a la selección: «Centrar» (lleva la cámara al grupo) y «Quitar selección».</li>
+  </ul>
+  <h3>C. Arsenal: «Conoce tu ejército»</h3>
+  <ul>
+    <li>Nueva pestaña en el vestíbulo. Muestra lo que <b>existe hoy</b> en el juego web: todas sus tropas y edificios, con su miniatura real.</li>
+    <li>Buscador por nombre y filtros: Todos, Infantería, Tierra, Mar, Aire, Edificios y Estratégico.</li>
+    <li>Al tocar una tarjeta: ficha con función, precio, energía, comunidad, tiempo, quién la produce y contra qué es fuerte o débil.</li>
+    <li>Tu catálogo de 78 unidades y 32 edificios queda como plan para Roblox: aquí no se muestran como si ya existieran (tu regla RF-15).</li>
+  </ul>
+  <h3>D. Vehículos nuevos y Arsenal estratégico</h3>
+  <div class="figs">
+    <figure><img src="../roblox/ui-0.4/ref-nuclear-movil.jpg" alt="Tu propuesta del Lanzador nuclear móvil"><figcaption>Tu propuesta: Lanzador nuclear móvil (un contenedor, un uso).</figcaption></figure>
+    <figure><img src="../roblox/ui-0.4/ref-df-17.jpg" alt="Tu propuesta del Lanzador DF-17"><figcaption>Tu propuesta: Lanzador DF-17 (misil a la vista, punta angular).</figcaption></figure>
+  </div>
+  <ul>
+    <li><b>Lanzador DF-17:</b> el juego ya tiene un «Lanzador de misiles» (camión gigante de muy largo alcance). Pasa a llamarse Lanzador DF-17 y estrena modelo según tu propuesta: camión más compacto con el misil a la vista y punta angular. Conserva sus números (precio 7000, alcance 9), así el equilibrio no cambia.</li>
+    <li><b>Lanzador nuclear móvil:</b> vehículo nuevo de la Fábrica, largo, con un solo contenedor redondeado. Lleva exactamente un misil.</li>
+    <li><b>Arsenal estratégico</b> es una opción de «Personalizado», apagada si no la eliges. Con ella encendida cada jugador tiene <b>un solo uso estratégico</b> en toda la partida, sea con el lanzador móvil o con el AIR DEFENSE de nivel 4.</li>
+    <li>Pasos del lanzador: «Preparando» (60 s después de salir de la Fábrica) → «1/1 disponible» → eliges la zona → ventana «¿Usar ahora?» con «Confirmar uso único» y «Cancelar» → sale el misil → «0/1 · Agotado».</li>
+    <li>Cancelar no gasta. Un doble toque no lanza dos. Perder, demoler o volver a fabricar el vehículo no devuelve el uso. El aviso a los rivales, el Escudo antimisiles y la radiación funcionan igual que con el misil de siempre.</li>
+    <li>Sin la opción encendida, todo sigue como en la v1.6.</li>
+  </ul>
+  <h3>E. Transporte, producción, resultado y ajustes</h3>
+  <ul>
+    <li>Transportes: lista de pasajeros con nombre («Artillero · a bordo») y «4 / 6 plazas».</li>
+    <li>Cola de producción: «2 en cola · 2 plazas reservadas» y «Comunidad al terminar: 10 / 20».</li>
+    <li>Resultado: arriba, tres fichas (Duración, Territorios, Experiencia) y los botones «Volver al vestíbulo» y «Revancha»; debajo sigue lo de siempre (posiciones, premios, consejo y gráficas).</li>
+    <li>Ajustes: «Tamaño de la interfaz» de 90 a 130 % (reemplaza a «Letra grande») y «Reducir destellos y sacudidas».</li>
+  </ul>
+  <div class="note">Los números del Lanzador nuclear móvil (precio 22 000 monedas y 80 de energía, 4 de comunidad, 40 s de fabricación, 60 s de preparación, alcance 14 casillas) son una propuesta para probar; el daño, el radio y la radiación son los del misil que ya existe. Tu PRD dice que el balance está por definir: tú decides.</div>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y de celular, toques simulados, partidas simuladas y todas las pruebas anteriores. Ninguna prueba en navegador reemplaza probarlo en tu iPad.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:37%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>N01</td><td>Carga en 3 pasos: «Recursos esenciales», «Tu perfil» y «La partida», cada uno con su estado real (En espera → Cargando… → Listo); la barra sigue lo que de verdad se cargó. Con un perfil que no se puede leer aparece el aviso «No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.» con «Reintentar» y «Empezar de nuevo».</td><td><span class="chip ok">Aprobada</span></td><td>al abrir, los 3 pasos pasan por «cargando,en espera,en espera» → «listo,en espera,en espera» → «listo,cargando,en espera» → «listo,listo,en espera» → «listo,listo,cargando» → «listo,listo,listo» (nunca vuelven atrás: true) · con un perfil que no se puede leer: «Tu perfil no se pudo leer» / «No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.»; pasos Recursos esenciales: Listo · Tu perfil: No se pudo leer · La partida: En espera; «Reintentar» a la vista (true) y «Empezar de nuevo»; el juego espera (cargado: false); lo guardado sigue igual aunque el juego intente guardar (true) y hay una copia aparte (true) · al tocar «Empezar de nuevo»: perfil nuevo (true), la copia sigue (true) y se abre el vestíbulo (true)</td></tr>
+<tr><td>N02</td><td>Perfil seguro: un perfil dañado no se pisa (queda una copia y nada se guarda encima hasta que elijas); un dato con el tipo equivocado se repara solo sin perder el resto; un perfil sano carga igual que antes.</td><td><span class="chip ok">Aprobada</span></td><td>perfil con datos del tipo equivocado (XP como texto «350», cristales «abc», estadísticas como número, tutorial «si»): XP 350, cristales 0, estadísticas reparadas (true), tutorial false; lo demás se conserva: dificultad hard, mapa continent, aspecto comprado (true); reparados: xp, crystals, stats, tutorialDone; la carga dice «Se repararon 4 datos; el resto está igual» · perfil sano guardado y vuelto a abrir: XP 1234, cristales 77, partidas 9, dificultad hard, datos reparados 0</td></tr>
+<tr><td>N03</td><td>Barra de arriba como en tu UI 0.4: MONEDAS, INGRESOS, ENERGÍA, POBLACIÓN y PARTIDA, cada una con su número correcto, en los 5 tamaños de pantalla y con letra grande.</td><td><span class="chip ok">Aprobada</span></td><td>partida de 6 imperios, con 12.345 monedas, 77 de energía y 2:05 de partida; números iguales al juego en todo lo que se ve · iPad horizontal: Monedas, Ingresos, Población, Energía, Partida · pantalla 16:9: Monedas, Ingresos, Población, Energía, Partida · iPad vertical: Monedas, Población, Energía, Partida (el ingreso va junto a las monedas) · celular horizontal: Monedas (sin etiqueta), Población (sin etiqueta), Energía (sin etiqueta), Partida (sin etiqueta) (el ingreso va junto a las monedas) · celular vertical: Monedas (sin etiqueta), Población (sin etiqueta), Energía (sin etiqueta) · iPad horizontal con letra grande: Monedas, Ingresos, Población, Energía, Partida</td></tr>
+<tr><td>N04</td><td>Barra de selección: con varias tropas muestra el nombre del grupo, cuántas son, la barra «Vida del grupo · N %» con el porcentaje exacto y «Orden actual» (quietas, moviéndose, atacando, patrullando, manteniendo posición); «Centrar» lleva la cámara y «Quitar selección» la suelta.</td><td><span class="chip ok">Aprobada</span></td><td>2 Artilleros y un Tanque (uno con 130 de 260 de vida): «Escuadra terrestre», «Vida del grupo · 95 % (2590 / 2720)» (esperado «Vida del grupo · 95 % (2590 / 2720)») · orden actual: «Orden actual: en espera» → al mover «Orden actual: moviéndose» → al atacar «Orden actual: atacando» → al patrullar «Orden actual: patrullando» → al mantener «Orden actual: manteniendo posición» → mezclada «Orden actual: 2 en espera · 1 moviéndose» · barcos: «Flota», aeronaves: «Escuadrilla aérea», de todo: «Grupo mixto» · «Centrar» lleva la cámara al grupo (a 0.000 del centro) · «Quitar selección» la suelta (0 elegidas, panel oculto: true)</td></tr>
+<tr><td>N05</td><td>Arsenal en el vestíbulo: lista todas las tropas y edificios del juego (la cuenta coincide con el catálogo), cada tarjeta con su miniatura; la búsqueda y los filtros dejan lo que corresponde; la ficha dice función, precio, energía, comunidad, quién la produce y contra qué es fuerte o débil.</td><td><span class="chip ok">Aprobada</span></td><td>(Repetida al final con la versión final; ver Decisiones.) «36 tropas · 23 edificios»: 59 tarjetas, 59 con su miniatura (59 distintas) · buscar «dron»: Dron de ataque, Dron kamikaze; «camion» (sin tilde): Camión antiaéreo, Camión de misiles · filtros: inf 10, land 11, sea 9, air 6, bld 23, strat 3, all 59 · ficha del Lanzacohetes múltiple: «4800 monedas y 45 de energía» sí, «3 plazas» sí, «18 s» sí, «Fábrica» sí, «Dispara salvas de 6» sí, «Daño en área» sí · celular vertical: sin desplazamiento lateral (390 de 390 px), la ficha va debajo de la lista (true)</td></tr>
+<tr><td>N06</td><td>Modelos nuevos hechos con Blender: «Lanzador DF-17» y «Lanzador nuclear móvil» se cargan, tienen miniaturas distintas entre sí y de las demás, y se ven en el mapa con el color del jugador.</td><td><span class="chip ok">Aprobada</span></td><td>launcher: modelo de Blender sí, color del jugador sí · nukelauncher: modelo de Blender sí, color del jugador sí · drone: modelo de Blender sí, color del jugador sí · fpv: modelo de Blender sí, color del jugador sí · mlrs: modelo de Blender sí, color del jugador sí · missileboat: modelo de Blender sí, color del jugador sí · miniaturas distintas entre sí (true) y de las otras tropas (0 iguales) · en el mapa: 6 de 6 se dibujan</td></tr>
+<tr><td>N07</td><td>Arsenal estratégico apagado (como viene): no existe el Lanzador nuclear móvil y el misil del AIR DEFENSE de nivel 4 funciona igual que en la v1.6.</td><td><span class="chip ok">Aprobada</span></td><td>(Repetida al final con la versión final; ver Decisiones.) partida normal: Arsenal estratégico apagado; la Fábrica no ofrece el Lanzador nuclear móvil (tarjeta: false; si se intenta: «Solo con «Arsenal estratégico» (Personalizado)») · AIR DEFENSE de nivel 4: tocar el blanco lanza el misil sin preguntar (ventana: false), 1 misil, cobra 20.000 monedas, después «Recargando: faltan 180 s»; otro AIR DEFENSE lanza el suyo (sí): 2 misiles, sin límite por partida, como en la v1.6</td></tr>
+<tr><td>N08</td><td>Arsenal estratégico encendido: el lanzador muestra «Preparando», luego 1/1; al elegir zona pide confirmar; al confirmar sale un solo misil y queda 0/1 · Agotado; un doble toque no lanza dos; cancelar no gasta; el AIR DEFENSE de nivel 4 gasta la misma cuota; perder, demoler o volver a fabricar el vehículo no la devuelve; la cuota se conserva al guardar y volver a la partida.</td><td><span class="chip ok">Aprobada</span></td><td>(Repetida al final con la versión final; ver Decisiones.) «Arsenal estratégico: Activado» en Personalizado (true) → partida con la opción (true); la Fábrica ofrece el Lanzador nuclear móvil (motivo «»), tocarlo lo pone en cola y cobra 22.000 (las monedas bajan 21.996: lo demás es el ingreso de esos segundos); otro: «Límite alcanzado (1)» · al salir: «1 / 1», «Preparando: faltan 60 s. Después podrás elegir la zona.», botón apagado (true); a los 60 s: «Disponible. Alcance: 14 casillas. Un Escudo antimisiles lo puede derribar.» · «Elegir zona»: 335 casillas posibles, 0 fuera del alcance de 14 o pegadas a tu Núcleo; al tocar una, pide confirmar (true) y todavía no sale nada (0 misiles, quedan 1) · «Cancelar»: ventana cerrada, sigue 1 / 1 · doble toque en «Confirmar uso único»: 1 misil, quedan 0 · al volver a elegirlo: «0 / 1», «Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.» · el AIR DEFENSE de nivel 4 dice «Uso estratégico agotado (0/1)» y la salva «Con Arsenal estratégico hay un solo uso por partida»; destruido el lanzador, volver a fabricarlo: «Uso estratégico agotado (0/1)» · guardar y volver a la partida: opción true, usos gastados 1, te quedan 0, al rival 1 · al revés (primero el AIR DEFENSE): pide confirmar (true), sale 1 misil y el lanzador ya no se puede fabricar («Uso estratégico agotado (0/1)»)</td></tr>
+<tr><td>N09</td><td>Transporte y producción: la Barcaza (y los demás transportes) listan a cada pasajero con su nombre y las plazas «ocupadas / totales»; la cola de un edificio dice cuántas plazas de comunidad tiene reservadas y «Comunidad al terminar: X / Y».</td><td><span class="chip ok">Aprobada</span></td><td>Transporte blindado con 2 a bordo y 1 en camino: «2 / 6 plazas · 1 en camino»; lista: Artillero · a bordo; Francotirador · a bordo; Cohetero · en camino · Fábrica con Lanzacohetes múltiple y Tanque en cola: «2 en cola · 6 plazas reservadas · Comunidad al terminar: 12 / 100» (esperado «2 en cola · 6 plazas reservadas · Comunidad al terminar: 12 / 100»)</td></tr>
+<tr><td>N10</td><td>Resultado: título, motivo y tres fichas (Duración, Territorios, Experiencia); «Revancha» empieza otra partida con las mismas opciones; los premios se entregan una sola vez aunque se vuelva a abrir la pantalla.</td><td><span class="chip ok">Aprobada</span></td><td>(Repetida al final con la versión final; ver Decisiones.) «Derrota» con Duración 00:31 · Territorio máximo (casillas) 61 · Experiencia +40 (partida 00:31, territorio máximo 61 casillas, XP ganada 40); botones siempre a la vista (true): Seguir mirando, Mirar el mapa, Revancha, Volver al vestíbulo · la XP sube 40 una vez y nada más al volver a armar la pantalla (+0) · «Revancha»: partida nueva en el mismo mapa y modo (bay, conquest), en 0.0 s</td></tr>
+<tr><td>N11</td><td>Ajustes: «Tamaño de la interfaz» (de 90 a 130 %) cambia el tamaño y se guarda; «Reducir destellos y sacudidas» quita el temblor de cámara y los destellos fuertes; con el tamaño al máximo ningún panel se sale de la pantalla.</td><td><span class="chip ok">Aprobada</span></td><td>«Tamaño de la interfaz» a 130 %: paneles ×1.3, dice «130 %», queda guardado (130) · «Reducir destellos: sí»: fogonazos 0 (sin la opción: 1); destello del misil suave (true) · al volver a abrir el juego: 130 % y menos destellos sí · iPad horizontal a 130 % con 4 tropas elegidas: nada se sale de la pantalla · celular vertical: usa 115 % («En esta pantalla se usa 115 % para que todo quepa.»)</td></tr>
+<tr><td>N12</td><td>Sin errores: 30 minutos de toques al azar (iPad y celular) y 30 partidas largas con chequeos, incluidas partidas con Arsenal estratégico.</td><td><span class="chip ok">Aprobada</span></td><td>Toques al azar: iPad horizontal 1180 × 820: 15 min, 582 toques (356 botón, 127 mapa, 50 arrastre, 30 pulsación larga, 19 tiempo), 21 partidas empezadas; errores en la consola: ninguno; congelamientos: 0 (respuestas lentas de más de 15 s: 16 s tras «botón Más fluido», 15 s tras «botón btn-calm», 19 s tras «botón Casa500 +10 de comunid», 15 s tras «botón Torreta1500 Cañón cont», 17 s tras «botón reroll», 16 s tras «botón Barcos»); textos raros: ninguno · celular horizontal 844 × 390: 15 min, 1065 toques (648 botón, 81 arrastre, 58 pulsación larga, 56 tiempo, 222 mapa), 23 partidas empezadas; errores en la consola: ninguno; congelamientos: 0; textos raros: ninguno. Partidas largas: 30 de 20 minutos (10 modos, 7 mapas, 3 dificultades; 15 de ellas Personalizadas con «Arsenal estratégico») con chequeos cada segundo; el piloto fabricó y usó el Lanzador nuclear móvil en 15 de 15 (a los 7 minutos la prueba le da 30.000 monedas y una Fábrica); nadie lanzó más de un misil en esas partidas. Del equipo nuevo, los bots entrenaron: Drones de ataque 0, Drones kamikaze 0, Lanzacohetes múltiples 10, Lanchas misileras 34. Problemas: ninguno.</td></tr>
+<tr><td>N13</td><td>Lo anterior sigue bien: pruebas de las versiones anteriores, campaña, equilibrio (el DF-17 conserva los números del Lanzador de misiles) y 5 tamaños de pantalla.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas anteriores en la v1.7: 114 de 114 bien (v1.6: 5, v1.5: 13, v1.4: 14, v1.3: 14, v1.2: 7, v1.1: 11, v1.0: 12, v0.9: 18, v0.8: 10, v0.7: 10) (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01) · L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.7 (DF-17, las 5 tropas nuevas y lo que produce cada edificio); los números de las 31 tropas y 23 edificios de antes siguen iguales. Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 5 de 5 (3:08, 3:06, 5:07, 3:09, 3:10); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:51, 2:53); M5 ganó 1 de 3 (28:34); M6 piloto atento ganó 4 de 6 (16:42, 16:25, 25:28, 13:06). Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad; en la v1.7 los bots también usan el equipo nuevo): v1.6 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0; v1.7 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0. 5 tamaños: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien. Con letra grande y colores para daltonismo: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien.</td></tr>
+<tr><td>N14</td><td>Rendimiento: cuadros por segundo de la v1.7 contra la v1.6 en la misma partida y peso de faro.html (meta: menos de 3,5 MB).</td><td><span class="chip ok">Aprobada</span></td><td>cuadros por segundo en la misma partida (90 tropas y 9 edificios; Chromium sin tarjeta gráfica; 12 s, 3 veces, mediana) contra tu v1.6.1: Alta calidad: v1.6.1 1.1 (1.1, 1.3, 1.0); v1.7 1.6 (1.1, 1.6, 1.6): 48 % más · Más fluido: v1.6.1 2.8 (2.7, 3.2, 2.8); v1.7 3.1 (3.0, 3.1, 3.1): 9 % más. faro.html pesa 2,72 MB (meta: menos de 3,5 MB)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">06 · Decisiones</div>
+  <h2>Decisiones y ajustes durante la versión</h2>
+  <ul>
+    <li><b>Tus documentos nuevos</b> quedan guardados sin cambios: el PRD Roblox v1.8 y tus 14 pantallas de la UI 0.4 en <code>faro/docs/roblox/</code>, más tu lista «Equipamiento militar». Las fotos de prensa no se guardan en el proyecto; sí tus propuestas 3D.</li>
+    <li><b>Tu versión 1.6.1</b> (luz nueva, mar vivo con reflejos y espuma, áreas táctiles de 44 px) quedó unida a la v1.7 sin perder nada. Tu «calma» del mar con ahorro de batería y mi «Reducir destellos» son opciones distintas y conviven.</li>
+    <li><b>Equipo nuevo, primer lote de tu lista:</b> de tu «Equipamiento militar» tomé lo que encaja como unidad de juego sin sistemas nuevos: drones de ataque y kamikaze, lanzacohetes múltiple y lancha misilera. Sus números son una propuesta para probar. Lo demás (portaaviones con catapultas, minas, láser, robots, guerra electrónica) necesita reglas propias y queda para otros lotes que tú elijas.</li>
+    <li><b>Los bots usan el equipo nuevo</b> en poca cantidad, para que las partidas se sientan vivas. En las 30 partidas largas entrenaron Lanchas misileras y Lanzacohetes múltiples; drones no, porque en 20 minutos casi nunca llegan a usar el Helipuerto. El equilibrio contra el piloto de nivel medio quedó igual que en la v1.6.</li>
+    <li><b>Error real encontrado por las pruebas:</b> en el celular vertical, con la pestaña nueva «Arsenal», la pestaña «Inventario» del vestíbulo quedaba fuera de la pantalla. Ahora, en pantallas angostas, las 4 pestañas van en dos filas y todas se ven.</li>
+    <li><b>Mejora encontrada al probar:</b> en el resultado, «Territorio» al perder siempre decía 0 (ya no te queda nada). Ahora dice el territorio máximo que tuviste en la partida.</li>
+    <li><b>Formato de los números:</b> el juego escribe los números como en España («4800» y «12.345»: los de 4 cifras van sin punto), en todo el juego por igual. Si prefieres «4,800» o «4.800», se cambia en un solo lugar.</li>
+    <li><b>Pruebas que se ajustaron (no el juego):</b> la ficha del Arsenal esperaba «4.800» y el juego escribe «4800»; dos pruebas usaban una función del juego fuera de la página al escribir su resultado. Se corrigieron y se repitieron. La prueba de «Acerca de» de la v1.6 tenía fija la versión «1.6»: ahora lee la versión del juego. La prueba del Lanzador nuclear móvil esperaba que las monedas bajaran 22.000 exactas, pero mientras toca entra el ingreso normal (bajaron 21.995): ahora acepta esa diferencia. La prueba de las gráficas del final (v1.1) pasaba el dedo fuera de la pantalla porque el resultado ahora es más alto: primero se desplaza hasta la gráfica, como haría una persona.</li>
+    <li><b>Pruebas viejas que dependen del azar:</b> I06 (ventaja de altura) falló una vez y pasó 5 de 5 al repetirla, igual que con la v1.6; ya se sabía que falla a veces. I03 (tabla de la Liga) depende de un número al azar de cada perfil nuevo: tras cada partida los bots de la tabla se mueven un poco; se repitió al final. Ninguna de las dos toca código de esta versión.</li>
+    <li><b>L01sim</b> compara las reglas con las de la v1.4. Marca solo los cambios planeados de esta versión (nombre del DF-17, las 5 tropas nuevas y lo que produce cada edificio); revisé la lista completa y ningún número de las 31 tropas y 23 edificios de antes cambió.</li>
+    <li><b>Ayuda de la prueba de partidas largas:</b> para que el Lanzador nuclear móvil llegue a usarse, a los 7 minutos el piloto recibe 30.000 monedas y una Fábrica en las partidas con «Arsenal estratégico».</li>
+    <li><b>Sitio web y Chrome:</b> el sitio de tu juego es una página aparte con capturas reales, el ejército, los mapas, la bitácora y el botón «Jugar»; también está como archivo suelto en <code>faro/site/index.html</code> para alojarlo donde quieras. El juego se abre en Chrome, Safari o Edge sin instalar nada.</li>
+  </ul>
+  <h3>Sigue pendiente de tu decisión</h3>
+  <p>Los números del equipo nuevo y del Lanzador nuclear móvil; qué lote de tu catálogo sigue; si el DF-17 debe ser una unidad aparte. De la v1.3: la tabla de precios, el tamaño del juego, el Tanque ligero y el precio de la Casa. De la v1.4: las estrellas de los bots de la campaña (Misión 5) y la Barcaza de los bots (Misión 6). Y de tu PRD Roblox: cuándo empezar la etapa 1 en Roblox Studio.</p>
+  <h3>Siguiente paso</h3>
+  <p>Abrir la v1.7 en tu iPad: mirar el Arsenal, probar una partida Personalizada con «Arsenal estratégico» y el Lanzador nuclear móvil, y decirme qué cambiar.</p>
+</section>
+
+
+</body>
+</html>

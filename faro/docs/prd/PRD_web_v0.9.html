@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="8 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v0.9</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+#pruebas td { overflow-wrap: anywhere; word-break: break-word; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 0.9</p>
+  <p class="meta">8 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tus 30 mejoras (las mandaste como «v0.7»; la versión actual ya es la 0.8, así que esta es la 0.9)</p>
+  <div class="tiles">
+    <div class="tile"><b>Reglas</b><span>Límites nuevos, población 180, Casas y apartamentos, escudos en 3 colores, mejoras que se notan, construir de un toque.</span></div>
+    <div class="tile"><b>Ejército</b><span>Aeropuerto con caza y bombardero furtivos, portaaviones, más barcos y vehículos, Médico, Torreta nivel 4 y misil nuclear.</span></div>
+    <div class="tile"><b>Se ve mejor</b><span>Portada nueva, soldados realistas, AIR DEFENSE, Núcleo y Apache rehechos, helicópteros que se ven disparar y mejor calidad.</span></div>
+  </div>
+
+  <h3>1. Objetivo</h3>
+  <p>Pulir cada parte del juego (punto 21) y agregar el ejército moderno que falta: aire, mar y fábrica completos, un arma especial muy cara y defensas que se entienden de un vistazo.</p>
+
+  <h3>2. Cómo se leen tus imágenes de referencia</h3>
+  <ul>
+    <li><b>Solo como guía del tipo de unidad:</b> tanque ligero y pesado, camión de misiles, jeep con soldados, submarino, cohetero y médico. Nombres, números y diseño son propios del juego; no se copia otro juego.</li>
+    <li><b>Vehículos reales:</b> el caza, el bombardero, el portaaviones, el lanzador de misiles, la minigun de puerta y la torreta naval sirven de inspiración para los modelos de Blender. En el juego llevan nombres propios (sin marcas reales).</li>
+  </ul>
+
+  <h3>3. Historial</h3>
+  <table>
+    <thead><tr><th style="width:14%">Versión</th><th style="width:18%">Fecha</th><th>Cambios</th></tr></thead>
+    <tbody>
+      <tr><td>0.1-0.6</td><td>6-8 nov 2026</td><td>Juego base, bots, constructores, niveles, vestíbulo, modelos de Blender, ritmo y efectos.</td></tr>
+      <tr><td>0.7</td><td>8 nov 2026</td><td>Campaña de 6 misiones y mejores controles.</td></tr>
+      <tr><td>0.8</td><td>8 nov 2026</td><td>Texturas de Poly Haven, movimiento de CMU, bots más listos, barra de producción y avisos en el borde.</td></tr>
+      <tr><td>0.9</td><td>8 nov 2026</td><td>Tus 30 mejoras: ejército de tierra, mar y aire nuevo, misil nuclear, escudos, comunidad 180, construir de un toque, soldados realistas, portada, radar de AIR DEFENSE y vuelta al suelo de la v0.6.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">04 · Tus 30 puntos</div>
+  <h2>Qué se hace con cada punto</h2>
+  <table>
+    <thead><tr><th style="width:5%">#</th><th style="width:30%">Pediste</th><th>Plan para la v0.9</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Que el constructor tenga que llegar para construir</td><td>Ya funciona así desde la v0.5 (la obra espera). Ahora se ve mejor: línea punteada del constructor a la obra y cartel «Esperando constructor» o «Construyendo» con su avance.</td></tr>
+      <tr><td>2</td><td>Mejor portada y modelos (Blender, Meshy, Tripo, Poly Haven, Pixabay, CMU)</td><td>Portada nueva del vestíbulo: una escena 3D hecha con los modelos del juego (Núcleo, Faro, tanques, soldados, helicópteros y un caza), dibujada una sola vez. Modelos en Blender. <b>Meshy</b>: la clave que guardaste en el formulario seguro respondió «clave no válida», así que no se usó. <b>Tripo</b> y <b>Pixabay</b>: no se usaron (sin clave / no deja descargar desde aquí).</td></tr>
+      <tr><td>3</td><td>6 Helipuertos</td><td>Límite del Helipuerto: 6.</td></tr>
+      <tr><td>4</td><td>Helicópteros sin límite, solo población</td><td>Se quita el límite de 1 Apache. Los helicópteros solo dependen de la población.</td></tr>
+      <tr><td>5</td><td>Las tropas siguen con escudo fuera de la base; escudo en 3 colores</td><td>El escudo de las tropas (Cúpula nivel 3) solo funciona dentro de la Cúpula. Todas las barras de escudo cambian de color: azul (bien), amarillo (a medias) y rojo (débil).</td></tr>
+      <tr><td>6</td><td>Helicópteros vuelven al Helipuerto a curarse</td><td>El Helipuerto y el Aeropuerto reparan aeronaves cercanas. Con menos del 30 % de vida vuelven solos a repararse (tuyas y de los bots).</td></tr>
+      <tr><td>7</td><td>Cada mejora dice qué mejoró y que sean importantes</td><td>Al terminar una mejora sale una tarjeta «Qué mejoró» (vida, daño, alcance, producción, armas nuevas). Mejoras más fuertes: +60 % de vida y producción por nivel y ventajas propias de cada edificio.</td></tr>
+      <tr><td>8</td><td>Más comunidad (población) matando a otros jugadores</td><td>Comunidad extra: +2 por cada 10 tropas enemigas eliminadas y +15 por cada Núcleo enemigo destruido (hasta el máximo de 180). <i>Es mi interpretación: dime si lo querías de otra forma.</i></td></tr>
+      <tr><td>9</td><td>Aeropuerto militar con caza tipo F-22 y bombardero tipo B-2</td><td>Nuevo <b>Aeropuerto militar</b>. <b>Caza furtivo</b>: muy rápido, misiles aire-aire, limpia el cielo. <b>Bombardero furtivo</b> (ala volante): las defensas no lo ven salvo de muy cerca; lanza bombas pesadas a edificios.</td></tr>
+      <tr><td>10</td><td>Portaaviones tipo Gerald R. Ford</td><td>Nuevo <b>Portaaviones</b> en el Puerto: muy resistente, lleva hasta 4 Cazas, los repara, y tiene defensas de corto alcance.</td></tr>
+      <tr><td>11</td><td>Todo lo militar que falta en la Fábrica</td><td>Fábrica: <b>Tanque ligero</b>, <b>Tanque pesado</b>, <b>Camión de misiles</b> (solo edificios, largo alcance), <b>Transporte blindado</b> (lleva 6 soldados) y <b>Lanzador de misiles</b> (tipo de tu foto: largo alcance contra bases). El Jeep lleva 4 soldados. Cuartel: <b>Médico</b> (cura soldados cercanos).</td></tr>
+      <tr><td>12</td><td>Casa solo hasta nivel 2 = apartamento con +20</td><td>Casa: nivel 1 da +10 de comunidad; nivel 2 (Apartamento, máximo) da +20 más (+30 en total).</td></tr>
+      <tr><td>13</td><td>Construir de un solo toque, en todas las casillas que quiera</td><td>Elegido un edificio, cada toque en una casilla válida pone la obra al instante; sigue activo para poner más hasta tocar «Listo».</td></tr>
+      <tr><td>14</td><td>Mejor «Más fluido» y un poco más de «Alta calidad»</td><td><b>Más fluido</b>: materiales más livianos (Lambert) en todos los modelos y el suelo, sin sombras, y las barras de vida se dibujan cada dos cuadros con más de 40 tropas. <b>Alta</b>: llega a 2× en pantallas Retina (antes 1,75×) y un reflejo del cielo algo más fuerte. «Automática» sigue cuidando los cuadros por segundo.</td></tr>
+      <tr><td>15</td><td>20 Torretas</td><td>Límite de la Torreta: 20.</td></tr>
+      <tr><td>16</td><td>AIR DEFENSE más realista y mejor interfaz</td><td>Modelo nuevo (radar, lanzador y contenedores; nivel 4 con el misil en su rampa). Ahora el radar <b>fija el blanco</b> (0,5 s) antes de disparar, <b>prioriza aeronaves</b> y lanza <b>ráfagas de 2 misiles</b>. Ficha de radar con alcance, recarga, daño por ráfaga, detección de furtivos y qué está siguiendo; marcas amarillas/rojas sobre el blanco y aro rojo de alerta si un radar enemigo fija tu aeronave.</td></tr>
+      <tr><td>17</td><td>Soldados más realistas</td><td>Soldados rehechos en Blender: cabeza más chica con cuello, uniforme, chaleco táctico del color de tu imperio con bolsillos, cinturón, mochila, rodilleras y brazos que sostienen el arma con las dos manos. Nuevo Médico con casco blanco y cruz roja.</td></tr>
+      <tr><td>18</td><td>Cada edificio con su escudo</td><td>Cada edificio tiene un escudo propio (20 % de su vida) que se recarga si no lo atacan por 8 s, con la barra de 3 colores. <i>Interpretación: dime si querías una Cúpula visible en cada uno.</i></td></tr>
+      <tr><td>19</td><td>Más cosas militares en el Puerto</td><td><b>Fragata antiaérea</b>, <b>Lancha de desembarco</b> (lleva vehículos y soldados) y el <b>Portaaviones</b>.</td></tr>
+      <tr><td>20</td><td>PRD y PDF para cada programación</td><td>Este PRD y su PDF; al final, el PDF con los resultados.</td></tr>
+      <tr><td>21</td><td>Pulir cada parte</td><td>Revisión de cada panel y modelo nuevo en 5 tamaños de pantalla, y todas las pruebas anteriores.</td></tr>
+      <tr><td>22</td><td>Seguir mejorando el Núcleo</td><td>Núcleo con banderas de tu imperio en las torres y portón. Panel con casillas de estado (monedas, comunidad, láser, escudo de emergencia y Cúpula) y, en todos los edificios, el recuadro «Al mejorar» con lo que vas a ganar antes de pagar.</td></tr>
+      <tr><td>23</td><td>Torreta nivel 4 que ayude al AIR DEFENSE</td><td>Torreta hasta nivel 4; en nivel 4 dispara también a aeronaves.</td></tr>
+      <tr><td>24</td><td>Torreta con 3 miniguns, más daño y antiaéreo</td><td>Nivel 2: 1 minigun · nivel 3: 2 · nivel 4: 3 miniguns, más daño y tiro antiaéreo.</td></tr>
+      <tr><td>25</td><td>AIR DEFENSE nivel 4 con misil nuclear, solo 3, recarga de 3 min, defensa antinuclear, muy caro</td><td>De tus 6 AIR DEFENSE, solo 3 pueden subir a nivel 4. En nivel 4 lanzan un <b>misil nuclear</b> de largo alcance: cada lanzamiento cuesta 20.000 monedas, recarga de 3 min y daña todo en 3 casillas. Nuevo edificio <b>Escudo antimisiles</b> (muy caro) que lo derriba si cae cerca. Al rival se le avisa con cuenta regresiva.</td></tr>
+      <tr><td>26</td><td>La tierra fértil, más grande</td><td>Tierra fértil en manchas más grandes: al menos 8 casillas fértiles a 4 casillas de cada Núcleo (antes unas 4). La Granja ya ocupaba casi toda la casilla y no se cambió.</td></tr>
+      <tr><td>27</td><td>Población hasta 180</td><td>Comunidad máxima: 180.</td></tr>
+      <tr><td>28</td><td>Las tropas atacan todo edificio y Núcleo</td><td>Todas las tropas armadas pueden dañar edificios y Núcleos (las antiaéreas con poco daño).</td></tr>
+      <tr><td>29</td><td>Ver cuándo los helicópteros disparan o lanzan misiles</td><td>Icono sobre el helicóptero mientras dispara (mira) o lanza misiles/cohetes, además de las balas, cohetes con estela y fogonazos.</td></tr>
+      <tr><td>30</td><td>Apache mejor; el Helicóptero con lo del Apache; Apache a 10.000</td><td>Helicóptero: las armas del Apache anterior y su precio (7.500). Apache (10.000): más daño, misiles guiados contra tanques y bengalas que esquivan un misil antiaéreo cada 20 s. Modelo rehecho.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">05 · Unidades y edificios nuevos</div>
+  <h2>Resumen del ejército nuevo</h2>
+  <table>
+    <thead><tr><th style="width:24%">Dónde</th><th>Qué hay</th></tr></thead>
+    <tbody>
+      <tr><td>Aeropuerto militar (nuevo)</td><td>Caza furtivo (aire-aire) y Bombardero furtivo (bombas pesadas a edificios). Repara aviones cercanos.</td></tr>
+      <tr><td>Puerto</td><td>+ Fragata antiaérea, Lancha de desembarco y Portaaviones (lleva 4 Cazas).</td></tr>
+      <tr><td>Fábrica</td><td>+ Tanque ligero, Tanque pesado, Camión de misiles, Transporte blindado y Lanzador de misiles. El Jeep lleva 4 soldados.</td></tr>
+      <tr><td>Cuartel</td><td>+ Médico.</td></tr>
+      <tr><td>Helipuerto</td><td>Helicóptero (armas del Apache anterior) y Apache (mejorado). Repara helicópteros. Hasta 6.</td></tr>
+      <tr><td>Defensa</td><td>Torreta hasta nivel 4 (3 miniguns y antiaéreo), hasta 20. AIR DEFENSE nueva con nivel 4 nuclear (solo 3). Escudo antimisiles (nuevo).</td></tr>
+    </tbody>
+  </table>
+  <p>Los bots también usan lo nuevo (ver F18): vehículos y barcos nuevos, Médico, helicópteros, Aeropuerto con Cazas y Bombarderos, Torreta y AIR DEFENSE de nivel 4, y el misil nuclear muy tarde en la partida. Con más de 15.000 monedas guardadas invierten en aire y defensa antiaérea; para cruzar el mar usan la Lancha de desembarco pasados 10 minutos.</p>
+</section>
+
+<section>
+  <div class="eyebrow">08 · Pruebas</div>
+  <h2>Pruebas de aceptación</h2>
+  <p>Chromium con tamaño de iPad y toques simulados, partidas simuladas y todas las pruebas anteriores.</p>
+  <table>
+    <thead><tr><th style="width:7%">ID</th><th style="width:42%">Qué se comprueba</th><th style="width:12%">Estado</th><th>Evidencia</th></tr></thead>
+    <tbody id="pruebas">
+<tr><td>F01</td><td>Las obras esperan al constructor y se ve la línea y el cartel de espera o avance.</td><td><span class="chip ok">Aprobada</span></td><td>obras de Granja: 2; con constructor: progreso 0.42,0.00 (1 constructores asignados, junto a la obra: true); sin constructor la obra queda en 0 % (no avanza: true); carteles: Construyendo · 43 % · Esperando constructor · 0 % · Sin constructor</td></tr>
+<tr><td>F02</td><td>Límites nuevos: 6 Helipuertos, 20 Torretas, helicópteros sin límite propio, comunidad hasta 180.</td><td><span class="chip ok">Aprobada</span></td><td>Helipuertos: 6 puestos, el 7.º dice «Límite alcanzado (6)»; Torretas límite 20; Helicóptero límite ninguno, Apache límite ninguno; 12 de 12 en cola (Helicóptero y Apache, 7 Apaches) ; con 6 Casas la comunidad queda en 180 (máximo 180)</td></tr>
+<tr><td>F03</td><td>Casa +10 y Apartamento (nivel 2, máximo) +20 más; comunidad extra por eliminar tropas y Núcleos.</td><td><span class="chip ok">Aprobada</span></td><td>Casa 10 → Apartamento 30 (nivel máximo 2); tarjeta: «Ahora es Apartamento · Vida 400 → 640 · Escudo 80 → 128 · Comunidad +20»; comunidad 50 → 54 con 20 bajas → 69 al destruir un Núcleo</td></tr>
+<tr><td>F04</td><td>El escudo de las tropas solo dentro de la Cúpula; cada edificio con su escudo; barras en azul, amarillo y rojo.</td><td><span class="chip ok">Aprobada</span></td><td>escudos: Casa:80, Granja:70, Cuartel:180, Torreta:220, AIR DEFENSE:200, Muro:300, Helipuerto:200; todos los edificios con escudo: true; 100 de daño al Cuartel van al escudo (180 → 80) y la vida sigue en 900; al romperse el escudo baja la vida (800). Cúpula nivel 3 (4 casillas): Fusilero dentro con escudo sí=true, fuera sin escudo=true, al salir lo pierde=true. Barras: azul #4aa8ff (más de 66 %), amarillo #f2c94c (33-66 %), rojo #ef5350 (menos de 33 %); barra amarilla dibujada sobre un edificio al 50 %: true</td></tr>
+<tr><td>F05</td><td>Helipuerto y Aeropuerto reparan aeronaves; con poca vida vuelven solas.</td><td><span class="chip ok">Aprobada</span></td><td>Helicóptero al 25 % a 15.4 de distancia: llegó al Helipuerto a los 3 s y quedó reparado (95 %) a los 19 s; Caza al 20 %: con el Aeropuerto llega al 100 %</td></tr>
+<tr><td>F06</td><td>Cada mejora muestra la tarjeta «Qué mejoró» y sus efectos se cumplen.</td><td><span class="chip ok">Aprobada</span></td><td>Granja: «Vida 350 → 560 · Escudo 70 → 112 · Monedas 240 → 384 por min»; Cuartel: «Vida 900 → 1440 · Escudo 180 → 288 · Entrena 40 % más rápido»; Torreta: «Vida 1100 → 1760 · Escudo 220 → 352 · Daño 40 → 64 · 1 minigun»; Enfermería: «Vida 700 → 1120 · Escudo 140 → 224 · Cura 5 % por segundo»; AIR DEFENSE: «Vida 1000 → 1600 · Escudo 200 → 320 · Daño 90 → 144 · Alcance 6 → 7». En pantalla: «⬆ Núcleo · nivel 2: qué mejoró · Vida 6000 → 8000 · Escudo 1200 → 1600 · Monedas 900 → 1200 por min · Comunidad +5 · Entrena 40 % más rápido · Daño 45 → 70 · Alcance 4 → 5»</td></tr>
+<tr><td>F07</td><td>Construir de un toque, varias obras seguidas, hasta «Listo».</td><td><span class="chip ok">Aprobada</span></td><td>Granjas 1 → 3 con 2 toques (sin confirmar cada una); sigue en modo construir: true; barra: «Granja · 300 · Toca casillas doradas: se construye al instante · 2 puestas»; «Listo» termina: true</td></tr>
+<tr><td>F08</td><td>Aeropuerto, Caza y Bombardero furtivos funcionan (el bombardero solo se ve de cerca).</td><td><span class="chip ok">Aprobada</span></td><td>Aeropuerto entrena Caza (listo) y Bombardero (listo); AIR DEFENSE enemiga: a 5 casillas lo puede atacar=false, a 2 casillas=true</td></tr>
+<tr><td>F09</td><td>Portaaviones lleva y repara Cazas; Fragata y Lancha de desembarco funcionan.</td><td><span class="chip ok">Aprobada</span></td><td>Portaaviones: 4 Cazas adentro (el 5.º no entra), el Caza herido se repara dentro (700 → 880), al lanzar quedan 5 en el aire; Lancha de desembarco: 10 soldados (capacidad 10); Fragata ataca aeronaves=true</td></tr>
+<tr><td>F10</td><td>Fábrica y Cuartel con sus unidades nuevas; Jeep y Transporte llevan soldados; el Médico cura.</td><td><span class="chip ok">Aprobada</span></td><td>Fábrica entrenó lighttank, heavytank, missiletruck, apc, launcher (5 de 5); Cuartel: Médico en cola; Jeep llevó 4 (máx. 4), Transporte 6 (máx. 6), tanque al Transporte=false; el Médico curó a un Fusilero del 30 % al 60 % en 5 s</td></tr>
+<tr><td>F11</td><td>Torreta nivel 4 con 3 miniguns y tiro antiaéreo.</td><td><span class="chip ok">Aprobada</span></td><td>nivel 4: cañón con daño a aeronaves ×1.8 (nivel 3: ×0.8), daño 112 (nivel 3: 88); disparos en 6 s por arma {&quot;0&quot;:6,&quot;1&quot;:31,&quot;2&quot;:31,&quot;3&quot;:31} (3 miniguns: true); el helicóptero recibió 3712 de daño</td></tr>
+<tr><td>F12</td><td>Misil nuclear: solo 3 AIR DEFENSE de nivel 4, costo, recarga de 3 min, aviso, daño en área y Escudo antimisiles que lo derriba.</td><td><span class="chip ok">Aprobada</span></td><td>4.º a nivel 4: «Solo 3 AIR DEFENSE pueden llegar a nivel 4»; cuesta 20000 (precio 20000); después: «Recargando: faltan 180 s» (recarga 180 s); aviso: «Misil nuclear lanzado: llega en 9 s»; el Escudo antimisiles derribó 1 (Núcleo enemigo intacto: true); el segundo cayó: Núcleo −2083, tanque al lado destruido=true; sin dinero: «Monedas insuficientes (20.000)»</td></tr>
+<tr><td>F13</td><td>Todas las tropas armadas dañan edificios y Núcleos.</td><td><span class="chip ok">Aprobada</span></td><td>25 tropas armadas, sin daño a edificios: ninguna; atacan al Núcleo enemigo: Artillero:sí, Francotirador:sí, Jeep:sí, Tanque ligero:sí, Camión antiaéreo:sí</td></tr>
+<tr><td>F14</td><td>Helicópteros: se ve cuándo disparan y lanzan misiles; Helicóptero y Apache con sus armas y precios nuevos.</td><td><span class="chip ok">Aprobada</span></td><td>Helicóptero 7500 (vida 2400, cohetes 75 + ametralladora de puerta), Apache 10000 (vida 3200, cohetes 100, cañón, misiles 320, 20 bengalas); disparos vistos: bullet, heli:bullet, missile. En pantalla: en 120 cuadros, 119 con el icono de disparo o misil sobre el Apache o el Helicóptero (últimos: rocket,bullet)</td></tr>
+<tr><td>F15</td><td>Modelos nuevos o rehechos cargan sin errores (soldados, AIR DEFENSE, Núcleo, Apache, aviones, barcos, vehículos).</td><td><span class="chip ok">Aprobada</span></td><td>75 modelos de Blender cargados; faltan: ninguno; vértices: medic:2928 medic@toxico:3660 lighttank:2700 heavytank:4680 missiletruck:3456 apc:2820 launcher:6756 frigate:1812 lander:1476 carrier:2064 fighter:1272 bomber:588 airport:1200 antinuke:2340 aadef:1992 aadef_4:2832 turret_4:4428 house_2:2736 core_1:4956 core_3:5256 heli:5472 apache:6000 rifle:2676; errores de consola: ninguno</td></tr>
+<tr><td>F16</td><td>Portada nueva y calidad: Más fluido mejor que antes y Alta un poco más detallada.</td><td><span class="chip ok">Aprobada</span></td><td>portada: escena 3D de 82 KB, 168 px de alto, «VERSIÓN 0.9 / Faro de Ámbar», versión v0.9; Alta: 1× (antes hasta 1,75×), sombras, luz del cielo, materiales {&quot;MeshStandardMaterial&quot;:44,&quot;MeshBasicMaterial&quot;:20}; Más fluido: 1×, sin sombras ni luz del cielo, materiales livianos {&quot;MeshStandardMaterial&quot;:15,&quot;MeshBasicMaterial&quot;:20,&quot;MeshLambertMaterial&quot;:29} (Lambert 29 vs 0). Los cuadros por segundo reales se miden en tu iPad. En una pantalla Retina (2×): Alta dibuja a 2× (antes 1,75×) y Más fluido a 1×.</td></tr>
+<tr><td>F17</td><td>Tierra fértil en zonas más grandes.</td><td><span class="chip ok">Aprobada</span></td><td>continent: 12, 9, 8, 11 · archipelago: 10, 11, 8, 10 · open: 11, 8, 8, 11 · Granjas por imperio: 14</td></tr>
+<tr><td>F18</td><td>Los bots usan las unidades nuevas; la campaña sigue siendo posible.</td><td><span class="chip ok">Aprobada</span></td><td>Bots en Difícil, 6 partidas de 30 min (3 mapas × 2 semillas), lo nuevo que hicieron: Tanque ligero 14, Tanque pesado 3, Lanzacohetes 4, Médico 7, Apartamento 26, Fragata 8, Helipuerto 3, Torreta nivel 4 12, Caza 4, Aeropuerto 2, Helicóptero 3, AIR DEFENSE nivel 4 2, Transporte blindado 2; misiles nucleares lanzados: 6. Bot con dinero y todos los edificios (3 semillas): Tanque pesado 10, Lancha de desembarco 3, Caza 16, Apache 14, Bombardero 36, Portaaviones 3, Fragata 4, Helicóptero 14, Transporte blindado 4, Camión de misiles 4, Médico 1, Tanque ligero 7, Lanzacohetes 3. Unidades nuevas que no usaron en estas pruebas: ninguna. Campaña con las reglas y bots nuevos: M1 piloto bot ganó 3 de 3 (5:44, 3:39, 5:15); M2 piloto bot ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 4 de 5 (3:20, 3:44, 5:15, 3:07); M4 órdenes de jugador ganó 3 de 3 (2:51, 2:53, 2:51); M5 piloto bot ganó 3 de 3 (12:21, 17:27, 14:01); M6 piloto bot atento ganó 6 de 6 (13:06, 18:34, 25:59, 16:01, 15:45, 25:48).</td></tr>
+<tr><td>F19</td><td>Las pruebas anteriores siguen pasando y nada queda tapado en 5 tamaños de pantalla.</td><td><span class="chip ok">Aprobada</span></td><td>Pruebas de la v0.7 y v0.8 en la v0.9: 20 de 20 bien (D01, D02, D03, D05, D06, D07, D08, D09, D10, D11, E02, E03, E04, E05, E12, E06, E07, E08, E09, E10); D04 (campaña) se repitió en F18; D13 y E13 (tamaños) se rehicieron con las pantallas nuevas (abajo); E01 (texturas) se retiró porque volvió el suelo de la v0.6; no se repitieron D12 (pruebas de la v0.6, ya cubiertas en la v0.7 y v0.8) ni E11 (duelos contra el bot de la v0.7, que en la v0.8 quedó en 57 %). 5 tamaños (iPad horizontal y vertical, 16:9, celular horizontal y vertical) con portada, panel del Núcleo, AIR DEFENSE nivel 4 con radar y misil, Casa, Transporte con soldados y construir de un toque: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien</td></tr>
+<tr><td>F20</td><td>Suelo de la v0.6 (pedido durante la versión): colores lisos por terreno, sin texturas.</td><td><span class="chip ok">Aprobada</span></td><td>una sola malla de 1387 casillas (MeshStandardMaterial), con textura=false, texturas en el juego=false</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="eyebrow">09 · Decisiones</div>
+  <h2>Decisiones y ajustes durante la versión</h2>
+  <ul>
+    <li><b>Suelo:</b> me pediste volver al suelo de la v0.6 porque no te gustaron las «manchas» de las texturas. Se borraron las texturas de Poly Haven y su código; el suelo vuelve a tener un color liso por terreno (F20). El juego bajó de 2,9 MB a 2,3 MB.</li>
+    <li><b>Apache:</b> no tiene límite (solo la comunidad), y los bots ahora pueden tener tantos Apaches como Helicópteros cuando tienen dinero.</li>
+    <li><b>Nombres:</b> los vehículos reales inspiran los modelos, pero en el juego llevan nombres propios (Caza furtivo, Bombardero furtivo, Portaaviones, Lanzacohetes) para no usar marcas.</li>
+    <li><b>Misil nuclear:</b> arma de juego muy cara (20.000) y lenta de recargar (3 min), con aviso al rival y defensa posible (Escudo antimisiles); la explosión es un efecto de luz y humo.</li>
+    <li><b>Meshy:</b> la clave guardada respondió «clave no válida» (las claves de Meshy empiezan con «msy_»). Si quieres usarlo, vuelve a guardarla por el formulario seguro; mientras tanto, todo se hizo en Blender.</li>
+    <li><b>Campaña:</b> con bots más fuertes y aviones, la misión 6 tarda más: la estrella de tiempo pasa de 18 a 25 minutos, y el consejo avisa que tengas AIR DEFENSE. En la misión 5 la muralla del rival sigue con 5 tramos, como en la v0.7 (con más tierra fértil, ahora también puede ir sobre ella).</li>
+    <li><b>Tierra fértil:</b> si el agua tapaba una mancha, el mapa completa las casillas fértiles al lado, para que siempre haya al menos 8 cerca de cada Núcleo.</li>
+    <li><b>Tamaño:</b> 2.29 MB con 75 modelos (meta: menos de 3,5 MB).</li>
+    <li><b>Puntos 8, 18 y 26:</b> se programaron como decía la tabla (comunidad por bajas hasta 180, escudo propio en cada edificio, manchas fértiles más grandes); si los querías distinto, se cambia.</li>
+  </ul>
+  <h3>Siguiente paso</h3>
+  <p>Jugar la v0.9 en tu iPad: mirar si el suelo quedó como te gustaba, si el ejército nuevo y el misil nuclear se sienten bien, y cuántos cuadros por segundo da en «Más fluido» y en «Alta». Con eso decidimos la próxima versión.</p>
+</section>
+
+</body>
+</html>

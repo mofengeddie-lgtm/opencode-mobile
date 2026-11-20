@@ -1,0 +1,44 @@
+[
+ {
+  "id": "J01",
+  "name": "«Avanzar atacando» con un barco enemigo inalcanzable cerca",
+  "ok": true,
+  "ev": "Artillero con «Avanzar atacando» y una Barcaza enemiga en el agua a 5 casillas: semilla 3: llegó a los 3 s, 3 cambios de estado, 0.1 búsquedas de camino por segundo; semilla 5: llegó a los 4 s, 3 cambios de estado, 0.1 búsquedas de camino por segundo; semilla 8: llegó a los 3 s, 3 cambios de estado, 0.1 búsquedas de camino por segundo"
+ },
+ {
+  "id": "J03",
+  "name": "El misil no daña lo tuyo ni a aliados; la Cúpula absorbe su daño",
+  "ok": true,
+  "ev": "misil propio en medio de: tu Tanque 2200 → 2200, tu Solar 300 → 300, Tanque aliado 2200 → 2200, Tanque enemigo 2200 → destruido, Solar enemiga 300 → destruido (eliminaciones contadas: 2); misil enemigo junto a tu Núcleo con Cúpula de 3000: la Cúpula queda en 0 y el Núcleo (vida + escudo) pasa de 12000 a 8717"
+ },
+ {
+  "id": "J04",
+  "name": "Ninguna tropa de tierra queda en una casilla de agua",
+  "ok": true,
+  "ev": "6 partidas de 10 min (6 mapas): 152385 muestras de tropas de tierra; en una casilla de agua: 0; con el centro de la tropa un instante sobre el borde del agua al doblar la costa: 128"
+ },
+ {
+  "id": "J05",
+  "name": "«Construye 12 edificios» cuenta obras terminadas; demoler devuelve la mejora en curso",
+  "ok": true,
+  "ev": "colocar una Solar: edificios 0 → 0; cancelarla (vuelven 150 monedas): 0; cuando una Solar se termina: 1. Cuartel terminado con mejora en curso (pagada: 500): al demolerlo vuelven 900 (40 % del Cuartel 400 + la mejora 500)"
+ },
+ {
+  "id": "J06sim",
+  "name": "Primer objetivo y texto del Cuartel",
+  "ok": true,
+  "ev": "«Entrena un Constructor más en el Núcleo»: al segundo 3 no está cumplido; al entrenar uno se cumple. Cuartel: «Entrena los 21 soldados: del Constructor al Paracaidista.» (entrena 21)"
+ },
+ {
+  "id": "J07ai",
+  "name": "Bots repartidos: nunca piensan dos en el mismo paso",
+  "ok": true,
+  "ev": "ffa/archipelago (3 bots): mediana 0.21 ms, 1 % más lento 5.8 ms, máximo 133.4 ms; league/continent (5 bots): mediana 0.59 ms, 1 % más lento 9.1 ms, máximo 77.7 ms; big/reef (5 bots): mediana 0.31 ms, 1 % más lento 4.6 ms, máximo 81.5 ms; pasos con más de un bot pensando: 0"
+ },
+ {
+  "id": "J12",
+  "name": "Muro a 30 y modo con nombre propio",
+  "ok": true,
+  "ev": "Muro: 30 monedas; modo rápido: «Choque exprés»"
+ }
+]

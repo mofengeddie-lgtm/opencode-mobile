@@ -1,0 +1,80 @@
+[
+ {
+  "id": "F02",
+  "name": "Límites nuevos: 6 Helipuertos, 20 Torretas, helicópteros sin límite propio, comunidad hasta 180",
+  "ok": true,
+  "ev": "Helipuertos: 6 puestos, el 7.º dice «Límite alcanzado (6)»; Torretas límite 20; Helicóptero límite ninguno, Apache límite ninguno; 12 de 12 en cola (Helicóptero y Apache, 7 Apaches) ; con 8 Casas la comunidad queda en 240 (máximo 240)"
+ },
+ {
+  "id": "F03",
+  "name": "Casa +10 y Apartamento (nivel 2, máximo) +20 más; comunidad extra por eliminar tropas y Núcleos",
+  "ok": true,
+  "ev": "Casa 10 → Apartamento 30 (nivel máximo 2); tarjeta: «Ahora es Apartamento · Vida 400 → 640 · Escudo 80 → 128 · Comunidad +20»; comunidad 50 → 54 con 20 bajas → 69 al destruir un Núcleo"
+ },
+ {
+  "id": "F04",
+  "name": "El escudo de las tropas solo dentro de la Cúpula; cada edificio con su escudo",
+  "ok": true,
+  "ev": "escudos: Casa:80, Granja:70, Cuartel:180, Torreta:220, AIR DEFENSE:200, Muro:300, Helipuerto:200; todos los edificios con escudo: true; 100 de daño al Cuartel van al escudo (180 → 80) y la vida sigue en 900; al romperse el escudo baja la vida (800). Cúpula nivel 3 (4 casillas): Fusilero dentro con escudo sí=true, fuera sin escudo=true, al salir lo pierde=true"
+ },
+ {
+  "id": "F05",
+  "name": "Helipuerto y Aeropuerto reparan aeronaves; con poca vida vuelven solas",
+  "ok": true,
+  "ev": "Helicóptero al 25 % a 15.7 de distancia: llegó al Helipuerto a los 4 s y quedó reparado (95 %) a los 19 s; Caza al 20 %: con el Aeropuerto llega al 100 %"
+ },
+ {
+  "id": "F06",
+  "name": "Cada mejora muestra la tarjeta «Qué mejoró» y sus efectos se cumplen",
+  "ok": true,
+  "ev": "Granja: «Vida 350 → 560 · Escudo 70 → 112 · Monedas 240 → 384 por min»; Cuartel: «Vida 900 → 1440 · Escudo 180 → 288 · Entrena 40 % más rápido»; Torreta: «Vida 1100 → 1760 · Escudo 220 → 352 · Daño 40 → 64 · 1 minigun»; Hospital de campaña: «Vida 700 → 1120 · Escudo 140 → 224 · Cura 5 % por segundo»; AIR DEFENSE: «Vida 1000 → 1600 · Escudo 200 → 320 · Daño 90 → 144 · Alcance 6 → 7»"
+ },
+ {
+  "id": "F08",
+  "name": "Aeropuerto, Caza y Bombardero furtivos funcionan (el bombardero solo se ve de cerca)",
+  "ok": true,
+  "ev": "Aeropuerto entrena Caza (listo) y Bombardero (listo); AIR DEFENSE enemiga: a 5 casillas lo puede atacar=false, a 2 casillas=true"
+ },
+ {
+  "id": "F09",
+  "name": "Portaaviones lleva y repara Cazas; Fragata y Lancha de desembarco funcionan",
+  "ok": true,
+  "ev": "Portaaviones: 4 Cazas adentro (el 5.º no entra), el Caza herido se repara dentro (700 → 880), al lanzar quedan 5 en el aire; Lancha de desembarco: 10 soldados (capacidad 10); Fragata ataca aeronaves=true"
+ },
+ {
+  "id": "F10",
+  "name": "Fábrica y Cuartel con sus unidades nuevas; Jeep y Transporte llevan soldados; el Médico cura",
+  "ok": true,
+  "ev": "Fábrica entrenó lighttank, heavytank, missiletruck, apc, launcher (5 de 5); Cuartel: Médico en cola; Jeep llevó 4 (máx. 4), Transporte 6 (máx. 6), tanque al Transporte=false; el Médico curó a un Fusilero del 30 % al 60 % en 5 s"
+ },
+ {
+  "id": "F11",
+  "name": "Torreta nivel 4 con 3 miniguns y tiro antiaéreo",
+  "ok": true,
+  "ev": "nivel 4: cañón con daño a aeronaves ×1.8 (nivel 3: ×0.8), daño 112 (nivel 3: 88); disparos en 6 s por arma {\"0\":7,\"1\":31,\"2\":31,\"3\":31} (3 miniguns: true); el helicóptero recibió 3913 de daño"
+ },
+ {
+  "id": "F12",
+  "name": "Misil nuclear: solo 3 AIR DEFENSE de nivel 4, costo, recarga de 3 min, aviso, daño en área y Escudo antimisiles que lo derriba",
+  "ok": true,
+  "ev": "4.º a nivel 4: «Solo 3 AIR DEFENSE pueden llegar a nivel 4»; cuesta 20000 (precio 20000); después: «Recargando: faltan 180 s» (recarga 180 s); aviso: «Misil nuclear lanzado: llega en 9 s»; el Escudo antimisiles derribó 1 (Núcleo enemigo intacto: true); el segundo cayó: Núcleo −2098, tanque al lado destruido=true; sin dinero: «Monedas insuficientes (20.000)»"
+ },
+ {
+  "id": "F13",
+  "name": "Todas las tropas armadas dañan edificios y Núcleos",
+  "ok": true,
+  "ev": "61 tropas armadas, sin daño a edificios: ninguna; atacan al Núcleo enemigo: Artillero:sí, Francotirador:sí, Jeep:sí, Tanque ligero:sí, Camión antiaéreo:sí"
+ },
+ {
+  "id": "F14",
+  "name": "Helicóptero y Apache con sus armas y precios nuevos; se sabe cuándo disparan y lanzan misiles",
+  "ok": true,
+  "ev": "Helicóptero 7500 (vida 2400, cohetes 75 + ametralladora de puerta), Apache 10000 (vida 3200, cohetes 100, cañón, misiles 320, 20 bengalas); disparos vistos: bullet, heli:bullet, heli:rocket, missile"
+ },
+ {
+  "id": "F17",
+  "name": "Tierra fértil en zonas más grandes (casillas fértiles a 4 casillas de cada Núcleo; antes 3 a 5)",
+  "ok": true,
+  "ev": "continent: 12, 9, 8, 11 · archipelago: 10, 11, 8, 10 · open: 11, 8, 8, 11 · Granjas por imperio: 14"
+ }
+]

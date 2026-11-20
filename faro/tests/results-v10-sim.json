@@ -1,0 +1,38 @@
+[
+ {
+  "id": "G02",
+  "name": "Comunidad máxima 240, 8 Casas y se puede llegar a 240",
+  "ok": true,
+  "ev": "máximo 240; Casas puestas 8 (la 9.ª: «Límite alcanzado (8)»); con 8 Apartamentos y el Núcleo en nivel 3 la comunidad llega a 240"
+ },
+ {
+  "id": "G03",
+  "name": "El misil nuclear deja 1 minuto de radiación: quema a los enemigos de dentro y se apaga a los 60 s",
+  "ok": true,
+  "ev": "zona creada al caer (1), dura 60 s; en 5 s un tanque enemigo perdió 440 de vida (20 %) y el tuyo 0; un Cuartel enemigo dentro perdió 23 (escudo y vida) en otros 5 s; a 1 s del final sigue activa (true) y después se apaga (true); efectos de fuego y humo: 119"
+ },
+ {
+  "id": "G04",
+  "name": "«Mejorar todo» y «Mejoras automáticas» solo con el Núcleo en nivel 3; respetan el dinero y llegan al máximo",
+  "ok": true,
+  "ev": "con el Núcleo en nivel 1: «Necesita el Núcleo en nivel 3»; con 2.500 monedas: 6 mejora(s) (quedan otras esperando dinero); con dinero: 2 más a la vez (8 en obra); automáticas con 3 Constructores: 8 mejoras en 10 min, como mucho 3 a la vez, nunca por debajo de 51411 monedas (reserva 1500); al final quedan 0 por mejorar y 7 de 7 edificios al máximo"
+ },
+ {
+  "id": "G05t",
+  "name": "Tácticas nuevas de Difícil",
+  "ok": true,
+  "ev": "con un Constructor y un Artillero a tiro, Difícil dispara a: Constructor (Normal: Artillero); 40 s después de ver un helicóptero enemigo tiene 3 AIR DEFENSE (Normal: 0); a los 15:50 min con 3 AIR DEFENSE nivel 4 lanza la salva de 3; ingresos ×1.7 (antes ×1,3), piensa cada 0.8 s (antes 1,1), primera oleada a los 80 s (antes 95)"
+ },
+ {
+  "id": "G07",
+  "name": "La obra solo avanza con el constructor quieto y pegado a ella; mientras camina, no avanza",
+  "ok": true,
+  "ev": "Constructor a 5 casillas: empezó a construir a los 3.1 s, siempre a 1.19 o menos del centro de la obra (límite 1.2); cuadros con avance caminando: 0, moviéndose: 0; obra terminada: true"
+ },
+ {
+  "id": "G08",
+  "name": "«Lanzar los 3» con 3 AIR DEFENSE nivel 4 listos; lanza los tres y un Escudo antimisiles solo derriba uno",
+  "ok": true,
+  "ev": "con 2 listos: «Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes 2)»; con 3: salen 3 a la vez y cuestan 60000; después: «Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes 0)»; el Escudo antimisiles derribó 1 de 3; sin dinero: «Monedas insuficientes (60.000)»"
+ }
+]

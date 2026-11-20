@@ -1,0 +1,17 @@
+[
+ {
+  "id": "O15",
+  "ok": true,
+  "ev": "modo en la lista: sí · bots 0 · monedas 500003 · población 240 · Arsenal estratégico sí · productores hechos: barracks, factory, helipad, airport, dronecenter, harbor, shipyard · Fábrica: 29 tropas · «Blindaje» tocado: armor · pestañas: Economía, Energía, Producción, Defensa, Apoyo · puerta cerrada desde su panel: sí · XP 0 → 0 (Campo de pruebas: sin XP, cristales ni misiones)"
+ },
+ {
+  "id": "O16",
+  "ok": true,
+  "ev": "secciones con controles: interfaz 3, sonido 5, camara 6, accesibilidad 3, controles 21 · «Reducir destellos» y 120 %: sí · después de recargar: true / 120 · «Restablecer»: destellos false, 100 %, calidad auto · los controles vuelven a la pausa: sí · Misiones: 6 misiones en la pestaña"
+ },
+ {
+  "id": "errores",
+  "ok": true,
+  "ev": "sin errores de página"
+ }
+]
