@@ -92,9 +92,6 @@ REPLACED = {'H03web': 'J09', 'I08': 'J10', 'I09': 'L01', 'I09sim': 'L01'}
 PLANNED = {
     'L01sim': 'L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.8: los 6 nombres de tu documento y las tropas y edificios nuevos',
     'N05': 'N05 (Arsenal) espera los conteos de la v1.7 (93 tropas y 41 edificios): ahora hay 134 tarjetas y filtros nuevos (drones con las aeronaves, estratégicos)',
-    # N14 mide contra la v1.6.1 con la meta de peso de la v1.7 (3,5 MB). El plan de la v1.8 la cambió por O19
-    # (6 MB o menos y no más de 15 % peor que la v1.7). Se dice su número real.
-    'N14': 'N14 (rendimiento de la v1.7) usa la meta vieja de 3,5 MB y compara contra la v1.6.1: el plan de la v1.8 la cambió por O19 (6 MB o menos y comparación con la v1.7); faro.html pesa 4,08 MB porque los 76 modelos nuevos suman 3,26 MB de modelos en total',
 }
 SUITES = [
     ('results-v17-on-v18.json', r'^N\d\d$', 'v1.7'), ('results-v16-on-v18.json', r'^M0[1-5]$', 'v1.6'),

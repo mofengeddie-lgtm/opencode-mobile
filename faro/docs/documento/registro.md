@@ -18,7 +18,7 @@ Una entrada por versión, de la más nueva a la más vieja. **Cada versión nuev
 - Zona de creadores con contraseña (pedida durante esta versión): botón «Creadores» en el vestíbulo; abre el modo creador; se vuelve a pedir cada vez que se abre el juego; 5 intentos y luego 60 s de espera. Se guarda solo la huella SHA-256 de la contraseña.
 - Arreglo encontrado por las partidas largas: una tropa podía quedarse esperando para siempre una Barcaza que no venía; ahora deja de esperar a los 30 s y los bots no la vuelven a mandar.
 - Documento completo: capítulos nuevos con tus documentos e imágenes (modelos 0.2, escenas, UI 0.4, la lista de equipamiento y qué muestra cada imagen de su PDF), tu catálogo con su estado y el informe del revisor.
-- Pruebas: __PRUEBAS18__
+- Pruebas: 20 de 21 aprobadas, falladas: O18. Revisor 110 de 110 (salida 0 en modo estricto); 93 de 93 tropas producidas y movidas; 30 partidas largas de 20 min sin problemas; pruebas de versiones anteriores 123 de 125 bien (L01sim y N05 marcan cambios planeados de esta versión; L10 y N14, de cuadros por segundo, fallan: la medida exacta por cuadro da la v1.8 un 3,5 % más lenta que la v1.7 y un 8 % más que la v1.4); campaña: las 6 misiones se pueden ganar; 5 tamaños de pantalla bien, también con letra grande. Detalle en docs/prd/PRD_web_v1.8.pdf.
 
 ## v1.7 · 15-17 nov 2026
 
