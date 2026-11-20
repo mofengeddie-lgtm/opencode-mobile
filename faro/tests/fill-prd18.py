@@ -104,7 +104,7 @@ SUITES = [
     ('results-v09-on-v18.json', r'^F\d\d$', 'v0.9'), ('results-v08-on-v18.json', r'^E\d\d$', 'v0.8'), ('results-v07-on-v18.json', r'^D\d\d$', 'v0.7'),
 ]
 # Repeticiones a solas de las que dependen del tiempo (vale la más nueva).
-REDO = {'results-v17-on-v18.json': ['results-v17-N04N14.json'], 'results-v14-on-v18.json': ['results-v14-K15.json'],
+REDO = {'results-v17-on-v18.json': ['results-v17-N04N14.json'], 'results-v15-on-v18.json': ['results-v15-L10.json'], 'results-v14-on-v18.json': ['results-v14-K15.json'],
         'results-v13-on-v18.json': ['results-v13-J06.json']}
 SIMS = [('test-v15-sim', 'v1.5'), ('test-v14-sim', 'v1.4'), ('test-v14-board', 'v1.4'), ('test-v13-sim', 'v1.3'), ('test-v12-sim', 'v1.2'),
         ('test-v11-sim', 'v1.1'), ('test-v10-sim', 'v1.0'), ('test-v09-sim-b', 'v0.9'), ('test-v08-bots-b', 'v0.8')]
