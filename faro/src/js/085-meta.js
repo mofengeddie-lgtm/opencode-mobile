@@ -930,11 +930,12 @@ class Lobby {
             <small>Versión ${GAME_VERSION}</small></div>
           <h2>Faro de <span>Ámbar</span></h2>
           <p>Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.</p>
-          <ul class="cover-news" aria-label="Novedades">${['Todo tu catálogo: 93 tropas', 'Tu ejército en la portada', 'Campo de pruebas', 'Ajustes a tu manera', 'Programa revisor'].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="Novedades">${['93 tropas y 42 edificios', 'Tu ejército en la portada', 'Campo de pruebas', 'Español e inglés', 'Ajustes a tu manera'].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="hero-play">
           <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>Jugar</span></button>
           <span class="hero-mode">${esc(m.name)} · ${esc(mapName)} · ${esc(diffName)}</span>
+          ${STORAGE_OK ? '' : '<span class="nosave" id="nosave">Este navegador no deja guardar: tu progreso se perderá al cerrar el juego.</span>'}
         </div>
       </section>
       <section class="lcard panel modecard">

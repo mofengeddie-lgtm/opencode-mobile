@@ -2,7 +2,7 @@
 const fs = require('fs');
 const vm = require('vm');
 const dir = process.env.FARO_JS || '/home/user/opencode-mobile/faro/src/js/';
-const files = ['00-config.js', '01-util.js', '02-map.js', '04-world.js', '046-campaign.js', '05-ai.js'];
+const files = ['00-config.js', '005-i18n.js', '01-util.js', '02-map.js', '04-world.js', '046-campaign.js', '05-ai.js'];
 const code = files.map((f) => fs.readFileSync(dir + f, 'utf8')).join('\n') +
   '\n;globalThis.Game=Game;globalThis.Campaign=Campaign;globalThis.CAMPAIGN=CAMPAIGN;globalThis.Bot=Bot;globalThis.BUILDINGS=BUILDINGS;globalThis.UNITS=UNITS;globalThis.PERSONALITIES=(typeof PERSONALITIES!=="undefined"?PERSONALITIES:{});globalThis.TERRAIN=TERRAIN;globalThis.DOME_LEVELS=(typeof DOME_LEVELS!=="undefined"?DOME_LEVELS:null);';
 const ctx = { console, performance, Math: Object.assign(Object.create(Math), { random: Math.random }), JSON, Set, Map, Array, Object, Number, String, Float32Array, Int32Array, Uint32Array, Uint8Array, Infinity, isFinite };

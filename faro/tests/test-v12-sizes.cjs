@@ -3,7 +3,9 @@ const H = require('./helpers.cjs');
 const { chromium } = require('playwright');
 const fs = require('fs');
 const SP = __dirname;
-const sizes = [['ipad-h', 1180, 820], ['16x9', 1280, 720], ['ipad-v', 820, 1180], ['cel-h', 844, 390], ['cel-v', 390, 844]];
+const SIZES5 = [['ipad-h', 1180, 820], ['16x9', 1280, 720], ['ipad-v', 820, 1180], ['cel-h', 844, 390], ['cel-v', 390, 844]];
+// v1.9: SIZES=poki prueba las medidas 16:9 de Poki (640×360, 836×470, 1031×580).
+const sizes = process.env.SIZES === 'poki' ? [['poki-640', 640, 360], ['poki-836', 836, 470], ['poki-1031', 1031, 580]] : SIZES5;
 const only = process.argv[2];
 
 const PROBE_SCREEN = () => {
@@ -317,6 +319,6 @@ const INSIDE = ([sel, label, onlyX]) => {
     console.log(name, fails.length ? 'FALLA ' + fails.join(' | ') : 'ok', errs.join(' '));
     await page.context().close();
   }
-  if (!only) fs.writeFileSync(SP + (process.env.BIGTEXT ? '/results-v14-sizes-big.json' : '/results-v12-sizes.json'), JSON.stringify(out, null, 1));
+  if (!only) fs.writeFileSync(SP + (process.env.SIZES === 'poki' ? '/results-v19-sizes-poki.json' : process.env.BIGTEXT ? '/results-v14-sizes-big.json' : '/results-v12-sizes.json'), JSON.stringify(out, null, 1));
   await browser.close();
 })();

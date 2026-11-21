@@ -206,3 +206,16 @@ function sha256Hex(str) {
   }
   return h.map((x) => (x >>> 0).toString(16).padStart(8, '0')).join('');
 }
+
+// v1.9: ¿deja el navegador guardar? En modo incógnito (o con los datos bloqueados) el almacenamiento puede fallar;
+// el juego sigue jugable y el vestíbulo avisa que el progreso no se guardará.
+const STORAGE_OK = (() => {
+  try {
+    const k = 'faro-probe';
+    localStorage.setItem(k, '1');
+    localStorage.removeItem(k);
+    return true;
+  } catch (err) {
+    return false;
+  }
+})();
