@@ -84,17 +84,17 @@ class UI {
     app.paused = true;
     const el = $('brief');
     el.innerHTML = `<div class="dialog panel wide brief" role="dialog" aria-labelledby="brief-title">
-      <small class="lbl">Campaña · Misión ${m.id} de ${CAMPAIGN.length}</small>
+      <small class="lbl">${L`Campaña · Misión ${m.id} de ${CAMPAIGN.length}`}</small>
       <h2 id="brief-title">${esc(m.name)}</h2>
       <p class="story">${esc(m.story)}</p>
       <div class="brief-grid">
-        <div><h3 class="lbl">Meta</h3><p><b>${esc(Campaign.goalText(m))}</b></p></div>
-        <div><h3 class="lbl">Estrellas</h3><ul class="starlist"><li><b>★ Termina la misión</b></li>
+        <div><h3 class="lbl">${L`Meta`}</h3><p><b>${esc(Campaign.goalText(m))}</b></p></div>
+        <div><h3 class="lbl">${L`Estrellas`}</h3><ul class="starlist"><li><b>${L`★ Termina la misión`}</b></li>
           ${m.stars.map((s) => `<li><b>★ ${esc(Campaign.starText(s))}</b></li>`).join('')}</ul></div>
       </div>
-      <p class="tip"><b>Consejo:</b> ${esc(m.tip)}</p>
-      <div class="row brief-go"><button class="btn gold" type="button" id="btn-brief-go">¡A jugar!</button>
-        <button class="btn" type="button" id="btn-brief-menu">Vestíbulo</button></div>
+      <p class="tip"><b>${L`Consejo:`}</b> ${esc(m.tip)}</p>
+      <div class="row brief-go"><button class="btn gold" type="button" id="btn-brief-go">${L`¡A jugar!`}</button>
+        <button class="btn" type="button" id="btn-brief-menu">${L`Vestíbulo`}</button></div>
     </div>`;
     el.hidden = false;
     $('btn-brief-go').addEventListener('click', () => {
@@ -120,7 +120,7 @@ class UI {
     if (!g || !g.camp) return;
     const lines = Campaign.goalLines(g).map((l) => `<li class="${l.done ? 'done' : ''}">${esc(l.text)}</li>`);
     const stars = Campaign.stars(g).slice(1).map((s) =>
-      `<li class="star ${s.live ? '' : 'lost'}"><span>${esc(s.text)}<small>${esc(s.live ? s.now : 'ya no se puede')}</small></span></li>`);
+      `<li class="star ${s.live ? '' : 'lost'}"><span>${esc(s.text)}<small>${esc(s.live ? s.now : T('ya no se puede'))}</small></span></li>`);
     const html = lines.join('') + stars.join('');
     if (!force && html === this.missionSig) return;
     this.missionSig = html;
@@ -139,6 +139,17 @@ class UI {
     $('btn-quit').addEventListener('click', () => app.toMenu());
     $('btn-fps').addEventListener('click', () => app.toggleFps());
     app.toggleFps(app.showFps);
+    // v1.9: idioma. Se guarda y el juego se vuelve a abrir en ese idioma (la partida en curso queda guardada).
+    document.querySelectorAll('[data-lang]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const lang = b.dataset.lang;
+        if (lang === I18N.lang) return;
+        I18N.choose(lang);
+        if (app.state === 'play' && app.game && !app.game.over && !app.game.spectating && !app.game.preview) Save.write(app.game);
+        location.reload();
+      });
+    });
+    this.markLang();
     document.querySelectorAll('[data-quality]').forEach((b) => {
       b.addEventListener('click', () => app.setQuality(b.dataset.quality));
     });
@@ -188,7 +199,7 @@ class UI {
     $('btn-obj').addEventListener('click', () => {
       const el = $('objectives');
       el.classList.toggle('collapsed');
-      $('btn-obj').textContent = el.classList.contains('collapsed') ? 'Mostrar' : 'Ocultar';
+      $('btn-obj').textContent = el.classList.contains('collapsed') ? T('Mostrar') : T('Ocultar');
     });
     $('btn-build').addEventListener('click', () => this.toggleBuild());
     $('btn-build-close').addEventListener('click', () => {
@@ -201,13 +212,13 @@ class UI {
     $('btn-mini').addEventListener('click', () => {
       const w = $('miniwrap');
       w.classList.toggle('min');
-      $('btn-mini').setAttribute('aria-label', w.classList.contains('min') ? 'Mostrar minimapa' : 'Plegar minimapa');
+      $('btn-mini').setAttribute('aria-label', w.classList.contains('min') ? T('Mostrar minimapa') : T('Plegar minimapa'));
     });
     $('btn-home').addEventListener('click', () => app.focusCore());
     $('btn-box').addEventListener('click', () => {
       app.input.boxMode = !app.input.boxMode;
       $('btn-box').classList.toggle('on', app.input.boxMode);
-      if (app.input.boxMode) this.toast('Arrastra para seleccionar varias tropas');
+      if (app.input.boxMode) this.toast(T('Arrastra para seleccionar varias tropas'));
     });
     document.querySelectorAll('[data-quick]').forEach((b) => {
       b.addEventListener('click', () => app.quickSelect(b.dataset.quick));
@@ -243,7 +254,7 @@ class UI {
       const g = app.game;
       const def = BUILDINGS[type];
       if (def.limit && g.count(0, type) >= def.limit) {
-        this.toast(`Límite alcanzado (${def.limit})`, 'bad');
+        this.toast(L`Límite alcanzado (${def.limit})`, 'bad');
         return;
       }
       app.setSelection([]);
@@ -368,7 +379,7 @@ class UI {
     this.updateMusicBtns();
     this.updateSoundBtn();
     this.updateA11yBtns();
-    this.toast('Ajustes restablecidos', 'good');
+    this.toast(T('Ajustes restablecidos'), 'good');
   }
 
   updateLightBtns() {
@@ -386,20 +397,20 @@ class UI {
       if (!b) return;
       b.classList.toggle('gold', !!on);
       b.setAttribute('aria-pressed', String(!!on));
-      b.textContent = `${label}: ${on ? 'sí' : 'no'}`;
+      b.textContent = `${label}: ${on ? T('sí') : 'no'}`;
     };
-    set('btn-battery', app.battery, 'Ahorro de batería');
-    set('btn-cvd', app.cvd, 'Colores para daltonismo');
-    set('btn-bigtext', app.bigText, 'Letra grande');
+    set('btn-battery', app.battery, T('Ahorro de batería'));
+    set('btn-cvd', app.cvd, T('Colores para daltonismo'));
+    set('btn-bigtext', app.bigText, T('Letra grande'));
     // v1.7: tamaño de la interfaz y menos destellos.
-    set('btn-calm', app.calm, 'Reducir destellos');
-    set('btn-orbit', app.orbit !== false, 'Giro de la cámara en el vestíbulo');
+    set('btn-calm', app.calm, T('Reducir destellos'));
+    set('btn-orbit', app.orbit !== false, T('Giro de la cámara en el vestíbulo'));
     const sl = $('ui-scale');
     if (sl) {
       sl.value = String(app.uiScale || 100);
       const eff = app.uiScaleEff || app.uiScale || 100;
       $('ui-scale-val').textContent = `${app.uiScale || 100} %`;
-      $('ui-scale-note').textContent = eff < (app.uiScale || 100) ? `En esta pantalla se usa ${eff} % para que todo quepa.` : 'Agranda los paneles, las listas y los avisos. Los botones nunca bajan de 44 px.';
+      $('ui-scale-note').textContent = eff < (app.uiScale || 100) ? L`En esta pantalla se usa ${eff} % para que todo quepa.` : T('Agranda los paneles, las listas y los avisos. Los botones nunca bajan de 44 px.');
     }
   }
 
@@ -409,13 +420,13 @@ class UI {
     const lb = $('btn-music-lobby');
     lb.classList.toggle('off', lv === 0);
     lb.setAttribute('aria-pressed', String(lv > 0));
-    lb.title = lv > 0 ? 'Música: sí (toca para apagarla)' : 'Música: no (toca para encenderla)';
+    lb.title = lv > 0 ? T('Música: sí (toca para apagarla)') : T('Música: no (toca para encenderla)');
   }
 
   updateSoundBtn() {
-    $('btn-sound2').textContent = this.app.sound.on ? 'Sonido: sí' : 'Sonido: no';
+    $('btn-sound2').textContent = this.app.sound.on ? T('Sonido: sí') : T('Sonido: no');
     $('btn-sound').innerHTML = this.app.sound.on ? ICON.soundOn : ICON.soundOff;
-    $('btn-sound').setAttribute('aria-label', this.app.sound.on ? 'Silenciar' : 'Activar sonido');
+    $('btn-sound').setAttribute('aria-label', this.app.sound.on ? T('Silenciar') : T('Activar sonido'));
   }
 
   startHud() {
@@ -429,10 +440,10 @@ class UI {
     // En pantallas chicas el panel de la misión empieza plegado (se abre con «Mostrar»).
     const small = window.innerWidth <= 860 || window.innerHeight <= 520;
     $('objectives').classList.toggle('collapsed', !!camp && small);
-    $('btn-obj').textContent = camp && small ? 'Mostrar' : 'Ocultar';
+    $('btn-obj').textContent = camp && small ? T('Mostrar') : T('Ocultar');
     $('leftcol').classList.toggle('camp', !!camp);
     document.body.classList.toggle('camp-on', !!camp);
-    $('objtitle').textContent = camp ? Campaign.mode(camp.id).name : 'Primeros pasos';
+    $('objtitle').textContent = camp ? Campaign.mode(camp.id).name : T('Primeros pasos');
     if (camp) this.renderMission(true);
     else $('objlist').innerHTML = this.objList().map((o) => `<li data-obj="${o.id}" class="${this.app.game.objDone[o.id] ? 'done' : ''}">${esc(o.text)}</li>`).join('');
     $('btn-box').classList.remove('on');
@@ -470,7 +481,7 @@ class UI {
     const el = document.createElement('div');
     el.className = 'toast upcard good';
     const name = b.def.levelNames ? b.def.levelNames[level] : `${b.def.name} · nivel ${level}`;
-    el.innerHTML = `<b>${ICON_UP} ${esc(name)}: qué mejoró</b><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
+    el.innerHTML = `<b>${L`${ICON_UP} ${esc(name)}: qué mejoró`}</b><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
     el.style.pointerEvents = 'auto';
     el.addEventListener('click', () => el.remove());
     box.appendChild(el);
@@ -493,7 +504,7 @@ class UI {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'mini-btn';
-      b.textContent = 'Ver';
+      b.textContent = T('Ver');
       b.addEventListener('click', () => {
         this.app.focusAt(at.x, at.z);
         el.remove();
@@ -522,7 +533,7 @@ class UI {
         const b = document.createElement('button');
         b.type = 'button';
         b.className = 'mini-btn';
-        b.textContent = 'Ver';
+        b.textContent = T('Ver');
         b.addEventListener('click', () => this.app.focusAt(at.x, at.z));
         el.appendChild(b);
       }
@@ -542,7 +553,7 @@ class UI {
     const step = this.coachStepRaw(g);
     const p = this.app.input.placement;
     if (step && p && !step.place) {
-      return { sel: '#btn-place-cancel', text: p.placed ? 'Toca «Terminar» para salir del modo construir' : 'Toca «Cancelar» para salir de este modo' };
+      return { sel: '#btn-place-cancel', text: p.placed ? T('Toca «Terminar» para salir del modo construir') : T('Toca «Cancelar» para salir de este modo') };
     }
     return step;
   }
@@ -563,33 +574,33 @@ class UI {
       if (p && p.kind === 'build' && p.btype === type) {
         if (p.cell < 0) {
           const c = [...(p.valid || [])].map((i) => g.cells[i]).sort((a, b) => g.map.dist(a, g.cells[core.cell]) - g.map.dist(b, g.cells[core.cell]))[0];
-          return c ? { world: { x: c.x, y: c.h, z: c.z }, text: 'Toca una casilla dorada (por ejemplo, esta)', place: true } : { text: 'No quedan casillas libres', place: true };
+          return c ? { world: { x: c.x, y: c.h, z: c.z }, text: T('Toca una casilla dorada (por ejemplo, esta)'), place: true } : { text: T('No quedan casillas libres'), place: true };
         }
-        return { sel: '#btn-place-ok', text: 'Toca «Construir» para poner la obra', place: true };
+        return { sel: '#btn-place-ok', text: T('Toca «Construir» para poner la obra'), place: true };
       }
-      if (!panelOpen) return { sel: '#btn-build', text: 'Abre «Construir»' };
-      if (this.tab !== tab) return { sel: `#btabs [data-tab="${tab}"]`, text: `Abre la pestaña «${tabName}»` };
+      if (!panelOpen) return { sel: '#btn-build', text: T('Abre «Construir»') };
+      if (this.tab !== tab) return { sel: `#btabs [data-tab="${tab}"]`, text: L`Abre la pestaña «${tabName}»` };
       return { sel: `.bitem[data-b="${type}"]`, text: `Elige «${name}»` };
     };
     const hasBuilder = mine.some((u) => u.def.builds) || core.queue.some((q) => q.type === 'builder');
     if (!hasBuilder) {
-      if (!(sel.length === 1 && sel[0] === core)) return { world: { x: core.x, y: core.y + 1, z: core.z }, text: 'Toca tu Núcleo' };
-      return { sel: '[data-act="train"][data-type="builder"]', text: 'Entrena un Constructor' };
+      if (!(sel.length === 1 && sel[0] === core)) return { world: { x: core.x, y: core.y + 1, z: core.z }, text: T('Toca tu Núcleo') };
+      return { sel: '[data-act="train"][data-type="builder"]', text: T('Entrena un Constructor') };
     }
     // v1.3: los 3 pasos de tu documento. 1 Construí: otra Granja y una energía.
     const at = (e, dy = 0.5) => ({ x: e.x, y: (e.y || 0) + dy, z: e.z });
     const isSel = (e) => sel.length === 1 && sel[0] === e;
-    if (blds.filter((b) => b.type === 'farm').length < 2) return buildFlow('eco', 'farm', 'Granja', 'Economía');
-    if (!blds.some((b) => ['solar', 'wind', 'hydro', 'tidal', 'wave'].includes(b.type))) return buildFlow('energy', 'solar', 'Solar', 'Energía');
+    if (blds.filter((b) => b.type === 'farm').length < 2) return buildFlow('eco', 'farm', T('Granja'), T('Economía'));
+    if (!blds.some((b) => ['solar', 'wind', 'hydro', 'tidal', 'wave'].includes(b.type))) return buildFlow('energy', 'solar', T('Solar'), T('Energía'));
     // 2 Producí: un Cuartel y 3 soldados.
     const bar = blds.find((b) => b.type === 'barracks');
-    if (!bar) return buildFlow('prod', 'barracks', 'Cuartel', 'Producción');
+    if (!bar) return buildFlow('prod', 'barracks', T('Cuartel'), T('Producción'));
     const soldiers = mine.filter((u) => u.cls === 'inf' && u.def.weapon);
     const inQueue = bar.queue.filter((q) => UNITS[q.type].cls === 'inf' && UNITS[q.type].weapon).length;
     if (soldiers.length + inQueue < 3) {
-      if (!bar.built) return { world: at(bar), text: 'El Constructor va a la obra: espera a que termine el Cuartel' };
-      if (!isSel(bar)) return { world: at(bar), text: 'Toca tu Cuartel' };
-      return { sel: '[data-act="train"][data-type="rifle"]', text: `Entrena Artilleros (tienes ${soldiers.length + inQueue} de 3)` };
+      if (!bar.built) return { world: at(bar), text: T('El Constructor va a la obra: espera a que termine el Cuartel') };
+      if (!isSel(bar)) return { world: at(bar), text: T('Toca tu Cuartel') };
+      return { sel: '[data-act="train"][data-type="rifle"]', text: L`Entrena Artilleros (tienes ${soldiers.length + inQueue} de 3)` };
     }
     // 3 Atacá: Puerto, Barcaza, subir a los soldados, cruzar y tomar la isla del bot.
     const foe = g.players.find((q) => q.id !== 0 && q.alive && q.core && q.core.alive);
@@ -597,36 +608,36 @@ class UI {
     const foeComp = g.cells[foe.core.cell].comp;
     const landed = soldiers.filter((u) => !u.inside && g.cells[u.cell].comp === foeComp);
     if (landed.length) {
-      if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
-      return { world: at(foe.core, 1), text: 'Toca el Núcleo del bot para tomar su isla' };
+      if (!sel.some((u) => u.kind === 'unit' && u.def.weapon)) return { sel: '[data-quick="army"]', text: T('Toca «Ejército» para elegir a tus soldados') };
+      return { world: at(foe.core, 1), text: T('Toca el Núcleo del bot para tomar su isla') };
     }
     const harbor = blds.find((b) => b.type === 'harbor');
-    if (!harbor) return buildFlow('prod', 'harbor', 'Puerto', 'Producción');
+    if (!harbor) return buildFlow('prod', 'harbor', T('Puerto'), T('Producción'));
     const barge = mine.find((u) => u.type === 'barge');
     if (!barge) {
-      if (!harbor.built) return { world: at(harbor), text: 'El Constructor va a la obra: espera a que termine el Puerto' };
-      if (harbor.queue.some((q) => q.type === 'barge')) return { world: at(harbor), text: 'El Puerto fabrica la Barcaza: espera' };
-      if (!isSel(harbor)) return { world: at(harbor), text: 'Toca tu Puerto' };
-      return { sel: '[data-act="train"][data-type="barge"]', text: 'Entrena una Barcaza: lleva tropas por el mar' };
+      if (!harbor.built) return { world: at(harbor), text: T('El Constructor va a la obra: espera a que termine el Puerto') };
+      if (harbor.queue.some((q) => q.type === 'barge')) return { world: at(harbor), text: T('El Puerto fabrica la Barcaza: espera') };
+      if (!isSel(harbor)) return { world: at(harbor), text: T('Toca tu Puerto') };
+      return { sel: '[data-act="train"][data-type="barge"]', text: T('Entrena una Barcaza: lleva tropas por el mar') };
     }
     const ashore = soldiers.filter((u) => !u.inside);
-    if (soldiers.length < 3) return { world: at(bar), text: `Espera a tus soldados (${soldiers.length} de 3)` };
+    if (soldiers.length < 3) return { world: at(bar), text: L`Espera a tus soldados (${soldiers.length} de 3)` };
     if (ashore.length) {
-      if (ashore.every((u) => u.state === 'board')) return { world: at(barge, 0.3), text: 'Los soldados suben a la Barcaza: espera' };
-      if (!sel.some((u) => u.kind === 'unit' && u.cls === 'inf' && u.def.weapon)) return { sel: '[data-quick="army"]', text: 'Toca «Ejército» para elegir a tus soldados' };
-      return { world: at(barge, 0.3), text: 'Toca la Barcaza para subirlos' };
+      if (ashore.every((u) => u.state === 'board')) return { world: at(barge, 0.3), text: T('Los soldados suben a la Barcaza: espera') };
+      if (!sel.some((u) => u.kind === 'unit' && u.cls === 'inf' && u.def.weapon)) return { sel: '[data-quick="army"]', text: T('Toca «Ejército» para elegir a tus soldados') };
+      return { world: at(barge, 0.3), text: T('Toca la Barcaza para subirlos') };
     }
     // Todos a bordo: llevar la Barcaza junto a la isla del bot y desembarcar.
     const c0 = g.cells[barge.cell];
     const nearFoe = g.cells.some((c) => c.comp === foeComp && TERRAIN[c.t].land && g.map.dist(c, c0) <= 2);
     if (!nearFoe) {
-      if (barge.path && barge.pathI < barge.path.length) return { world: at(barge, 0.3), text: 'La Barcaza navega hacia la isla del bot: espera' };
-      if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
+      if (barge.path && barge.pathI < barge.path.length) return { world: at(barge, 0.3), text: T('La Barcaza navega hacia la isla del bot: espera') };
+      if (!isSel(barge)) return { world: at(barge, 0.3), text: T('Toca tu Barcaza') };
       const dest = this.landingCell(g, foe, foeComp);
-      return dest ? { world: { x: dest.x, y: 0.1, z: dest.z }, text: 'Toca el mar junto a la isla del bot para llevarla' } : { text: 'No hay costa libre junto a la isla del bot' };
+      return dest ? { world: { x: dest.x, y: 0.1, z: dest.z }, text: T('Toca el mar junto a la isla del bot para llevarla') } : { text: T('No hay costa libre junto a la isla del bot') };
     }
-    if (!isSel(barge)) return { world: at(barge, 0.3), text: 'Toca tu Barcaza' };
-    return { sel: '[data-act="unload"]', text: 'Toca «Desembarcar»' };
+    if (!isSel(barge)) return { world: at(barge, 0.3), text: T('Toca tu Barcaza') };
+    return { sel: '[data-act="unload"]', text: T('Toca «Desembarcar»') };
   }
 
   // Casilla de mar junto a la isla del bot, lo más cerca posible de su Núcleo.
@@ -678,8 +689,8 @@ class UI {
           const r = mm.getBoundingClientRect();
           const m = app.renderer.worldToMinimap(mm, step.world.x, step.world.z);
           rect = { x: r.left + clamp(m.x, 0, r.width) - 16, y: r.top + clamp(m.y, 0, r.height) - 16, w: 32, h: 32, round: true };
-          text = covered ? 'Lo tapa un panel: toca este punto del minimapa para centrarlo'
-            : 'Está fuera de la pantalla: toca este punto del minimapa para ir allí';
+          text = covered ? T('Lo tapa un panel: toca este punto del minimapa para centrarlo')
+            : T('Está fuera de la pantalla: toca este punto del minimapa para ir allí');
         }
       }
     }
@@ -717,11 +728,11 @@ class UI {
     if (!g || app.state !== 'play') return;
     const count = (f) => g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && f(u)).length;
     const opts = [
-      { k: 'army', label: 'Tierra', n: count((u) => u.def.weapon && u.mover === 'land') },
-      { k: 'sea', label: 'Mar', n: count((u) => u.def.weapon && u.mover === 'sea') },
-      { k: 'air', label: 'Aire', n: count((u) => u.def.weapon && u.mover === 'air') },
-      { k: 'all', label: 'Todo', n: count((u) => u.def.weapon) },
-      { k: 'builders', label: 'Constructores', n: count((u) => u.def.builds === 'land') },
+      { k: 'army', label: T('Tierra'), n: count((u) => u.def.weapon && u.mover === 'land') },
+      { k: 'sea', label: T('Mar'), n: count((u) => u.def.weapon && u.mover === 'sea') },
+      { k: 'air', label: T('Aire'), n: count((u) => u.def.weapon && u.mover === 'air') },
+      { k: 'all', label: T('Todo'), n: count((u) => u.def.weapon) },
+      { k: 'builders', label: T('Constructores'), n: count((u) => u.def.builds === 'land') },
       { k: 'g1', label: 'Grupo 1', n: (app.groups[1] || []).filter((u) => u.alive).length },
       { k: 'g2', label: 'Grupo 2', n: (app.groups[2] || []).filter((u) => u.alive).length },
       { k: 'g3', label: 'Grupo 3', n: (app.groups[3] || []).filter((u) => u.alive).length },
@@ -733,8 +744,8 @@ class UI {
     const el = document.createElement('div');
     el.id = 'wheel';
     el.setAttribute('role', 'menu');
-    el.setAttribute('aria-label', 'Rueda de selección');
-    el.innerHTML = `<div class="wheel-hub" style="left:${cx}px;top:${cy}px">Elegir</div>` + opts.map((o, i) => {
+    el.setAttribute('aria-label', T('Rueda de selección'));
+    el.innerHTML = `<div class="wheel-hub" style="left:${cx}px;top:${cy}px">${L`Elegir`}</div>` + opts.map((o, i) => {
       const a = -Math.PI / 2 + (i / opts.length) * Math.PI * 2;
       return `<button type="button" role="menuitem" class="wheel-opt" data-wk="${o.k}" style="left:${cx + Math.cos(a) * R}px;top:${cy + Math.sin(a) * R}px" ${o.n ? '' : 'disabled'}>
         <b>${o.label}</b><small>${o.n}</small></button>`;
@@ -787,7 +798,7 @@ class UI {
     } else if (kind === 'break') {
       if (this.breakArm !== pid) {
         this.breakArm = pid;
-        this.toast(`¿Romper la alianza con ${g.players[pid].name}? Toca «Romper» otra vez`, 'bad');
+        this.toast(L`¿Romper la alianza con ${g.players[pid].name}? Toca «Romper» otra vez`, 'bad');
         setTimeout(() => { if (this.breakArm === pid) this.breakArm = null; }, 4000);
         return;
       }
@@ -795,8 +806,8 @@ class UI {
       const err = g.breakAlliance(0);
       if (err) this.toast(err, 'bad');
       else {
-        g.say(pid, 'Rompiste la alianza. Ahora somos rivales otra vez.', { force: true, toMe: true });
-        this.toast(`Ya no eres aliado de ${g.players[pid].name}`, 'info');
+        g.say(pid, T('Rompiste la alianza. Ahora somos rivales otra vez.'), { force: true, toMe: true });
+        this.toast(L`Ya no eres aliado de ${g.players[pid].name}`, 'info');
       }
     } else if (kind === 'help' || kind === 'attack') {
       this.allyOrder(kind);
@@ -812,17 +823,17 @@ class UI {
     const list = g.chat.filter((m) => (tab === 'ally' ? m.ally : (m.ally || m.toMe || m.public))).slice(-30);
     const rows = list.length ? list.map((m) => {
       const p = g.players[m.pid];
-      const who = m.mine ? 'Tú' : p.name + (m.ally ? ' (aliado)' : '');
+      const who = m.mine ? T('Tú') : p.name + (m.ally ? ' (aliado)' : '');
       return `<p class="${m.mine ? 'mine' : ''}"><i style="background:${hexColor(p.color)}"></i><b>${esc(who)}:</b> ${esc(m.text)}<small>${fmtTime(m.time)}</small></p>`;
-    }).join('') : `<p>${tab === 'ally' ? 'Todavía no hay mensajes de aliados.' : 'Todavía no hay mensajes.'}</p>`;
+    }).join('') : `<p>${tab === 'ally' ? T('Todavía no hay mensajes de aliados.') : T('Todavía no hay mensajes.')}</p>`;
     const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === me.team) && me.alive;
-    const quick = hasAllies ? `<div class="quickmsgs">${['¡Gracias!', '¡Bien hecho!', '¡Cuidado!'].map((t) => `<button class="btn mini" type="button" data-qmsg="${t}">${t}</button>`).join('')}
-      <button class="btn mini gold" type="button" data-ally="help" data-pid="0">¡Ayuda!</button>
-      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0">¡Ataquemos!</button></div>`
-      : '<p class="allyhint">Cuando tengas aliados, aquí puedes mandarles mensajes rápidos.</p>';
-    return `<header><h4>Mensajes</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></header>
-      <div class="chattabs" role="tablist"><button class="btn mini" type="button" role="tab" data-chattab="all" aria-selected="${tab === 'all'}">Todos</button>
-      <button class="btn mini" type="button" role="tab" data-chattab="ally" aria-selected="${tab === 'ally'}">Aliados</button></div>
+    const quick = hasAllies ? `<div class="quickmsgs">${[T('¡Gracias!'), T('¡Bien hecho!'), T('¡Cuidado!')].map((t) => `<button class="btn mini" type="button" data-qmsg="${t}">${t}</button>`).join('')}
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0">${L`¡Ayuda!`}</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0">${L`¡Ataquemos!`}</button></div>`
+      : `<p class="allyhint">${L`Cuando tengas aliados, aquí puedes mandarles mensajes rápidos.`}</p>`;
+    return `<header><h4>${L`Mensajes`}</h4><button class="btn icon" type="button" data-close aria-label="${L`Cerrar`}">${ICON.close}</button></header>
+      <div class="chattabs" role="tablist"><button class="btn mini" type="button" role="tab" data-chattab="all" aria-selected="${tab === 'all'}">${L`Todos`}</button>
+      <button class="btn mini" type="button" role="tab" data-chattab="ally" aria-selected="${tab === 'ally'}">${L`Aliados`}</button></div>
       <div class="chatlog" id="chatlog">${rows}</div>${quick}`;
   }
 
@@ -833,7 +844,7 @@ class UI {
     this.chatKey = null;
     this.renderPop();
     this.app.sound.play('click');
-    if (!n) this.toast('No tienes aliados que te lean', 'bad');
+    if (!n) this.toast(T('No tienes aliados que te lean'), 'bad');
     const log = $('chatlog');
     if (log) log.scrollTop = log.scrollHeight;
   }
@@ -845,7 +856,7 @@ class UI {
     if (!bots.length) return;
     if (kind === 'help') {
       const n = bots.reduce((a, b) => a + b.answerHelp(0), 0);
-      this.toast(n ? `Tus aliados mandan ${n} tropas a tu base` : 'Tus aliados no tienen tropas libres', n ? 'good' : 'bad');
+      this.toast(n ? L`Tus aliados mandan ${n} tropas a tu base` : T('Tus aliados no tienen tropas libres'), n ? 'good' : 'bad');
       app.sound.play('order');
     } else {
       this.togglePop(null);
@@ -891,13 +902,13 @@ class UI {
     if (flags.length) rows.push([`Banderas ×${flags.length}`, flags.reduce((s, pt) => s + pt.def.income, 0)]);
     rows.sort((a, b) => b[1] - a[1]);
     const bonus = p.income - p.baseIncome;
-    let html = '<header><h4>Monedas por minuto</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">' + ICON.close + '</button></header><table><tbody>';
+    let html = `<header><h4>${L`Monedas por minuto`}</h4><button class="btn icon" type="button" data-close aria-label="${L`Cerrar`}">` + ICON.close + '</button></header><table><tbody>';
     html += rows.map(([n, v]) => `<tr><td>${esc(n)}</td><td class="n">+${fmt(v)}</td></tr>`).join('');
     if (bonus > 0) {
-      html += `<tr><td>Subtotal</td><td class="n">${fmt(p.baseIncome)}</td></tr><tr><td>Faro (+${Math.round(p.bonus * 100)} %)</td><td class="n">+${fmt(bonus)}</td></tr>`;
+      html += `<tr><td>${L`Subtotal`}</td><td class="n">${fmt(p.baseIncome)}</td></tr><tr><td>Faro (+${Math.round(p.bonus * 100)} %)</td><td class="n">+${fmt(bonus)}</td></tr>`;
     }
-    html += `<tr class="total"><td>Total</td><td class="n" id="econ-total">+${fmt(p.income)}</td></tr></tbody></table>`;
-    if (!groups.has('farm') && !groups.has('mine')) html += '<p class="hint-press" style="margin:0">Construye Granjas y Minas para ganar más.</p>';
+    html += `<tr class="total"><td>${L`Total`}</td><td class="n" id="econ-total">+${fmt(p.income)}</td></tr></tbody></table>`;
+    if (!groups.has('farm') && !groups.has('mine')) html += `<p class="hint-press" style="margin:0">${L`Construye Granjas y Minas para ganar más.`}</p>`;
     return html;
   }
 
@@ -911,11 +922,11 @@ class UI {
       k.sum += g.bEnergy(b);
       groups.set(b.type, k);
     }
-    let html = '<header><h4>Energía</h4><button class="btn icon" type="button" data-close aria-label="Cerrar">' + ICON.close + '</button></header><table><tbody>';
-    if (!groups.size) html += '<tr><td>Sin energías</td><td class="n">+0 / 10 s</td></tr>';
+    let html = `<header><h4>${L`Energía`}</h4><button class="btn icon" type="button" data-close aria-label="${L`Cerrar`}">` + ICON.close + '</button></header><table><tbody>';
+    if (!groups.size) html += `<tr><td>${L`Sin energías`}</td><td class="n">+0 / 10 s</td></tr>`;
     for (const [type, k] of groups) html += `<tr><td>${esc(BUILDINGS[type].name)} ×${k.n}</td><td class="n">+${k.sum} / 10 s</td></tr>`;
-    html += `<tr class="total"><td>Disponible</td><td class="n">${fmt(p.energy)}</td></tr></tbody></table>`;
-    html += '<p class="hint-press" style="margin:0">La producen Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, buques de guerra, helicópteros, la Fábrica y el Helipuerto.</p>';
+    html += `<tr class="total"><td>${L`Disponible`}</td><td class="n">${fmt(p.energy)}</td></tr></tbody></table>`;
+    html += `<p class="hint-press" style="margin:0">${L`La producen Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, buques de guerra, helicópteros, la Fábrica y el Helipuerto.`}</p>`;
     return html;
   }
 
@@ -933,28 +944,28 @@ class UI {
       // v1.1: alianzas en los modos de todos contra todos.
       const canAlly = g.alliancesAllowed() && p.id !== 0 && p.alive && g.players[0].alive;
       const allyBtn = !canAlly ? '' : p.team === myTeam
-        ? `<button class="btn mini danger" type="button" data-ally="break" data-pid="${p.id}">Romper</button>`
-        : `<button class="btn mini" type="button" data-ally="ask" data-pid="${p.id}">Aliarse</button>`;
+        ? `<button class="btn mini danger" type="button" data-ally="break" data-pid="${p.id}">${L`Romper`}</button>`
+        : `<button class="btn mini" type="button" data-ally="ask" data-pid="${p.id}">${L`Aliarse`}</button>`;
       return `<tr class="${p.alive ? '' : 'dead'}" data-pid="${p.id}"><td><i class="dot" style="background:${hexColor(p.color)}"></i>${esc(p.name)}</td>
         <td>${esc(role)}${rel}${allyBtn}</td><td class="n">${Math.round(((terr.get(p.id) || 0) / land) * 100)} %</td>
         <td class="n">${army}</td><td class="n">${blds}</td><td class="n">${p.alive ? '+' + fmt(p.income) : '—'}</td><td class="n">${pts}</td></tr>`;
     }).join('');
     const hasAllies = g.players.some((q) => q.id !== 0 && q.alive && !q.human && q.team === myTeam) && g.players[0].alive;
-    const orders = hasAllies ? `<div class="allyorders"><span>A tus aliados:</span>
-      <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">¡Ayuda!</button>
-      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">¡Ataquemos!</button></div>` : '';
-    const hint = g.alliancesAllowed() ? '<p class="allyhint">Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.</p>' : '';
-    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><span class="row" style="gap:6px"><button class="btn mini" type="button" data-openchat id="btn-open-chat">Mensajes</button><button class="btn icon" type="button" data-close aria-label="Cerrar">${ICON.close}</button></span></header>${orders}${hint}
-      <div class="wrap"><table><thead><tr><th>Imperio</th><th>Estilo</th><th>Territorio</th><th>Ejército</th><th>Edificios</th><th>Monedas/min</th><th>Puntos</th></tr></thead>
+    const orders = hasAllies ? `<div class="allyorders"><span>${L`A tus aliados:`}</span>
+      <button class="btn mini gold" type="button" data-ally="help" data-pid="0" id="btn-ally-help">${L`¡Ayuda!`}</button>
+      <button class="btn mini gold" type="button" data-ally="attack" data-pid="0" id="btn-ally-attack">${L`¡Ataquemos!`}</button></div>` : '';
+    const hint = g.alliancesAllowed() ? `<p class="allyhint">${L`Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.`}</p>` : '';
+    return `<header><h4>Marcador · ${fmtTime(g.time)}</h4><span class="row" style="gap:6px"><button class="btn mini" type="button" data-openchat id="btn-open-chat">${L`Mensajes`}</button><button class="btn icon" type="button" data-close aria-label="${L`Cerrar`}">${ICON.close}</button></span></header>${orders}${hint}
+      <div class="wrap"><table><thead><tr><th>${L`Imperio`}</th><th>${L`Estilo`}</th><th>${L`Territorio`}</th><th>${L`Ejército`}</th><th>${L`Edificios`}</th><th>Monedas/min</th><th>${L`Puntos`}</th></tr></thead>
       <tbody>${rows}</tbody></table></div>`;
   }
 
   // ---------- Aviones y Aeropuerto (v1.0) ----------
   planeState(u) {
     if (u.repairing) return 'Vuelve a repararse';
-    if (u.autoTarget && u.autoTarget.alive) return 'En combate';
-    if (u.moving) return 'En vuelo';
-    return 'Patrulla en círculo';
+    if (u.autoTarget && u.autoTarget.alive) return T('En combate');
+    if (u.moving) return T('En vuelo');
+    return T('Patrulla en círculo');
   }
 
   planeHtml(planes) {
@@ -967,21 +978,21 @@ class UI {
       const w = d.weapon;
       const u = list[0];
       const hp = Math.round((list.reduce((a, x) => a + x.hp / x.maxHp, 0) / list.length) * 100);
-      const cells = [`<span>Estado</span><b>${esc(this.planeState(u))}</b>`, `<span>Vida</span><b>${hp} %</b>`];
+      const cells = [`<span>${L`Estado`}</span><b>${esc(this.planeState(u))}</b>`, `<span>${L`Vida`}</span><b>${hp} %</b>`];
       if (type === 'fighter') {
-        cells.push(`<span>Misiles aire-aire</span><b>${w.dmg} · ×${w.mult.air} a aviones</b>`, `<span>Alcance</span><b>${w.range} casillas</b>`);
+        cells.push(`<span>${L`Misiles aire-aire`}</span><b>${w.dmg} · ×${w.mult.air} a aviones</b>`, `<span>${L`Alcance`}</span><b>${w.range} casillas</b>`);
       } else {
         const cd = Math.max(0, u.cd || 0);
         const seen = g.time - (u.lastShot || -99) < 3;
-        cells.push(`<span>Bombas</span><b class="${cd > 0.2 ? 'radar-track' : 'radar-idle'}">${cd > 0.2 ? `Recargando ${Math.ceil(cd)} s` : 'Listas'}</b>`,
-          `<span>Furtivo</span><b class="${seen ? 'radar-lock' : ''}">${seen ? 'Visible (acaba de soltar bombas)' : 'Oculto: solo se ve a 3 casillas'}</b>`);
+        cells.push(`<span>${L`Bombas`}</span><b class="${cd > 0.2 ? 'radar-track' : 'radar-idle'}">${cd > 0.2 ? `Recargando ${Math.ceil(cd)} s` : T('Listas')}</b>`,
+          `<span>${L`Furtivo`}</span><b class="${seen ? 'radar-lock' : ''}">${seen ? T('Visible (acaba de soltar bombas)') : T('Oculto: solo se ve a 3 casillas')}</b>`);
       }
       rows.push(`<div class="planecard"><img src="${Thumbs.get(type, PLAYER_COLORS[0])}" alt="">
         <div><div class="radar-status"><b>${esc(d.name)}</b>${list.length > 1 ? ` ×${list.length}` : ''}</div><div class="numbers">${cells.join('')}</div></div></div>`);
     }
     const tip = planes.some((u) => u.type === 'bomber')
-      ? '«Bombardear zona»: toca un lugar y los Bombarderos van atacando los edificios que encuentren.'
-      : 'Los Cazas buscan solos aviones y helicópteros enemigos; con poca vida vuelven al Aeropuerto o al Helipuerto.';
+      ? T('«Bombardear zona»: toca un lugar y los Bombarderos van atacando los edificios que encuentren.')
+      : T('Los Cazas buscan solos aviones y helicópteros enemigos; con poca vida vuelven al Aeropuerto o al Helipuerto.');
     return rows.join('') + `<div class="queue">${tip}</div>`;
   }
 
@@ -995,11 +1006,11 @@ class UI {
     const nB = mine.filter((u) => u.type === 'bomber').length;
     const pads = near.length
       ? near.map((u) => `<span class="padslot"><img src="${Thumbs.get(u.type, PLAYER_COLORS[u.owner])}" alt=""><b>${Math.round((u.hp / u.maxHp) * 100)} %</b></span>`).join('')
-      : '<span class="queue">Ningún avión en la pista ahora.</span>';
+      : `<span class="queue">${L`Ningún avión en la pista ahora.`}</span>`;
     return `<div class="radar airport"><div class="radar-scope" aria-hidden="true"><i></i></div><div class="radar-body">
-      <div class="radar-status">Torre de control · <b>${nF} ${nF === 1 ? 'Caza' : 'Cazas'} · ${nB} ${nB === 1 ? 'Bombardero' : 'Bombarderos'}</b></div>
+      <div class="radar-status">${L`Torre de control ·`} <b>${nF} ${nF === 1 ? T('Caza') : T('Cazas')} · ${nB} ${nB === 1 ? T('Bombardero') : T('Bombarderos')}</b></div>
       <div class="pads">${pads}</div>
-      <div class="queue">Repara ${Math.round(heal.rate)} de vida por segundo a los aviones y helicópteros cercanos; los dañados vuelven solos aquí.</div></div></div>`;
+      <div class="queue">${L`Repara ${Math.round(heal.rate)} de vida por segundo a los aviones y helicópteros cercanos; los dañados vuelven solos aquí.`}</div></div></div>`;
   }
 
   // ---------- AIR DEFENSE y Torreta (v0.9): alcance, recarga, contra qué sirve y qué sigue el radar ----------
@@ -1007,16 +1018,16 @@ class UI {
     const g = this.app.game;
     const w = g.weaponOf(b);
     const air = (w.mult.air || 0) > 0;
-    const rows = [`<span>Alcance</span><b>${w.range} casillas</b>`,
-      `<span>Recarga</span><b>${w.cd.toLocaleString('es-ES')} s${w.salvo ? ` · ráfaga de ${w.salvo}` : ''}</b>`,
-      `<span>${w.salvo ? 'Daño a aeronaves por ráfaga' : 'Daño a aeronaves por tiro'}</span><b>${air ? fmt(w.dmg * w.mult.air * (w.salvo || 1)) : 'no'}</b>`];
-    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push('<span>Detecta furtivos</span><b>a 3 casillas</b>');
+    const rows = [`<span>${L`Alcance`}</span><b>${w.range} casillas</b>`,
+      `<span>${L`Recarga`}</span><b>${w.cd.toLocaleString('es-ES')} s${w.salvo ? ` ${L`· ráfaga de ${w.salvo}`}` : ''}</b>`,
+      `<span>${w.salvo ? T('Daño a aeronaves por ráfaga') : T('Daño a aeronaves por tiro')}</span><b>${air ? fmt(w.dmg * w.mult.air * (w.salvo || 1)) : 'no'}</b>`];
+    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push(`<span>${L`Detecta furtivos`}</span><b>a 3 casillas</b>`);
     const t = b.lockOn && b.lockOn.alive && g.inRange(b, w, b.lockOn) ? b.lockOn : b.autoTarget && b.autoTarget.alive ? b.autoTarget : null;
-    let status = '<b class="radar-idle">Sin blancos</b>';
+    let status = `<b class="radar-idle">${L`Sin blancos`}</b>`;
     if (t) {
       const name = t.kind === 'bld' ? t.def.name : UNITS[t.type].name;
       const locking = w.lock && b.lockOn === t && b.lockT > 0;
-      status = `<b class="${locking ? 'radar-track' : 'radar-lock'}">${locking ? 'Siguiendo' : 'Fijado'}: ${esc(name)}</b>`;
+      status = `<b class="${locking ? 'radar-track' : 'radar-lock'}">${locking ? T('Siguiendo') : T('Fijado')}: ${esc(name)}</b>`;
     }
     return `<div class="radar"><div class="radar-scope" aria-hidden="true"><i></i></div>
       <div class="radar-body"><div class="radar-status">Radar · ${status}</div><div class="numbers">${rows.join('')}</div></div></div>`;
@@ -1028,12 +1039,12 @@ class UI {
     // v1.7: el Lanzador nuclear móvil depende del uso estratégico y de su límite (1).
     if (u.strategic) {
       const g = this.app.game;
-      if (g.strategicLeft(p.id) <= 0) return 'Uso estratégico agotado (0/1)';
-      if (g.units.some((x) => x.alive && x.owner === p.id && x.type === u.key)) return 'Límite: 1 de 1';
+      if (g.strategicLeft(p.id) <= 0) return T('Uso estratégico agotado (0/1)');
+      if (g.units.some((x) => x.alive && x.owner === p.id && x.type === u.key)) return T('Límite: 1 de 1');
     }
-    if (p.coins < u.cost) return `Faltan ${fmt(Math.ceil(u.cost - p.coins))} monedas`;
-    if (p.energy < (u.energy || 0)) return `Faltan ${fmt(Math.ceil(u.energy - p.energy))} de energía`;
-    if (p.popUsed + u.pop > p.popCap) return 'Comunidad llena: construye Casas';
+    if (p.coins < u.cost) return L`Faltan ${fmt(Math.ceil(u.cost - p.coins))} monedas`;
+    if (p.energy < (u.energy || 0)) return L`Faltan ${fmt(Math.ceil(u.energy - p.energy))} de energía`;
+    if (p.popUsed + u.pop > p.popCap) return T('Comunidad llena: construye Casas');
     return '';
   }
 
@@ -1042,26 +1053,26 @@ class UI {
     const g = this.app.game;
     if (!b.queue.length) return '';
     const rate = g.prodRate(b);
-    if (!(rate > 0)) return 'parada: falta energía';
+    if (!(rate > 0)) return T('parada: falta energía');
     const q = b.queue[0];
     const first = Math.max(0, (UNITS[q.type].build - q.t) / rate);
     let total = first;
     for (let i = 1; i < b.queue.length; i++) total += UNITS[b.queue[i].type].build / rate;
     const f = (x) => (x < 60 ? `${Math.ceil(x)} s` : fmtTime(x));
-    return b.queue.length > 1 ? `la próxima en ${f(first)} · todas en ${f(total)}` : `lista en ${f(first)}`;
+    return b.queue.length > 1 ? L`la próxima en ${f(first)} · todas en ${f(total)}` : L`lista en ${f(first)}`;
   }
 
   // v1.5: ficha de una tropa: vida, daño, alcance, velocidad y contra qué es buena o mala.
   unitTilesHtml(u) {
     const d = u.def;
     const w = d.weapon;
-    const tiles = [['Vida máxima', fmt(u.maxHp), u.vet ? 'gold' : '']];
+    const tiles = [[T('Vida máxima'), fmt(u.maxHp), u.vet ? 'gold' : '']];
     if (w) {
       const mult = 1 + (u.vet || 0) * VETERAN.dmg;
-      tiles.push(['Daño/s', fmt((w.dmg * mult) / w.cd), u.vet ? 'gold' : '']);
-      tiles.push(['Alcance', `${w.range} casillas`, '']);
+      tiles.push([T('Daño/s'), fmt((w.dmg * mult) / w.cd), u.vet ? 'gold' : '']);
+      tiles.push([T('Alcance'), `${w.range} casillas`, '']);
     }
-    tiles.push(['Velocidad', d.speed.toLocaleString('es-ES'), '']);
+    tiles.push([T('Velocidad'), d.speed.toLocaleString('es-ES'), '']);
     let html = `<div class="coretiles unittiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
     if (w) {
       const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
@@ -1069,9 +1080,9 @@ class UI {
       const weak = cls.filter((c) => w.mult[c] > 0 && w.mult[c] <= 0.5).map((c) => CAT_NAMES[c]);
       const none = cls.filter((c) => !(w.mult[c] > 0)).map((c) => CAT_NAMES[c]);
       const line = [];
-      if (strong.length) line.push(`<span class="vs good">Fuerte contra: <b>${strong.join(', ')}</b></span>`);
-      if (weak.length) line.push(`<span class="vs bad">Débil contra: <b>${weak.join(', ')}</b></span>`);
-      if (none.length) line.push(`<span class="vs muted">No ataca a: <b>${none.join(', ')}</b></span>`);
+      if (strong.length) line.push(`<span class="vs good">${L`Fuerte contra:`} <b>${strong.join(', ')}</b></span>`);
+      if (weak.length) line.push(`<span class="vs bad">${L`Débil contra:`} <b>${weak.join(', ')}</b></span>`);
+      if (none.length) line.push(`<span class="vs muted">${L`No ataca a:`} <b>${none.join(', ')}</b></span>`);
       if (line.length) html += `<div class="vsline">${line.join('')}</div>`;
     }
     return html;
@@ -1081,21 +1092,21 @@ class UI {
     const u = UNITS[type];
     const w = u.weapon;
     const parts = [`<div class="title">${esc(u.name)}</div>`];
-    parts.push(`<div><span>Vida</span> <b>${fmt(u.hp)}</b></div>`);
+    parts.push(`<div><span>${L`Vida`}</span> <b>${fmt(u.hp)}</b></div>`);
     if (w) {
-      parts.push(`<div><span>Daño/s</span> <b>${fmt(w.dmg / w.cd)}</b></div>`);
-      parts.push(`<div><span>Alcance</span> <b>${w.range}</b> casillas</div>`);
+      parts.push(`<div><span>${L`Daño/s`}</span> <b>${fmt(w.dmg / w.cd)}</b></div>`);
+      parts.push(`<div><span>${L`Alcance`}</span> <b>${w.range}</b> casillas</div>`);
     }
-    parts.push(`<div><span>Velocidad</span> <b>${u.speed.toLocaleString('es-ES')}</b></div>`);
-    parts.push(`<div><span>Población</span> <b>${u.pop}</b>${u.energy ? ` · <span>Energía</span> <b>${u.energy}</b>` : ''}</div>`);
+    parts.push(`<div><span>${L`Velocidad`}</span> <b>${u.speed.toLocaleString('es-ES')}</b></div>`);
+    parts.push(`<div><span>${L`Población`}</span> <b>${u.pop}</b>${u.energy ? ` · <span>${L`Energía`}</span> <b>${u.energy}</b>` : ''}</div>`);
     if (w) {
       const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
       const strong = cls.filter((c) => (w.mult[c] || 0) >= 1.3).map((c) => CAT_NAMES[c]);
       const none = cls.filter((c) => !(w.mult[c] > 0)).map((c) => CAT_NAMES[c]);
-      if (strong.length) parts.push(`<div class="wide">Fuerte contra: <b>${strong.join(', ')}</b></div>`);
-      if (none.length) parts.push(`<div class="wide">No ataca a: <b>${none.join(', ')}</b></div>`);
+      if (strong.length) parts.push(`<div class="wide">${L`Fuerte contra:`} <b>${strong.join(', ')}</b></div>`);
+      if (none.length) parts.push(`<div class="wide">${L`No ataca a:`} <b>${none.join(', ')}</b></div>`);
     } else {
-      parts.push(`<div class="wide">No combate. ${esc(u.desc)}</div>`);
+      parts.push(`<div class="wide">${L`No combate. ${esc(u.desc)}`}</div>`);
     }
     return parts.join('');
   }
@@ -1127,38 +1138,38 @@ class UI {
     $('btn-place-rot').hidden = !isBuild;
     $('btn-place-ok').hidden = !isBuild;
     $('btn-place-cancel').hidden = false;
-    $('btn-place-cancel').textContent = isBuild && p.placed ? 'Terminar' : 'Cancelar';
+    $('btn-place-cancel').textContent = isBuild && p.placed ? T('Terminar') : T('Cancelar');
     if (isBuild) {
       // v1.0: tocar una casilla muestra la obra; «Construir» la pone; «Terminar» sale.
       const d = BUILDINGS[p.btype];
       const price = `<span class="cost">${fmt(d.cost)}</span>${d.energyCost ? ` <span class="ecost">${ICON.bolt}${d.energyCost}</span>` : ''}`;
       const placed = p.placed ? ` · <b>${p.placed}</b> ${p.placed === 1 ? 'puesta' : 'puestas'}` : '';
       if (p.err && p.cell >= 0) text = `<b>${esc(d.name)}</b> · <span class="err">${esc(p.err)}</span>${placed}`;
-      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> · ${price} · Toca «Construir» para poner la obra aquí${placed}`;
-      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> · ${price} · Toca una casilla dorada y luego «Construir»${placed}`;
-      else text = `No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
+      else if (p.cell >= 0) text = `<b>${esc(d.name)}</b> ${L`· ${price} · Toca «Construir» para poner la obra aquí${placed}`}`;
+      else if (p.valid && p.valid.size) text = `<b>${esc(d.name)}</b> ${L`· ${price} · Toca una casilla dorada y luego «Construir»${placed}`}`;
+      else text = L`No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
       $('btn-place-ok').disabled = p.cell < 0 || !!p.err;
       $('btn-place-rot').disabled = false;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
-        ? 'Toca dónde fundar el <b>Puesto avanzado</b> · <span class="cost">800</span> al llegar'
-        : 'No hay sitio alcanzable para fundar un puesto';
+        ? `${L`Toca dónde fundar el`} <b>${L`Puesto avanzado`}</b> · <span class="cost">800</span> ${L`al llegar`}`
+        : T('No hay sitio alcanzable para fundar un puesto');
     } else if (p.kind === 'rally') {
-      text = 'Toca el <b>punto de reunión</b> para las tropas nuevas';
+      text = `${L`Toca el`} <b>${L`punto de reunión`}</b> ${L`para las tropas nuevas`}`;
     } else if (p.kind === 'mnuke') {
       text = p.valid && p.valid.size
-        ? `Toca la zona del <b>misil del Lanzador nuclear móvil</b> (alcance ${STRATEGIC.range} casillas). Después te pide confirmar.`
-        : 'No hay ninguna zona al alcance del lanzador: acércalo más.';
+        ? `${L`Toca la zona del`} <b>${L`misil del Lanzador nuclear móvil`}</b> ${L`(alcance ${STRATEGIC.range} casillas). Después te pide confirmar.`}`
+        : T('No hay ninguna zona al alcance del lanzador: acércalo más.');
     } else if (p.kind === 'silo') {
-      text = `Toca la zona del <b>DF-5C</b> (alcance ${NUKE.range} casillas). Después te pide confirmar.`;
+      text = `${L`Toca la zona del`} <b>DF-5C</b> ${L`(alcance ${NUKE.range} casillas). Después te pide confirmar.`}`;
     } else if (p.kind === 'nuke') {
-      text = `Toca el blanco del <b>misil nuclear</b> · <span class="cost">${fmt(NUKE.cost)}</span> · llega en ${NUKE.flight} s${this.app.game.strategic ? ' · uso único: después te pide confirmar' : ''}`;
+      text = `${L`Toca el blanco del`} <b>${L`misil nuclear`}</b> · <span class="cost">${fmt(NUKE.cost)}</span> ${L`· llega en ${NUKE.flight} s${this.app.game.strategic ? T(' · uso único: después te pide confirmar') : ''}`}`;
     } else if (p.kind === 'allyattack') {
-      text = 'Toca un edificio, una tropa o el territorio del <b>rival</b> que quieres atacar con tus aliados';
+      text = `${L`Toca un edificio, una tropa o el territorio del`} <b>rival</b> ${L`que quieres atacar con tus aliados`}`;
     } else if (p.kind === 'bombzone') {
-      text = `Toca la <b>zona a bombardear</b>: ${p.units.length} ${p.units.length === 1 ? 'Bombardero va' : 'Bombarderos van'} atacando los edificios que encuentren`;
+      text = `${L`Toca la`} <b>zona a bombardear</b>${L`: ${p.units.length} ${p.units.length === 1 ? T('Bombardero va') : T('Bombarderos van')} atacando los edificios que encuentren`}`;
     } else if (p.kind === 'nuke3') {
-      text = `Toca el blanco de los <b>3 misiles nucleares</b> · <span class="cost">${fmt(NUKE.cost * 3)}</span> · llegan en ${NUKE.flight} s`;
+      text = `${L`Toca el blanco de los`} <b>${L`3 misiles nucleares`}</b> · <span class="cost">${fmt(NUKE.cost * 3)}</span> ${L`· llegan en ${NUKE.flight} s`}`;
     }
     $('placetext').innerHTML = text;
     $('placebar').hidden = false;
@@ -1206,7 +1217,7 @@ class UI {
       const maxed = limit && n >= limit;
       const act = placing && placing.kind === 'build' && placing.btype === k;
       // v1.6: el motivo, con el número exacto (cambia con las monedas y la energía).
-      const why = maxed ? `Límite: ${n} de ${limit}` : poor ? `Faltan ${fmt(Math.ceil(d.cost - p.coins))} monedas` : poorE ? `Faltan ${fmt(Math.ceil(d.energyCost - p.energy))} de energía` : '';
+      const why = maxed ? L`Límite: ${n} de ${limit}` : poor ? L`Faltan ${fmt(Math.ceil(d.cost - p.coins))} monedas` : poorE ? L`Faltan ${fmt(Math.ceil(d.energyCost - p.energy))} de energía` : '';
       states.push([el, k, d, n, poor, maxed, act, poorE, limit, why]);
       sig += `${k}${n}${poor}${maxed}${act}${poorE}${limit}${why}|`;
     });
@@ -1292,8 +1303,8 @@ class UI {
       <div style="min-width:0"><h3>${title}</h3><p class="sec">${sub}</p>
         ${hpId ? '<div class="hp" id="sel-hpbar"><i id="sel-hp"></i></div><div class="hptext" id="sel-hptext"></div>' : ''}
       </div>
-      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? `${bi('less')}Menos` : `${bi('more')}Más detalles`}</button>
-      <button class="btn icon" type="button" data-act="close" aria-label="Quitar selección" title="Quitar selección">${ICON.close}</button></div>
+      <div class="headbtns"><button class="btn seltoggle" type="button" data-act="seldetails" id="btn-seldetails" aria-expanded="${!!this.selMore}">${this.selMore ? L`${bi('less')}Menos` : L`${bi('more')}Más detalles`}</button>
+      <button class="btn icon" type="button" data-act="close" aria-label="${L`Quitar selección`}" title="${L`Quitar selección`}">${ICON.close}</button></div>
     </div>`;
   }
 
@@ -1302,23 +1313,23 @@ class UI {
     const land = sel.every((u) => u.mover === 'land');
     const sea = sel.every((u) => u.mover === 'sea');
     const air = sel.every((u) => u.mover === 'air');
-    return land ? 'Escuadra terrestre' : sea ? 'Flota' : air ? 'Escuadrilla aérea' : 'Grupo mixto';
+    return land ? T('Escuadra terrestre') : sea ? T('Flota') : air ? T('Escuadrilla aérea') : T('Grupo mixto');
   }
 
   orderOf(u) {
     const s = u.state;
     if (u.def.strategic && this.app.game.strategic && this.app.game.mobileState(u) === 'prep' && !u.moving) return 'preparando';
-    if (s === 'move') return 'moviéndose';
+    if (s === 'move') return T('moviéndose');
     if (s === 'amove') return 'avanzando y atacando';
     if (s === 'attack') return 'atacando';
     if (s === 'patrol') return 'patrullando';
     if (s === 'build') return 'construyendo';
     if (s === 'repair') return 'reparando';
-    if (s === 'board') return 'subiendo al transporte';
-    if (s === 'found') return 'yendo a fundar un puesto';
-    if (u.hold) return 'manteniendo posición';
-    if (u.def.weapon && u.autoTarget && u.autoTarget.alive) return 'disparando a lo que tiene a tiro';
-    return 'en espera';
+    if (s === 'board') return T('subiendo al transporte');
+    if (s === 'found') return T('yendo a fundar un puesto');
+    if (u.hold) return T('manteniendo posición');
+    if (u.def.weapon && u.autoTarget && u.autoTarget.alive) return T('disparando a lo que tiene a tiro');
+    return T('en espera');
   }
 
   orderText(sel) {
@@ -1334,16 +1345,16 @@ class UI {
   queueResText(b) {
     const p = this.app.game.players[b.owner];
     const pop = b.queue.reduce((s, q) => s + UNITS[q.type].pop, 0);
-    return `${b.queue.length} en cola · ${pop} ${pop === 1 ? 'plaza reservada' : 'plazas reservadas'} · Comunidad al terminar: ${p.popUsed} / ${p.popCap}`;
+    return L`${b.queue.length} en cola · ${pop} ${pop === 1 ? T('plaza reservada') : T('plazas reservadas')} · Comunidad al terminar: ${p.popUsed} / ${p.popCap}`;
   }
 
   // Contador del uso estratégico (1/1 → 0/1): el mismo para el AIR DEFENSE de nivel 4 y el Lanzador nuclear móvil.
   stratQuotaHtml() {
     const g = this.app.game;
     const left = g.strategicLeft(0);
-    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · uso único</span>
+    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">${L`Arsenal estratégico · uso único`}</span>
       <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b>
-      <span class="strattext" id="strat-text">${left ? 'Uso estratégico disponible. Al usarlo queda en 0 / 1 por el resto de la partida.' : 'Agotado: ya usaste tu único uso estratégico de esta partida.'}</span></div>`;
+      <span class="strattext" id="strat-text">${left ? T('Uso estratégico disponible. Al usarlo queda en 0 / 1 por el resto de la partida.') : T('Agotado: ya usaste tu único uso estratégico de esta partida.')}</span></div>`;
   }
 
   mobileHtml(u) {
@@ -1352,14 +1363,14 @@ class UI {
     const st = g.mobileState(u);
     const left = st === 'spent' || st === 'quota' ? 0 : 1;
     const secs = Math.ceil(Math.max(0, (u.armAt || 0) - g.time));
-    const text = st === 'prep' ? `Preparando: faltan ${secs} s. Después podrás elegir la zona.`
-      : st === 'ready' ? `Disponible. Alcance: ${STRATEGIC.range} casillas. Un Escudo antimisiles lo puede derribar.`
-        : st === 'spent' ? 'Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.'
-          : 'Agotado: ya usaste tu único uso estratégico con otro lanzador, el silo o el AIR DEFENSE.';
-    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · uso único</span>
+    const text = st === 'prep' ? L`Preparando: faltan ${secs} s. Después podrás elegir la zona.`
+      : st === 'ready' ? L`Disponible. Alcance: ${STRATEGIC.range} casillas. Un Escudo antimisiles lo puede derribar.`
+        : st === 'spent' ? T('Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.')
+          : T('Agotado: ya usaste tu único uso estratégico con otro lanzador, el silo o el AIR DEFENSE.');
+    return `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">${L`Arsenal estratégico · uso único`}</span>
       <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b>
       <span class="strattext" id="strat-text">${text}</span>
-      <button class="btn danger" type="button" data-act="mnuke" id="btn-mnuke" ${st === 'ready' ? '' : 'disabled'}>${bi('strat')}Elegir zona</button></div>`;
+      <button class="btn danger" type="button" data-act="mnuke" id="btn-mnuke" ${st === 'ready' ? '' : 'disabled'}>${L`${bi('strat')}Elegir zona`}</button></div>`;
   }
 
   // Confirmación del uso estratégico: una sola orden (un doble toque no lanza dos); cancelar no gasta nada.
@@ -1367,16 +1378,16 @@ class UI {
     const g = this.app.game;
     this.strat = { p, ci, busy: false };
     const c = g.cells[ci];
-    const who = p.kind === 'mnuke' ? p.unit.def.name : p.kind === 'silo' ? 'Complejo estratégico (DF-5C)' : 'AIR DEFENSE de nivel 4';
-    const zone = c.owner >= 0 ? `territorio de ${esc(g.players[c.owner].name)}` : 'zona sin dueño';
-    $('strat-body').innerHTML = `<span class="lbl stratchip">Arsenal estratégico · revisar uso</span>
-      <h2>¿Usar ahora?</h2>
-      <p>Esta acción consume tu <b>única utilización estratégica</b> de la partida.</p>
-      <p class="sec" id="strat-zone">Sale del ${who}. Zona elegida: ${zone}. Llega en ${NUKE.flight} s y los rivales reciben el aviso. No se puede recuperar el uso.</p>
-      <div class="stratbox"><span class="lbl">Disponibilidad</span><b class="stratnum">${g.strategicLeft(0)} / ${STRATEGIC.uses}</b>
-        <span class="strattext">Después de usarlo: 0 / ${STRATEGIC.uses} · Agotado</span></div>
-      <div class="row"><button class="btn gold" type="button" id="btn-strat-ok">Confirmar uso único</button>
-        <button class="btn" type="button" id="btn-strat-cancel">Cancelar</button></div>`;
+    const who = p.kind === 'mnuke' ? p.unit.def.name : p.kind === 'silo' ? T('Complejo estratégico (DF-5C)') : T('AIR DEFENSE de nivel 4');
+    const zone = c.owner >= 0 ? L`territorio de ${esc(g.players[c.owner].name)}` : T('zona sin dueño');
+    $('strat-body').innerHTML = `<span class="lbl stratchip">${L`Arsenal estratégico · revisar uso`}</span>
+      <h2>${L`¿Usar ahora?`}</h2>
+      <p>${L`Esta acción consume tu`} <b>${L`única utilización estratégica`}</b> ${L`de la partida.`}</p>
+      <p class="sec" id="strat-zone">${L`Sale del ${who}. Zona elegida: ${zone}. Llega en ${NUKE.flight} s y los rivales reciben el aviso. No se puede recuperar el uso.`}</p>
+      <div class="stratbox"><span class="lbl">${L`Disponibilidad`}</span><b class="stratnum">${g.strategicLeft(0)} / ${STRATEGIC.uses}</b>
+        <span class="strattext">${L`Después de usarlo: 0 / ${STRATEGIC.uses} · Agotado`}</span></div>
+      <div class="row"><button class="btn gold" type="button" id="btn-strat-ok">${L`Confirmar uso único`}</button>
+        <button class="btn" type="button" id="btn-strat-cancel">${L`Cancelar`}</button></div>`;
     $('strat').hidden = false;
   }
 
@@ -1399,7 +1410,7 @@ class UI {
       return;
     }
     app.renderer.addMoveMarker(s.ci, 0xff4040);
-    this.toast(`Uso estratégico gastado: 0 / ${STRATEGIC.uses}`, 'info');
+    this.toast(L`Uso estratégico gastado: 0 / ${STRATEGIC.uses}`, 'info');
     app.input.cancelPlacement();
     this.selSig = '';
   }
@@ -1410,16 +1421,16 @@ class UI {
     const d = b.def;
     const extra = [];
     const inc = g.bIncome(b);
-    if (inc) extra.push(`+${fmt(inc * g.incomeMult(g.players[b.owner]))} monedas/min`);
-    if (g.bPop(b)) extra.push(`+${g.bPop(b)} de población`);
-    if (d.energy) extra.push(`+${g.bEnergy(b)} energía cada 10 s`);
+    if (inc) extra.push(L`+${fmt(inc * g.incomeMult(g.players[b.owner]))} monedas/min`);
+    if (g.bPop(b)) extra.push(L`+${g.bPop(b)} de población`);
+    if (d.energy) extra.push(L`+${g.bEnergy(b)} energía cada 10 s`);
     if (d.healLevels) extra.push(`${d.healLevels[b.level].name}: cura ${Math.round(d.healLevels[b.level].pct * 100)} %/s`);
-    if (d.minigun) extra.push(b.level > 1 ? `${b.level - 1} minigun${b.level > 2 ? 's' : ''}` : 'sin minigun');
+    if (d.minigun) extra.push(b.level > 1 ? `${b.level - 1} minigun${b.level > 2 ? 's' : ''}` : T('sin minigun'));
     const sub = (own ? '' : `<b style="color:${hexColor(PLAYER_COLORS[b.owner])}">${esc(g.players[b.owner].name)}</b> · `) +
       esc(d.desc) + (extra.length ? ' · ' + extra.join(' · ') : '');
     const maxLv = d.maxLevel;
     const lv = maxLv > 1
-      ? ` <span class="lvtag">Nivel ${b.level}</span><span class="levels" title="Nivel ${b.level} de ${maxLv}">${Array.from({ length: maxLv }, (_, i) => `<i class="${i < b.level ? 'on' : ''}"></i>`).join('')}</span>` : '';
+      ? ` <span class="lvtag">${L`Nivel ${b.level}`}</span><span class="levels" title="${L`Nivel ${b.level} de ${maxLv}`}">${Array.from({ length: maxLv }, (_, i) => `<i class="${i < b.level ? 'on' : ''}"></i>`).join('')}</span>` : '';
     const mkey = GLB[b.type + '_' + b.level] ? b.type + '_' + b.level : b.type;
     let html = this.head(mkey, PLAYER_COLORS[b.owner], esc(d.levelNames ? d.levelNames[b.level] : d.name) + lv, sub);
     if (!own) return html + (g.isEnemy(b.owner, 0) ? this.counterHtml(b) : '');
@@ -1427,9 +1438,9 @@ class UI {
     if (!b.built || b.upgrading) {
       const k = b.upgrading ? b.upgrading.progress : b.progress;
       const idle = g.time - b.lastWork > 1.5 && b.type !== 'outpost';
-      const by = d.builtBy === 'sea' ? 'un Barco constructor' : d.builtBy === 'engineer' ? 'un Ingeniero' : 'un Constructor o Ingeniero';
-      html += `<div class="queue"><b>${b.upgrading ? `Mejorando a nivel ${b.upgrading.level}` : 'En construcción'}</b> · ${Math.floor(k * 100)} % · ` +
-        (idle ? `<span style="color:#ffb4b5">Sin constructor: selecciona ${by} y toca la obra.</span>` : 'Un constructor está trabajando.') + '</div>';
+      const by = d.builtBy === 'sea' ? T('un Barco constructor') : d.builtBy === 'engineer' ? T('un Ingeniero') : T('un Constructor o Ingeniero');
+      html += `<div class="queue"><b>${b.upgrading ? `Mejorando a nivel ${b.upgrading.level}` : T('En construcción')}</b> · ${Math.floor(k * 100)} % · ` +
+        (idle ? `<span style="color:#ffb4b5">${L`Sin constructor: selecciona ${by} y toca la obra.`}</span>` : T('Un constructor está trabajando.')) + '</div>';
     }
     if (b.type === 'core') {
       const p = g.players[0];
@@ -1437,18 +1448,18 @@ class UI {
       // v0.9: el estado del Núcleo en casillas claras.
       const L = d.levels[b.level];
       const emer = p.emergencyUsed
-        ? (b.shieldUntil > g.time ? ['Activo', 'gold'] : ['Usado', 'muted']) : ['Listo', 'good'];
+        ? (b.shieldUntil > g.time ? [T('Activo'), 'gold'] : [T('Usado'), 'muted']) : [T('Listo'), 'good'];
       const tiles = [
-        ['Monedas', `+${fmt(g.bIncome(b) * g.incomeMult(p))}/min`, ''],
-        ['Comunidad', `+${g.bPop(b)}`, ''],
-        ['Láser', `${L.laser.beams > 1 ? '2 × ' : ''}${L.laser.dmg} · ${L.laser.range} cas.`, ''],
-        ['Emergencia', emer[0], emer[1]],
-        ['Cúpula', dome ? (dome.hp > 0 ? `Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
-          : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? 'Núcleo nivel 3' : 'Disponible'),
+        [T('Monedas'), `+${fmt(g.bIncome(b) * g.incomeMult(p))}/min`, ''],
+        [T('Comunidad'), `+${g.bPop(b)}`, ''],
+        [T('Láser'), `${L.laser.beams > 1 ? '2 × ' : ''}${L.laser.dmg} · ${L.laser.range} cas.`, ''],
+        [T('Emergencia'), emer[0], emer[1]],
+        [T('Cúpula'), dome ? (dome.hp > 0 ? `Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
+          : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? T('Núcleo nivel 3') : T('Disponible')),
         dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
       ];
       html += `<div class="coretiles sec">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
-      if (dome && dome.level >= 3 && dome.hp > 0) html += '<div class="queue sec">La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.</div>';
+      if (dome && dome.level >= 3 && dome.hp > 0) html += `<div class="queue sec">${L`La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.`}</div>`;
       const derr = g.domeInvalid(0);
       // v1.0: con el Núcleo en nivel 3, mejorar todo de un clic o dejar las mejoras automáticas.
       if (b.level >= AUTO_UP.coreLevel) {
@@ -1463,15 +1474,15 @@ class UI {
         }
         const auto = !!p.autoUpgrade;
         html += `<div class="upall"><div class="actions">
-          <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}</button>
-          <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${bi('repeat')}Mejoras automáticas: ${auto ? 'sí' : 'no'}</button></div>
-          <span class="queue sec">${cand.length ? `Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : 'Todo está al máximo.'}</span></div>`;
+          <button class="btn gold" type="button" data-act="upall" id="btn-upall" ${can ? '' : 'disabled'}>${L`${bi('upgrade')}Mejorar todo · ${can} de ${cand.length}`}</button>
+          <button class="btn ${auto ? 'good' : ''}" type="button" data-act="autoup" id="btn-autoup" aria-pressed="${auto}">${L`${bi('repeat')}Mejoras automáticas: ${auto ? T('sí') : 'no'}`}</button></div>
+          <span class="queue sec">${cand.length ? L`Quedan ${cand.length} mejoras (${fmt(total)} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan ${fmt(AUTO_UP.reserve)} para tropas.` : T('Todo está al máximo.')}</span></div>`;
       }
       if (!dome || dome.level < 3) {
         const next = dome ? dome.level + 1 : 1;
-        const label = dome ? `Mejorar Cúpula a nivel ${next}` : 'Comprar Cúpula';
-        const why = b.level < 3 ? 'Necesita el Núcleo en nivel 3.' : next === 3 ? 'Nivel 3: escudo personal para todas tus tropas.'
-          : `Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
+        const label = dome ? L`Mejorar Cúpula a nivel ${next}` : T('Comprar Cúpula');
+        const why = b.level < 3 ? T('Necesita el Núcleo en nivel 3.') : next === 3 ? T('Nivel 3: escudo personal para todas tus tropas.')
+          : L`Absorbe el daño de barcos, aeronaves y Lanzamisiles a ${DOME_LEVELS[next].range} casillas del Núcleo.`;
         html += `<div class="actions"><button class="btn gold" type="button" data-act="dome" ${derr && b.level < 3 ? 'disabled' : ''}>${bi('dome')}${label} · ${fmt(g.domeCost(0))}</button>
           <span class="queue sec" style="flex:1 1 200px">${why}</span></div>`;
       }
@@ -1491,20 +1502,20 @@ class UI {
       if (b.lastType && d.produces.includes(b.lastType)) {
         // Repetir (v0.7): vuelve a poner la última tropa entrenada, una o cinco veces.
         const lu = UNITS[b.lastType];
-        html += `<div class="actions repeat"><span class="queue">Última: <b>${esc(lu.name)}</b></span>
+        html += `<div class="actions repeat"><span class="queue">${L`Última:`} <b>${esc(lu.name)}</b></span>
           <button class="btn" type="button" data-act="repeat" data-n="1" id="btn-repeat">${bi('repeat')}Repetir · ${fmt(lu.cost)}</button>
           <button class="btn" type="button" data-act="repeat" data-n="5" id="btn-repeat5">${bi('repeat')}×5 · ${fmt(lu.cost * 5)}</button>
-          <button class="btn ${b.loop ? 'good' : ''}" type="button" data-act="loop" id="btn-loop" aria-pressed="${!!b.loop}" title="Sigue entrenando la última tropa mientras alcance el dinero y la comunidad">${bi('repeat')}Siempre: ${b.loop ? 'sí' : 'no'}</button></div>`;
-        if (b.loop && b.loopWait && !b.queue.length) html += `<div class="queue" id="loop-wait">Esperando: ${esc(b.loopWait)}</div>`;
+          <button class="btn ${b.loop ? 'good' : ''}" type="button" data-act="loop" id="btn-loop" aria-pressed="${!!b.loop}" title="${L`Sigue entrenando la última tropa mientras alcance el dinero y la comunidad`}">${L`${bi('repeat')}Siempre: ${b.loop ? T('sí') : 'no'}`}</button></div>`;
+        if (b.loop && b.loopWait && !b.queue.length) html += `<div class="queue" id="loop-wait">${L`Esperando: ${esc(b.loopWait)}`}</div>`;
       }
       const info = this.cardInfoType && d.produces.includes(this.cardInfoType) ? this.statsHtml(this.cardInfoType) : '';
       html += `<div class="cardinfo" id="cardinfo" ${info ? '' : 'hidden'}>${info}</div>`;
       // v1.5: la cola dice cuánto falta y cada tropa tiene su «×» para quitarla (devuelve el dinero).
       html += `<div class="queue ${b.queue.length ? '' : 'sec'}" id="sel-queue">` + (b.queue.length
-        ? `<span class="qhead">En cola · <b id="sel-qtime">${this.queueTimeText(b)}</b></span><span class="qres" id="sel-qres">${esc(this.queueResText(b))}</span>` + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="Quitar ${esc(UNITS[q.type].name)} (te devuelve ${fmt(UNITS[q.type].cost)})" aria-label="Quitar ${esc(UNITS[q.type].name)}">
+        ? `<span class="qhead">${L`En cola ·`} <b id="sel-qtime">${this.queueTimeText(b)}</b></span><span class="qres" id="sel-qres">${esc(this.queueResText(b))}</span>` + b.queue.map((q, i) => `<button class="qitem" type="button" data-act="cancel" data-idx="${i}" title="${L`Quitar ${esc(UNITS[q.type].name)} (te devuelve ${fmt(UNITS[q.type].cost)})`}" aria-label="${L`Quitar ${esc(UNITS[q.type].name)}`}">
             <img src="${Thumbs.get(q.type, PLAYER_COLORS[0])}" alt=""><i style="width:0"></i><span class="qx" aria-hidden="true">×</span></button>`).join('') +
-          '<span class="qnote">Toca una para quitarla: te devuelve el dinero.</span>'
-        : 'Toca una tropa para entrenarla; mantenla pulsada para ver su ficha.') + '</div>';
+          `<span class="qnote">${L`Toca una para quitarla: te devuelve el dinero.`}</span>`
+        : T('Toca una tropa para entrenarla; mantenla pulsada para ver su ficha.')) + '</div>';
     }
     if (b.built && d.weapon && (b.type === 'aadef' || b.type === 'turret')) html += this.radarHtml(b);
     if (b.type === 'aadef' && b.built && b.level >= 4) {
@@ -1512,20 +1523,20 @@ class UI {
       const why = g.nukeInvalid(b);
       const wait = g.time < (b.nukeReadyAt || 0);
       if (g.strategic) html += this.stratQuotaHtml();
-      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>☢ Misil nuclear · ${fmt(NUKE.cost)}</button>
-        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || `Listo. Daña todo en ${NUKE.radius} casillas y deja ${NUKE.rad.time} s de radiación; un Escudo antimisiles lo puede derribar.`}</span></div>`;
+      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke" id="btn-nuke" ${why ? 'disabled' : ''}>${L`☢ Misil nuclear · ${fmt(NUKE.cost)}`}</button>
+        <span class="queue" style="flex:1 1 200px">${wait ? `Recargando: ${Math.ceil(b.nukeReadyAt - g.time)} s` : why || L`Listo. Daña todo en ${NUKE.radius} casillas y deja ${NUKE.rad.time} s de radiación; un Escudo antimisiles lo puede derribar.`}</span></div>`;
       // v1.0: los 3 a la vez (un Escudo antimisiles solo derriba uno por carga).
       const why3 = g.salvoInvalid(0);
-      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke3" id="btn-nuke3" ${why3 ? 'disabled' : ''}>☢☢☢ Lanzar los 3 · ${fmt(NUKE.cost * 3)}</button>
-        <span class="queue" style="flex:1 1 200px">${why3 || 'Tus 3 AIR DEFENSE de nivel 4 disparan juntos al mismo blanco: un Escudo antimisiles solo puede derribar uno.'}</span></div>`;
+      html += `<div class="actions nukebox"><button class="btn danger" type="button" data-act="nuke3" id="btn-nuke3" ${why3 ? 'disabled' : ''}>${L`☢☢☢ Lanzar los 3 · ${fmt(NUKE.cost * 3)}`}</button>
+        <span class="queue" style="flex:1 1 200px">${why3 || T('Tus 3 AIR DEFENSE de nivel 4 disparan juntos al mismo blanco: un Escudo antimisiles solo puede derribar uno.')}</span></div>`;
     } else if (b.type === 'aadef' && b.built) {
-      html += `<div class="queue">Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.</div>`;
+      html += `<div class="queue">${L`Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.`}</div>`;
     }
     if (b.type === 'airport' && b.built) html += this.airportHtml(b);
     if (b.type === 'antinuke' && b.built) {
       const ready = g.time >= (b.chargeAt || 0);
-      html += `<div class="queue">${ready ? '<b style="color:var(--good)">Carga lista</b>: derriba un misil nuclear que caiga a 7 casillas.' : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
-      html += `<div class="queue">Defensa de punto: derriba misiles y cohetes enemigos a ${b.def.pointDefense.range} casillas · derribados: <b>${b.pdKills || 0}</b></div>`;
+      html += `<div class="queue">${ready ? `<b style="color:var(--good)">${L`Carga lista`}</b>${L`: derriba un misil nuclear que caiga a 7 casillas.`}` : `Recargando: ${Math.ceil(b.chargeAt - g.time)} s`}</div>`;
+      html += `<div class="queue">${L`Defensa de punto: derriba misiles y cohetes enemigos a ${b.def.pointDefense.range} casillas · derribados:`} <b>${b.pdKills || 0}</b></div>`;
     }
     if (b.built) html += this.extraBuildingHtml(b);
     const acts = [];
@@ -1538,9 +1549,9 @@ class UI {
       const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
       acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}</button>`);
     }
-    if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${bi('rally')}${b.rally >= 0 ? 'Mover punto de reunión' : 'Punto de reunión'}</button>`);
+    if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${bi('rally')}${b.rally >= 0 ? T('Mover punto de reunión') : T('Punto de reunión')}</button>`);
     if (b.type !== 'core') {
-      acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? '¿Seguro? Toca otra vez' : 'Demoler'}</button>`);
+      acts.push(`<button class="btn danger" type="button" data-act="demolish">${bi('demolish')}${this.demolishArm === b.id ? T('¿Seguro? Toca otra vez') : T('Demoler')}</button>`);
     }
     if (acts.length) html += `<div class="actions mainacts">${acts.join('')}</div>`;
     return html;
@@ -1557,37 +1568,37 @@ class UI {
       html += '<div class="research" id="research">' + Object.entries(RESEARCH).map(([k, R]) => {
         const done = p.research && p.research[k];
         const now = r && r.key === k;
-        const why = done ? 'Lista' : now ? `${Math.floor((r.t / R.time) * 100)} %` : g.researchInvalid(b, k) || `${fmt(R.cost)} · ${R.time} s`;
+        const why = done ? T('Lista') : now ? `${Math.floor((r.t / R.time) * 100)} %` : g.researchInvalid(b, k) || `${fmt(R.cost)} · ${R.time} s`;
         return `<button class="btn ${done ? 'good' : now ? 'gold' : ''}" type="button" data-act="research" data-v="${k}" ${done || now || g.researchInvalid(b, k) ? 'disabled' : ''}>
           <b>${esc(R.name)}</b><small>${esc(R.desc)}</small><em>${esc(why)}</em></button>`;
       }).join('') + '</div>';
     }
     if (b.type === 'gate') {
-      html += `<div class="actions"><button class="btn ${b.closed ? 'danger' : 'good'}" type="button" data-act="gate" id="btn-gate">${b.closed ? 'Abrir puerta' : 'Cerrar puerta'}</button>
-        <span class="queue" style="flex:1 1 200px">${b.closed ? 'Cerrada: no pasa nadie.' : 'Abierta: pasan tus tropas y las de tus aliados.'}</span></div>`;
+      html += `<div class="actions"><button class="btn ${b.closed ? 'danger' : 'good'}" type="button" data-act="gate" id="btn-gate">${b.closed ? T('Abrir puerta') : T('Cerrar puerta')}</button>
+        <span class="queue" style="flex:1 1 200px">${b.closed ? T('Cerrada: no pasa nadie.') : T('Abierta: pasan tus tropas y las de tus aliados.')}</span></div>`;
     }
     if (d.garrison) {
       const n = b.cargo ? b.cargo.length : 0;
-      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>Guarnición</b><span id="pax-count">${n} / ${d.garrison} soldados · +${Math.round(n * d.garrisonDmg * 100)} % de daño</span></div>` +
+      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>${L`Guarnición`}</b><span id="pax-count">${L`${n} / ${d.garrison} soldados · +${Math.round(n * d.garrisonDmg * 100)} % de daño`}</span></div>` +
         (n ? `<ul class="paxlist">${b.cargo.map((u) => `<li class="on"><img src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt=""><span>${esc(u.def.name)}</span><em>adentro</em></li>`).join('')}</ul>`
-          : '<div class="queue">Selecciona soldados y toca el Búnker para que entren.</div>') + '</div>';
-      if (n) html += `<div class="actions"><button class="btn gold" type="button" data-act="unload">${bi('unload')}Sacar soldados</button></div>`;
+          : `<div class="queue">${L`Selecciona soldados y toca el Búnker para que entren.`}</div>`) + '</div>';
+      if (n) html += `<div class="actions"><button class="btn gold" type="button" data-act="unload">${L`${bi('unload')}Sacar soldados`}</button></div>`;
     }
     if (b.type === 'silo' && g.strategic) {
       const st = g.siloState(b);
       const left = st === 'spent' || st === 'quota' ? 0 : 1;
       const secs = Math.ceil(Math.max(0, (b.builtAt || 0) + STRATEGIC.prep - g.time));
-      const text = st === 'prep' ? `Preparando el DF-5C: faltan ${secs} s.` : st === 'ready' ? `DF-5C listo. Alcance: ${NUKE.range} casillas. Un Escudo antimisiles lo puede derribar.`
-        : st === 'spent' ? 'Agotado: el silo ya lanzó su misil.' : 'Agotado: ya usaste tu único uso estratégico.';
-      html += `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">Arsenal estratégico · DF-5C · uso único</span>
+      const text = st === 'prep' ? L`Preparando el DF-5C: faltan ${secs} s.` : st === 'ready' ? L`DF-5C listo. Alcance: ${NUKE.range} casillas. Un Escudo antimisiles lo puede derribar.`
+        : st === 'spent' ? T('Agotado: el silo ya lanzó su misil.') : T('Agotado: ya usaste tu único uso estratégico.');
+      html += `<div class="stratbox ${left ? '' : 'spent'}" id="stratbox"><span class="lbl">${L`Arsenal estratégico · DF-5C · uso único`}</span>
         <b class="stratnum" id="strat-num">${left} / ${STRATEGIC.uses}</b><span class="strattext" id="strat-text">${text}</span>
-        <button class="btn danger" type="button" data-act="silo" id="btn-silo" ${st === 'ready' ? '' : 'disabled'}>${bi('strat')}Elegir zona</button></div>`;
+        <button class="btn danger" type="button" data-act="silo" id="btn-silo" ${st === 'ready' ? '' : 'disabled'}>${L`${bi('strat')}Elegir zona`}</button></div>`;
     }
     const facts = [];
-    if (d.detect) facts.push(`Descubre lo oculto a ${d.detect} casillas`);
-    if (d.vision && d.vision >= 7) facts.push(`Ve ${d.vision} casillas`);
-    if (d.pointDefense && b.type !== 'antinuke') facts.push(`Derribados: ${b.pdKills || 0}`);
-    if (b.jam) facts.push(`<span style="color:#ffb4b5">Interferencia enemiga: dispara ${Math.round(b.jam * 100)} % más lento</span>`);
+    if (d.detect) facts.push(L`Descubre lo oculto a ${d.detect} casillas`);
+    if (d.vision && d.vision >= 7) facts.push(L`Ve ${d.vision} casillas`);
+    if (d.pointDefense && b.type !== 'antinuke') facts.push(L`Derribados: ${b.pdKills || 0}`);
+    if (b.jam) facts.push(`<span style="color:#ffb4b5">${L`Interferencia enemiga: dispara ${Math.round(b.jam * 100)} % más lento`}</span>`);
     if (facts.length) html += `<div class="queue">${facts.join(' · ')}</div>`;
     return html;
   }
@@ -1596,20 +1607,20 @@ class UI {
     const counts = new Map();
     for (const u of sel) counts.set(u.type, (counts.get(u.type) || 0) + 1);
     const first = sel[0];
-    const stars = (u) => (u.vet ? ` <span class="vetstars" title="Veterana: ${u.kills} eliminaciones">${'★'.repeat(u.vet)}</span>` : '');
+    const stars = (u) => (u.vet ? ` <span class="vetstars" title="${L`Veterana: ${u.kills} eliminaciones`}">${'★'.repeat(u.vet)}</span>` : '');
     const vets = sel.filter((u) => u.vet).length;
     const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${esc(this.groupName(sel))}${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
-    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` (próxima estrella con ${VETERAN.kills[first.vet || 0]})` : ''}` : '') : `${sel.length} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.`;
+    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` ${L`(próxima estrella con ${VETERAN.kills[first.vet || 0]})`}` : ''}` : '') : L`${sel.length} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.`;
     // v1.7: «Centrar» junto a «Quitar selección», y la orden actual siempre a la vista.
     let html = this.head(first.type, PLAYER_COLORS[0], title, sub).replace('<div class="headbtns">',
       `<div class="headbtns"><button class="btn icon" type="button" data-act="center" id="btn-center" aria-label="Centrar la cámara en la selección" title="Centrar">${bi('center')}</button>`);
-    html += `<div class="queue selorder" id="sel-order">Orden actual: <b>${esc(this.orderText(sel))}</b></div>`;
+    html += `<div class="queue selorder" id="sel-order">${L`Orden actual:`} <b>${esc(this.orderText(sel))}</b></div>`;
     if (sel.length === 1) html += this.unitTilesHtml(first);
     if (sel.length === 1 && first.def.strategic) html += this.mobileHtml(first);
     if (counts.size > 1) {
       // v1.5: tocar un tipo deja elegidas solo esas tropas.
       html += '<div class="chips">' + [...counts.entries()].map(([t, n]) =>
-        `<button class="chip" type="button" data-act="seltype" data-type="${t}" title="Elegir solo ${esc(UNITS[t].name)}"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</button>`).join('') + '</div>';
+        `<button class="chip" type="button" data-act="seltype" data-type="${t}" title="${L`Elegir solo ${esc(UNITS[t].name)}`}"><img src="${Thumbs.get(t, PLAYER_COLORS[0])}" alt="">${n}× ${esc(UNITS[t].name)}</button>`).join('') + '</div>';
     }
     const acts = [];
     // Transportes (Barcaza, Lancha, Jeep, Transporte blindado) y hangar del Portaaviones.
@@ -1618,77 +1629,77 @@ class UI {
       const g = this.app.game;
       const hangar = !!ship.def.hangar;
       const cap = ship.def.capacity || ship.def.hangar;
-      const how = hangar ? 'Selecciona Cazas y toca el Portaaviones para guardarlos.'
-        : ship.def.carries === 'inf' ? `Selecciona soldados y toca el ${ship.def.name} para subirlos.`
-          : `Selecciona tropas de tierra y toca la ${ship.def.name} para subirlas.`;
+      const how = hangar ? T('Selecciona Cazas y toca el Portaaviones para guardarlos.')
+        : ship.def.carries === 'inf' ? L`Selecciona soldados y toca el ${ship.def.name} para subirlos.`
+          : L`Selecciona tropas de tierra y toca la ${ship.def.name} para subirlas.`;
       // v1.7: lista de pasajeros con nombre, y los que vienen en camino.
       const coming = g.units.filter((x) => x.alive && !x.inside && x.boardTarget === ship);
-      const pax = [...ship.cargo.map((u) => [u, 'a bordo']), ...coming.map((u) => [u, 'en camino'])];
-      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>${hangar ? 'Hangar' : 'Pasajeros'}</b><span id="pax-count">${g.cargoSlots(ship)} / ${cap} plazas${coming.length ? ` · ${coming.length} en camino` : ''}</span></div>` +
+      const pax = [...ship.cargo.map((u) => [u, 'a bordo']), ...coming.map((u) => [u, T('en camino')])];
+      html += `<div class="paxbox" id="paxbox"><div class="paxhead"><b>${hangar ? T('Hangar') : T('Pasajeros')}</b><span id="pax-count">${g.cargoSlots(ship)} / ${cap} plazas${coming.length ? ` ${L`· ${coming.length} en camino`}` : ''}</span></div>` +
         (pax.length ? `<ul class="paxlist">${pax.map(([u, st]) => `<li class="${st === 'a bordo' ? 'on' : 'way'}"><img src="${Thumbs.get(u.type, PLAYER_COLORS[0])}" alt=""><span>${esc(u.def.name)}</span><em>${st}</em></li>`).join('')}</ul>`
           : `<div class="queue">${how}</div>`) + '</div>';
-      const label = hangar ? 'Lanzar Cazas' : ship.mover === 'sea' || ship.mover === 'amphib' ? 'Desembarcar' : ship.def.airlift && ship.def.plane ? 'Lanzar en paracaídas' : 'Bajar soldados';
+      const label = hangar ? T('Lanzar Cazas') : ship.mover === 'sea' || ship.mover === 'amphib' ? T('Desembarcar') : ship.def.airlift && ship.def.plane ? T('Lanzar en paracaídas') : T('Bajar soldados');
       if (ship.cargo.length) acts.push(`<button class="btn gold" type="button" data-act="unload">${bi('unload')}${label}</button>`);
     }
     const planes = sel.filter((u) => u.def.plane);
     if (planes.length) {
       html += this.planeHtml(planes);
       if (planes.some((u) => u.type === 'bomber')) {
-        acts.push(`<button class="btn gold" type="button" data-act="bombzone" id="btn-bombzone">${bi('amove')}Bombardear zona</button>`);
+        acts.push(`<button class="btn gold" type="button" data-act="bombzone" id="btn-bombzone">${L`${bi('amove')}Bombardear zona`}</button>`);
       }
     }
     if (sel.some((u) => u.def.builds)) {
-      html += `<div class="queue">Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.</div>`;
+      html += `<div class="queue">${L`Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.`}</div>`;
     }
     // v1.8: Vehículo lanzapuentes y Buque minador.
     const layer = sel.find((u) => u.def.layBridge);
     if (layer) {
       const why = this.app.game.layBridgeInvalid(layer);
-      acts.push(`<button class="btn gold" type="button" data-act="laybridge" id="btn-laybridge" ${why ? 'disabled' : ''} title="${esc(why || 'Pone un Puente modular en el agua poco profunda de al lado')}">${bi('found')}Tender puente · ${fmt(BUILDINGS.bridge.cost)}</button>`);
+      acts.push(`<button class="btn gold" type="button" data-act="laybridge" id="btn-laybridge" ${why ? 'disabled' : ''} title="${esc(why || T('Pone un Puente modular en el agua poco profunda de al lado'))}">${L`${bi('found')}Tender puente · ${fmt(BUILDINGS.bridge.cost)}`}</button>`);
       if (why) html += `<div class="queue">${esc(why)}</div>`;
     }
     const mlayer = sel.find((u) => u.def.layMine);
     if (mlayer) {
       const why = this.app.game.layMineInvalid(mlayer);
-      acts.push(`<button class="btn gold" type="button" data-act="laymine" id="btn-laymine" ${why ? 'disabled' : ''}>${bi('found')}Sembrar mina · ${this.app.game.count(0, 'seamine')} / ${MINES.limit}</button>`);
+      acts.push(`<button class="btn gold" type="button" data-act="laymine" id="btn-laymine" ${why ? 'disabled' : ''}>${L`${bi('found')}Sembrar mina · ${this.app.game.count(0, 'seamine')} / ${MINES.limit}`}</button>`);
       if (why) html += `<div class="queue">${esc(why)}</div>`;
     }
     const founder = sel.find((u) => u.def.founds);
     if (founder) {
-      acts.push(`<button class="btn gold" type="button" data-act="found">${bi('found')}Fundar puesto · 800</button>`);
+      acts.push(`<button class="btn gold" type="button" data-act="found">${L`${bi('found')}Fundar puesto · 800`}</button>`);
     }
     const app = this.app;
     if (sel.some((u) => u.def.weapon)) {
       const arm = app.input.amoveArm;
-      acts.push(`<button class="btn ${arm === true ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="Avanzar atacando (F)">${bi('amove')}${arm === true ? 'Toca el destino…' : 'Avanzar atacando'}</button>`);
+      acts.push(`<button class="btn ${arm === true ? 'gold' : ''}" type="button" data-act="amove" id="btn-amove" title="${L`Avanzar atacando (F)`}">${bi('amove')}${arm === true ? T('Toca el destino…') : T('Avanzar atacando')}</button>`);
       // v1.4: patrullar y mantener posición.
       const patrolling = sel.some((u) => u.patrol);
-      acts.push(`<button class="btn ${arm === 'patrol' || patrolling ? 'gold' : ''}" type="button" data-act="patrol" id="btn-patrol" title="Van y vuelven entre aquí y el punto que toques, peleando en el camino">${bi('patrol')}${arm === 'patrol' ? 'Toca el otro punto…' : patrolling ? 'Patrullando' : 'Patrullar'}</button>`);
+      acts.push(`<button class="btn ${arm === 'patrol' || patrolling ? 'gold' : ''}" type="button" data-act="patrol" id="btn-patrol" title="${L`Van y vuelven entre aquí y el punto que toques, peleando en el camino`}">${bi('patrol')}${arm === 'patrol' ? T('Toca el otro punto…') : patrolling ? T('Patrullando') : T('Patrullar')}</button>`);
       const holding = sel.filter((u) => u.def.weapon).every((u) => u.hold);
-      acts.push(`<button class="btn ${holding ? 'gold' : ''}" type="button" data-act="hold" id="btn-hold" aria-pressed="${holding}" title="Se quedan quietas y solo disparan a lo que tienen a tiro">${bi('hold')}Mantener posición: ${holding ? 'sí' : 'no'}</button>`);
+      acts.push(`<button class="btn ${holding ? 'gold' : ''}" type="button" data-act="hold" id="btn-hold" aria-pressed="${holding}" title="${L`Se quedan quietas y solo disparan a lo que tienen a tiro`}">${L`${bi('hold')}Mantener posición: ${holding ? T('sí') : 'no'}`}</button>`);
     }
     if (sel.some((u) => u.def.repairs)) {
       // v1.4: los Constructores e Ingenieros libres reparan solos lo dañado cerca.
       const on = this.app.game.players[0].autoRepair !== false;
-      acts.push(`<button class="btn ${on ? 'good' : ''}" type="button" data-act="autorep" id="btn-autorep" aria-pressed="${on}" title="Los Constructores e Ingenieros sin trabajo reparan solos los edificios dañados a ${AUTO_REPAIR.range} casillas">${bi('wrench')}Reparación sola: ${on ? 'sí' : 'no'}</button>`);
+      acts.push(`<button class="btn ${on ? 'good' : ''}" type="button" data-act="autorep" id="btn-autorep" aria-pressed="${on}" title="${L`Los Constructores e Ingenieros sin trabajo reparan solos los edificios dañados a ${AUTO_REPAIR.range} casillas`}">${L`${bi('wrench')}Reparación sola: ${on ? T('sí') : 'no'}`}</button>`);
     }
     if (sel.length > 1) {
-      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="Bloque: juntas · Línea: una al lado de otra, de frente al destino">${bi('formation')}Formación: ${app.formation === 'line' ? 'línea' : 'bloque'}</button>`);
+      acts.push(`<button class="btn" type="button" data-act="formation" id="btn-formation" title="${L`Bloque: juntas · Línea: una al lado de otra, de frente al destino`}">${L`${bi('formation')}Formación: ${app.formation === 'line' ? T('línea') : 'bloque'}`}</button>`);
     }
-    acts.push(`<button class="btn" type="button" data-act="stop">${bi('stop')}Detener</button>`);
+    acts.push(`<button class="btn" type="button" data-act="stop">${L`${bi('stop')}Detener`}</button>`);
     html += `<div class="actions mainacts">${acts.join('')}</div>`;
-    html += `<div class="actions groupsave"><span class="queue">${bi('group')}Guardar en</span>${[1, 2, 3].map((n) =>
-      `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="Guardar en el grupo ${n} (Ctrl o Mayús + ${n})">${n}</button>`).join('')}</div>`;
+    html += `<div class="actions groupsave"><span class="queue">${L`${bi('group')}Guardar en`}</span>${[1, 2, 3].map((n) =>
+      `<button class="btn" type="button" data-act="savegrp" data-v="${n}" title="${L`Guardar en el grupo ${n} (Ctrl o Mayús + ${n})`}">${n}</button>`).join('')}</div>`;
     return html;
   }
 
   pointHtml(pt) {
     const g = this.app.game;
     const ownerTxt = pt.owner >= 0
-      ? `<b style="color:${hexColor(PLAYER_COLORS[pt.owner])}">${esc(g.players[pt.owner].name)}</b>` : 'Sin dueño';
-    const state = pt.contested ? 'En disputa: hay tropas de varios equipos cerca'
+      ? `<b style="color:${hexColor(PLAYER_COLORS[pt.owner])}">${esc(g.players[pt.owner].name)}</b>` : T('Sin dueño');
+    const state = pt.contested ? T('En disputa: hay tropas de varios equipos cerca')
       : pt.owner < 0 && pt.prog > 0 ? `Capturando… ${Math.floor(pt.prog * 100)} %`
-        : `Para capturarlo: infantería a 1 casilla y sin enemigos a ${CAPTURE.clear} casillas durante ${CAPTURE.time} s.`;
+        : L`Para capturarlo: infantería a 1 casilla y sin enemigos a ${CAPTURE.clear} casillas durante ${CAPTURE.time} s.`;
     let html = this.head(pt.type, pt.owner >= 0 ? PLAYER_COLORS[pt.owner] : NEUTRAL, esc(pt.def.name),
       `${ownerTxt} · ${esc(pt.def.desc)}`, false);
     html += `<div class="queue">${state}</div>`;
@@ -1697,7 +1708,7 @@ class UI {
         const pid = g.players.findIndex((p) => String(p.team) === team);
         return `<b style="color:${hexColor(PLAYER_COLORS[pid])}">${esc(g.players[pid].name)}</b> ${fmtTime(t)}`;
       });
-      html += `<div class="queue">Rey del Faro (meta ${fmtTime(KING_TIME)}): ${parts.join(' · ') || 'nadie lo ha controlado aún'}</div>`;
+      html += `<div class="queue">${L`Rey del Faro (meta ${fmtTime(KING_TIME)}): ${parts.join(' · ') || T('nadie lo ha controlado aún')}`}</div>`;
     }
     return html;
   }
@@ -1705,7 +1716,7 @@ class UI {
   inspectHtml(e) {
     const g = this.app.game;
     const owner = g.players[e.owner];
-    const rel = g.isEnemy(e.owner, 0) ? 'Enemigo' : 'Aliado';
+    const rel = g.isEnemy(e.owner, 0) ? T('Enemigo') : T('Aliado');
     const sub = `<b style="color:${hexColor(PLAYER_COLORS[e.owner])}">${esc(owner.name)}</b> · ${rel} · ${esc(e.def.desc)}`;
     return this.head(e.type, PLAYER_COLORS[e.owner], esc(e.def.name), sub) + (g.isEnemy(e.owner, 0) ? this.counterHtml(e) : '');
   }
@@ -1715,17 +1726,17 @@ class UI {
     const g = this.app.game;
     const cls = e.kind === 'bld' ? 'bld' : e.cls;
     const w = e.kind === 'bld' ? g.weaponOf(e) : e.def.weapon;
-    const rows = [`<span>Vida</span><b id="enemy-hp">${fmt(Math.max(0, e.hp))} / ${fmt(e.maxHp)} (${Math.round((Math.max(0, e.hp) / e.maxHp) * 100)} %)</b>`];
-    if (e.kind === 'bld' && e.def.maxLevel > 1) rows.push(`<span>Nivel</span><b>${e.level} de ${e.def.maxLevel}</b>`);
+    const rows = [`<span>${L`Vida`}</span><b id="enemy-hp">${fmt(Math.max(0, e.hp))} / ${fmt(e.maxHp)} (${Math.round((Math.max(0, e.hp) / e.maxHp) * 100)} %)</b>`];
+    if (e.kind === 'bld' && e.def.maxLevel > 1) rows.push(`<span>${L`Nivel`}</span><b>${e.level} de ${e.def.maxLevel}</b>`);
     if (w && w.mult) {
       const strong = Object.entries(w.mult).filter(([k, v]) => v >= 1.2 && CAT_NAMES[k]).map(([k]) => CAT_NAMES[k]);
       const cant = Object.entries(w.mult).filter(([k, v]) => v === 0 && CAT_NAMES[k]).map(([k]) => CAT_NAMES[k]);
-      rows.push(`<span>Fuerte contra</span><b>${strong.length ? strong.join(', ') : 'nada en especial'}</b>`);
-      if (cant.length) rows.push(`<span>No ataca a</span><b>${cant.join(', ')}</b>`);
+      rows.push(`<span>${L`Fuerte contra`}</span><b>${strong.length ? strong.join(', ') : T('nada en especial')}</b>`);
+      if (cant.length) rows.push(`<span>${L`No ataca a`}</span><b>${cant.join(', ')}</b>`);
     } else {
-      rows.push('<span>Ataque</span><b>no dispara</b>');
+      rows.push(`<span>${L`Ataque`}</span><b>${L`no dispara`}</b>`);
     }
-    rows.push(`<span>Usa</span><b>${this.countersFor(cls).join(', ')}</b>`);
+    rows.push(`<span>${L`Usa`}</span><b>${this.countersFor(cls).join(', ')}</b>`);
     return `<div class="cardinfo enemycard" id="enemycard">${rows.join('')}</div>`;
   }
 
@@ -1760,7 +1771,7 @@ class UI {
       hp.style.width = (k * 100).toFixed(1) + '%';
       hp.style.background = k > 0.55 ? 'var(--good)' : k > 0.28 ? '#f2c94c' : 'var(--bad)';
       $('sel-hptext').textContent = sel.length > 1 && first.kind === 'unit'
-        ? `Vida del grupo · ${Math.round(k * 100)} % (${fmt(cur)} / ${fmt(max)})` : `${fmt(cur)} / ${fmt(max)}`;
+        ? L`Vida del grupo · ${Math.round(k * 100)} % (${fmt(cur)} / ${fmt(max)})` : `${fmt(cur)} / ${fmt(max)}`;
     }
     // v1.7: orden actual y plazas reservadas, en vivo.
     const ord = $('sel-order');
@@ -1768,7 +1779,7 @@ class UI {
       const t = this.orderText(sel);
       if (ord.dataset.t !== t) {
         ord.dataset.t = t;
-        ord.innerHTML = `Orden actual: <b>${esc(t)}</b>`;
+        ord.innerHTML = `${L`Orden actual:`} <b>${esc(t)}</b>`;
       }
     }
     const qres = $('sel-qres');
@@ -1848,7 +1859,7 @@ class UI {
         app.sound.play('error');
       } else {
         app.setSelection([res]);
-        this.toast(`Mejora de ${res.def.name} pagada: un constructor la hará`, 'good');
+        this.toast(L`Mejora de ${res.def.name} pagada: un constructor la hará`, 'good');
       }
     } else if (act === 'upall') {
       const res = g.upgradeAll(0);
@@ -1856,16 +1867,16 @@ class UI {
         this.toast(res, 'bad');
         app.sound.play('error');
       } else if (!res.n) {
-        this.toast('No alcanza el dinero para ninguna mejora', 'bad');
+        this.toast(T('No alcanza el dinero para ninguna mejora'), 'bad');
         app.sound.play('error');
       } else {
-        this.toast(`Mejorando ${res.n} ${res.n === 1 ? 'edificio' : 'edificios'} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
+        this.toast(L`Mejorando ${res.n} ${res.n === 1 ? 'edificio' : 'edificios'} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
       }
       this.renderSel(true);
     } else if (act === 'autoup') {
       const pl = g.players[0];
       pl.autoUpgrade = !pl.autoUpgrade;
-      this.toast(pl.autoUpgrade ? 'Mejoras automáticas encendidas: se mejora solo hasta el máximo' : 'Mejoras automáticas apagadas', pl.autoUpgrade ? 'good' : 'info');
+      this.toast(pl.autoUpgrade ? T('Mejoras automáticas encendidas: se mejora solo hasta el máximo') : T('Mejoras automáticas apagadas'), pl.autoUpgrade ? 'good' : 'info');
       this.renderSel(true);
     } else if (act === 'dome') {
       const err = g.buyDome(0);
@@ -1873,7 +1884,7 @@ class UI {
         this.toast(err, 'bad');
         app.sound.play('error');
       } else {
-        this.toast(`Cúpula nivel ${g.players[0].dome.level}`, 'good');
+        this.toast(L`Cúpula nivel ${g.players[0].dome.level}`, 'good');
       }
       this.renderSel(true);
     } else if (act === 'unload') {
@@ -1889,7 +1900,7 @@ class UI {
       if (err) {
         this.toast(err, 'bad');
         app.sound.play('error');
-      } else this.toast(`Investigando: ${RESEARCH[btn.dataset.v].name}`, 'good');
+      } else this.toast(L`Investigando: ${RESEARCH[btn.dataset.v].name}`, 'good');
       this.renderSel(true);
     } else if (act === 'gate') {
       g.toggleGate(b);
@@ -1907,7 +1918,7 @@ class UI {
       if (typeof res === 'string') {
         this.toast(res, 'bad');
         app.sound.play('error');
-      } else this.toast(act === 'laybridge' ? 'Tendiendo el puente…' : 'Mina sembrada (solo tú la ves)', 'good');
+      } else this.toast(act === 'laybridge' ? T('Tendiendo el puente…') : T('Mina sembrada (solo tú la ves)'), 'good');
       this.renderSel(true);
     } else if (act === 'stop') {
       g.orderStop(sel.filter((x) => x.kind === 'unit'));
@@ -1954,7 +1965,7 @@ class UI {
         this.toast(err, 'bad');
         app.sound.play('error');
       } else if (added < n) {
-        this.toast(`${added} en cola · ${err}`, 'bad');
+        this.toast(L`${added} en cola · ${err}`, 'bad');
       }
       this.renderSel(true);
     } else if (act === 'amove') {
@@ -1964,24 +1975,24 @@ class UI {
     } else if (act === 'patrol') {
       const us = sel.filter((x) => x.kind === 'unit' && x.def.weapon);
       if (app.input.amoveArm === 'patrol') app.input.disarmAttackMove();
-      else if (us.some((u) => u.patrol)) { g.orderStop(us); this.toast('Dejaron de patrullar'); }
+      else if (us.some((u) => u.patrol)) { g.orderStop(us); this.toast(T('Dejaron de patrullar')); }
       else app.input.armAttackMove('patrol');
       this.renderSel(true);
     } else if (act === 'hold') {
       const us = sel.filter((x) => x.kind === 'unit' && x.def.weapon);
       const on = !us.every((u) => u.hold);
       g.setHold(us, on);
-      this.toast(on ? 'Mantienen la posición: solo disparan a lo que tienen a tiro' : 'Vuelven a perseguir a los enemigos cercanos');
+      this.toast(on ? T('Mantienen la posición: solo disparan a lo que tienen a tiro') : T('Vuelven a perseguir a los enemigos cercanos'));
       this.renderSel(true);
     } else if (act === 'autorep') {
       const p = g.players[0];
       p.autoRepair = p.autoRepair === false;
-      this.toast(p.autoRepair ? 'Los constructores libres repararán solos' : 'Reparación sola apagada');
+      this.toast(p.autoRepair ? T('Los constructores libres repararán solos') : T('Reparación sola apagada'));
       this.renderSel(true);
     } else if (act === 'loop') {
       b.loop = !b.loop;
       b.loopT = 0;
-      if (b.loop) this.toast(`${b.def.name}: sigue entrenando ${UNITS[b.lastType].name} mientras alcance el dinero`, 'good');
+      if (b.loop) this.toast(L`${b.def.name}: sigue entrenando ${UNITS[b.lastType].name} mientras alcance el dinero`, 'good');
       this.renderSel(true);
     } else if (act === 'formation') {
       app.toggleFormation();
@@ -2007,7 +2018,7 @@ class UI {
     if (el.hidden) return;
     if (sig !== this.prodSig) {
       this.prodSig = sig;
-      el.innerHTML = '<span class="lbl">Producción</span>' + list.map((b) => {
+      el.innerHTML = `<span class="lbl">${L`Producción`}</span>` + list.map((b) => {
         const idle = !b.queue.length && b.type !== 'core';
         const q = b.queue[0];
         const tip = `${b.def.name}: ${q ? `entrenando ${UNITS[q.type].name}${b.queue.length > 1 ? ` (+${b.queue.length - 1})` : ''}` : 'parado'}`;
@@ -2027,8 +2038,8 @@ class UI {
   addEdgeAlert(text, x, z) {
     const now = performance.now();
     let label = text.replace(/^Atacan tu /, '').replace(/^Perdiste: /, 'Perdiste ').replace(/^Perdiste /, 'Perdiste ');
-    if (/Núcleo/.test(text)) label = 'Núcleo';
-    else if (/tropas/i.test(text)) label = 'Tropas';
+    if (/Núcleo/.test(text)) label = T('Núcleo');
+    else if (/tropas/i.test(text)) label = T('Tropas');
     if (label.length > 18) label = label.slice(0, 17) + '…';
     const near = this.edgeAlerts.find((a) => Math.hypot(a.x - x, a.z - z) < 5);
     if (near) {
@@ -2153,7 +2164,7 @@ class UI {
       }
       const rival = best >= 0 ? g.players.findIndex((pl) => pl.team === best) : -1;
       const bar = (t, color) => `<span class="bar"><i style="width:${Math.min(100, (t / KING_TIME) * 100)}%;background:${color}"></i></span>`;
-      $('king').innerHTML = `Faro: ${ownerTeam < 0 ? 'libre' : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
+      $('king').innerHTML = L`Faro: ${ownerTeam < 0 ? 'libre' : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
         (rival >= 0 ? ` ${esc(g.players[rival].name)} ${bar(bestT, hexColor(PLAYER_COLORS[rival]))}` : '');
     }
     $('stat-pop').classList.toggle('full', p.popUsed >= p.popCap);
@@ -2187,6 +2198,12 @@ class UI {
       this.popT = 0.5;
       this.renderPop();
     }
+  }
+
+  markLang() {
+    document.querySelectorAll('[data-lang]').forEach((b) => b.classList.toggle('gold', b.dataset.lang === I18N.lang));
+    const n = $('lang-note');
+    if (n) n.textContent = I18N.chosen ? T('Elegido por ti.') : T('Automático: el idioma de tu navegador o de Poki.');
   }
 
   showEnd() {

@@ -1603,7 +1603,7 @@ class Renderer {
         ctx.fillStyle = '#ffd36a';
         ctx.font = '600 11px system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('En disputa', s.x, s.y + R + 14);
+        ctx.fillText(T('En disputa'), s.x, s.y + R + 14);
       }
     }
     // Constructor en camino (v0.9): línea punteada desde él hasta su obra.
@@ -1629,7 +1629,7 @@ class Renderer {
       const s = this.project(z.x, z.y + 0.9, z.z);
       if (!s.ok || s.x < -60 || s.y < -30 || s.x > this.width + 60 || s.y > this.height + 30) continue;
       const left = Math.max(0, Math.ceil(z.until - g.time));
-      const text = `☢ Radiación · ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+      const text = L`☢ Radiación · ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
       ctx.font = '700 12px system-ui, sans-serif';
       const w = ctx.measureText(text).width + 16;
       ctx.fillStyle = 'rgba(12,22,10,0.85)';
@@ -1683,9 +1683,9 @@ class Renderer {
         const idle = g.time - bl.lastWork > 1.5 && bl.type !== 'outpost';
         // v0.9: «Esperando constructor» mientras nadie trabaja; «Construyendo» cuando llega.
         const coming = idle && g.units.some((u) => u.alive && u.buildTarget === bl && u.state === 'build');
-        const verb = bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : idle ? 'Esperando constructor' : 'Construyendo';
+        const verb = bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : idle ? T('Esperando constructor') : T('Construyendo');
         const text = `${verb} · ${Math.floor(k * 100)} %`;
-        const note = coming ? 'Constructor en camino' : 'Sin constructor';
+        const note = coming ? T('Constructor en camino') : T('Sin constructor');
         ctx.font = '600 11px system-ui, sans-serif';
         const w = Math.max(ctx.measureText(text).width, idle ? ctx.measureText(note).width : 0) + 14;
         const h = idle ? 32 : 20;

@@ -12,7 +12,7 @@ const Campaign = {
     const m = this.def(id);
     const teams = [];
     for (let i = 0; i < m.players; i++) teams.push(i);
-    return { name: `Misión ${m.id} · ${m.name}`, players: m.players, teams, campaign: m.id };
+    return { name: L`Misión ${m.id} · ${m.name}`, players: m.players, teams, campaign: m.id };
   },
 
   // Opciones para empezar una misión: mapa y semilla fijos, así siempre es la misma isla.
@@ -29,19 +29,19 @@ const Campaign = {
 
   goalText(m) {
     const g = m.goal;
-    if (g.kind === 'eco') return `Llega a ${fmt(g.income)} monedas por minuto y ten ${g.army} tropas de combate.`;
-    if (g.kind === 'survive') return `Aguanta ${Math.round(g.time / 60)} minutos con tu Núcleo en pie.`;
-    if (g.kind === 'hold') return `Toma el Faro y mantenlo ${g.time} s en total.`;
-    if (g.kind === 'flags') return `Captura ${g.count} Banderas de otras islas.`;
-    return m.players > 2 ? 'Sé el último Núcleo en pie.' : 'Destruye el Núcleo enemigo.';
+    if (g.kind === 'eco') return L`Llega a ${fmt(g.income)} monedas por minuto y ten ${g.army} tropas de combate.`;
+    if (g.kind === 'survive') return L`Aguanta ${Math.round(g.time / 60)} minutos con tu Núcleo en pie.`;
+    if (g.kind === 'hold') return L`Toma el Faro y mantenlo ${g.time} s en total.`;
+    if (g.kind === 'flags') return L`Captura ${g.count} Banderas de otras islas.`;
+    return m.players > 2 ? T('Sé el último Núcleo en pie.') : T('Destruye el Núcleo enemigo.');
   },
 
   starText(s) {
-    if (s.kind === 'time') return `En menos de ${Math.round(s.max / 60)} min`;
-    if (s.kind === 'lostBld') return s.max === 0 ? 'Sin perder edificios' : `Pierdes ${s.max} edificios o menos`;
-    if (s.kind === 'lostUnits') return `Pierdes ${s.max} tropas o menos`;
-    if (s.kind === 'coreEnd') return `Núcleo sobre el ${Math.round(s.min * 100)} % al terminar`;
-    return `Tu Núcleo nunca baja del ${Math.round(s.min * 100)} %`;
+    if (s.kind === 'time') return L`En menos de ${Math.round(s.max / 60)} min`;
+    if (s.kind === 'lostBld') return s.max === 0 ? T('Sin perder edificios') : L`Pierdes ${s.max} edificios o menos`;
+    if (s.kind === 'lostUnits') return L`Pierdes ${s.max} tropas o menos`;
+    if (s.kind === 'coreEnd') return L`Núcleo sobre el ${Math.round(s.min * 100)} % al terminar`;
+    return L`Tu Núcleo nunca baja del ${Math.round(s.min * 100)} %`;
   },
 
   // ---------- preparación ----------
@@ -186,7 +186,7 @@ const Campaign = {
       for (const pt of g.points) {
         if (pt.type === 'flag' && pt.owner === 0 && g.cells[pt.cell].comp !== c.homeComp && !c.flags.includes(pt.id)) {
           c.flags.push(pt.id);
-          g.emit('toast', { text: `Bandera de otra isla: ${c.flags.length} de ${m.goal.count}`, kind: 'good' });
+          g.emit('toast', { text: L`Bandera de otra isla: ${c.flags.length} de ${m.goal.count}`, kind: 'good' });
         }
       }
     }
@@ -226,8 +226,8 @@ const Campaign = {
     if (goal.kind === 'eco') {
       const army = this.army(g);
       return [
-        { text: `Ingresos: ${fmt(me.income)} / ${fmt(goal.income)} por min`, done: me.income >= goal.income },
-        { text: `Tropas de combate: ${Math.min(army, goal.army)} / ${goal.army}`, done: army >= goal.army },
+        { text: L`Ingresos: ${fmt(me.income)} / ${fmt(goal.income)} por min`, done: me.income >= goal.income },
+        { text: L`Tropas de combate: ${Math.min(army, goal.army)} / ${goal.army}`, done: army >= goal.army },
       ];
     }
     if (goal.kind === 'survive') {
@@ -235,16 +235,16 @@ const Campaign = {
     }
     if (goal.kind === 'hold') {
       const faro = g.points.find((pt) => pt.type === 'faro');
-      const now = faro && faro.owner === 0 ? ' · ¡es tuyo!' : '';
-      return [{ text: `Faro en tu poder: ${Math.floor(Math.min(c.faroHold, goal.time))} / ${goal.time} s${now}`, done: c.faroHold >= goal.time }];
+      const now = faro && faro.owner === 0 ? T(' · ¡es tuyo!') : '';
+      return [{ text: L`Faro en tu poder: ${Math.floor(Math.min(c.faroHold, goal.time))} / ${goal.time} s${now}`, done: c.faroHold >= goal.time }];
     }
     if (goal.kind === 'flags') {
-      return [{ text: `Banderas de otras islas: ${Math.min(c.flags.length, goal.count)} / ${goal.count}`, done: c.flags.length >= goal.count }];
+      return [{ text: L`Banderas de otras islas: ${Math.min(c.flags.length, goal.count)} / ${goal.count}`, done: c.flags.length >= goal.count }];
     }
     const rivals = g.players.filter((p) => !p.human);
     const down = rivals.filter((p) => !p.alive).length;
-    if (rivals.length === 1) return [{ text: down ? 'Núcleo enemigo destruido' : 'Destruye el Núcleo enemigo', done: down > 0 }];
-    return [{ text: `Núcleos rivales caídos: ${down} / ${rivals.length}`, done: down >= rivals.length }];
+    if (rivals.length === 1) return [{ text: down ? T('Núcleo enemigo destruido') : T('Destruye el Núcleo enemigo'), done: down > 0 }];
+    return [{ text: L`Núcleos rivales caídos: ${down} / ${rivals.length}`, done: down >= rivals.length }];
   },
 
   // Estrellas: la primera por terminar y dos por condiciones. final = al acabar la partida.
@@ -255,7 +255,7 @@ const Campaign = {
     const won = c.won || (g.over && g.result === 'victory');
     const core = me.core;
     const coreK = core && core.alive ? core.hp / core.maxHp : 0;
-    const out = [{ text: 'Termina la misión', ok: won, live: true, why: won ? '' : 'No se cumplió la meta' }];
+    const out = [{ text: T('Termina la misión'), ok: won, live: true, why: won ? '' : T('No se cumplió la meta') }];
     for (const s of m.stars) {
       let ok;
       let live;
@@ -264,26 +264,26 @@ const Campaign = {
       if (s.kind === 'time') {
         live = g.time < s.max;
         ok = won && live;
-        now = live ? `quedan ${fmtTime(s.max - g.time)}` : 'se acabó el tiempo';
-        why = `Tardaste ${fmtTime(g.time)}`;
+        now = live ? `quedan ${fmtTime(s.max - g.time)}` : T('se acabó el tiempo');
+        why = L`Tardaste ${fmtTime(g.time)}`;
       } else if (s.kind === 'lostBld' || s.kind === 'lostUnits') {
         const n = s.kind === 'lostBld' ? c.lostBld : me.stats.lost;
         live = n <= s.max;
         ok = won && live;
         now = `llevas ${n}`;
-        why = `Perdiste ${n} ${s.kind === 'lostBld' ? (n === 1 ? 'edificio' : 'edificios') : (n === 1 ? 'tropa' : 'tropas')}`;
+        why = L`Perdiste ${n} ${s.kind === 'lostBld' ? (n === 1 ? 'edificio' : 'edificios') : (n === 1 ? 'tropa' : 'tropas')}`;
       } else if (s.kind === 'coreEnd') {
         live = coreK >= s.min;
         ok = won && live;
         now = `ahora ${Math.round(coreK * 100)} %`;
-        why = `Tu Núcleo terminó al ${Math.round(coreK * 100)} %`;
+        why = L`Tu Núcleo terminó al ${Math.round(coreK * 100)} %`;
       } else {
         live = c.minCore >= s.min;
         ok = won && live;
-        now = `mínimo ${Math.round(c.minCore * 100)} %`;
-        why = `Tu Núcleo bajó al ${Math.round(c.minCore * 100)} %`;
+        now = L`mínimo ${Math.round(c.minCore * 100)} %`;
+        why = L`Tu Núcleo bajó al ${Math.round(c.minCore * 100)} %`;
       }
-      if (!won && live) why = 'Hay que terminar la misión';
+      if (!won && live) why = T('Hay que terminar la misión');
       out.push({ text: this.starText(s), ok, live, now, why: ok ? '' : why });
     }
     return out;

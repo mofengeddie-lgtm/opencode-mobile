@@ -33,6 +33,11 @@ try {
 } catch (err) {
   console.warn('[Faro] Sin animaciones de CMU:', err.message);
 }
+// v1.9: diccionarios de idiomas (src/i18n/<idioma>.json: clave = texto en español, valor = traducción).
+const I18N_DIR = join(ROOT, 'src', 'i18n');
+const dicts = {};
+for (const f of readdirSync(I18N_DIR).filter((x) => x.endsWith('.json'))) dicts[f.replace(/\.json$/, '')] = JSON.parse(readFileSync(join(I18N_DIR, f), 'utf8'));
+const i18nJs = `const FARO_I18N = ${JSON.stringify(dicts)};\n`;
 const modelJs = `// ---- modelos GLB (Blender) ----\nconst FARO_GLB = ${JSON.stringify(models)};\nconst FARO_ENV = ${JSON.stringify(envUri)};\n` +
   `const FARO_ANIM = ${JSON.stringify(anim)};\n`;
 // v1.9: librerías y fuentes dentro del archivo (Poki no deja pedir nada a otros sitios).
@@ -45,7 +50,7 @@ const fontCss = FONTS.map(([fam, w, f]) => `@font-face{font-family:'${fam}';font
 // --poki: versión para Poki (faro/poki/index.html): script del SDK de Poki y sin zona de creadores.
 const POKI = process.argv.includes('--poki');
 const platformJs = `const FARO_PLATFORM = ${JSON.stringify(POKI ? 'poki' : 'web')};\n`;
-const js = modelJs + platformJs + files.map((f) => `// ---- ${f} ----\n${readFileSync(join(JS_DIR, f), 'utf8')}`).join('\n');
+const js = modelJs + platformJs + i18nJs + files.map((f) => `// ---- ${f} ----\n${readFileSync(join(JS_DIR, f), 'utf8')}`).join('\n');
 const template = readFileSync(join(ROOT, 'src', 'index.template.html'), 'utf8');
 if (!template.includes('/*__SCRIPTS__*/')) throw new Error('Falta el marcador /*__SCRIPTS__*/ en la plantilla');
 // Función de reemplazo para que los "$" del código no se interpreten como patrones.

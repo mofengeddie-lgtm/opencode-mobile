@@ -861,7 +861,7 @@ class Bot {
     if (!this.p.alive || !ally || !ally.core || !ally.core.alive || g.isEnemy(pid, this.pid)) return 0;
     const home = g.units.filter((u) => u.alive && u.owner === this.pid && u.def.weapon && !u.inside && u.role !== 'guard');
     if (!home.length) {
-      g.say(this.pid, 'No tengo tropas libres ahora, ¡aguanta!', { force: true, toMe: true });
+      g.say(this.pid, T('No tengo tropas libres ahora, ¡aguanta!'), { force: true, toMe: true });
       return 0;
     }
     const go = home.slice(0, Math.min(8, Math.max(1, Math.ceil(home.length / 2))));
@@ -869,7 +869,7 @@ class Bot {
     for (const u of sent) u.role = 'help';
     this.helpAt[pid] = g.time;
     if (sent.length) this.helpSent++;
-    g.say(this.pid, sent.length ? `¡Voy a ayudarte con ${sent.length} tropas!` : 'No llego a tu base desde aquí.', { force: true, toMe: true });
+    g.say(this.pid, sent.length ? L`¡Voy a ayudarte con ${sent.length} tropas!` : T('No llego a tu base desde aquí.'), { force: true, toMe: true });
     return sent.length;
   }
 
@@ -887,7 +887,7 @@ class Bot {
     const sent = go.length ? this.sendTo(go, target) : [];
     for (const u of sent) u.role = 'help';
     this.lastTarget = target;
-    g.say(this.pid, sent.length ? `¡Vamos por ${foe.name}! Mando ${sent.length} tropas.` : `Atacaré a ${foe.name} con la próxima oleada.`, { force: true, toMe: true });
+    g.say(this.pid, sent.length ? L`¡Vamos por ${foe.name}! Mando ${sent.length} tropas.` : L`Atacaré a ${foe.name} con la próxima oleada.`, { force: true, toMe: true });
     return sent.length;
   }
 
@@ -1064,7 +1064,7 @@ class Bot {
         this.helpAt[ally.id] = g.time;
         this.helpSent++;
         this.lastHelp = { t: g.time, ally: ally.id, units: sent.length };
-        if (ally.human) g.say(this.pid, '¡Voy a ayudarte!', { x: tc.x, z: tc.z, queue: 2 });
+        if (ally.human) g.say(this.pid, T('¡Voy a ayudarte!'), { x: tc.x, z: tc.z, queue: 2 });
       }
     }
   }

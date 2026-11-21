@@ -172,7 +172,7 @@ class Input {
       this.app.ui.hideBox();
       const list = this.r.unitsInRect(d.sx, d.sy, p.x, p.y, (u) => u.owner === 0);
       this.app.setSelection(list);
-      if (!list.length) this.app.ui.toast('No hay tropas tuyas en el recuadro');
+      if (!list.length) this.app.ui.toast(T('No hay tropas tuyas en el recuadro'));
       return;
     }
     if (!d.moved) this.tap(p.x, p.y, d.right);
@@ -272,13 +272,13 @@ class Input {
   armAttackMove(mode = true) {
     const armed = this.app.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive && e.def.weapon);
     if (!armed.length) {
-      this.app.ui.toast('Elige primero tropas que puedan pelear', 'bad');
+      this.app.ui.toast(T('Elige primero tropas que puedan pelear'), 'bad');
       return false;
     }
     this.amoveArm = mode;
     this.app.ui.selSig = '';
-    this.app.ui.toast(mode === 'patrol' ? 'Toca el otro punto: irán y volverán entre aquí y allí, peleando en el camino'
-      : 'Toca el destino: avanzarán peleando con todo lo que encuentren');
+    this.app.ui.toast(mode === 'patrol' ? T('Toca el otro punto: irán y volverán entre aquí y allí, peleando en el camino')
+      : T('Toca el destino: avanzarán peleando con todo lo que encuentren'));
     return true;
   }
 
@@ -312,14 +312,14 @@ class Input {
     if (amove === 'patrol' && mine.length && cell) {
       const n = g.orderPatrol(mine, cell.i);
       this.r.addMoveMarker(cell.i, 0xffd166);
-      app.ui.toast(n ? `${n === 1 ? 'Patrulla' : `${n} tropas patrullan`} entre aquí y allí` : 'Esas tropas no pueden patrullar', n ? 'info' : 'bad');
+      app.ui.toast(n ? L`${n === 1 ? T('Patrulla') : L`${n} tropas patrullan`} entre aquí y allí` : T('Esas tropas no pueden patrullar'), n ? 'info' : 'bad');
       app.sound.play('order');
       return;
     }
     if (amove && mine.length && cell && !(target && g.isEnemy(target.owner, 0))) {
       g.orderMove(mine, cell.i, true, app.formation);
       this.r.addMoveMarker(cell.i, 0xff6060);
-      app.ui.toast(`${mine.length === 1 ? 'Avanza' : `${mine.length} tropas avanzan`} atacando`);
+      app.ui.toast(`${mine.length === 1 ? T('Avanza') : L`${mine.length} tropas avanzan`} atacando`);
       app.sound.play('order');
       return;
     }
@@ -334,7 +334,7 @@ class Input {
           const rest = mine.filter((u) => !armed.includes(u));
           if (rest.length) g.orderMove(rest, target.cell);
         } else {
-          app.ui.toast('Tus tropas seleccionadas no pueden atacar eso', 'bad');
+          app.ui.toast(T('Tus tropas seleccionadas no pueden atacar eso'), 'bad');
         }
         return;
       }
@@ -351,7 +351,7 @@ class Input {
       if (workers.length) {
         g.orderBuild(workers, bld);
         this.r.addMoveMarker(bld.cell, 0xf2ab38);
-        app.ui.toast(`${workers.length === 1 ? 'Construyendo' : `${workers.length} constructores en`} ${bld.def.name}`);
+        app.ui.toast(`${workers.length === 1 ? T('Construyendo') : L`${workers.length} constructores en`} ${bld.def.name}`);
         app.sound.play('order');
         return;
       }
@@ -364,7 +364,7 @@ class Input {
         const rest = mine.filter((u) => !u.def.repairs);
         if (rest.length) g.orderMove(rest, bld.cell);
         this.r.addMoveMarker(bld.cell, 0x6dff8a);
-        app.ui.toast(`Reparando ${bld.def.name}`);
+        app.ui.toast(L`Reparando ${bld.def.name}`);
         app.sound.play('order');
         return;
       }
@@ -375,8 +375,8 @@ class Input {
         g.orderMove(mine, cell.i, true);
         this.r.addMoveMarker(cell.i, 0xffb63a);
         const inf = mine.some((u) => u.cls === 'inf');
-        app.ui.toast(inf ? 'Quédate junto al punto sin enemigos cerca para capturarlo'
-          : 'Solo la infantería captura puntos', inf ? 'info' : 'bad');
+        app.ui.toast(inf ? T('Quédate junto al punto sin enemigos cerca para capturarlo')
+          : T('Solo la infantería captura puntos'), inf ? 'info' : 'bad');
         app.sound.play('order');
       } else {
         app.setSelection([point]);
@@ -461,7 +461,7 @@ class Input {
     const p = this.placement;
     if (!p || p.kind !== 'build') return;
     if (p.cell < 0) {
-      this.app.ui.toast('Toca primero una casilla dorada', 'bad');
+      this.app.ui.toast(T('Toca primero una casilla dorada'), 'bad');
       this.app.sound.play('error');
       return;
     }
@@ -561,7 +561,7 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xf5c542);
-      this.app.ui.toast('El ingeniero va en camino (cuesta 800 al llegar)');
+      this.app.ui.toast(T('El ingeniero va en camino (cuesta 800 al llegar)'));
       this.cancelPlacement();
     } else if (p.kind === 'mnuke' || p.kind === 'silo' || (p.kind === 'nuke' && g.strategic)) {
       // v1.7: con Arsenal estratégico el uso es único: primero se revisa la zona y se confirma.
@@ -592,14 +592,14 @@ class Input {
       }
       if (pid < 0 && cell.owner >= 0) pid = cell.owner;
       if (pid < 0 || !g.isEnemy(0, pid)) {
-        this.app.ui.toast('Toca algo de un rival', 'bad');
+        this.app.ui.toast(T('Toca algo de un rival'), 'bad');
         this.app.sound.play('error');
         return;
       }
       const bots = g.bots.filter((b) => b.p.alive && b.p.team === g.players[0].team && b.pid !== 0);
       const n = bots.reduce((a, b) => a + b.answerAttack(pid), 0);
       this.r.addMoveMarker(cell.i, 0xff4040);
-      this.app.ui.toast(`Tus aliados atacan a ${g.players[pid].name}${n ? ` con ${n} tropas` : ''}`, 'good');
+      this.app.ui.toast(L`Tus aliados atacan a ${g.players[pid].name}${n ? ` ${L`con ${n} tropas`}` : ''}`, 'good');
       this.app.sound.play('order');
       this.cancelPlacement();
     } else if (p.kind === 'bombzone') {
@@ -607,7 +607,7 @@ class Input {
       if (bombers.length) {
         g.orderMove(bombers, cell.i, true);
         this.r.addMoveMarker(cell.i, 0xff4040);
-        this.app.ui.toast(`${bombers.length === 1 ? 'El Bombardero va' : 'Los Bombarderos van'} a bombardear la zona`, 'info');
+        this.app.ui.toast(L`${bombers.length === 1 ? T('El Bombardero va') : T('Los Bombarderos van')} a bombardear la zona`, 'info');
         this.app.sound.play('order');
       }
       this.cancelPlacement();
@@ -619,13 +619,13 @@ class Input {
         return;
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
-      this.app.ui.toast(`¡${res} misiles nucleares lanzados a la vez!`, 'info');
+      this.app.ui.toast(L`¡${res} misiles nucleares lanzados a la vez!`, 'info');
       this.cancelPlacement();
     } else if (p.kind === 'rally') {
       p.building.rally = cell.i;
       this.r.addMoveMarker(cell.i, 0xffffff);
       this.cancelPlacement();
-      this.app.ui.toast('Punto de reunión fijado');
+      this.app.ui.toast(T('Punto de reunión fijado'));
     }
   }
 }

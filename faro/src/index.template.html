@@ -278,6 +278,7 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .seg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .seg3 .btn { padding: 0 8px; white-space: normal; line-height: 1.15; }
+.seg3.seg2, body.bigtext .seg3.seg2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .small-note { margin: 6px 0 0 !important; font-size: 12.5px; color: var(--muted); min-height: 1em; }
 .fpschip { display: inline-flex; align-items: center; padding: 0 8px; border-radius: 7px; background: rgba(255, 255, 255, 0.06); font-size: 13px; font-weight: 600; color: var(--good); white-space: nowrap; }
 
@@ -1300,6 +1301,14 @@ window.FaroBoot = (function () {
     <div class="row">
       <button class="btn gold" id="btn-resume" type="button">Continuar</button>
       <button class="btn" id="btn-restart" type="button">Reiniciar</button>
+    </div>
+    <div id="set-lang">
+      <div class="lbl" style="margin-bottom:6px">Idioma · Language</div>
+      <div class="seg3 seg2">
+        <button class="btn" type="button" data-lang="es" lang="es">Español</button>
+        <button class="btn" type="button" data-lang="en" lang="en">English</button>
+      </div>
+      <p class="small-note" id="lang-note"></p>
     </div>
     <div id="set-quality">
       <div class="lbl" style="margin-bottom:6px">Gráficos</div>

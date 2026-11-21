@@ -34,13 +34,16 @@ const App = {
 
   init(hotData) {
     window.FARO = this;
+    // v1.9: idioma: datos (nombres, descripciones…) y HTML fijo traducidos antes de armar la interfaz.
+    i18nApplyData();
+    I18N.applyStatic(document.body);
     const boot = window.FaroBoot || { set() {}, fail() {}, finish() {} };
     // v1.6: sin el motor 3D (sin conexión o bloqueado) no se puede jugar: se dice y se ofrece reintentar.
     if (typeof THREE === 'undefined') {
-      boot.fail('No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».');
+      boot.fail(T('No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».'));
       return;
     }
-    boot.set('engine', 1, 'Preparando el 3D…');
+    boot.set('engine', 1, T('Preparando el 3D…'));
     this.canvas = $('gl');
     this.overlay = $('overlay');
     try {
@@ -78,7 +81,7 @@ const App = {
     try {
       this.gl = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, powerPreference: 'high-performance' });
     } catch (err) {
-      boot.fail('Tu navegador no pudo iniciar el 3D (WebGL). Prueba con Safari o Chrome actualizados.');
+      boot.fail(T('Tu navegador no pudo iniciar el 3D (WebGL). Prueba con Safari o Chrome actualizados.'));
       return;
     }
     Thumbs.init();
@@ -89,32 +92,32 @@ const App = {
     this.sound.onToggle = () => { if (this.sound.on) this.music.play(this.state === 'play' ? 'battle' : 'lobby'); else this.music.stop(); this.music.refreshVolume(); };
     // Primero los modelos de Blender; si fallan, se usan los modelos de código.
     const nModels = typeof FARO_GLB !== 'undefined' ? Object.keys(FARO_GLB).length : 0;
-    boot.set('models', 0, 'Modelos 3D…', THREE.GLTFLoader ? `0 de ${nModels}` : 'Sin el cargador de modelos: se usan los modelos simples');
+    boot.set('models', 0, 'Modelos 3D…', THREE.GLTFLoader ? `0 de ${nModels}` : T('Sin el cargador de modelos: se usan los modelos simples'));
     const models = loadGLBModels((k, n) => boot.set('models', k / n, 'Modelos 3D…', `${k} de ${n}`)).catch(() => 0);
     const sky = loadEnvMap(this.gl).catch(() => null).then((x) => { boot.set('sky', 1, 'Cielo y luz…'); return x; });
     // v1.9: el SDK de Poki arranca a la par de la carga (en la web no hay SDK y se cumple al instante).
     const plat = Platform.init();
     this.ready = Promise.all([models, sky, plat]).then(([n]) => {
-      if (!n) boot.set('models', 1, 'Modelos 3D…', 'Se usan los modelos simples');
-      boot.set('profile', 0.5, 'Tu perfil…');
+      if (!n) boot.set('models', 1, 'Modelos 3D…', T('Se usan los modelos simples'));
+      boot.set('profile', 0.5, T('Tu perfil…'));
       this.modelCount = n;
       // v1.7: si el perfil guardado no se pudo leer, se pregunta antes de seguir (no se pisa).
       if (!Profile.loadError) return null;
-      return new Promise((resolve) => boot.ask('No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.', 'Empezar de nuevo', () => {
+      return new Promise((resolve) => boot.ask(T('No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.'), T('Empezar de nuevo'), () => {
         Profile.startFresh();
         resolve();
       }));
     }).then(() => {
       const fixed = Profile.repaired ? Profile.repaired.length : 0;
-      boot.set('profile', 1, 'Tu perfil…', fixed ? `Se ${fixed === 1 ? 'reparó 1 dato' : `repararon ${fixed} datos`}; el resto está igual` : '');
-      boot.set('game', 0.3, 'La partida…');
+      boot.set('profile', 1, T('Tu perfil…'), fixed ? L`Se ${fixed === 1 ? T('reparó 1 dato') : L`repararon ${fixed} datos`}; el resto está igual` : '');
+      boot.set('game', 0.3, T('La partida…'));
       this.ui = new UI(this);
       this.input = new Input(this);
       this.lobby = new Lobby(this);
       this.makePreview();
       this.ui.showScreen('menu');
       this.loaded = true;
-      boot.set('game', 1, 'La partida…');
+      boot.set('game', 1, T('La partida…'));
       boot.finish();
       // v1.9: Poki mide cuántos llegan a jugar desde que terminó la carga.
       Platform.loadingFinished();
@@ -264,7 +267,7 @@ const App = {
     const tag = $('armytag');
     if (tag) {
       tag.hidden = !army;
-      $('armytag-n').textContent = army ? `${army} en el desfile` : '';
+      $('armytag-n').textContent = army ? L`${army} en el desfile` : '';
     }
     this.selection = [];
   },
@@ -302,7 +305,7 @@ const App = {
   // Campaña: empieza la misión con su mapa fijo (si está abierta).
   startMission(id) {
     if (!Campaign.unlocked(id, Profile.data, Creator.active())) {
-      this.ui.toast(`Termina primero la misión ${id - 1}`, 'bad');
+      this.ui.toast(L`Termina primero la misión ${id - 1}`, 'bad');
       return;
     }
     this.opts = { ...Campaign.opts(id) };
@@ -341,7 +344,7 @@ const App = {
     // v1.4: el desafío semanal avisa su regla al empezar.
     if (this.game.opts.weekly) {
       const W = weeklyFor(Profile.now());
-      this.ui.toast(`Desafío semanal: ${W.name}. ${W.desc}`, 'info');
+      this.ui.toast(L`Desafío semanal: ${W.name}. ${W.desc}`, 'info');
     }
     if (this.game.camp) {
       this.focusCore();
@@ -379,7 +382,7 @@ const App = {
     this.input.cancelPlacement();
     document.body.classList.add('spectating');
     $('specbar').hidden = false;
-    this.ui.toast('Modo espectador: ves el resto de la partida', 'info');
+    this.ui.toast(T('Modo espectador: ves el resto de la partida'), 'info');
   },
 
   toMenu() {
@@ -436,7 +439,7 @@ const App = {
     const g = Save.read();
     if (!g) {
       Save.clear();
-      this.ui.toast('No se pudo abrir la partida guardada', 'bad');
+      this.ui.toast(T('No se pudo abrir la partida guardada'), 'bad');
       this.lobby.render();
       return;
     }
@@ -493,7 +496,7 @@ const App = {
     const note = $('quality-note');
     if (note) {
       note.textContent = this.qualityPref === 'auto'
-        ? `Ahora: ${this.quality === 'high' ? 'alta calidad' : 'más fluido'}${this.fps ? ` · ${this.fps} cuadros por segundo` : ''}`
+        ? L`Ahora: ${this.quality === 'high' ? T('alta calidad') : T('más fluido')}${this.fps ? ` ${L`· ${this.fps} cuadros por segundo`}` : ''}`
         : '';
     }
   },
@@ -512,7 +515,7 @@ const App = {
     this.showFps = on;
     try { localStorage.setItem('faro-fps', on ? 'on' : 'off'); } catch (err) { /* sin almacenamiento */ }
     $('fps').hidden = !on;
-    $('btn-fps').textContent = `Contador de cuadros: ${on ? 'sí' : 'no'}`;
+    $('btn-fps').textContent = L`Contador de cuadros: ${on ? T('sí') : 'no'}`;
   },
 
   // Se llama una vez por segundo con los cuadros por segundo medidos.
@@ -528,7 +531,7 @@ const App = {
     this.quality = 'low';
     this.lowFpsSecs = 0;
     if (this.renderer) this.renderer.applyQuality('low');
-    this.ui.toast(`Gráficos: más fluido (automático, ${fps} cuadros por segundo)`, 'info');
+    this.ui.toast(L`Gráficos: más fluido (automático, ${fps} cuadros por segundo)`, 'info');
     return true;
   },
 
@@ -550,7 +553,7 @@ const App = {
     if (this.state !== 'play') return;
     const list = this.selection.filter((e) => e.kind === 'unit' && e.owner === 0 && e.alive);
     if (!list.length) {
-      this.ui.toast('Elige tropas y luego guárdalas en un grupo', 'bad');
+      this.ui.toast(T('Elige tropas y luego guárdalas en un grupo'), 'bad');
       return;
     }
     this.groups[n] = list.slice();
@@ -573,7 +576,7 @@ const App = {
     const twice = this.groupTap.n === n && now - this.groupTap.t < 450;
     this.groupTap = { n, t: now };
     if (!list.length) {
-      this.ui.toast(`Grupo ${n} vacío: elige tropas y toca «Guardar en ${n}»`);
+      this.ui.toast(L`Grupo ${n} vacío: elige tropas y toca «Guardar en ${n}»`);
       return;
     }
     this.setSelection(list);
@@ -592,7 +595,7 @@ const App = {
     if (!g || this.state !== 'play') return;
     const all = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.builds === 'land');
     if (!all.length) {
-      this.ui.toast('No tienes Constructores: entrénalos en el Núcleo o el Cuartel', 'bad');
+      this.ui.toast(T('No tienes Constructores: entrénalos en el Núcleo o el Cuartel'), 'bad');
       return;
     }
     const idle = all.filter((u) => u.state === 'idle');
@@ -600,14 +603,14 @@ const App = {
     const pick = idle.length && !same(idle, this.selection) ? idle : all;
     this.setSelection(pick);
     this.sound.play('click');
-    this.ui.toast(pick === idle ? `${idle.length} ${idle.length === 1 ? 'constructor libre' : 'constructores libres'}`
-      : `${all.length} ${all.length === 1 ? 'constructor' : 'constructores'} (${idle.length} sin trabajo)`);
+    this.ui.toast(pick === idle ? `${idle.length} ${idle.length === 1 ? T('constructor libre') : T('constructores libres')}`
+      : L`${all.length} ${all.length === 1 ? 'constructor' : 'constructores'} (${idle.length} sin trabajo)`);
   },
 
   toggleFormation() {
     this.formation = this.formation === 'line' ? 'block' : 'line';
     try { localStorage.setItem('faro-formation', this.formation); } catch (err) { /* sin almacenamiento */ }
-    this.ui.toast(this.formation === 'line' ? 'Formación: línea (de frente al destino)' : 'Formación: bloque');
+    this.ui.toast(this.formation === 'line' ? T('Formación: línea (de frente al destino)') : T('Formación: bloque'));
     this.ui.selSig = '';
   },
 
@@ -617,7 +620,7 @@ const App = {
     const list = g.units.filter((u) => u.owner === 0 && u.alive && !u.inside && u.def.weapon && (
       kind === 'all' ? true : kind === 'army' ? u.mover === 'land' : kind === 'sea' ? u.mover === 'sea' : u.mover === 'air'));
     if (!list.length) {
-      this.ui.toast(kind === 'all' ? 'No tienes tropas de combate' : kind === 'army' ? 'No tienes tropas de tierra' : kind === 'sea' ? 'No tienes barcos de combate' : 'No tienes unidades aéreas');
+      this.ui.toast(kind === 'all' ? T('No tienes tropas de combate') : kind === 'army' ? T('No tienes tropas de tierra') : kind === 'sea' ? T('No tienes barcos de combate') : T('No tienes unidades aéreas'));
       return;
     }
     this.setSelection(list);

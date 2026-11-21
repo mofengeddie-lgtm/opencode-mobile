@@ -151,7 +151,8 @@ function lerpAngle(a, b, t) {
 }
 
 function fmt(n) {
-  return Math.floor(n).toLocaleString('es-ES');
+  // v1.9: «12.345» en español, «12,345» en inglés.
+  return Math.floor(n).toLocaleString(typeof I18N !== 'undefined' && I18N.lang === 'en' ? 'en-US' : 'es-ES');
 }
 
 function fmtTime(s) {

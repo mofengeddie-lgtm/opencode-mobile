@@ -60,25 +60,20 @@ const I18N = {
     'short', 'plural', 'role', 'goal', 'brief', 'win', 'lose', 'help', 'body', 'msg', 'say', 'line', 'detail', 'tag', 'caption', 'faro', 'flag', 'inf', 'veh',
     'land', 'landcoast', 'coast', 'shallowcoast', 'deep']),
 
-  // Traduce en su lugar los textos de una tabla de datos (objetos y listas anidadas).
-  applyData(obj, seen = new Set(), textArr = false) {
+  // Traduce en su lugar los textos de una tabla de datos (objetos y listas anidadas). Dentro de una propiedad
+  // de texto (como lines: { attack: [...] }) todo lo que hay es texto.
+  applyData(obj, seen = new Set(), allText = false) {
     if (this.lang === 'es' || !obj || typeof obj !== 'object' || seen.has(obj)) return obj;
+    if (typeof Node !== 'undefined' && obj instanceof Node) return obj;
     seen.add(obj);
-    if (Array.isArray(obj)) {
-      for (let i = 0; i < obj.length; i++) {
-        const v = obj[i];
-        if (typeof v === 'string') { if (textArr) obj[i] = T(v); } else if (v && typeof v === 'object') this.applyData(v, seen, textArr);
-      }
-      return obj;
-    }
-    for (const k of Object.keys(obj)) {
+    const keys = Array.isArray(obj) ? obj.map((x, i) => i) : Object.keys(obj);
+    for (const k of keys) {
       const v = obj[k];
+      const text = allText || (!Array.isArray(obj) && this.TEXT_PROPS.has(k));
       if (typeof v === 'string') {
-        if (this.TEXT_PROPS.has(k)) obj[k] = T(v);
-      } else if (Array.isArray(v)) {
-        this.applyData(v, seen, this.TEXT_PROPS.has(k));
-      } else if (v && typeof v === 'object' && !(typeof Node !== 'undefined' && v instanceof Node)) {
-        this.applyData(v, seen, false);
+        if (text) obj[k] = T(v);
+      } else if (v && typeof v === 'object') {
+        this.applyData(v, seen, text);
       }
     }
     return obj;

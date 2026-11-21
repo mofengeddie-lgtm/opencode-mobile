@@ -23,9 +23,9 @@ function isText(s) {
   const t = s.replace(/<[^>]*>/g, ' ').replace(/&[a-z]+;|&#\d+;/g, ' ').replace(/\{\d+\}/g, ' ').trim();
   if (!t || t.length < 2) return false;
   if (/^\[[A-Za-zÁ-ú]+\]/.test(t)) return false; // mensajes de consola «[Faro] …»
-  if (/:\/\/|^data:|^#[0-9a-f]{3,8}$|rgba?\(|var\(--|^[.#[][\w-]|^\w+-\w+(-\w+)*$|[{};]|=>|\d+px\b|^[\w-]+:[\w-]+$|^\w+\/[\w+.-]+$|sans-serif|system-ui|translate\(|rotate\(|scale\(|^[\w-]+=["']|^[\w.{}-]+\.(txt|json|png|jpe?g|html|js)$/i.test(t)) return false;
+  if (/:\/\/|^data:|^#[0-9a-f]{3,8}$|rgba?\(|var\(--|^[.#[][\w-]|^\w+-\w+(-\w+)*$|[{}]|=>|\d+px\b|^[\w-]+:[\w-]+$|^\w+\/[\w+.-]+$|sans-serif|system-ui|translate\(|rotate\(|scale\(|^[\w-]+=["']|^[\w.{}-]+\.(txt|json|png|jpe?g|html|js)$/i.test(t)) return false;
   if (/[áéíóúñÁÉÍÓÚÑ¿¡ü]/.test(t)) return true;
-  if (/[A-Za-z]{2,}[ ,.:;!?«»"()\-–—·/]+[A-Za-z]{2,}/.test(t)) return true;
+  if (/[A-Za-z]{2,}[ ,.:;!?«»"()\-–—·/0-9%+×]+[A-Za-z]{2,}/.test(t)) return true;
   if (/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}[.!?…:]*$/.test(t)) return true;
   return false;
 }
@@ -232,6 +232,8 @@ function applyEdits(src, edits) {
   return { out, n: taken.length };
 }
 
+module.exports = { isText, textRuns, analyze };
+if (require.main !== module) return;
 const files = (only.length ? only : fs.readdirSync(JS).filter((f) => f.endsWith('.js') && !SKIP_FILES.has(f)).sort()).map((f) => (path.isAbsolute(f) ? f : path.join(JS, f)));
 let total = 0;
 for (const f of files) {

@@ -62,7 +62,7 @@ const RESEARCH = {
 const MINES = { limit: 8, every: 4 };
 // v1.8: en qué sección de «A tu manera» va cada control de la pausa.
 const SETTINGS_LAYOUT = {
-  interfaz: ['ui-scale-wrap', 'btn-bigtext', 'btn-fps'],
+  interfaz: ['set-lang', 'ui-scale-wrap', 'btn-bigtext', 'btn-fps'],
   sonido: ['set-music', 'btn-sound2'],
   camara: ['set-quality', 'set-light'],
   accesibilidad: ['btn-cvd', 'btn-calm', 'btn-battery'],
