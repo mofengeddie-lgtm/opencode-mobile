@@ -13,3 +13,5 @@ coverage/
 .opencode/
 .sisyphus/
 __pycache__/
+# v1.9: la versión para Poki se arma con «node faro/build.mjs --poki» (no se guarda el archivo armado)
+faro/poki/

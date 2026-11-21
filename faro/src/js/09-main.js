@@ -92,7 +92,9 @@ const App = {
     boot.set('models', 0, 'Modelos 3D…', THREE.GLTFLoader ? `0 de ${nModels}` : 'Sin el cargador de modelos: se usan los modelos simples');
     const models = loadGLBModels((k, n) => boot.set('models', k / n, 'Modelos 3D…', `${k} de ${n}`)).catch(() => 0);
     const sky = loadEnvMap(this.gl).catch(() => null).then((x) => { boot.set('sky', 1, 'Cielo y luz…'); return x; });
-    this.ready = Promise.all([models, sky]).then(([n]) => {
+    // v1.9: el SDK de Poki arranca a la par de la carga (en la web no hay SDK y se cumple al instante).
+    const plat = Platform.init();
+    this.ready = Promise.all([models, sky, plat]).then(([n]) => {
       if (!n) boot.set('models', 1, 'Modelos 3D…', 'Se usan los modelos simples');
       boot.set('profile', 0.5, 'Tu perfil…');
       this.modelCount = n;
@@ -114,10 +116,19 @@ const App = {
       this.loaded = true;
       boot.set('game', 1, 'La partida…');
       boot.finish();
+      // v1.9: Poki mide cuántos llegan a jugar desde que terminó la carga.
+      Platform.loadingFinished();
       // Modo creador: solo si la plataforma confirma que quien abre el juego es su dueño.
       Creator.detect().then(() => this.lobby.render());
     });
 
+    // v1.9: Poki pide gameplayStart con el primer toque o tecla de la partida (no al cargar ni en el vestíbulo).
+    const firstInput = () => {
+      const g = this.game;
+      if (this.state === 'play' && g && !g.preview && !this.paused && !g.over && !g.spectating && $('brief').hidden && $('end').hidden) Platform.gameplayStart();
+    };
+    window.addEventListener('pointerdown', firstInput, true);
+    window.addEventListener('keydown', firstInput, true);
     window.addEventListener('resize', () => this.renderer && this.renderer.resize());
     // Safari en iPad: evita que el gesto de pellizco haga zoom a toda la página.
     document.addEventListener('gesturestart', (e) => e.preventDefault());
@@ -313,7 +324,13 @@ const App = {
     Save.clear();
   },
 
+  // v1.9: en Poki, antes de entrar a jugar va un anuncio (Poki decide si se muestra); en la web sigue igual, sin esperar.
   startGame() {
+    if (Platform.hasAds()) return Platform.commercialBreak(this).then(() => this.startGameNow());
+    return this.startGameNow();
+  },
+
+  startGameNow() {
     clearTimeout(this.endTimer);
     if (this.game && (this.game.over || this.game.spectating) && !this.game.preview) this.lobby.finish(this.game);
     this.input.cancelPlacement();
@@ -356,6 +373,7 @@ const App = {
   spectate() {
     const g = this.game;
     if (!g || !g.startSpectating()) return;
+    Platform.gameplayStop();
     $('end').hidden = true;
     this.setSelection([]);
     this.input.cancelPlacement();
@@ -365,6 +383,7 @@ const App = {
   },
 
   toMenu() {
+    Platform.gameplayStop();
     clearTimeout(this.endTimer);
     this.input.cancelPlacement();
     document.body.classList.remove('spectating');
@@ -394,6 +413,11 @@ const App = {
   },
 
   resumeGame() {
+    if (Platform.hasAds() && this.suspended && !this.suspended.over) return Platform.commercialBreak(this).then(() => this.resumeGameNow());
+    return this.resumeGameNow();
+  },
+
+  resumeGameNow() {
     const g = this.suspended;
     if (!g || g.over) return;
     this.suspended = null;
@@ -404,6 +428,11 @@ const App = {
   },
 
   loadSavedGame() {
+    if (Platform.hasAds()) return Platform.commercialBreak(this).then(() => this.loadSavedGameNow());
+    return this.loadSavedGameNow();
+  },
+
+  loadSavedGameNow() {
     const g = Save.read();
     if (!g) {
       Save.clear();
@@ -433,7 +462,23 @@ const App = {
 
   togglePause(on) {
     if (this.state !== 'play' || !$('brief').hidden) return;
+    // v1.9: al salir de la pausa en Poki, primero el anuncio (si Poki lo muestra) y después sigue la partida.
+    if (!on && this.paused && Platform.hasAds() && this.game && !this.game.over && !this.game.spectating) {
+      $('pause').hidden = true;
+      return Platform.commercialBreak(this).then(() => {
+        if (this.state !== 'play') return;
+        this.applyPause(false);
+        Platform.gameplayStart();
+      });
+    }
+    this.applyPause(on);
+    if (!on && this.game && !this.game.over && !this.game.spectating) Platform.gameplayStart();
+    return undefined;
+  },
+
+  applyPause(on) {
     this.paused = on;
+    if (on) Platform.gameplayStop();
     $('pause').hidden = !on;
     // Al pausar se guarda (con la partida quieta no se nota el momento del guardado).
     if (on && this.game && !this.game.over && !this.game.spectating && !this.game.preview) {
@@ -620,6 +665,7 @@ const App = {
       else if (ev.type === 'built' || ev.type === 'spawned') this.ui.selSig = '';
       else if (ev.type === 'upgraded' && ev.lines && ev.lines.length) this.ui.upgradeCard(ev.b, ev.level, ev.lines);
       else if (ev.type === 'over') {
+        Platform.gameplayStop();
         document.body.classList.remove('spectating');
         $('specbar').hidden = true;
         Save.clear();

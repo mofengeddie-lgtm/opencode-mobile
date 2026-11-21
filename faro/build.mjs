@@ -1,6 +1,6 @@
 // Une la plantilla HTML y los scripts de src/js en un único archivo jugable.
-// Uso: node faro/build.mjs [ruta-extra-sin-envoltorio.html]
-import { readFileSync, readdirSync, writeFileSync } from 'fs';
+// Uso: node faro/build.mjs [--poki] [ruta-extra-sin-envoltorio.html]
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -35,11 +35,22 @@ try {
 }
 const modelJs = `// ---- modelos GLB (Blender) ----\nconst FARO_GLB = ${JSON.stringify(models)};\nconst FARO_ENV = ${JSON.stringify(envUri)};\n` +
   `const FARO_ANIM = ${JSON.stringify(anim)};\n`;
-const js = modelJs + files.map((f) => `// ---- ${f} ----\n${readFileSync(join(JS_DIR, f), 'utf8')}`).join('\n');
+// v1.9: librerías y fuentes dentro del archivo (Poki no deja pedir nada a otros sitios).
+const VENDOR = join(ROOT, 'vendor');
+const vendorJs = ['three.r128.min.js', 'GLTFLoader.r128.js'].map((f) => `// ---- vendor/${f} ----\n${readFileSync(join(VENDOR, f), 'utf8')}`).join('\n');
+const FONTS = [['Barlow', 400, 'barlow-latin-400-normal'], ['Barlow', 500, 'barlow-latin-500-normal'], ['Barlow', 600, 'barlow-latin-600-normal'],
+  ['Chakra Petch', 500, 'chakra-petch-latin-500-normal'], ['Chakra Petch', 600, 'chakra-petch-latin-600-normal'], ['Chakra Petch', 700, 'chakra-petch-latin-700-normal']];
+const fontCss = FONTS.map(([fam, w, f]) => `@font-face{font-family:'${fam}';font-style:normal;font-weight:${w};font-display:swap;` +
+  `src:url(data:font/woff2;base64,${readFileSync(join(VENDOR, 'fonts', f + '.woff2')).toString('base64')}) format('woff2');}`).join('');
+// --poki: versión para Poki (faro/poki/index.html): script del SDK de Poki y sin zona de creadores.
+const POKI = process.argv.includes('--poki');
+const platformJs = `const FARO_PLATFORM = ${JSON.stringify(POKI ? 'poki' : 'web')};\n`;
+const js = modelJs + platformJs + files.map((f) => `// ---- ${f} ----\n${readFileSync(join(JS_DIR, f), 'utf8')}`).join('\n');
 const template = readFileSync(join(ROOT, 'src', 'index.template.html'), 'utf8');
 if (!template.includes('/*__SCRIPTS__*/')) throw new Error('Falta el marcador /*__SCRIPTS__*/ en la plantilla');
 // Función de reemplazo para que los "$" del código no se interpreten como patrones.
-const body = template.replace('/*__SCRIPTS__*/', () => js);
+let body = template.replace('/*__SCRIPTS__*/', () => js).replace('/*__VENDOR__*/', () => vendorJs).replace('/*__FONTS__*/', () => fontCss);
+if (POKI) body = body.replace('<title>', () => '<script src="https://game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>\n<title>');
 
 const full = [
   '<!doctype html>',
@@ -53,11 +64,12 @@ const full = [
 ].join('\n');
 
 // FARO_OUT permite construir en otro archivo (para probar una versión sin tocar la publicada).
-const OUT = process.env.FARO_OUT || join(ROOT, 'faro.html');
+const OUT = process.env.FARO_OUT || (POKI ? join(ROOT, 'poki', 'index.html') : join(ROOT, 'faro.html'));
+if (POKI) mkdirSync(join(ROOT, 'poki'), { recursive: true });
 writeFileSync(OUT, full);
 console.log(`[Faro] ${OUT.split('/').pop()} listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos)`);
 
-const extra = process.argv[2];
+const extra = process.argv.slice(2).find((a) => !a.startsWith('--'));
 if (extra) {
   writeFileSync(extra, body);
   console.log(`[Faro] Versión sin envoltorio: ${extra}`);

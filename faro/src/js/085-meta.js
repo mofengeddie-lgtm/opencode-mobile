@@ -881,7 +881,7 @@ class Lobby {
       ${item('top', 'Top jugadores', `T. ${seasonOf(Profile.now()).no}`)}
       ${item('weekly', 'Desafío semanal', ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}
       <button type="button" data-act="settings"><span class="lm-label">Ajustes</span><small>A tu manera</small></button>
-      <button type="button" data-act="creatorzone" id="btn-creatorzone"><span class="lm-label">Creadores</span><small>${Creator.owner ? 'abierta' : 'con contraseña'}</small></button>${off('Servidores')}
+      ${Platform.name === 'poki' ? '' : `<button type="button" data-act="creatorzone" id="btn-creatorzone"><span class="lm-label">Creadores</span><small>${Creator.owner ? 'abierta' : 'con contraseña'}</small></button>`}${off('Servidores')}
     </nav>`;
   }
 
@@ -1453,6 +1453,7 @@ class Lobby {
     } else if (act === 'settings') {
       app.ui.openSettings();
     } else if (act === 'creatorzone') {
+      if (Platform.name === 'poki') return;
       if (Creator.owner) this.openModal('creator');
       else this.openModal('creatorpw');
     } else if (act === 'creatorlock') {
@@ -2120,6 +2121,36 @@ class Lobby {
         <button class="btn" type="button" id="btn-watch">Mirar el mapa</button>
         <button class="btn" type="button" id="btn-again">Revancha</button>
         <button class="btn gold" type="button" id="btn-menu">Volver al vestíbulo</button>
+        ${this.canDouble(game) ? `<button class="btn reward" type="button" id="btn-double">🎬 Doble premio</button>` : ''}
       </div>`;
+  }
+
+  // v1.9: «🎬 Doble premio» (anuncio con premio de Poki): solo en Poki, una vez por partida y si hubo premio.
+  canDouble(game) {
+    const r = game.reward;
+    return Platform.hasAds() && !!r && !r.creator && !game.doubled && !game.mode.sandbox && !game.opts.tutorial && (r.xp > 0 || r.crystals > 0);
+  }
+
+  doubleReward(game, btn) {
+    if (!this.canDouble(game)) return;
+    const r = game.reward;
+    btn.disabled = true;
+    Platform.rewardedBreak(this.app).then((ok) => {
+      // Sin video (bloqueador o sin anuncio): sin premio y sin mensaje; Poki avisa por su lado.
+      if (!ok || game.doubled) {
+        btn.disabled = false;
+        return;
+      }
+      game.doubled = true;
+      Profile.addXp(r.xp);
+      this.P.crystals += r.crystals;
+      Profile.save();
+      btn.remove();
+      const box = document.querySelector('#enddialog .prizes');
+      if (box) box.insertAdjacentHTML('beforeend', `<div class="doubled"><b>×2</b><span>Premio doble: +${fmt(r.xp)} XP y +${fmt(r.crystals)} cristales más</span></div>`);
+      this.app.ui.toast(`¡Premio doble! +${fmt(r.xp)} XP y +${fmt(r.crystals)} cristales`, 'good');
+      this.app.sound.play('done');
+      this.render();
+    });
   }
 }

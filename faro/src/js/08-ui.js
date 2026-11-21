@@ -2203,6 +2203,8 @@ class UI {
     $('btn-watch').addEventListener('click', () => { $('end').hidden = true; });
     const spec = $('btn-spectate');
     if (spec) spec.addEventListener('click', () => this.app.spectate());
+    const dbl = $('btn-double');
+    if (dbl) dbl.addEventListener('click', () => this.app.lobby.doubleReward(g, dbl));
     this.bindHistory(g);
   }
 
@@ -2253,7 +2255,16 @@ class Sound {
     } catch (err) { /* sin almacenamiento */ }
   }
 
+  // v1.9: durante un anuncio de Poki el sonido (efectos y música, que usan el mismo contexto) queda en pausa.
+  hold(on) {
+    this.held = on;
+    if (!this.ctx) return;
+    if (on) this.ctx.suspend().catch(() => {});
+    else this.ctx.resume().catch(() => {});
+  }
+
   unlock() {
+    if (this.held) return;
     if (!this.ctx) {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;

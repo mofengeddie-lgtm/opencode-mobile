@@ -1,7 +1,6 @@
 <title>Faro de Ámbar</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&display=swap">
+<!-- v1.9: fuentes dentro del archivo (Barlow y Chakra Petch, SIL OFL 1.1, de @fontsource): sin pedidos a Google Fonts. -->
+<style id="faro-fonts">/*__FONTS__*/</style>
 <style>
 /* Concepto: interfaz de mesa de mando sobre el mapa. Paneles de pizarra translúcida en los
    bordes, el mapa siempre libre en el centro; oro para monedas y acciones principales. */
@@ -58,6 +57,13 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 .btn:active { transform: translateY(1px); }
 .btn.gold { background: var(--gold); color: var(--gold-ink); border-color: transparent; }
 .btn.gold:hover { filter: brightness(1.06); }
+/* v1.9: botón de anuncio con premio (Poki): nunca verde, con 🎬, igual de grande que el botón normal. */
+.btn.reward { background: #2f3f7a; border-color: rgba(150, 170, 255, 0.55); color: #eef1ff; }
+.btn.reward:disabled { opacity: 0.6; }
+.prizes .doubled b { color: var(--gold); }
+/* v1.9: capa invisible que frena toques y clics mientras se muestra un anuncio. */
+#adshield { position: fixed; inset: 0; z-index: 9999; background: transparent; }
+#adshield[hidden] { display: none; }
 .btn.danger { background: rgba(240, 88, 90, 0.14); color: #ffb4b5; border-color: rgba(240, 88, 90, 0.35); }
 .btn.icon { width: 42px; padding: 0; }
 .btn svg, .qbtn svg { width: 20px; height: 20px; flex: none; }
@@ -1286,6 +1292,7 @@ window.FaroBoot = (function () {
   <div class="dialog panel wide" id="modal-body"></div>
 </div>
 
+<div id="adshield" hidden aria-hidden="true"></div>
 <div id="pause" class="screen overlay-dim" hidden>
   <div class="dialog panel">
     <h2>Pausa</h2>
@@ -1405,10 +1412,12 @@ window.FaroBoot = (function () {
   <div class="dialog panel" id="enddialog"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<!-- v1.9: three.js r128 y su GLTFLoader (licencia MIT) van dentro del archivo: sin pedidos a CDN. -->
 <script>
-if (typeof THREE === 'undefined' && window.FaroBoot) window.FaroBoot.fail('No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».');
+/*__VENDOR__*/
+</script>
+<script>
+if (typeof THREE === 'undefined' && window.FaroBoot) window.FaroBoot.fail('No arrancó el motor 3D (three.js). Toca «Reintentar».');
 else if (window.FaroBoot) window.FaroBoot.set('engine', 0.5, 'Preparando el 3D…');
 </script>
 <script>
