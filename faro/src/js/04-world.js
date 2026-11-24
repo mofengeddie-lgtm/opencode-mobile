@@ -10,7 +10,7 @@ function customMode(c) {
   const teams = [];
   for (let i = 0; i < n; i++) teams.push(c.teams ? (i < Math.ceil(n / 2) ? 0 : 1) : i);
   return {
-    name: T('Personalizado'), players: n, teams, coins: c.coins || START_COINS, energy: c.energy || START_ENERGY,
+    name: T$('Personalizado'), players: n, teams, coins: c.coins || START_COINS, energy: c.energy || START_ENERGY,
     fog: !!c.fog, speed: c.turbo ? 2 : 1, king: !!c.king, custom: true, strategic: !!c.strategic,
   };
 }
@@ -149,15 +149,15 @@ class Game {
   proposeAlliance(from, to) {
     const A = this.players[from];
     const B = this.players[to];
-    if (!this.alliancesAllowed()) return { ok: false, text: T('En este modo no hay alianzas') };
-    if (!B || !B.alive || !A.alive || from === to) return { ok: false, text: T('Ese imperio ya no está') };
-    if (A.team === B.team) return { ok: false, text: L`${B.name} ya es tu aliado` };
+    if (!this.alliancesAllowed()) return { ok: false, text: T$('En este modo no hay alianzas') };
+    if (!B || !B.alive || !A.alive || from === to) return { ok: false, text: T$('Ese imperio ya no está') };
+    if (A.team === B.team) return { ok: false, text: L$`${B.name} ya es tu aliado` };
     A.allyAsk = A.allyAsk || {};
-    if (this.time - (A.allyAsk[to] ?? -999) < 60) return { ok: false, text: L`${B.name}: «Ya te contesté. Pregúntame más tarde.»` };
+    if (this.time - (A.allyAsk[to] ?? -999) < 60) return { ok: false, text: L$`${B.name}: «Ya te contesté. Pregúntame más tarde.»` };
     A.allyAsk[to] = this.time;
     const teams = new Set(this.players.filter((p) => p.alive).map((p) => p.team));
-    if (teams.size <= 2) return this.allyNo(to, T('Solo quedamos nosotros: uno tiene que ganar.'));
-    if (this.time - ((B.hurtBy || {})[from] ?? -999) < 90) return this.allyNo(to, T('Hace poco me atacaste. No confío en ti.'));
+    if (teams.size <= 2) return this.allyNo(to, T$('Solo quedamos nosotros: uno tiene que ganar.'));
+    if (this.time - ((B.hurtBy || {})[from] ?? -999) < 90) return this.allyNo(to, T$('Hace poco me atacaste. No confío en ti.'));
     // Ganas de aliarse: según su forma de ser, si tienen un rival en común más fuerte y si está en apuros.
     const base = { aggro: 0.3, admiral: 0.45, builder: 0.65, keeper: 0.55 }[B.persona] ?? 0.5;
     const sA = this.strengthOf(from);
@@ -168,10 +168,10 @@ class Game {
     if (strongest > Math.max(sA, sB)) score += 0.25;
     if (this.time - (B.underAttackAt ?? -999) < 45) score += 0.2;
     if (sA > sB * 2.2) score -= 0.25;
-    if (score < 0.6) return this.allyNo(to, B.persona === 'aggro' ? T('Yo peleo solo.') : T('Todavía no. Muéstrame que vale la pena.'));
+    if (score < 0.6) return this.allyNo(to, B.persona === 'aggro' ? T$('Yo peleo solo.') : T$('Todavía no. Muéstrame que vale la pena.'));
     this.formAlliance(from, to);
-    this.say(to, T('Trato hecho: ahora somos aliados. ¡Vamos por los demás!'), { force: true, toMe: true });
-    return { ok: true, text: L`${B.name} aceptó la alianza` };
+    this.say(to, T$('Trato hecho: ahora somos aliados. ¡Vamos por los demás!'), { force: true, toMe: true });
+    return { ok: true, text: L$`${B.name} aceptó la alianza` };
   }
 
   allyNo(pid, text) {
@@ -191,9 +191,9 @@ class Game {
   // «pid» sale de su alianza y vuelve a su equipo de siempre.
   breakAlliance(pid, by = pid) {
     const p = this.players[pid];
-    if (!this.alliancesAllowed()) return T('En este modo no hay alianzas');
+    if (!this.alliancesAllowed()) return T$('En este modo no hay alianzas');
     const mates = this.players.filter((q) => q.id !== pid && q.team === p.team);
-    if (!mates.length) return T('No tienes aliados');
+    if (!mates.length) return T$('No tienes aliados');
     p.team = p.team0;
     // Si su equipo era el de la alianza, los demás toman el equipo del primero de ellos.
     if (mates.some((q) => q.team === p.team0)) {
@@ -252,9 +252,9 @@ class Game {
     this.chat.push(msg);
     if (this.chat.length > 60) this.chat.shift();
     const replies = {
-      '¡Gracias!': [T('¡De nada!'), T('¡Para eso estamos!'), T('Cuando quieras.')],
-      '¡Bien hecho!': [T('¡Gracias, compañero!'), T('¡Seguimos así!'), T('¡Juntos somos fuertes!')],
-      '¡Cuidado!': [T('¡Atento! Pongo defensas.'), T('¡Visto! Vigilo mi lado.'), T('¡Gracias por avisar!')],
+      '¡Gracias!': [T$('¡De nada!'), T$('¡Para eso estamos!'), T$('Cuando quieras.')],
+      '¡Bien hecho!': [T$('¡Gracias, compañero!'), T$('¡Seguimos así!'), T$('¡Juntos somos fuertes!')],
+      '¡Cuidado!': [T$('¡Atento! Pongo defensas.'), T$('¡Visto! Vigilo mi lado.'), T$('¡Gracias por avisar!')],
     }[text];
     let n = 0;
     if (replies) {
@@ -619,43 +619,43 @@ class Game {
     const def = BUILDINGS[type];
     const c = this.cells[ci];
     const p = this.players[pid];
-    if (!c) return T('Casilla no válida');
+    if (!c) return T$('Casilla no válida');
     // v1.4: reglas del desafío semanal (solo para ti).
     if (pid === 0 && this.rule) {
-      if (this.rule === 'nofactory' && type === 'factory') return T('Desafío: sin Fábrica');
-      if (this.rule === 'noair' && (type === 'helipad' || type === 'airport')) return T('Desafío: sin Helipuerto ni Aeropuerto');
+      if (this.rule === 'nofactory' && type === 'factory') return T$('Desafío: sin Fábrica');
+      if (this.rule === 'noair' && (type === 'helipad' || type === 'airport')) return T$('Desafío: sin Helipuerto ni Aeropuerto');
     }
     // v1.8: el Complejo estratégico solo existe con «Arsenal estratégico».
-    if (def.strategic && !this.strategic) return T('Solo con «Arsenal estratégico»');
+    if (def.strategic && !this.strategic) return T$('Solo con «Arsenal estratégico»');
     // Las estructuras de mar se ponen en su lugar del mar aunque esté fuera de tu territorio (punto 15).
     // v1.8: el Puente modular también (si no es territorio enemigo).
     if (def.sea || def.anyTerritory) {
-      if (c.owner >= 0 && c.owner !== pid && this.isEnemy(c.owner, pid)) return T('Es territorio enemigo');
+      if (c.owner >= 0 && c.owner !== pid && this.isEnemy(c.owner, pid)) return T$('Es territorio enemigo');
     } else if (c.owner !== pid) {
-      return T('Fuera de tu territorio');
+      return T$('Fuera de tu territorio');
     }
-    if (c.point) return L`Aquí está ${c.point.type === 'faro' ? T('el Faro') : T('una Bandera')}`;
-    if (c.bld) return T('Casilla ocupada');
-    const reserved = { gold: T('Las vetas de oro son para Minas'), fertile: T('La tierra fértil es para Granjas'),
-      oilland: T('El petróleo en tierra es para Bombas de petróleo') };
+    if (c.point) return L$`Aquí está ${c.point.type === 'faro' ? T$('el Faro') : T$('una Bandera')}`;
+    if (c.bld) return T$('Casilla ocupada');
+    const reserved = { gold: T$('Las vetas de oro son para Minas'), fertile: T$('La tierra fértil es para Granjas'),
+      oilland: T$('El petróleo en tierra es para Bombas de petróleo') };
     const nearWater = c.nb.some((ni) => TERRAIN[this.cells[ni].t].water);
     if (Array.isArray(def.on)) {
-      if (!def.on.includes(c.t)) return T('Solo en ') + def.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ');
+      if (!def.on.includes(c.t)) return T$('Solo en ') + def.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ');
     } else if (def.on === 'land' || def.on === 'landcoast') {
-      if (!TERRAIN[c.t].land) return T('Debe ir sobre tierra');
+      if (!TERRAIN[c.t].land) return T$('Debe ir sobre tierra');
       if (reserved[c.t]) return reserved[c.t];
-      if (def.on === 'landcoast' && !nearWater) return T('Debe ir en tierra junto al agua');
+      if (def.on === 'landcoast' && !nearWater) return T$('Debe ir en tierra junto al agua');
     } else if (def.on === 'coast') {
-      if (c.t !== 'shallow' || !this.map.isCoast(c)) return T('Debe ir en el agua, junto a la orilla');
+      if (c.t !== 'shallow' || !this.map.isCoast(c)) return T$('Debe ir en el agua, junto a la orilla');
     } else if (def.on === 'shallowcoast') {
-      if (c.t !== 'shallow' || !this.map.isCoast(c)) return T('Debe ir en agua poco profunda junto a la costa');
+      if (c.t !== 'shallow' || !this.map.isCoast(c)) return T$('Debe ir en agua poco profunda junto a la costa');
     } else if (def.on === 'deep') {
-      if (c.t !== 'deep') return T('Debe ir en mar profundo');
+      if (c.t !== 'deep') return T$('Debe ir en mar profundo');
     }
     const limit = this.limitFor(pid, type);
-    if (limit && this.count(pid, type) >= limit) return L`Límite alcanzado (${limit})`;
-    if (!ignoreCost && p.coins < def.cost) return T('Monedas insuficientes');
-    if (!ignoreCost && def.energyCost && p.energy < def.energyCost) return L`Energía insuficiente (${def.energyCost}): construye energías (Solar, Eólica...)`;
+    if (limit && this.count(pid, type) >= limit) return L$`Límite alcanzado (${limit})`;
+    if (!ignoreCost && p.coins < def.cost) return T$('Monedas insuficientes');
+    if (!ignoreCost && def.energyCost && p.energy < def.energyCost) return L$`Energía insuficiente (${def.energyCost}): construye energías (Solar, Eólica...)`;
     return null;
   }
 
@@ -720,9 +720,9 @@ class Game {
   warnNoBuilder(b) {
     const by = b.def.builtBy || 'land';
     const has = this.units.some((u) => u.alive && u.owner === b.owner && this.canBuildSite(u, b));
-    const who = by === 'sea' ? T('un Barco constructor (en el Puerto)') : by === 'engineer' ? T('un Ingeniero (en el Cuartel)')
-      : T('un Constructor (en el Núcleo o el Cuartel)');
-    const text = has ? T('Obra en espera: tu constructor está ocupado; irá al terminar.') : L`Obra en espera: necesitas ${who}.`;
+    const who = by === 'sea' ? T$('un Barco constructor (en el Puerto)') : by === 'engineer' ? T$('un Ingeniero (en el Cuartel)')
+      : T$('un Constructor (en el Núcleo o el Cuartel)');
+    const text = has ? T$('Obra en espera: tu constructor está ocupado; irá al terminar.') : L$`Obra en espera: necesitas ${who}.`;
     this.alert('nobuilder' + by, text, 'bad', b.x, b.z, 8);
   }
 
@@ -784,34 +784,34 @@ class Game {
 
   foundInvalid(pid, ci, how) {
     const c = this.cells[ci];
-    if (!c || !TERRAIN[c.t].land) return T('Elige una casilla de tierra');
-    if (c.t === 'gold') return T('No sobre vetas de oro: ponlo al lado');
-    if (c.point) return T('Ese punto se captura con infantería');
-    if (c.bld) return T('Casilla ocupada');
-    if (c.owner >= 0 && this.isEnemy(c.owner, pid)) return T('Es territorio enemigo');
-    if (how === 'sea' && !c.nb.some((ni) => TERRAIN[this.cells[ni].t].water)) return T('Debe estar en la costa');
+    if (!c || !TERRAIN[c.t].land) return T$('Elige una casilla de tierra');
+    if (c.t === 'gold') return T$('No sobre vetas de oro: ponlo al lado');
+    if (c.point) return T$('Ese punto se captura con infantería');
+    if (c.bld) return T$('Casilla ocupada');
+    if (c.owner >= 0 && this.isEnemy(c.owner, pid)) return T$('Es territorio enemigo');
+    if (how === 'sea' && !c.nb.some((ni) => TERRAIN[this.cells[ni].t].water)) return T$('Debe estar en la costa');
     return null;
   }
 
   enqueue(b, type) {
     const def = UNITS[type];
     const p = this.players[b.owner];
-    if (!b.built) return T('Aún en construcción');
-    if (!b.def.produces || !b.def.produces.includes(type)) return T('No se produce aquí');
-    if (b.queue.length >= 5) return T('Cola llena (5)');
+    if (!b.built) return T$('Aún en construcción');
+    if (!b.def.produces || !b.def.produces.includes(type)) return T$('No se produce aquí');
+    if (b.queue.length >= 5) return T$('Cola llena (5)');
     if (def.strategic) {
-      if (!this.strategic) return T('Solo con «Arsenal estratégico» (Personalizado)');
-      if (this.strategicLeft(b.owner) <= 0) return T('Uso estratégico agotado (0/1)');
+      if (!this.strategic) return T$('Solo con «Arsenal estratégico» (Personalizado)');
+      if (this.strategicLeft(b.owner) <= 0) return T$('Uso estratégico agotado (0/1)');
     }
     if (def.limit) {
       const have = this.units.filter((u) => u.alive && u.owner === b.owner && u.type === type).length +
         this.buildings.reduce((s, x) => s + (x.owner === b.owner ? x.queue.filter((q) => q.type === type).length : 0), 0);
-      if (have >= def.limit) return L`Límite alcanzado (${def.limit})`;
+      if (have >= def.limit) return L$`Límite alcanzado (${def.limit})`;
     }
-    if (p.coins < def.cost) return T('Monedas insuficientes');
-    if (def.energy && p.energy < def.energy) return L`Energía insuficiente (${def.energy}): construye energías (Solar, Eólica...)`;
+    if (p.coins < def.cost) return T$('Monedas insuficientes');
+    if (def.energy && p.energy < def.energy) return L$`Energía insuficiente (${def.energy}): construye energías (Solar, Eólica...)`;
     this.refreshEconomy();
-    if (p.popUsed + def.pop > p.popCap) return T('Población llena: construye o amplía Casas');
+    if (p.popUsed + def.pop > p.popCap) return T$('Población llena: construye o amplía Casas');
     p.coins -= def.cost;
     p.energy -= def.energy || 0;
     b.queue.push({ type, t: 0 });
@@ -840,15 +840,15 @@ class Game {
   }
 
   upgradeInvalid(b) {
-    if (!b.built) return T('Aún en construcción');
-    if (b.upgrading) return T('Ya se está mejorando');
-    if (b.level >= b.def.maxLevel) return b.def.maxLevel === 1 ? T('Este edificio no se mejora') : L`${b.def.name}: nivel máximo`;
+    if (!b.built) return T$('Aún en construcción');
+    if (b.upgrading) return T$('Ya se está mejorando');
+    if (b.level >= b.def.maxLevel) return b.def.maxLevel === 1 ? T$('Este edificio no se mejora') : L$`${b.def.name}: nivel máximo`;
     if (b.def.l4Limit && b.level === 3) {
       const n = this.buildings.filter((x) => x.alive && x.owner === b.owner && x.type === b.type && (x.level >= 4 || (x.upgrading && x.upgrading.level >= 4))).length;
-      if (n >= b.def.l4Limit) return L`Solo ${b.def.l4Limit} ${b.def.name} pueden llegar a nivel 4`;
+      if (n >= b.def.l4Limit) return L$`Solo ${b.def.l4Limit} ${b.def.name} pueden llegar a nivel 4`;
     }
     if (!this.creator || b.owner !== 0) {
-      if (this.players[b.owner].coins < this.upgradeCost(b)) return T('Monedas insuficientes');
+      if (this.players[b.owner].coins < this.upgradeCost(b)) return T$('Monedas insuficientes');
     }
     return null;
   }
@@ -856,7 +856,7 @@ class Game {
   // v1.0: «Mejorar todo» y «Mejoras automáticas», solo con el Núcleo en nivel 3.
   massUpgradeInvalid(pid) {
     const p = this.players[pid];
-    if (!p.core || !p.core.alive || p.core.level < AUTO_UP.coreLevel) return L`Necesita el Núcleo en nivel ${AUTO_UP.coreLevel}`;
+    if (!p.core || !p.core.alive || p.core.level < AUTO_UP.coreLevel) return L$`Necesita el Núcleo en nivel ${AUTO_UP.coreLevel}`;
     return null;
   }
 
@@ -903,7 +903,7 @@ class Game {
       const b = this.upgradeCandidates(p.id).find((x) => p.coins - this.upgradeCost(x) >= AUTO_UP.reserve);
       if (b && typeof this.upgrade(b) !== 'string') {
         p.autoUps = (p.autoUps || 0) + 1;
-        if (p.id === 0) this.emit('toast', { text: L`Mejora automática: ${b.def.name} a nivel ${b.level + 1}`, kind: 'info', x: b.x, z: b.z });
+        if (p.id === 0) this.emit('toast', { text: L$`Mejora automática: ${b.def.name} a nivel ${b.level + 1}`, kind: 'info', x: b.x, z: b.z });
       }
     }
   }
@@ -938,19 +938,19 @@ class Game {
     const n = (v) => fmt(Math.round(v));
     if (after.hp > before.hp) out.push(`Vida ${n(before.hp)} → ${n(after.hp)}`);
     if (after.shield > before.shield) out.push(`Escudo ${n(before.shield)} → ${n(after.shield)}`);
-    if (after.income > before.income) out.push(L`Monedas ${n(before.income)} → ${n(after.income)} por min`);
+    if (after.income > before.income) out.push(L$`Monedas ${n(before.income)} → ${n(after.income)} por min`);
     if (after.pop > before.pop) out.push(`Comunidad +${after.pop - before.pop}`);
-    if (after.energy > before.energy) out.push(L`Energía ${before.energy} → ${after.energy} cada 10 s`);
-    if (after.prod > before.prod) out.push(L`Entrena ${Math.round((after.prod / before.prod - 1) * 100)} % más rápido`);
-    if (after.dmg > before.dmg) out.push(L`Daño ${before.dmg} → ${after.dmg}`);
+    if (after.energy > before.energy) out.push(L$`Energía ${before.energy} → ${after.energy} cada 10 s`);
+    if (after.prod > before.prod) out.push(L$`Entrena ${Math.round((after.prod / before.prod - 1) * 100)} % más rápido`);
+    if (after.dmg > before.dmg) out.push(L$`Daño ${before.dmg} → ${after.dmg}`);
     if (after.range > before.range) out.push(`Alcance ${before.range} → ${after.range}`);
-    if (after.beams > before.beams) out.push(T('Doble láser'));
+    if (after.beams > before.beams) out.push(T$('Doble láser'));
     if (after.guns > before.guns) out.push(`${after.guns} minigun${after.guns > 1 ? 's' : ''}`);
-    if (after.aa && !before.aa) out.push(T('Ahora dispara a aeronaves'));
-    if (after.heal > before.heal) out.push(L`Cura ${after.heal} % por segundo`);
-    if (b.type === 'core' && b.level === 3) out.push(T('Ya puedes comprar la Cúpula'));
-    if (b.type === 'aadef' && b.level === 4) out.push(T('Puede lanzar el misil nuclear'));
-    if (b.def.levelNames) out.unshift(L`Ahora es ${b.def.levelNames[b.level]}`);
+    if (after.aa && !before.aa) out.push(T$('Ahora dispara a aeronaves'));
+    if (after.heal > before.heal) out.push(L$`Cura ${after.heal} % por segundo`);
+    if (b.type === 'core' && b.level === 3) out.push(T$('Ya puedes comprar la Cúpula'));
+    if (b.type === 'aadef' && b.level === 4) out.push(T$('Puede lanzar el misil nuclear'));
+    if (b.def.levelNames) out.unshift(L$`Ahora es ${b.def.levelNames[b.level]}`);
     return out;
   }
 
@@ -1095,7 +1095,7 @@ class Game {
   board(u, t) {
     const need = u.cls === 'veh' ? 2 : 1;
     if (this.cargoSlots(t) + need > this.capacityOf(t)) {
-      this.toast(u.owner, L`${t.def.name}: no queda lugar`, 'bad');
+      this.toast(u.owner, L$`${t.def.name}: no queda lugar`, 'bad');
       u.state = 'idle';
       return false;
     }
@@ -1111,7 +1111,7 @@ class Game {
   }
 
   unload(t) {
-    if (!t.cargo || !t.cargo.length) return `${t.def.name} va ${t.def.garrison ? T('sin soldados') : T('vacío')}`;
+    if (!t.cargo || !t.cargo.length) return `${t.def.name} va ${t.def.garrison ? T$('sin soldados') : T$('vacío')}`;
     const c0 = this.cells[t.cell];
     const spots = [];
     const mover = t.def.hangar ? 'air' : 'land';
@@ -1121,8 +1121,8 @@ class Game {
       if (c && this.passable(c, mover, t.owner)) spots.push(c.i);
     }
     if (!spots.length) {
-      if (t.mover === 'sea' || t.mover === 'amphib') return T('Acércate a la orilla para desembarcar');
-      return t.def.airlift ? T('Vuela sobre tierra para bajar a las tropas') : T('No hay lugar para bajar');
+      if (t.mover === 'sea' || t.mover === 'amphib') return T$('Acércate a la orilla para desembarcar');
+      return t.def.airlift ? T$('Vuela sobre tierra para bajar a las tropas') : T$('No hay lugar para bajar');
     }
     // v1.8: del avión de transporte bajan en paracaídas.
     const para = !!(t.def.airlift && t.def.plane);
@@ -1433,7 +1433,7 @@ class Game {
         miss = true;
         t.flareAt = this.time + t.def.flares;
         this.fx.push({ k: 'flare', x: t.x, y: t.y + 0.4, z: t.z });
-        if (t.owner === 0) this.emit('toast', { text: L`${t.def.name}: bengalas, esquivó un misil`, kind: 'good' });
+        if (t.owner === 0) this.emit('toast', { text: L$`${t.def.name}: bengalas, esquivó un misil`, kind: 'good' });
       }
       this.projectiles.push({
         kind: w.proj, t, dmg, owner: a.owner, src: a, sx, sy, sz, tx: t.x, ty, tz: t.z,
@@ -1533,7 +1533,7 @@ class Game {
         dome.hp = 0;
         dome.brokenAt = this.time;
         this.fx.push({ k: 'boom', x: this.players[t.owner].core.x, y: 2, z: this.players[t.owner].core.z, s: 1.2 });
-        if (t.owner === 0) this.emit('toast', { text: L`La Cúpula se rompió. Vuelve en ${DOME.recover} s`, kind: 'bad' });
+        if (t.owner === 0) this.emit('toast', { text: L$`La Cúpula se rompió. Vuelve en ${DOME.recover} s`, kind: 'bad' });
         for (const u of this.units) if (u.owner === t.owner) u.shield = 0;
       }
       dmg -= took;
@@ -1554,8 +1554,8 @@ class Game {
         p.emergencyUsed = true;
         t.hp = Math.max(1, Math.min(t.hp, t.maxHp * EMERGENCY.at));
         t.shieldUntil = this.time + EMERGENCY.time;
-        this.emit('toast', { text: t.owner === 0 ? L`¡Escudo de emergencia! ${EMERGENCY.time} s de protección`
-          : L`${p.name} activó su escudo de emergencia`, kind: t.owner === 0 ? 'good' : 'info' });
+        this.emit('toast', { text: t.owner === 0 ? L$`¡Escudo de emergencia! ${EMERGENCY.time} s de protección`
+          : L$`${p.name} activó su escudo de emergencia`, kind: t.owner === 0 ? 'good' : 'info' });
         this.emit('sound', { name: 'alarm' });
         return;
       }
@@ -1570,12 +1570,12 @@ class Game {
     if (t.owner === 0) {
       if (t.type === 'core' && this.time - this._coreWarn > 15) {
         this._coreWarn = this.time;
-        this.alert('core', T('¡Tu Núcleo está bajo ataque!'), 'bad', t.x, t.z, 0);
+        this.alert('core', T$('¡Tu Núcleo está bajo ataque!'), 'bad', t.x, t.z, 0);
         this.emit('sound', { name: 'alarm' });
       } else if (t.kind === 'bld') {
-        this.alert('bld', L`Atacan tu ${t.def.name}`, 'bad', t.x, t.z, 20);
+        this.alert('bld', L$`Atacan tu ${t.def.name}`, 'bad', t.x, t.z, 20);
       } else if (this.cells[t.cell].owner === 0) {
-        this.alert('units', T('Tus tropas pelean en tu territorio'), 'bad', t.x, t.z, 25);
+        this.alert('units', T$('Tus tropas pelean en tu territorio'), 'bad', t.x, t.z, 25);
       }
     } else if (src === 0 && !victim.human && !victim.provoked && t.kind === 'bld') {
       victim.provoked = true;
@@ -1603,7 +1603,7 @@ class Game {
       u.vet = stars;
       st.bestVet = Math.max(st.bestVet || 0, stars);
       this.fx.push({ k: 'heal', x: u.x, y: u.y + 0.6, z: u.z });
-      if (u.owner === 0) this.emit('toast', { text: L`${u.def.name}: ${'★'.repeat(stars)} veterano (${u.kills} eliminaciones)`, kind: 'good', x: u.x, z: u.z });
+      if (u.owner === 0) this.emit('toast', { text: L$`${u.def.name}: ${'★'.repeat(stars)} veterano (${u.kills} eliminaciones)`, kind: 'good', x: u.x, z: u.z });
     }
   }
 
@@ -1651,7 +1651,7 @@ class Game {
       if (e.def.claim) this.territoryDirty = true;
       if (e.type === 'core') this.eliminate(e.owner, killer);
       else if (e.owner === 0) {
-        this.emit('toast', { text: L`Perdiste: ${e.def.name}`, kind: 'bad', x: e.x, z: e.z });
+        this.emit('toast', { text: L$`Perdiste: ${e.def.name}`, kind: 'bad', x: e.x, z: e.z });
         this.emit('ping', { x: e.x, z: e.z, kind: 'bad' });
       }
     }
@@ -1677,7 +1677,7 @@ class Game {
     }
     for (const u of this.units) if (u.alive && u.owner === pid) this.kill(u, -1);
     for (const b of this.buildings) if (b.alive && b.owner === pid) this.kill(b, -1);
-    this.emit('toast', { text: pid === 0 ? T('Tu Núcleo ha caído') : L`${p.name} ha sido eliminado`, kind: pid === 0 ? 'bad' : 'good' });
+    this.emit('toast', { text: pid === 0 ? T$('Tu Núcleo ha caído') : L$`${p.name} ha sido eliminado`, kind: pid === 0 ? 'bad' : 'good' });
     if (killer === 0 && pid !== 0) this.completeObjective('kill');
     this.checkEnd();
   }
@@ -1700,8 +1700,8 @@ class Game {
       for (const p of alive) p.team = p.team0;
       this.allianceChanged();
       const bot = alive.find((p) => !p.human);
-      if (bot) this.say(bot.id, T('Solo quedamos nosotros: se acabó la alianza. ¡Que gane el mejor!'), { force: true, public: true });
-      this.emit('toast', { text: T('La alianza se rompió: solo puede quedar un imperio'), kind: 'bad' });
+      if (bot) this.say(bot.id, T$('Solo quedamos nosotros: se acabó la alianza. ¡Que gane el mejor!'), { force: true, public: true });
+      this.emit('toast', { text: T$('La alianza se rompió: solo puede quedar un imperio'), kind: 'bad' });
       return;
     }
     // v1.1: espectador. Ya perdiste; la partida sigue hasta que queda un solo equipo.
@@ -1780,7 +1780,7 @@ class Game {
       p.energy += (p.energyRate / 10) * dt;
       if (p.dome && p.dome.hp <= 0 && this.time - p.dome.brokenAt >= DOME.recover) {
         p.dome.hp = p.dome.maxHp;
-        if (p.id === 0) this.emit('toast', { text: T('La Cúpula volvió a levantarse'), kind: 'good' });
+        if (p.id === 0) this.emit('toast', { text: T$('La Cúpula volvió a levantarse'), kind: 'good' });
       }
     }
     this.updatePoints(dt);
@@ -1851,9 +1851,9 @@ class Game {
 
   domeInvalid(pid) {
     const p = this.players[pid];
-    if (!p.core.alive || p.core.level < 3) return T('Mejora el Núcleo a nivel 3 para comprar la Cúpula');
-    if (p.dome && p.dome.level >= 3) return T('La Cúpula ya está en nivel 3');
-    if (!(this.creator && pid === 0) && p.coins < this.domeCost(pid)) return T('Monedas insuficientes');
+    if (!p.core.alive || p.core.level < 3) return T$('Mejora el Núcleo a nivel 3 para comprar la Cúpula');
+    if (p.dome && p.dome.level >= 3) return T$('La Cúpula ya está en nivel 3');
+    if (!(this.creator && pid === 0) && p.coins < this.domeCost(pid)) return T$('Monedas insuficientes');
     return null;
   }
 
@@ -1918,7 +1918,7 @@ class Game {
             pt.capTeam = team;
             this.territoryDirty = true;
             if (this.players[lost].team === this.players[0].team) {
-              this.alert('pt' + pt.id, L`Perdiste ${pt.type === 'faro' ? T('el Faro') : T('una Bandera')}`, 'bad', pt.x, pt.z, 0);
+              this.alert('pt' + pt.id, L$`Perdiste ${pt.type === 'faro' ? T$('el Faro') : T$('una Bandera')}`, 'bad', pt.x, pt.z, 0);
             }
           }
         } else {
@@ -1934,7 +1934,7 @@ class Game {
             if (pt.type === 'faro') this.players[pid].stats.faro = (this.players[pid].stats.faro || 0) + 1;
             this.territoryDirty = true;
             this.refreshEconomy();
-            const what = pt.type === 'faro' ? T('el Faro') : T('una Bandera');
+            const what = pt.type === 'faro' ? T$('el Faro') : T$('una Bandera');
             const capP = this.players[pid];
             if (!capP.human && capP.persona) {
               if (capP.team === this.players[0].team) {
@@ -1945,11 +1945,11 @@ class Game {
               }
             }
             if (this.players[pid].team === this.players[0].team) {
-              this.emit('toast', { text: pid === 0 ? L`¡Capturaste ${what}!` : L`${this.players[pid].name} capturó ${what}`, kind: 'good' });
+              this.emit('toast', { text: pid === 0 ? L$`¡Capturaste ${what}!` : L$`${this.players[pid].name} capturó ${what}`, kind: 'good' });
               if (pid === 0) this.emit('sound', { name: 'capture' });
               this.emit('sound', { name: 'done' });
             } else if (pt.type === 'faro') {
-              this.emit('toast', { text: L`${this.players[pid].name} capturó el Faro`, kind: 'bad', x: pt.x, z: pt.z });
+              this.emit('toast', { text: L$`${this.players[pid].name} capturó el Faro`, kind: 'bad', x: pt.x, z: pt.z });
               this.emit('ping', { x: pt.x, z: pt.z, kind: 'bad' });
             }
           }
@@ -2470,7 +2470,7 @@ class Game {
           // v1.5: sin camino hasta el edificio (rodeado o en otra isla): lo deja y no lo vuelve a intentar enseguida.
           if (!u.path.length) {
             this.markUnreach(u, b, 15);
-            if (u.owner === 0 && !u.autoRep) this.toast(0, L`${u.def.name}: no puede llegar a ${b.def.name} para repararlo`, 'bad');
+            if (u.owner === 0 && !u.autoRep) this.toast(0, L$`${u.def.name}: no puede llegar a ${b.def.name} para repararlo`, 'bad');
             u.state = 'idle';
             u.repairTarget = null;
             u.autoRep = false;
@@ -2504,7 +2504,7 @@ class Game {
               u.boardTarget = null;
               u.boardWait = 0;
               this.markUnreach(u, t, 30);
-              if (u.owner === 0) this.toast(0, L`${u.def.name} dejó de esperar a ${t.def.name}: no pudo venir a buscarla`, 'info');
+              if (u.owner === 0) this.toast(0, L$`${u.def.name} dejó de esperar a ${t.def.name}: no pudo venir a buscarla`, 'info');
               break;
             }
           } else u.boardWait = 0;
@@ -2519,7 +2519,7 @@ class Game {
         if (near || done) {
           if (near || this.map.dist(this.cells[u.cell], fc) <= 1) this.tryFound(u);
           else {
-            this.toast(u.owner, T('El ingeniero no puede llegar ahí'), 'bad');
+            this.toast(u.owner, T$('El ingeniero no puede llegar ahí'), 'bad');
             u.state = 'idle';
           }
         }
@@ -2612,7 +2612,7 @@ class Game {
       // Espera en el sitio hasta reunir el dinero.
       if (!u.warnedCoins) {
         u.warnedCoins = true;
-        this.toast(u.owner, T('El ingeniero espera: faltan monedas para el puesto (800)'), 'bad');
+        this.toast(u.owner, T$('El ingeniero espera: faltan monedas para el puesto (800)'), 'bad');
       }
       return false;
     }
@@ -2620,7 +2620,7 @@ class Game {
     u.alive = false;
     this.addBuilding(u.owner, 'outpost', u.foundCell);
     if (u.owner === 0) {
-      this.emit('toast', { text: T('Puesto avanzado fundado'), kind: 'good' });
+      this.emit('toast', { text: T$('Puesto avanzado fundado'), kind: 'good' });
       this.emit('sound', { name: 'place' });
     }
     return true;
@@ -2722,7 +2722,7 @@ class Game {
       const d = Math.hypot(u.x - b.x, u.z - b.z);
       if (u.def.demine && d <= SQ3 + 0.3 && (b.seenBy & (1 << this.players[u.owner].team))) {
         this.mineCleared = (this.mineCleared || 0) + 1;
-        if (u.owner === 0) this.toast(0, L`${u.def.name} desactivó una mina`, 'good');
+        if (u.owner === 0) this.toast(0, L$`${u.def.name} desactivó una mina`, 'good');
         this.kill(b, u.owner);
         return;
       }
@@ -2731,7 +2731,7 @@ class Game {
         this.fx.push({ k: 'boom', x: b.x, y: 0.2, z: b.z, s: 1.0 });
         this.emit('sound', { name: 'boom', x: b.x, z: b.z });
         this.minesExploded = (this.minesExploded || 0) + 1;
-        if (u.owner === 0) this.alert('mine', L`¡Mina! ${u.def.name} chocó con una mina`, 'bad', b.x, b.z, 5);
+        if (u.owner === 0) this.alert('mine', L$`¡Mina! ${u.def.name} chocó con una mina`, 'bad', b.x, b.z, 5);
         this.damage(u, M.dmg, b.owner, b);
         this.kill(b, -1);
         return;
@@ -2742,12 +2742,12 @@ class Game {
   // Centro de investigación: una investigación a la vez; al terminar vale para todo el ejército del jugador.
   researchInvalid(b, key) {
     const R = RESEARCH[key];
-    if (!b || !b.alive || b.type !== 'research' || !b.built) return T('Necesita un Centro de investigación terminado');
-    if (!R) return T('Investigación desconocida');
+    if (!b || !b.alive || b.type !== 'research' || !b.built) return T$('Necesita un Centro de investigación terminado');
+    if (!R) return T$('Investigación desconocida');
     const p = this.players[b.owner];
-    if (p.research && p.research[key]) return T('Ya investigada');
-    if (b.researching) return L`Investigando ${RESEARCH[b.researching.key].name}`;
-    if (!(this.creator && b.owner === 0) && p.coins < R.cost) return L`Monedas insuficientes (${fmt(R.cost)})`;
+    if (p.research && p.research[key]) return T$('Ya investigada');
+    if (b.researching) return L$`Investigando ${RESEARCH[b.researching.key].name}`;
+    if (!(this.creator && b.owner === 0) && p.coins < R.cost) return L$`Monedas insuficientes (${fmt(R.cost)})`;
     return null;
   }
 
@@ -2780,7 +2780,7 @@ class Game {
       }
     }
     if (b.owner === 0) {
-      this.emit('toast', { text: L`Investigación terminada: ${R.name}`, kind: 'good' });
+      this.emit('toast', { text: L$`Investigación terminada: ${R.name}`, kind: 'good' });
       this.emit('sound', { name: 'done' });
     }
   }
@@ -2804,12 +2804,12 @@ class Game {
   }
 
   layBridgeInvalid(u) {
-    if (!u || !u.alive || !u.def.layBridge) return T('Necesita un Vehículo lanzapuentes');
-    if (u.inside) return T('Bájalo del transporte primero');
+    if (!u || !u.alive || !u.def.layBridge) return T$('Necesita un Vehículo lanzapuentes');
+    if (u.inside) return T$('Bájalo del transporte primero');
     const p = this.players[u.owner];
-    if (this.count(u.owner, 'bridge') >= this.limitFor(u.owner, 'bridge')) return L`Límite alcanzado (${this.limitFor(u.owner, 'bridge')})`;
-    if (!(this.creator && u.owner === 0) && p.coins < BUILDINGS.bridge.cost) return L`Monedas insuficientes (${fmt(BUILDINGS.bridge.cost)})`;
-    if (this.bridgeSpot(u) < 0) return T('Acércate a agua poco profunda junto a la orilla');
+    if (this.count(u.owner, 'bridge') >= this.limitFor(u.owner, 'bridge')) return L$`Límite alcanzado (${this.limitFor(u.owner, 'bridge')})`;
+    if (!(this.creator && u.owner === 0) && p.coins < BUILDINGS.bridge.cost) return L$`Monedas insuficientes (${fmt(BUILDINGS.bridge.cost)})`;
+    if (this.bridgeSpot(u) < 0) return T$('Acércate a agua poco profunda junto a la orilla');
     return null;
   }
 
@@ -2828,12 +2828,12 @@ class Game {
 
   // Buque minador: siembra una mina oculta donde está (hasta 8 por jugador).
   layMineInvalid(u) {
-    if (!u || !u.alive || !u.def.layMine) return T('Necesita un Buque minador');
+    if (!u || !u.alive || !u.def.layMine) return T$('Necesita un Buque minador');
     const c = this.cells[u.cell];
-    if (!TERRAIN[c.t].water) return T('Solo en el agua');
-    if (c.bld) return T('Ya hay algo en esta casilla');
-    if (this.count(u.owner, 'seamine') >= MINES.limit) return L`Límite de minas (${MINES.limit})`;
-    if ((u.mineAt || 0) > this.time) return L`Preparando la mina: faltan ${Math.ceil(u.mineAt - this.time)} s`;
+    if (!TERRAIN[c.t].water) return T$('Solo en el agua');
+    if (c.bld) return T$('Ya hay algo en esta casilla');
+    if (this.count(u.owner, 'seamine') >= MINES.limit) return L$`Límite de minas (${MINES.limit})`;
+    if ((u.mineAt || 0) > this.time) return L$`Preparando la mina: faltan ${Math.ceil(u.mineAt - this.time)} s`;
     return null;
   }
 
@@ -2847,7 +2847,7 @@ class Game {
   }
 
   toggleGate(b) {
-    if (!b || !b.alive || b.type !== 'gate') return T('No es una puerta');
+    if (!b || !b.alive || b.type !== 'gate') return T$('No es una puerta');
     b.closed = !b.closed;
     if (b.closed) {
       // Las tropas que estaban en la puerta salen a un lado.
@@ -2872,19 +2872,19 @@ class Game {
   }
 
   siloInvalid(b, ci) {
-    if (!b || !b.alive || b.type !== 'silo') return T('Necesita un Complejo estratégico');
-    if (!this.strategic) return T('Solo con «Arsenal estratégico»');
-    if (!b.built) return T('Termina primero la obra');
-    if (b.spent) return T('Agotado: ya lanzó su misil (0/1)');
-    if (this.strategicLeft(b.owner) <= 0) return T('Uso estratégico agotado (0/1)');
+    if (!b || !b.alive || b.type !== 'silo') return T$('Necesita un Complejo estratégico');
+    if (!this.strategic) return T$('Solo con «Arsenal estratégico»');
+    if (!b.built) return T$('Termina primero la obra');
+    if (b.spent) return T$('Agotado: ya lanzó su misil (0/1)');
+    if (this.strategicLeft(b.owner) <= 0) return T$('Uso estratégico agotado (0/1)');
     const left = (b.builtAt || 0) + STRATEGIC.prep - this.time;
-    if (left > 0) return L`Preparando: faltan ${Math.ceil(left)} s`;
+    if (left > 0) return L$`Preparando: faltan ${Math.ceil(left)} s`;
     if (ci !== undefined) {
       const c = this.cells[ci];
-      if (!c) return T('Casilla no válida');
-      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return T('Demasiado lejos');
+      if (!c) return T$('Casilla no válida');
+      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return T$('Demasiado lejos');
       const p = this.players[b.owner];
-      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T('Muy cerca de tu Núcleo');
+      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T$('Muy cerca de tu Núcleo');
     }
     return null;
   }
@@ -2899,17 +2899,17 @@ class Game {
 
   // ---------- misil nuclear (v0.9) ----------
   nukeInvalid(b, ci) {
-    if (!b || !b.alive || b.type !== 'aadef' || b.level < 4 || !b.built) return T('Necesita un AIR DEFENSE de nivel 4');
-    if (b.upgrading) return T('Termina primero la mejora');
-    if (this.strategicLeft(b.owner) <= 0) return T('Uso estratégico agotado (0/1)');
-    if (this.time < (b.nukeReadyAt || 0)) return L`Recargando: faltan ${Math.ceil(b.nukeReadyAt - this.time)} s`;
+    if (!b || !b.alive || b.type !== 'aadef' || b.level < 4 || !b.built) return T$('Necesita un AIR DEFENSE de nivel 4');
+    if (b.upgrading) return T$('Termina primero la mejora');
+    if (this.strategicLeft(b.owner) <= 0) return T$('Uso estratégico agotado (0/1)');
+    if (this.time < (b.nukeReadyAt || 0)) return L$`Recargando: faltan ${Math.ceil(b.nukeReadyAt - this.time)} s`;
     const p = this.players[b.owner];
-    if (!(this.creator && b.owner === 0) && p.coins < NUKE.cost) return L`Monedas insuficientes (${fmt(NUKE.cost)})`;
+    if (!(this.creator && b.owner === 0) && p.coins < NUKE.cost) return L$`Monedas insuficientes (${fmt(NUKE.cost)})`;
     if (ci !== undefined) {
       const c = this.cells[ci];
-      if (!c) return T('Casilla no válida');
-      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return T('Demasiado lejos');
-      if (this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T('Muy cerca de tu Núcleo');
+      if (!c) return T$('Casilla no válida');
+      if (this.map.dist(c, this.cells[b.cell]) > NUKE.range) return T$('Demasiado lejos');
+      if (this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T$('Muy cerca de tu Núcleo');
     }
     return null;
   }
@@ -2921,11 +2921,11 @@ class Game {
   }
 
   salvoInvalid(pid, ci) {
-    if (this.strategic) return T('Con Arsenal estratégico hay un solo uso por partida');
+    if (this.strategic) return T$('Con Arsenal estratégico hay un solo uso por partida');
     const silos = this.readySilos(pid);
-    if (silos.length < 3) return L`Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes ${silos.length})`;
+    if (silos.length < 3) return L$`Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes ${silos.length})`;
     const p = this.players[pid];
-    if (!(this.creator && pid === 0) && p.coins < NUKE.cost * 3) return L`Monedas insuficientes (${fmt(NUKE.cost * 3)})`;
+    if (!(this.creator && pid === 0) && p.coins < NUKE.cost * 3) return L$`Monedas insuficientes (${fmt(NUKE.cost * 3)})`;
     if (ci !== undefined) {
       for (const b of silos.slice(0, 3)) {
         const why = this.nukeInvalid(b, ci);
@@ -2980,18 +2980,18 @@ class Game {
   }
 
   mobileNukeInvalid(u, ci) {
-    if (!u || !u.alive || !u.def.strategic) return T('Necesita un lanzador estratégico');
-    if (!this.strategic) return T('Solo con «Arsenal estratégico»');
-    if (u.spent) return T('Agotado: ya usó su único misil (0/1)');
-    if (this.strategicLeft(u.owner) <= 0) return T('Uso estratégico agotado (0/1)');
-    if (u.inside) return T('Bájalo del transporte primero');
-    if (this.time < (u.armAt || 0)) return L`Preparando: faltan ${Math.ceil(u.armAt - this.time)} s`;
+    if (!u || !u.alive || !u.def.strategic) return T$('Necesita un lanzador estratégico');
+    if (!this.strategic) return T$('Solo con «Arsenal estratégico»');
+    if (u.spent) return T$('Agotado: ya usó su único misil (0/1)');
+    if (this.strategicLeft(u.owner) <= 0) return T$('Uso estratégico agotado (0/1)');
+    if (u.inside) return T$('Bájalo del transporte primero');
+    if (this.time < (u.armAt || 0)) return L$`Preparando: faltan ${Math.ceil(u.armAt - this.time)} s`;
     if (ci !== undefined) {
       const c = this.cells[ci];
-      if (!c) return T('Casilla no válida');
-      if (this.map.dist(c, this.cells[u.cell]) > STRATEGIC.range) return L`Demasiado lejos (alcance: ${STRATEGIC.range} casillas)`;
+      if (!c) return T$('Casilla no válida');
+      if (this.map.dist(c, this.cells[u.cell]) > STRATEGIC.range) return L$`Demasiado lejos (alcance: ${STRATEGIC.range} casillas)`;
       const p = this.players[u.owner];
-      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T('Muy cerca de tu Núcleo');
+      if (p.core && this.map.dist(c, this.cells[p.core.cell]) <= NUKE.radius + 2) return T$('Muy cerca de tu Núcleo');
     }
     return null;
   }
@@ -3029,13 +3029,13 @@ class Game {
       const near = this.buildings.some((x) => x.alive && x.owner === q.id && this.map.dist(this.cells[x.cell], c) <= R) ||
         this.units.some((u) => u.alive && u.owner === q.id && this.map.dist(this.cells[u.cell], c) <= R);
       if (q.id === 0 && (mine || near)) {
-        this.emit('toast', { text: mine ? L`Misil nuclear lanzado: llega en ${NUKE.flight} s` : L`¡Misil nuclear en camino! Llega en ${NUKE.flight} s`, kind: mine ? 'info' : 'bad', x: c.x, z: c.z });
+        this.emit('toast', { text: mine ? L$`Misil nuclear lanzado: llega en ${NUKE.flight} s` : L$`¡Misil nuclear en camino! Llega en ${NUKE.flight} s`, kind: mine ? 'info' : 'bad', x: c.x, z: c.z });
         this.emit('ping', { x: c.x, z: c.z, kind: 'bad' });
       }
       // Una sola frase aunque lleguen varios a la vez (salva de 3, v1.0).
       if (!q.human && near && !mine && q.persona && this.time - (q.nukeSaidAt ?? -99) > 2) {
         q.nukeSaidAt = this.time;
-        this.say(q.id, T('¡Un misil nuclear! ¡Todos a cubierto!'), { force: true, public: true });
+        this.say(q.id, T$('¡Un misil nuclear! ¡Todos a cubierto!'), { force: true, public: true });
       }
     }
     return null;
@@ -3057,7 +3057,7 @@ class Game {
         this.fx.push({ k: 'boom', x, y: 4, z, s: 1.4 });
         this.nukesIntercepted = (this.nukesIntercepted || 0) + 1;
         if (shield.owner === 0 || p.owner === 0) {
-          this.emit('toast', { text: shield.owner === 0 ? T('¡Tu Escudo antimisiles derribó el misil nuclear!') : T('El Escudo antimisiles enemigo derribó tu misil'), kind: shield.owner === 0 ? 'good' : 'bad' });
+          this.emit('toast', { text: shield.owner === 0 ? T$('¡Tu Escudo antimisiles derribó el misil nuclear!') : T$('El Escudo antimisiles enemigo derribó tu misil'), kind: shield.owner === 0 ? 'good' : 'bad' });
         }
         return;
       }
@@ -3081,7 +3081,7 @@ class Game {
     const zc = this.cells[p.cell];
     const near0 = this.buildings.some((b) => b.alive && b.owner === 0 && this.map.dist(this.cells[b.cell], zc) <= NUKE.radius + 2);
     if (p.owner === 0 || near0) {
-      this.emit('toast', { text: L`Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
+      this.emit('toast', { text: L$`Radiación por ${NUKE.rad.time} s donde cayó el misil`, kind: p.owner === 0 ? 'info' : 'bad', x: p.tx, z: p.tz });
     }
   }
 

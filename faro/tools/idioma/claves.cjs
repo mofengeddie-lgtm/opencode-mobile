@@ -1,6 +1,6 @@
 // v1.9: revisor de idioma (parte 1): junta todas las claves que hay que traducir y las compara con el diccionario.
 // Uso: node faro/tools/idioma/claves.cjs [--faltan] [--json]
-//   código: T('…') y L`…` en src/js; datos: las tablas de 089-i18n-data.js; HTML fijo de la plantilla.
+//   código: T$('…') y L$`…` en src/js; datos: las tablas de 089-i18n-data.js; HTML fijo de la plantilla.
 //   Escribe tools/idioma/salida/claves.json y dice cuántas faltan en src/i18n/en.json (y cuáles sobran).
 // Los datos y el HTML se leen abriendo el juego armado (faro.html) en Chromium, en español.
 'use strict';
@@ -26,10 +26,10 @@ function codeKeys() {
     };
     walk.simple(ast, {
       CallExpression(node) {
-        if (node.callee.type === 'Identifier' && node.callee.name === 'T' && node.arguments[0] && node.arguments[0].type === 'Literal' && typeof node.arguments[0].value === 'string') add(node.arguments[0].value, node);
+        if (node.callee.type === 'Identifier' && node.callee.name === 'T$' && node.arguments[0] && node.arguments[0].type === 'Literal' && typeof node.arguments[0].value === 'string') add(node.arguments[0].value, node);
       },
       TaggedTemplateExpression(node) {
-        if (node.tag.type !== 'Identifier' || node.tag.name !== 'L') return;
+        if (node.tag.type !== 'Identifier' || node.tag.name !== 'L$') return;
         const q = node.quasi.quasis;
         let k = q[0].value.cooked;
         for (let i = 1; i < q.length; i++) k += `{${i - 1}}` + q[i].value.cooked;

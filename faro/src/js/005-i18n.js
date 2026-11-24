@@ -1,6 +1,6 @@
 'use strict';
 // v1.9: idiomas del juego: español (el original) e inglés.
-// - T('texto') traduce un texto suelto; L`texto ${valor}` traduce un texto con valores (marcas {0}, {1}… en el diccionario,
+// - T$('texto') traduce un texto suelto; L$`texto ${valor}` traduce un texto con valores (marcas {0}, {1}… en el diccionario,
 //   así la traducción puede cambiar el orden). En español los dos devuelven exactamente lo mismo que antes.
 // - El diccionario (src/i18n/en.json) usa como clave el texto en español, sin espacios en los bordes.
 // - Los datos (nombres y descripciones de tropas, edificios, modos, misiones…) se traducen una vez al arrancar
@@ -56,9 +56,8 @@ const I18N = {
   },
 
   // Propiedades de los datos que son texto para el jugador.
-  TEXT_PROPS: new Set(['name', 'desc', 'story', 'tip', 'text', 'special', 'title', 'label', 'sub', 'hint', 'note', 'lines', 'why',
-    'short', 'plural', 'role', 'goal', 'brief', 'win', 'lose', 'help', 'body', 'msg', 'say', 'line', 'detail', 'tag', 'caption', 'faro', 'flag', 'inf', 'veh',
-    'land', 'landcoast', 'coast', 'shallowcoast', 'deep']),
+  // Solo estas: otras claves como «sub», «flag» o «land» también son nombres de tropas o tipos (lógica).
+  TEXT_PROPS: new Set(['name', 'desc', 'story', 'tip', 'text', 'special', 'lines', 'levelNames']),
 
   // Traduce en su lugar los textos de una tabla de datos (objetos y listas anidadas). Dentro de una propiedad
   // de texto (como lines: { attack: [...] }) todo lo que hay es texto.
@@ -71,7 +70,7 @@ const I18N = {
       const v = obj[k];
       const text = allText || (!Array.isArray(obj) && this.TEXT_PROPS.has(k));
       if (typeof v === 'string') {
-        if (text) obj[k] = T(v);
+        if (text) obj[k] = T$(v);
       } else if (v && typeof v === 'object') {
         this.applyData(v, seen, text);
       }
@@ -82,7 +81,7 @@ const I18N = {
   // Lista de textos sueltos (como ['Hola', 'Chau']): se traduce cada uno.
   applyList(arr) {
     if (this.lang === 'es' || !Array.isArray(arr)) return arr;
-    for (let i = 0; i < arr.length; i++) if (typeof arr[i] === 'string') arr[i] = T(arr[i]);
+    for (let i = 0; i < arr.length; i++) if (typeof arr[i] === 'string') arr[i] = T$(arr[i]);
     return arr;
   },
 
@@ -96,13 +95,13 @@ const I18N = {
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const n of nodes) {
       if (!n.nodeValue.trim()) continue;
-      const t = T(n.nodeValue.replace(/\s+/g, ' '));
+      const t = T$(n.nodeValue.replace(/\s+/g, ' '));
       if (t.trim() !== n.nodeValue.replace(/\s+/g, ' ').trim()) n.nodeValue = t;
     }
     for (const el of root.querySelectorAll('[title],[aria-label],[placeholder],[alt]')) {
       for (const a of ['title', 'aria-label', 'placeholder', 'alt']) {
         const v = el.getAttribute(a);
-        if (v && v.trim()) el.setAttribute(a, T(v));
+        if (v && v.trim()) el.setAttribute(a, T$(v));
       }
     }
   },
@@ -121,7 +120,7 @@ const I18N = {
 };
 
 // Texto suelto.
-function T(s) {
+function T$(s) {
   if (I18N.lang === 'es' || typeof s !== 'string') return s;
   const k = s.trim();
   const v = I18N.get(k);
@@ -131,8 +130,8 @@ function T(s) {
   return s.slice(0, at) + v + s.slice(at + k.length);
 }
 
-// Texto con valores: L`Entrena ${n} tropas` → clave «Entrena {0} tropas».
-function L(strings, ...vals) {
+// Texto con valores: L$`Entrena ${n} tropas` → clave «Entrena {0} tropas».
+function L$(strings, ...vals) {
   if (I18N.lang === 'es') {
     let out = strings[0];
     for (let i = 0; i < vals.length; i++) out += vals[i] + strings[i + 1];

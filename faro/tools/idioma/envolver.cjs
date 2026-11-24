@@ -1,9 +1,9 @@
 // v1.9: envuelve los textos en español del código para poder traducirlos.
 // Uso: node faro/tools/idioma/envolver.cjs [--aplicar] [archivo.js ...]
 //   sin --aplicar: informe (cuántos textos envolvería y dónde, y qué constantes tienen textos de datos).
-//   con --aplicar: reescribe los archivos de src/js: texto suelto → T('…'); texto con valores → L`…${x}…`;
+//   con --aplicar: reescribe los archivos de src/js: texto suelto → T$('…'); texto con valores → L$`…${x}…`;
 //   dentro de HTML, solo las partes de texto (y title, aria-label, alt, placeholder).
-// En español, T y L devuelven exactamente el mismo texto: el juego en español no cambia.
+// En español, T$ y L$ devuelven exactamente el mismo texto: el juego en español no cambia.
 // Los textos de las constantes de arriba del archivo (datos: nombres, descripciones…) NO se envuelven:
 // se traducen al arrancar con I18N.applyData (ver 005-i18n.js y 089-i18n-data.js).
 'use strict';
@@ -18,6 +18,10 @@ const SKIP_FILES = new Set(['005-i18n.js', '089-i18n-data.js', '045-save.js', '0
 const APPLY = process.argv.includes('--aplicar');
 const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 
+const SP_WORDS = new Set(('monedas casillas cristales hasta tropas tropa edificios edificio premio hecho nuevo nueva eliminaciones intentos '
+  + 'segundos minutos puntos nivel vida escudo alcance comunidad mejorar mejora daño recarga partida partidas victorias derrotas veces '
+  + 'jugadores jugador rondas oleada oleadas soldados soldado barcos aviones pase racha dia dias semana fragmentos planos aspecto '
+  + 'aspectos cofre cofres gratis listo lista libre libres cerca lejos rapido lento abierta cerrada apagada encendida').split(' '));
 // ¿Es texto para el jugador (en español)? Se mira el texto sin etiquetas ni valores.
 function isText(s) {
   const t = s.replace(/<[^>]*>/g, ' ').replace(/&[a-z]+;|&#\d+;/g, ' ').replace(/\{\d+\}/g, ' ').trim();
@@ -25,7 +29,9 @@ function isText(s) {
   if (/^\[[A-Za-zÁ-ú]+\]/.test(t)) return false; // mensajes de consola «[Faro] …»
   if (/:\/\/|^data:|^#[0-9a-f]{3,8}$|rgba?\(|var\(--|^[.#[][\w-]|^\w+-\w+(-\w+)*$|[{}]|=>|\d+px\b|^[\w-]+:[\w-]+$|^\w+\/[\w+.-]+$|sans-serif|system-ui|translate\(|rotate\(|scale\(|^[\w-]+=["']|^[\w.{}-]+\.(txt|json|png|jpe?g|html|js)$/i.test(t)) return false;
   if (/[áéíóúñÁÉÍÓÚÑ¿¡ü]/.test(t)) return true;
-  if (/[A-Za-z]{2,}[ ,.:;!?«»"()\-–—·/0-9%+×]+[A-Za-z]{2,}/.test(t)) return true;
+  // Palabras de la interfaz que solas ya son español (monedas, casillas, premio…).
+  if (t.toLowerCase().split(/[^a-záéíóúñü]+/).some((w) => SP_WORDS.has(w))) return true;
+  if (/[A-Za-z]{2,}[ ,.:;!?«»"()\-–—·/0-9%+×→←]+[A-Za-z]{2,}/.test(t)) return true;
   if (/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]{2,}[.!?…:]*$/.test(t)) return true;
   return false;
 }
@@ -34,7 +40,7 @@ function isText(s) {
 const SKIP_CALLS = new Set(['addEventListener', 'removeEventListener', 'getElementById', '$', 'querySelector', 'querySelectorAll', 'closest',
   'matches', 'setItem', 'getItem', 'removeItem', 'add', 'remove', 'toggle', 'contains', 'getAttribute', 'hasAttribute', 'removeAttribute',
   'require', 'log', 'warn', 'error', 'info', 'debug', 'includes', 'indexOf', 'startsWith', 'endsWith', 'split', 'replace', 'test', 'match',
-  'createElement', 'fetch', 'postMessage', 'Error', 'TypeError', 'RangeError', 'T', 'L', 'use', 'note', 'call', 'send', 'play', 'measure']);
+  'createElement', 'fetch', 'postMessage', 'Error', 'TypeError', 'RangeError', 'T$', 'L$', 'use', 'note', 'call', 'send', 'play', 'measure']);
 
 function calleeName(c) {
   if (!c) return '';
@@ -59,6 +65,7 @@ function skipContext(node, ancestors) {
   if ((parent.type === 'CallExpression' || parent.type === 'NewExpression')) {
     const n = calleeName(parent.callee);
     if (n === 'setAttribute' && parent.arguments[0] === node) return 'atributo';
+    if ((n === 'replace' || n === 'split') && parent.arguments[0] !== node) return '';
     if (SKIP_CALLS.has(n)) return 'llamada ' + n;
   }
   // Asignaciones a clases, estilos o atributos (className = 'a b c', style.transform = `…`).
@@ -174,14 +181,14 @@ function analyze(file) {
       const why = skipContext(node, ancestors);
       if (why) { skipped[why] = (skipped[why] || 0) + 1; return; }
       if (!hasTags) {
-        edits.push({ start: node.start, end: node.end, text: `T(${src.slice(node.start, node.end)})`, key: v.trim(), line: lineOf(node.start) });
+        edits.push({ start: node.start, end: node.end, text: `T$(${src.slice(node.start, node.end)})`, key: v.trim(), line: lineOf(node.start) });
       } else {
         // Texto con HTML entre comillas: pasa a plantilla con las partes de texto envueltas.
         const runs = textRuns([{ type: 'q', text: v, start: 0 }]);
         let out = '';
         let at = 0;
         for (const r of runs) {
-          out += escTpl(v.slice(at, r.start)) + '${L`' + escTpl(v.slice(r.start, r.end)) + '`}';
+          out += escTpl(v.slice(at, r.start)) + '${L$`' + escTpl(v.slice(r.start, r.end)) + '`}';
           at = r.end;
         }
         out += escTpl(v.slice(at));
@@ -206,11 +213,11 @@ function analyze(file) {
       if (why) { skipped[why] = (skipped[why] || 0) + 1; return; }
       const inner = { start: node.start + 1, end: node.end - 1 };
       if (runs.length === 1 && runs[0].start === inner.start && runs[0].end === inner.end) {
-        edits.push({ start: node.start, end: node.start, text: 'L', key: runs[0].key, line: lineOf(node.start) });
+        edits.push({ start: node.start, end: node.start, text: 'L$', key: runs[0].key, line: lineOf(node.start) });
         return;
       }
       for (const r of runs) {
-        edits.push({ start: r.start, end: r.end, text: '${L`' + src.slice(r.start, r.end) + '`}', key: r.key, line: lineOf(r.start) });
+        edits.push({ start: r.start, end: r.end, text: '${L$`' + src.slice(r.start, r.end) + '`}', key: r.key, line: lineOf(r.start) });
       }
     },
   });

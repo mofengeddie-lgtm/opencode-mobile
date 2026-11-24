@@ -144,6 +144,12 @@ button:focus-visible, input:focus-visible + span, .opt input:focus-visible + spa
 #objectives li.done { color: var(--muted); text-decoration: line-through; }
 #objectives li.done::before { background: var(--good); border-color: var(--good); }
 #objectives.collapsed ol { display: none; }
+/* v1.9: pantallas bajas y anchas (Poki 1031×580): la lista de primeros pasos más compacta para no tapar los botones rápidos. */
+@media (min-width: 900px) and (max-height: 640px) {
+  #objectives { padding: 7px 10px; }
+  #objectives ol { gap: 2px; font-size: 12px; margin-top: 5px; }
+  #objectives li { line-height: 1.2; }
+}
 #toasts { position: fixed; top: calc(var(--top) + 64px); left: 50%; transform: translateX(-50%); display: grid; gap: 6px; justify-items: center; z-index: 9; pointer-events: none; width: min(440px, calc(100% - 32px)); }
 .toast { padding: 8px 14px; border-radius: 8px; background: var(--panel-solid); border: 1px solid var(--line); font-weight: 600; font-size: 14px; animation: tin 0.18s ease-out; text-align: center; display: flex; gap: 10px; align-items: center; justify-content: center; }
 .toast.has-btn { pointer-events: auto; }

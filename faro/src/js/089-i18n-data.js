@@ -16,6 +16,6 @@ function i18nApplyData() {
   const t = i18nTables();
   for (const o of Object.values(t.objects)) I18N.applyData(o);
   for (const l of Object.values(t.lists)) I18N.applyList(l);
-  for (const m of Object.values(t.maps)) for (const k of Object.keys(m)) if (typeof m[k] === 'string') m[k] = T(m[k]);
-  for (const list of Object.values(t.pairs)) for (const pair of list) pair[1] = T(pair[1]);
+  for (const m of Object.values(t.maps)) for (const k of Object.keys(m)) if (typeof m[k] === 'string') m[k] = T$(m[k]);
+  for (const list of Object.values(t.pairs)) for (const pair of list) pair[1] = T$(pair[1]);
 }
