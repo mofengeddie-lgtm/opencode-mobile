@@ -66,7 +66,7 @@ TESTS = [
     ('P08', 'Medidas de Poki', 'En 640×360, 836×470 y 1031×580 (escritorio), celular vertical y horizontal y tableta: vestíbulo, partida, construir, ficha, pausa y final caben, sin piezas encimadas ni cortadas; letra de 11 px o más.'),
     ('P09', 'Píldora de Poki en el celular', 'La zona de la píldora de Poki (arriba, 46 × 62 px a 24 px del borde) no tapa botones del juego en celular; si los tapa, se corre con movePill. (Lo confirmas tú en el Poki Inspector, modo celular.)'),
     ('P10', 'Todo en inglés', 'Con el juego en inglés, un revisor recorre vestíbulo (todas sus pestañas), construir, las 135 fichas de tropas y edificios, ajustes, pausa, final, campaña, tutorial y avisos: 0 textos en español a la vista. El diccionario cubre el 100 % de los textos del código.'),
-    ('P11', 'Elegir idioma', 'Con PokiSDK.getLanguage() = «es» sale en español; con «en», «fr» u otro, en inglés; el selector de Ajustes cambia el idioma al instante y queda guardado. La versión web usa el idioma del navegador.'),
+    ('P11', 'Elegir idioma', 'Con PokiSDK.getLanguage() = «es» sale en español; con «en», «fr» u otro, en inglés; el selector de Ajustes cambia el idioma (el juego se vuelve a abrir en ese idioma, con la partida guardada) y queda guardado. La versión web usa el idioma del navegador.'),
     ('P12', 'El español queda igual', 'En español, los textos de las pantallas principales son idénticos a la v1.8 (comparación automática texto por texto).'),
     ('P13', 'Tamaño y carga', 'Versión de Poki ≤ 5 MB y ≤ 1,6 MB comprimida; carga hasta el vestíbulo no más de un 10 % más lenta que la v1.8 (Chromium). Si los modelos se comprimen: mismos triángulos y la imagen igual a ojo y por diferencia de píxeles.'),
     ('P14', 'Versión limpia', 'La versión de Poki no tiene zona de creadores ni enlaces de salida, y no escribe mensajes de depuración en la consola al jugar.'),
@@ -74,6 +74,17 @@ TESTS = [
     ('P16', 'La versión web sigue bien', 'La versión publicada en su enlace funciona igual que la v1.8 y ya no depende de CDN ni de Google Fonts.'),
     ('P17', 'Sin regresiones', 'Las pruebas de las versiones anteriores (en español) siguen pasando; campaña ganable; números de tropas y edificios iguales; revisor 110 de 110.'),
     ('P18', 'Documento, sitio y PDF', 'Documento completo, registro y sitio con la v1.9; PRD final con resultados reales; guía paso a paso para subir el juego a Poki.'),
+]
+
+
+# Decisiones tomadas durante la versión (salen en el PRD final).
+DECISIONS = [
+    ('Modelos 3D', 'El plan decía meshopt con cuantización (2,56 → 1,68 MB). Medido: con los vértices cuantizados, Chromium sin tarjeta gráfica tardaba 90 s en cargar en vez de 7 s, porque la tarjeta (emulada) tiene que convertir cada vértice. Se usa meshopt sin cuantizar: 2,44 → 2,00 MB, sin pérdida y con la carga igual a la v1.8.'),
+    ('SDK que no contesta', 'Probado con el SDK real fuera de Poki: PokiSDK.init no contestaba y el juego se quedaba en la pantalla de carga. Ahora la carga sigue a los 6 s y, si un anuncio no empieza en 8 s, el juego sigue (a lo sumo 150 s si empezó). No es un temporizador de anuncios: Poki sigue decidiendo cuándo hay uno.'),
+    ('Cambiar idioma', 'Al elegir otro idioma, el juego se vuelve a abrir (unos segundos) con la partida guardada, en vez de cambiar al instante: así todo el texto, también el de los datos, sale en el idioma nuevo sin riesgo.'),
+    ('Poki sin compras ni otras plataformas', 'En Poki no está la pestaña de paquetes de cristales («Solo en Roblox») ni los botones y frases que nombran a Roblox; tampoco la zona de creadores (herramienta de desarrollo). La versión web los conserva.'),
+    ('Dos errores encontrados por las pruebas', 'Al envolver los textos, el juego tenía 18 variables locales llamadas L o T que tapaban las funciones de traducción: pasaron a llamarse T$ y L$. Y la clave «sub» (subtítulo) también es la del Submarino: traducía sus códigos; las propiedades de texto quedaron en una lista corta.'),
+    ('Mensaje de la consola', 'El decodificador de meshopt de three.js r128 escribe un aviso al arrancar; se calla solo mientras arranca (versión limpia para Poki) sin tocar la librería.'),
 ]
 
 
@@ -124,6 +135,10 @@ def main():
         tests_head = '9. Pruebas de aceptación'
         test_rows = ''.join(f'<tr><td>{i}</td><td><b>{E(n)}</b></td><td>{E(d)}</td><td>{chip(None)}</td></tr>' for i, n, d in TESTS)
         test_table = f'<table><thead><tr><th style="width:6%">N.º</th><th style="width:22%">Prueba</th><th>Qué se comprueba</th><th style="width:10%">Estado</th></tr></thead><tbody>{test_rows}</tbody></table>'
+    decisions_html = ''
+    if final:
+        rows = ''.join(f'<tr><td><b>{E(a)}</b></td><td>{E(b)}</td></tr>' for a, b in DECISIONS)
+        decisions_html = f'<section><h2>Decisiones durante la versión</h2><table><thead><tr><th style="width:22%">Tema</th><th>Qué pasó y qué se decidió</th></tr></thead><tbody>{rows}</tbody></table></section>'
     body = f'''{doc_style.head(title, FECHA)}
 <section class="first">
 <div class="eyebrow">Faro de Ámbar · prototipo web · {'resultados' if final else 'plan'}</div>
@@ -209,7 +224,7 @@ def main():
 </ol>
 <div class="note">Lo que mide Poki en la prueba con jugadores: clics en la miniatura, tiempo en la página y cuántos llegan a jugar (el primer <code>gameplayStart()</code>). Por eso importa que cargue rápido y que se llegue a jugar con pocos toques.</div>
 </section>
-<section>
+{decisions_html}<section>
 <h2>{tests_head}</h2>
 <p class="small">Pruebas en Chromium sin tarjeta gráfica, con un SDK de prueba que anota los eventos y, en P05, con el SDK real. El iPad, los celulares y el Poki Inspector los pruebas tú.</p>
 {test_table}

@@ -82,7 +82,10 @@ CODE_FILES = (
      'site/build_site.py', 'site/capture.cjs'] +
     # v1.8: programa revisor (compara el juego con los documentos del usuario).
     ['tools/revisar/revisar.py', 'tools/revisar/plan_v18.py', 'tools/revisar/datos.cjs', 'tools/revisar/fotos.cjs',
-     'tools/revisar/extraer_refs.py', 'tools/revisar/prd_v18.py', 'README.md', 'AGENTS.md']
+     'tools/revisar/extraer_refs.py', 'tools/revisar/prd_v18.py', 'README.md', 'AGENTS.md'] +
+    # v1.9: versión para Poki: idiomas, modelos comprimidos, miniaturas y paquete.
+    ['src/i18n/en.json', 'tools/idioma/envolver.cjs', 'tools/idioma/claves.cjs', 'tools/idioma/revisar_pantallas.cjs',
+     'tools/modelos/comprimir.mjs', 'tools/poki/miniaturas.cjs', 'tools/poki/empaquetar.py', 'docs/prd/prd_v19.py']
 )
 DESC = {
     'src/index.template.html': 'Estructura de la página y todos los estilos de la interfaz.',
@@ -101,6 +104,14 @@ DESC = {
     'tools/revisar/fotos.cjs': 'Abre el juego en Chromium y guarda la miniatura 3D de cada tropa y edificio.',
     'tools/revisar/extraer_refs.py': 'Saca las imágenes de los modelos del usuario de su PDF v1.8.',
     'tools/revisar/prd_v18.py': 'Arma el PRD v1.8 a partir del plan y del informe del revisor.',
+    'src/i18n/en.json': 'Diccionario inglés: clave = texto en español, valor = traducción (1.697 textos).',
+    'tools/idioma/envolver.cjs': 'Envuelve los textos en español del código con T$ y L$ para poder traducirlos.',
+    'tools/idioma/claves.cjs': 'Revisor de idioma (1): junta todas las claves y dice cuáles faltan en el diccionario.',
+    'tools/idioma/revisar_pantallas.cjs': 'Revisor de idioma (2): recorre el juego en inglés y busca español a la vista.',
+    'tools/modelos/comprimir.mjs': 'Comprime los modelos 3D con meshopt sin cuantizar (sin pérdida).',
+    'tools/poki/miniaturas.cjs': 'Saca del juego las dos miniaturas para Poki (1024×1024).',
+    'tools/poki/empaquetar.py': 'Arma la versión para Poki y el .zip que se sube.',
+    'docs/prd/prd_v19.py': 'Arma el PRD v1.9 (plan y resultados).',
 }
 
 # v1.8: qué muestra cada imagen del PDF «Equipamiento militar 2» del usuario (las capturas y fotos de prensa no se

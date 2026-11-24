@@ -46,6 +46,7 @@ modes = '\n'.join(f'<li><b>{E(m["name"])}</b><span>{E(m["desc"])}</span></li>' f
 first = D['items'][next(k for k, i in enumerate(D['items']) if i['isNew'])]
 
 LOG = [
+    ('1.9', '24 nov 2026', 'Versión lista para Poki: todo dentro del juego (motor 3D, modelos comprimidos y letras), español e inglés con selector en Ajustes, juego posible en modo incógnito, anuncios de Poki entre partidas y «🎬 Doble premio» opcional, y pantallas desde 640 × 360.'),
     ('1.8', '18 nov 2026', 'Todo el catálogo del PRD 1.8: 57 tropas y 19 edificios nuevos con su modelo 3D, sistemas nuevos (anfibios, puentes, puertas, búnker, auras, minas, investigación, paracaídas), «Tu ejército» en la portada del juego, Campo de pruebas, Ajustes «A tu manera» y programa revisor.'),
     ('1.7', '15-17 nov 2026', 'Arsenal «Conoce tu ejército», Dron de ataque, Dron kamikaze, Lanzacohetes múltiple y Lancha misilera, Lanzador DF-17 con modelo nuevo, Lanzador nuclear móvil de un solo uso, selección con vida del grupo y orden actual, carga en 3 pasos y tamaño de la interfaz.'),
     ('1.6.1', '16 nov 2026', 'Luz nueva y mar vivo: reflejos que se mueven, espuma en las orillas y sombras que se ven. Áreas táctiles de 44 px.'),

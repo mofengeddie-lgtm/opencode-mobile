@@ -2,6 +2,22 @@
 
 Una entrada por versión, de la más nueva a la más vieja. **Cada versión nueva agrega aquí sus mejoras y partes importantes** antes de publicarse (regla del proyecto). El detalle completo de cada una está en su PRD (`docs/prd/`).
 
+## v1.9 · 24 nov 2026
+
+- Pedido: exportar el juego primero a Poki («Lo voy a exportar primero en POKI GAMES») y, al proponerte esta versión, «Dale, siempre tenemos que mejorar».
+- Requisitos de Poki leídos en sus páginas para desarrolladores (requisitos y calidad, SDK HTML5, recursos externos, idiomas, miniaturas, Inspector).
+- Todo dentro del archivo: three.js r128, su GLTFLoader, el decodificador de meshopt y las fuentes Barlow y Chakra Petch (OFL). Cero pedidos a CDN o Google Fonts, también en la versión web.
+- Versión para Poki: `node faro/build.mjs --poki` (o `python3 faro/tools/poki/empaquetar.py` para el .zip): script del SDK de Poki, sin zona de creadores, sin la pestaña de paquetes de cristales y sin menciones a Roblox.
+- SDK de Poki (`src/js/088-platform.js`): gameLoadingFinished al cargar; gameplayStart con el primer toque; gameplayStop en pausa, menú y final; nunca dos iguales seguidos; anuncio (commercialBreak) al empezar partida y al salir de la pausa, con sonido, partida y controles quietos; si el SDK no contesta, el juego no se traba (6 s para init y 8 s si el anuncio no empieza).
+- «🎬 Doble premio» opcional en la pantalla final (anuncio con premio): duplica XP y cristales una vez; sin video, sin premio y sin mensaje.
+- Inglés completo: 1.697 textos (código, datos y HTML) en `src/i18n/en.json`; idioma automático (Poki o navegador) y selector en Ajustes · Interfaz. En español todo queda igual que en la v1.8 (comparado pantalla por pantalla). Revisor de idioma en `tools/idioma/`.
+- Modo incógnito: el juego sigue jugable aunque el navegador no deje guardar y avisa en el vestíbulo.
+- Espacio, flechas y rueda ya no mueven la página de Poki; la rueda sigue desplazando las listas del juego.
+- Pantallas de Poki 640×360, 836×470 y 1031×580; la lista de primeros pasos se compacta en pantallas bajas y anchas.
+- Modelos 3D comprimidos con meshopt sin cuantizar (2,44 → 2,00 MB, sin pérdida). La versión cuantizada pesaba menos pero hacía la carga 12 veces más lenta en Chromium sin tarjeta gráfica: se descartó.
+- Dos miniaturas para Poki (`docs/poki/`), sacadas del juego, sin texto ni bordes.
+- Pruebas: __PRUEBAS19__
+
 ## v1.8 · 18 nov 2026
 
 - Pedido: «faltan muchos elementos de la documentación y de las imágenes que te di: son todas las tropas nuevas; agrega las que faltan; la imagen de la portada se ve en la web pero no en el juego; y antes, un PRD y un PDF completos, y un programa solo para revisar si el juego tiene los elementos de mis archivos».

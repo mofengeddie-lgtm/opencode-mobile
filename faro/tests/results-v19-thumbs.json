@@ -1,0 +1,20 @@
+{
+ "miniatura-1": {
+  "size": [
+   1024,
+   1024
+  ],
+  "near_poki_pct": 0.79,
+  "edge_colors": 74,
+  "max_flat_edge_pct": 35.9
+ },
+ "miniatura-2": {
+  "size": [
+   1024,
+   1024
+  ],
+  "near_poki_pct": 1.08,
+  "edge_colors": 51,
+  "max_flat_edge_pct": 52.4
+ }
+}

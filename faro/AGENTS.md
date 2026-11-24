@@ -41,6 +41,23 @@ Pedido del usuario: un programa solo para revisar si el juego tiene los elemento
 equipamiento y la UI 0.4, y escribe `salida/informe.html`, `.pdf` y `.json`. En cada versión: correrlo antes de publicar; si se
 agrega o cambia una tropa o edificio del catálogo, actualizar `plan_v18.py` (nombre del usuario → clave del juego).
 
+## Idiomas (desde la v1.9)
+
+El juego está en español e inglés. Todo texto nuevo para el jugador va con `T$('texto')` (suelto) o `` L$`texto ${valor}` ``
+(con valores) en `src/js`; nombres y descripciones de datos se traducen solos si están en una tabla de `089-i18n-data.js`.
+No usar variables locales llamadas `T$` o `L$`. Después de cambiar textos:
+`node faro/tools/idioma/envolver.cjs` (dice si quedó texto sin envolver; `--aplicar` lo envuelve), agregar las traducciones a
+`src/i18n/en.json`, `node faro/build.mjs`, `node faro/tools/idioma/claves.cjs` (0 faltan) y
+`node faro/tools/idioma/revisar_pantallas.cjs` (0 pantallas con español). En español el juego debe quedar igual.
+
+## Versión para Poki (desde la v1.9)
+
+`python3 faro/tools/poki/empaquetar.py` arma `faro/poki/index.html` y `faro/poki/faro-poki.zip` (se sube a Poki for
+Developers). Reglas de Poki que el juego cumple y no hay que romper: nada pedido a otros sitios (todo dentro del archivo),
+eventos del SDK solo desde `src/js/088-platform.js`, sin compras ni enlaces de salida, sin mensajes de depuración en la
+consola, `localStorage` siempre dentro de try/catch. Modelos 3D: `tools/modelos/comprimir.mjs` (meshopt sin cuantizar);
+miniaturas: `tools/poki/miniaturas.cjs`.
+
 ## Fuentes del usuario
 
 - `docs/roblox/PRD_Faro_de_Ambar_v1_6.md` (13 nov 2026): PRD y plan de inicio para Roblox escrito por

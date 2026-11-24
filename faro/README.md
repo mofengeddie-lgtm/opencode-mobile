@@ -35,6 +35,14 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 **Ganar:** destruye todos los Núcleos enemigos (en «Rey del Faro», también manteniendo el Faro
 3 minutos). **Perder:** si cae tu Núcleo.
 
+## Novedades de la v1.9
+
+- **Lista para Poki**: `python3 faro/tools/poki/empaquetar.py` arma `faro/poki/faro-poki.zip` (con el SDK de Poki, anuncios entre partidas y «🎬 Doble premio» opcional al final). Miniaturas en `docs/poki/`.
+- **Español e inglés**: elige el idioma en Ajustes · Interfaz; si no, el juego usa el de Poki o el del navegador.
+- **Todo adentro**: el motor 3D, los modelos (comprimidos) y las letras van dentro del archivo; no se descarga nada de otros sitios.
+- **Incógnito**: se juega igual aunque el navegador no deje guardar, y el vestíbulo lo avisa.
+- Espacio, flechas y rueda ya no mueven la página cuando el juego está dentro de otra.
+
 ## Novedades de la v1.8
 
 - **Todo tu catálogo en el juego**: las 78 tropas y 32 edificios de tu PRD 1.8 (57 tropas y 19 edificios nuevos), con modelo 3D de Blender cada uno, y el equipo de tu lista de equipamiento.
