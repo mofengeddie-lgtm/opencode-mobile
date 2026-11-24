@@ -274,7 +274,8 @@ const winGame = (p) => p.evaluate(() => { const g = FARO.game; for (const pl of 
     for (const k of ['Space', 'ArrowDown', 'ArrowDown', 'PageDown', 'Space']) await p.keyboard.press(k);
     await p.mouse.move(500, 300);
     for (let i = 0; i < 6; i++) await p.mouse.wheel(0, 400);
-    await p.waitForTimeout(500);
+    // El desplazamiento se aplica en el cuadro siguiente; sin tarjeta gráfica cada cuadro tarda: se espera 5 s.
+    await p.waitForTimeout(5000);
     const y1 = await p.evaluate(() => scrollY);
     // En el juego: la rueda sobre una lista del juego la sigue desplazando (el Arsenal).
     await f.evaluate(() => { document.querySelector('[data-view="arsenal"]').click(); });
@@ -285,7 +286,7 @@ const winGame = (p) => p.evaluate(() => { const g = FARO.game; for (const pl of 
       const fr = await (await p.$('#g')).boundingBox();
       await p.mouse.move(fr.x + listScroll.x, fr.y + listScroll.y);
       await p.mouse.wheel(0, 300);
-      await p.waitForTimeout(400);
+      await p.waitForTimeout(5000);
       moved = await f.evaluate(() => { const el = [...document.querySelectorAll('#menu *')].find((e) => { const s = getComputedStyle(e); return /(auto|scroll)/.test(s.overflowY) && e.scrollHeight > e.clientHeight + 20; }); return el ? el.scrollTop : null; });
     }
     const y2 = await p.evaluate(() => scrollY);

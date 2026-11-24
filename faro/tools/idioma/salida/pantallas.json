@@ -842,92 +842,92 @@
   {
    "screen": "construir eco",
    "bad": [],
-   "sample": "Coins | 2,021 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,026 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir energy",
    "bad": [],
-   "sample": "Coins | 2,021 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,026 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir prod",
    "bad": [],
-   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,026 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir def",
    "bad": [],
-   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,026 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir sup",
    "bad": [],
-   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,026 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "ficha de edificio 421",
    "bad": [],
-   "sample": "Coins | 1,000,005 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,007 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 422",
    "bad": [],
-   "sample": "Coins | 1,000,008 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,010 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 439",
    "bad": [],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,010 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 440",
    "bad": [],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,010 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 441",
    "bad": [],
-   "sample": "Coins | 1,000,015 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,014 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 442",
    "bad": [],
-   "sample": "Coins | 1,000,015 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,014 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 443",
    "bad": [],
-   "sample": "Coins | 1,000,018 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,014 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 444",
    "bad": [],
-   "sample": "Coins | 1,000,025 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,024 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 445",
    "bad": [],
-   "sample": "Coins | 1,000,028 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,027 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de edificio 446",
    "bad": [],
-   "sample": "Coins | 1,000,031 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,027 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de tropas",
    "bad": [],
-   "sample": "Coins | 1,000,031 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,027 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "pausa",
    "bad": [],
-   "sample": "Coins | 1,000,033 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,029 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "final",
    "bad": [],
-   "sample": "Coins | 1,000,045 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Captur"
+   "sample": "Coins | 1,000,033 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Captur"
   },
   {
    "screen": "misión 1",
@@ -937,7 +937,7 @@
   {
    "screen": "avisos",
    "bad": [],
-   "sample": "Graphics: smoother (automatic, 1 frames per second) | Red has been eliminated | Orange has been eliminated | Violet has been eliminated | Pink has been eliminated | Turquoise has been eliminated"
+   "sample": "Graphics: smoother (automatic, 0 frames per second) | Red has been eliminated | Orange has been eliminated | Violet has been eliminated | Pink has been eliminated | Turquoise has been eliminated"
   }
  ]
 }
