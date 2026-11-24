@@ -55,7 +55,10 @@ const modelJs = `// ---- modelos GLB (Blender) ----\nconst FARO_GLB = ${JSON.str
   `const FARO_ANIM = ${JSON.stringify(anim)};\n`;
 // v1.9: librerías y fuentes dentro del archivo (Poki no deja pedir nada a otros sitios).
 const VENDOR = join(ROOT, 'vendor');
-const vendorJs = ['three.r128.min.js', 'GLTFLoader.r128.js', 'meshopt_decoder.r128.js'].map((f) => `// ---- vendor/${f} ----\n${readFileSync(join(VENDOR, f), 'utf8')}`).join('\n');
+// El decodificador de meshopt avisa por consola que usa SIMD: en la versión para Poki no debe haber mensajes de prueba,
+// así que se calla la consola solo mientras arranca (el archivo de la librería queda sin tocar).
+const quiet = (f, code) => (f.startsWith('meshopt') ? `var __faroLog = console.log; console.log = function () {};\n${code}\nconsole.log = __faroLog;` : code);
+const vendorJs = ['three.r128.min.js', 'GLTFLoader.r128.js', 'meshopt_decoder.r128.js'].map((f) => `// ---- vendor/${f} ----\n${quiet(f, readFileSync(join(VENDOR, f), 'utf8'))}`).join('\n');
 const FONTS = [['Barlow', 400, 'barlow-latin-400-normal'], ['Barlow', 500, 'barlow-latin-500-normal'], ['Barlow', 600, 'barlow-latin-600-normal'],
   ['Chakra Petch', 500, 'chakra-petch-latin-500-normal'], ['Chakra Petch', 600, 'chakra-petch-latin-600-normal'], ['Chakra Petch', 700, 'chakra-petch-latin-700-normal']];
 const fontCss = FONTS.map(([fam, w, f]) => `@font-face{font-family:'${fam}';font-style:normal;font-weight:${w};font-display:swap;` +

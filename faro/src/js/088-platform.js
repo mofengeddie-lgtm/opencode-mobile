@@ -23,8 +23,36 @@ const Platform = {
     const S = typeof window !== 'undefined' ? window.PokiSDK : null;
     if (this.name !== 'poki' || !S || typeof S.init !== 'function') return Promise.resolve(false);
     this.sdk = S;
-    return S.init().then(() => { this.ok = true; this.note('init'); return true; })
+    // Si el SDK no contesta (red cortada, bloqueador a medias), el juego no se queda en la pantalla de carga:
+    // a los 6 s sigue cargando igual (el SDK puede terminar después; las llamadas no se pierden).
+    let p;
+    try { p = S.init(); } catch (err) { p = Promise.reject(err); }
+    const init = Promise.resolve(p).then(() => { this.ok = true; this.note('init'); return true; })
       .catch(() => { this.ok = false; this.note('init-falló'); return false; });
+    return Promise.race([init, new Promise((res) => setTimeout(() => { if (!this.ok) this.note('init-sin-respuesta'); res(false); }, this.INIT_WAIT))]);
+  },
+
+  // Esperas de seguridad (no son temporizadores de anuncios: Poki decide cuándo hay anuncio).
+  INIT_WAIT: 6000,
+  // Si el anuncio no empieza en 8 s, el juego sigue; si empezó, a lo sumo 150 s.
+  AD_NO_START: 8000,
+  AD_MAX: 150000,
+
+  // Espera la promesa de un anuncio, pero sin quedarse trabado si el SDK nunca contesta.
+  guard(promise, flags) {
+    return new Promise((res) => {
+      let done = false;
+      const finish = (v) => {
+        if (done) return;
+        done = true;
+        clearTimeout(t1);
+        clearTimeout(t2);
+        res(v);
+      };
+      const t1 = setTimeout(() => { if (!flags.started) { this.note('anuncio-sin-respuesta'); finish(undefined); } }, this.AD_NO_START);
+      const t2 = setTimeout(() => { this.note('anuncio-sin-final'); finish(undefined); }, this.AD_MAX);
+      Promise.resolve(promise).then(finish, () => finish(undefined));
+    });
   },
 
   note(ev) {
@@ -79,13 +107,14 @@ const Platform = {
     this.gameplayStop();
     this.adBegin(app);
     this.note('commercialBreak');
+    const flags = { started: false };
     let p;
     try {
-      p = this.sdk.commercialBreak(() => this.note('anuncio-empieza'));
+      p = this.sdk.commercialBreak(() => { flags.started = true; this.note('anuncio-empieza'); });
     } catch (err) {
       p = null;
     }
-    return Promise.resolve(p).catch(() => {}).then(() => { this.adEnd(app); this.note('commercialBreak-fin'); });
+    return this.guard(p, flags).then(() => { this.adEnd(app); this.note('commercialBreak-fin'); });
   },
 
   // Anuncio con premio: devuelve true solo si el video se vio. Con bloqueador o sin SDK: false (sin premio y sin mensaje).
@@ -94,13 +123,14 @@ const Platform = {
     this.gameplayStop();
     this.adBegin(app);
     this.note('rewardedBreak');
+    const flags = { started: false };
     let p;
     try {
-      p = this.sdk.rewardedBreak(() => this.note('anuncio-empieza'));
+      p = this.sdk.rewardedBreak(() => { flags.started = true; this.note('anuncio-empieza'); });
     } catch (err) {
       p = null;
     }
-    return Promise.resolve(p).then((ok) => !!ok).catch(() => false)
+    return this.guard(p, flags).then((ok) => !!ok)
       .then((ok) => { this.adEnd(app); this.note('rewardedBreak-' + (ok ? 'visto' : 'no')); return ok; });
   },
 
