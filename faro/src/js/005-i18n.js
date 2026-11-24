@@ -106,6 +106,11 @@ const I18N = {
     }
   },
 
+  // Formato de números del idioma («0,9» / «0.9»).
+  locale() {
+    return this.lang === 'en' ? 'en-US' : 'es-ES';
+  },
+
   // Números: «12.345» en español, «12,345» en inglés.
   num(n) {
     return Math.floor(n).toLocaleString(this.lang === 'en' ? 'en-US' : 'es-ES');

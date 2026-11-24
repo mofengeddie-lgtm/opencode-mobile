@@ -1,7 +1,7 @@
 {
- "total": 1650,
- "code": 984,
- "data": 564,
+ "total": 1697,
+ "code": 1032,
+ "data": 565,
  "html": 154,
  "missing": [],
  "unused": [],
@@ -10,8 +10,8 @@
    "src": "código",
    "where": [
     "04-world.js:13",
-    "085-meta.js:878",
-    "085-meta.js:966"
+    "085-meta.js:877",
+    "085-meta.js:965"
    ]
   },
   "En este modo no hay alianzas": {
@@ -416,10 +416,28 @@
     "04-world.js:906"
    ]
   },
+  "Vida {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:939"
+   ]
+  },
+  "Escudo {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:940"
+   ]
+  },
   "Monedas {0} → {1} por min": {
    "src": "código",
    "where": [
     "04-world.js:941"
+   ]
+  },
+  "Comunidad +{0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:942"
    ]
   },
   "Energía {0} → {1} cada 10 s": {
@@ -438,6 +456,12 @@
    "src": "código",
    "where": [
     "04-world.js:945"
+   ]
+  },
+  "Alcance {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:946"
    ]
   },
   "Doble láser": {
@@ -474,6 +498,12 @@
    "src": "código",
    "where": [
     "04-world.js:953"
+   ]
+  },
+  "{0}: nivel {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:985"
    ]
   },
   "{0}: no queda lugar": {
@@ -1048,6 +1078,36 @@
     "046-campaign.js:268"
    ]
   },
+  "edificio": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "08-ui.js:1873"
+   ]
+  },
+  "edificios": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "08-ui.js:1873"
+   ]
+  },
+  "tropa": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "07-input.js:393",
+    "09-main.js:560"
+   ]
+  },
+  "tropas": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "07-input.js:393",
+    "09-main.js:560"
+   ]
+  },
   "Perdiste {0} {1}": {
    "src": "código",
    "where": [
@@ -1124,6 +1184,13 @@
    "src": "código",
    "where": [
     "06-render.js:1632"
+   ]
+  },
+  "Mejorando a nivel {0}": {
+   "src": "código",
+   "where": [
+    "06-render.js:1686",
+    "08-ui.js:1442"
    ]
   },
   "Esperando constructor": {
@@ -1305,7 +1372,7 @@
    "src": "código",
    "where": [
     "08-ui.js:87",
-    "085-meta.js:2007"
+    "085-meta.js:2006"
    ]
   },
   "Meta": {
@@ -1330,8 +1397,8 @@
    "src": "código",
    "where": [
     "08-ui.js:95",
-    "085-meta.js:2020",
-    "085-meta.js:2121"
+    "085-meta.js:2019",
+    "085-meta.js:2120"
    ]
   },
   "¡A jugar!": {
@@ -1344,7 +1411,7 @@
    "src": "código",
    "where": [
     "08-ui.js:97",
-    "085-meta.js:2025"
+    "085-meta.js:2024"
    ]
   },
   "ya no se puede": {
@@ -1484,6 +1551,12 @@
    "src": "código",
    "where": [
     "08-ui.js:446"
+   ]
+  },
+  "{0} · nivel {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:483"
    ]
   },
   "{0} {1}: qué mejoró": {
@@ -1779,8 +1852,8 @@
    "src": "código",
    "where": [
     "08-ui.js:826",
-    "085-meta.js:290",
-    "085-meta.js:377"
+    "085-meta.js:288",
+    "085-meta.js:375"
    ]
   },
   "Todavía no hay mensajes de aliados.": {
@@ -1847,8 +1920,8 @@
     "08-ui.js:905",
     "08-ui.js:925",
     "08-ui.js:958",
-    "085-meta.js:1321",
-    "085-meta.js:1334"
+    "085-meta.js:1320",
+    "085-meta.js:1333"
    ]
   },
   "Todos": {
@@ -1885,7 +1958,7 @@
    "src": "código",
    "where": [
     "08-ui.js:905",
-    "085-meta.js:2037"
+    "085-meta.js:2036"
    ]
   },
   "Subtotal": {
@@ -1953,7 +2026,7 @@
    "src": "código",
    "where": [
     "08-ui.js:959",
-    "085-meta.js:2039"
+    "085-meta.js:2038"
    ]
   },
   "Estilo": {
@@ -1984,7 +2057,7 @@
    "src": "código",
    "where": [
     "08-ui.js:959",
-    "085-meta.js:1762"
+    "085-meta.js:1761"
    ]
   },
   "En combate": {
@@ -2017,10 +2090,16 @@
     "08-ui.js:981",
     "08-ui.js:1095",
     "08-ui.js:1729",
-    "085-meta.js:1194"
+    "085-meta.js:1193"
    ]
   },
   "Misiles aire-aire": {
+   "src": "código",
+   "where": [
+    "08-ui.js:983"
+   ]
+  },
+  "{0} · ×{1} a aviones": {
    "src": "código",
    "where": [
     "08-ui.js:983"
@@ -2033,7 +2112,16 @@
     "08-ui.js:1021",
     "08-ui.js:1073",
     "08-ui.js:1098",
-    "085-meta.js:1200"
+    "085-meta.js:1199"
+   ]
+  },
+  "{0} casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:983",
+    "08-ui.js:1021",
+    "08-ui.js:1073",
+    "085-meta.js:1199"
    ]
   },
   "Bombas": {
@@ -2150,6 +2238,12 @@
     "08-ui.js:1024"
    ]
   },
+  "a 3 casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1024"
+   ]
+  },
   "Sin blancos": {
    "src": "código",
    "where": [
@@ -2250,6 +2344,12 @@
    "where": [
     "08-ui.js:1085",
     "08-ui.js:1107"
+   ]
+  },
+  "casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1098"
    ]
   },
   "Población": {
@@ -2688,7 +2788,7 @@
    "src": "código",
    "where": [
     "08-ui.js:1424",
-    "085-meta.js:1197"
+    "085-meta.js:1196"
    ]
   },
   "+{0} de población": {
@@ -2713,17 +2813,17 @@
    "src": "código",
    "where": [
     "08-ui.js:1433",
-    "085-meta.js:848",
-    "085-meta.js:1098",
-    "085-meta.js:2004",
-    "085-meta.js:2099"
+    "085-meta.js:846",
+    "085-meta.js:1097",
+    "085-meta.js:2003",
+    "085-meta.js:2098"
    ]
   },
   "Nivel {0} de {1}": {
    "src": "código",
    "where": [
     "08-ui.js:1433",
-    "085-meta.js:1100"
+    "085-meta.js:1099"
    ]
   },
   "un Barco constructor": {
@@ -2790,7 +2890,7 @@
    "src": "código",
    "where": [
     "08-ui.js:1454",
-    "085-meta.js:1175"
+    "085-meta.js:1174"
    ]
   },
   "Láser": {
@@ -2806,6 +2906,12 @@
    ]
   },
   "Cúpula": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1457"
+   ]
+  },
+  "Nivel {0} · {1} %": {
    "src": "código",
    "where": [
     "08-ui.js:1457"
@@ -2979,6 +3085,25 @@
     "08-ui.js:1539"
    ]
   },
+  "nivel {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1546",
+    "08-ui.js:1549"
+   ]
+  },
+  "Nivel {0} → {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1546"
+   ]
+  },
+  "{0}Mejorar a {1} · {2}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1550"
+   ]
+  },
   "Mover punto de reunión": {
    "src": "código",
    "where": [
@@ -3123,10 +3248,28 @@
     "08-ui.js:1613"
    ]
   },
+  "· {0} eliminaciones{1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1613"
+   ]
+  },
   "{0} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.": {
    "src": "código",
    "where": [
     "08-ui.js:1613"
+   ]
+  },
+  "Centrar la cámara en la selección": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1616"
+   ]
+  },
+  "Centrar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1616"
    ]
   },
   "Orden actual:": {
@@ -3532,6 +3675,13 @@
     "08-ui.js:1995"
    ]
   },
+  "Perdiste": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2040",
+    "08-ui.js:2040"
+   ]
+  },
   "Núcleo": {
    "src": "código",
    "where": [
@@ -3542,6 +3692,12 @@
    "src": "código",
    "where": [
     "08-ui.js:2042"
+   ]
+  },
+  "libre": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2167"
    ]
   },
   "Faro: {0} · Tú {1}": {
@@ -3565,767 +3721,831 @@
   "Base": {
    "src": "código",
    "where": [
-    "085-meta.js:135"
+    "085-meta.js:133"
    ]
   },
   "Especial": {
    "src": "código",
    "where": [
-    "085-meta.js:135"
+    "085-meta.js:133"
    ]
   },
   "Estratégico": {
    "src": "código",
    "where": [
-    "085-meta.js:137"
+    "085-meta.js:135"
    ]
   },
   "Infantería": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Vehículo": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Dron naval": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Barco": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Submarino": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Dron": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Avión": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "Helicóptero": {
    "src": "código",
    "where": [
-    "085-meta.js:138"
+    "085-meta.js:136"
    ]
   },
   "{0} {1} {2}": {
    "src": "código",
    "where": [
-    "085-meta.js:243"
+    "085-meta.js:241"
    ]
   },
   "Ese texto no es una copia del progreso de Faro de Ámbar": {
    "src": "código",
    "where": [
-    "085-meta.js:516"
+    "085-meta.js:514"
    ]
   },
   "La copia está incompleta: cópiala entera otra vez": {
    "src": "código",
    "where": [
-    "085-meta.js:524"
+    "085-meta.js:522"
    ]
   },
   "La copia está incompleta o cambiada: cópiala entera otra vez": {
    "src": "código",
    "where": [
-    "085-meta.js:526"
+    "085-meta.js:524"
    ]
   },
   "La copia no se puede leer": {
    "src": "código",
    "where": [
-    "085-meta.js:528"
+    "085-meta.js:526"
    ]
   },
   "La copia no es de este juego": {
    "src": "código",
    "where": [
-    "085-meta.js:529"
+    "085-meta.js:527"
    ]
   },
   "Cofre del Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:658"
+    "085-meta.js:656"
    ]
   },
   "Cofre de Isla": {
    "src": "código",
    "where": [
-    "085-meta.js:659"
+    "085-meta.js:657"
+   ]
+  },
+  "{0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:659",
+    "085-meta.js:1125",
+    "085-meta.js:1146",
+    "085-meta.js:1748",
+    "085-meta.js:1783"
    ]
   },
   "Demasiados intentos. Espera {0} s.": {
    "src": "código",
    "where": [
-    "085-meta.js:708"
+    "085-meta.js:706"
    ]
   },
   "Contraseña incorrecta. Espera {0} s para volver a intentar.": {
    "src": "código",
    "where": [
-    "085-meta.js:718"
+    "085-meta.js:716"
+   ]
+  },
+  "intentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:717"
    ]
   },
   "Contraseña incorrecta ({0} {1} más).": {
    "src": "código",
    "where": [
-    "085-meta.js:719"
+    "085-meta.js:717"
    ]
   },
   "Zona de creadores abierta": {
    "src": "código",
    "where": [
-    "085-meta.js:789"
+    "085-meta.js:787"
    ]
   },
   "Empieza la Temporada {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:865"
+    "085-meta.js:863"
    ]
   },
   "El Pase del Faro vuelve a empezar desde el nivel 1. En la Liga 3 vs 3 bajas 1 rango: de {0} a {1}.": {
    "src": "código",
    "where": [
-    "085-meta.js:866"
+    "085-meta.js:864"
    ]
   },
   "Necesita servidores": {
    "src": "código",
    "where": [
-    "085-meta.js:874"
+    "085-meta.js:873"
    ]
   },
   "Roblox": {
    "src": "código",
    "where": [
-    "085-meta.js:874"
+    "085-meta.js:873"
    ]
   },
   "Menú del vestíbulo": {
    "src": "código",
    "where": [
-    "085-meta.js:875"
+    "085-meta.js:874"
    ]
   },
   "Jugar": {
    "src": "código",
    "where": [
-    "085-meta.js:876",
-    "085-meta.js:936",
-    "085-meta.js:1004",
-    "085-meta.js:1840"
+    "085-meta.js:875",
+    "085-meta.js:935",
+    "085-meta.js:1003",
+    "085-meta.js:1839"
    ]
   },
   "Campaña": {
    "src": "código",
    "where": [
-    "085-meta.js:877"
+    "085-meta.js:876"
+   ]
+  },
+  "{0} de {1} ★": {
+   "src": "código",
+   "where": [
+    "085-meta.js:876"
    ]
   },
   "mitad de XP": {
    "src": "código",
    "where": [
-    "085-meta.js:878"
+    "085-meta.js:877"
    ]
   },
   "Tutorial": {
    "src": "código",
    "where": [
-    "085-meta.js:879",
-    "085-meta.js:1020"
+    "085-meta.js:878",
+    "085-meta.js:1019"
+   ]
+  },
+  "hecho": {
+   "src": "código",
+   "where": [
+    "085-meta.js:878"
+   ]
+  },
+  "premio": {
+   "src": "código",
+   "where": [
+    "085-meta.js:878"
    ]
   },
   "Rangos": {
    "src": "código",
    "where": [
-    "085-meta.js:880"
+    "085-meta.js:879"
    ]
   },
   "Top jugadores": {
    "src": "código",
    "where": [
-    "085-meta.js:881"
+    "085-meta.js:880"
    ]
   },
   "Desafío semanal": {
    "src": "código",
    "where": [
-    "085-meta.js:882"
+    "085-meta.js:881"
+   ]
+  },
+  "nuevo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:881"
    ]
   },
   "Ajustes": {
    "src": "código",
    "where": [
-    "085-meta.js:883"
+    "085-meta.js:882"
    ]
   },
   "A tu manera": {
    "src": "código",
    "where": [
-    "085-meta.js:883"
+    "085-meta.js:882"
    ]
   },
   "Creadores": {
    "src": "código",
    "where": [
-    "085-meta.js:884"
+    "085-meta.js:883"
+   ]
+  },
+  "abierta": {
+   "src": "código",
+   "where": [
+    "085-meta.js:883"
    ]
   },
   "con contraseña": {
    "src": "código",
    "where": [
-    "085-meta.js:884"
+    "085-meta.js:883"
    ]
   },
   "Servidores": {
    "src": "código",
    "where": [
-    "085-meta.js:884"
+    "085-meta.js:883"
    ]
   },
   "Partida en pausa": {
    "src": "código",
    "where": [
-    "085-meta.js:892"
+    "085-meta.js:891"
    ]
   },
   "Volver a la partida": {
    "src": "código",
    "where": [
-    "085-meta.js:893"
+    "085-meta.js:892"
    ]
   },
   "Abandonar": {
    "src": "código",
    "where": [
-    "085-meta.js:894"
+    "085-meta.js:893"
    ]
   },
   "Partida guardada": {
    "src": "código",
    "where": [
-    "085-meta.js:898"
+    "085-meta.js:897"
    ]
   },
   "Continuar partida guardada": {
    "src": "código",
    "where": [
-    "085-meta.js:899"
+    "085-meta.js:898"
    ]
   },
   "Borrar": {
    "src": "código",
    "where": [
-    "085-meta.js:900"
+    "085-meta.js:899"
    ]
   },
   "Versión {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:930",
-    "085-meta.js:1326"
+    "085-meta.js:929",
+    "085-meta.js:1325"
    ]
   },
   "Faro de": {
    "src": "código",
    "where": [
-    "085-meta.js:931"
+    "085-meta.js:930"
    ]
   },
   "Ámbar": {
    "src": "código",
    "where": [
-    "085-meta.js:931"
+    "085-meta.js:930"
    ]
   },
   "Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.": {
    "src": "código",
    "where": [
-    "085-meta.js:932"
+    "085-meta.js:931"
    ]
   },
   "Novedades": {
    "src": "código",
    "where": [
-    "085-meta.js:933"
+    "085-meta.js:932"
+   ]
+  },
+  "93 tropas y 42 edificios": {
+   "src": "código",
+   "where": [
+    "085-meta.js:932"
    ]
   },
   "Tu ejército en la portada": {
    "src": "código",
    "where": [
-    "085-meta.js:933"
+    "085-meta.js:932"
    ]
   },
   "Campo de pruebas": {
    "src": "código",
    "where": [
-    "085-meta.js:933"
+    "085-meta.js:932"
    ]
   },
   "Español e inglés": {
    "src": "código",
    "where": [
-    "085-meta.js:933"
+    "085-meta.js:932"
    ]
   },
   "Ajustes a tu manera": {
    "src": "código",
    "where": [
-    "085-meta.js:933"
+    "085-meta.js:932"
    ]
   },
   "Este navegador no deja guardar: tu progreso se perderá al cerrar el juego.": {
    "src": "código",
    "where": [
-    "085-meta.js:938"
+    "085-meta.js:937"
    ]
   },
   "Modo": {
    "src": "código",
    "where": [
-    "085-meta.js:943",
-    "085-meta.js:968"
+    "085-meta.js:942",
+    "085-meta.js:967"
    ]
   },
   "Mapa:": {
    "src": "código",
    "where": [
-    "085-meta.js:944"
+    "085-meta.js:943"
    ]
   },
   "{0}Cambiar modo": {
    "src": "código",
    "where": [
-    "085-meta.js:946"
+    "085-meta.js:945"
    ]
   },
   "{0}Mapa": {
    "src": "código",
    "where": [
-    "085-meta.js:947"
+    "085-meta.js:946"
    ]
   },
   "{0}Otra isla": {
    "src": "código",
    "where": [
-    "085-meta.js:948"
+    "085-meta.js:947"
    ]
   },
   "Liga 3 vs 3 · {0} · {1} puntos. La dificultad la pone tu rango ({2}).": {
    "src": "código",
    "where": [
-    "085-meta.js:950"
+    "085-meta.js:949"
    ]
   },
   "Dificultad de los bots": {
    "src": "código",
    "where": [
-    "085-meta.js:951"
+    "085-meta.js:950"
    ]
   },
   "Tus números": {
    "src": "código",
    "where": [
-    "085-meta.js:954"
+    "085-meta.js:953"
    ]
   },
   "Partidas": {
    "src": "código",
    "where": [
-    "085-meta.js:956"
+    "085-meta.js:955"
    ]
   },
   "Victorias": {
    "src": "código",
    "where": [
-    "085-meta.js:956",
-    "085-meta.js:1760",
-    "085-meta.js:1762"
+    "085-meta.js:955",
+    "085-meta.js:1759",
+    "085-meta.js:1761"
    ]
   },
   "De victorias": {
    "src": "código",
    "where": [
-    "085-meta.js:956"
+    "085-meta.js:955"
    ]
   },
   "Islas tomadas": {
    "src": "código",
    "where": [
-    "085-meta.js:957",
-    "085-meta.js:1760",
-    "085-meta.js:1762",
-    "085-meta.js:2110"
+    "085-meta.js:956",
+    "085-meta.js:1759",
+    "085-meta.js:1761",
+    "085-meta.js:2109"
    ]
   },
   "Núcleos destruidos": {
    "src": "código",
    "where": [
-    "085-meta.js:957",
-    "085-meta.js:2112"
+    "085-meta.js:956",
+    "085-meta.js:2111"
    ]
   },
   "Jugando desde": {
    "src": "código",
    "where": [
-    "085-meta.js:957"
+    "085-meta.js:956"
    ]
   },
   "Arma tu partida contra bots. Da la mitad de XP.": {
    "src": "código",
    "where": [
-    "085-meta.js:967"
+    "085-meta.js:966"
    ]
   },
   "Conquista": {
    "src": "código",
    "where": [
-    "085-meta.js:968"
+    "085-meta.js:967"
    ]
   },
   "Rey del Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:968"
+    "085-meta.js:967"
    ]
   },
   "Jugadores": {
    "src": "código",
    "where": [
-    "085-meta.js:969"
+    "085-meta.js:968"
    ]
   },
   "2 (Duelo 1 vs 1)": {
    "src": "código",
    "where": [
-    "085-meta.js:969"
+    "085-meta.js:968"
    ]
   },
   "Mapa": {
    "src": "código",
    "where": [
-    "085-meta.js:970"
+    "085-meta.js:969"
    ]
   },
   "Monedas iniciales": {
    "src": "código",
    "where": [
-    "085-meta.js:971"
+    "085-meta.js:970"
    ]
   },
   "Dificultad": {
    "src": "código",
    "where": [
-    "085-meta.js:972"
+    "085-meta.js:971"
    ]
   },
   "Equipos": {
    "src": "código",
    "where": [
-    "085-meta.js:973"
+    "085-meta.js:972"
    ]
   },
   "Todos contra todos": {
    "src": "código",
    "where": [
-    "085-meta.js:973"
+    "085-meta.js:972"
    ]
   },
   "Dos equipos": {
    "src": "código",
    "where": [
-    "085-meta.js:973"
+    "085-meta.js:972"
    ]
   },
   "Extras": {
    "src": "código",
    "where": [
-    "085-meta.js:974"
+    "085-meta.js:973"
    ]
   },
   "Sin niebla": {
    "src": "código",
    "where": [
-    "085-meta.js:974"
+    "085-meta.js:973"
    ]
   },
   "Niebla": {
    "src": "código",
    "where": [
-    "085-meta.js:974"
+    "085-meta.js:973"
    ]
   },
   "Ritmo normal": {
    "src": "código",
    "where": [
-    "085-meta.js:974"
+    "085-meta.js:973"
    ]
   },
   "Arsenal estratégico · opción experimental": {
    "src": "código",
    "where": [
-    "085-meta.js:975"
+    "085-meta.js:974"
    ]
   },
   "Desactivado": {
    "src": "código",
    "where": [
-    "085-meta.js:975"
+    "085-meta.js:974"
    ]
   },
   "Activado": {
    "src": "código",
    "where": [
-    "085-meta.js:975",
-    "085-meta.js:1106",
-    "085-meta.js:1401"
+    "085-meta.js:974",
+    "085-meta.js:1105",
+    "085-meta.js:1400"
    ]
   },
   "Activado: cada jugador tiene": {
    "src": "código",
    "where": [
-    "085-meta.js:976"
+    "085-meta.js:975"
    ]
   },
   "un solo uso estratégico": {
    "src": "código",
    "where": [
-    "085-meta.js:976"
+    "085-meta.js:975"
    ]
   },
   "en toda la partida, con el misil del AIR DEFENSE de nivel 4 o con el Lanzador nuclear móvil (que solo existe con esta opción). Desactivado: todo sigue como siempre.": {
    "src": "código",
    "where": [
-    "085-meta.js:976"
+    "085-meta.js:975"
    ]
   },
   "Jugar personalizado": {
    "src": "código",
    "where": [
-    "085-meta.js:978"
+    "085-meta.js:977"
    ]
   },
   "Unirse con código · Disponible en Roblox": {
    "src": "código",
    "where": [
-    "085-meta.js:979"
+    "085-meta.js:978"
    ]
   },
   "{0} de 3 estrellas": {
    "src": "código",
    "where": [
-    "085-meta.js:1003",
-    "085-meta.js:2009"
+    "085-meta.js:1002",
+    "085-meta.js:2008"
    ]
   },
   "Repetir": {
    "src": "código",
    "where": [
-    "085-meta.js:1004",
-    "085-meta.js:2024"
+    "085-meta.js:1003",
+    "085-meta.js:2023"
    ]
   },
   "Termina la misión {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1005"
+    "085-meta.js:1004"
    ]
   },
   "La ruta del Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:1009"
+    "085-meta.js:1008"
    ]
   },
   "Modo creador: todas abiertas.": {
    "src": "código",
    "where": [
-    "085-meta.js:1011"
+    "085-meta.js:1010"
    ]
   },
   "Seis misiones para volver a encender el Faro de Ámbar. Cada una se abre al terminar la anterior y da hasta 3 estrellas:\n        una por terminarla y dos por las condiciones marcadas con ★.{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1010"
+    "085-meta.js:1009"
    ]
   },
   "Premio la primera vez: cristales (50 a 250) y XP. Cada estrella nueva: +{0} cristales. Tienes {1} de {2} estrellas.": {
    "src": "código",
    "where": [
-    "085-meta.js:1013"
+    "085-meta.js:1012"
    ]
   },
   "Tres pasos contra un bot lento con un Núcleo débil, que está en otra isla: para llegar hace falta una Barcaza.": {
    "src": "código",
    "where": [
-    "085-meta.js:1021"
+    "085-meta.js:1020"
    ]
   },
   "Primer Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:1024"
+    "085-meta.js:1023"
    ]
   },
   "Insignia": {
    "src": "código",
    "where": [
-    "085-meta.js:1024",
-    "085-meta.js:1749"
+    "085-meta.js:1023",
+    "085-meta.js:1748"
+   ]
+  },
+  "150 cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1024"
    ]
   },
   "Una sola vez": {
    "src": "código",
    "where": [
-    "085-meta.js:1025"
+    "085-meta.js:1024"
    ]
   },
   "Soldado Dorado": {
    "src": "código",
    "where": [
-    "085-meta.js:1026"
+    "085-meta.js:1025"
    ]
   },
   "Aspecto legendario": {
    "src": "código",
    "where": [
-    "085-meta.js:1026"
+    "085-meta.js:1025"
    ]
   },
   "Ya recibiste el premio. Puedes repetir el tutorial cuando quieras.": {
    "src": "código",
    "where": [
-    "085-meta.js:1028"
+    "085-meta.js:1027"
    ]
   },
   "El premio se entrega la primera vez que lo terminas.": {
    "src": "código",
    "where": [
-    "085-meta.js:1028"
+    "085-meta.js:1027"
    ]
   },
   "Empezar tutorial": {
    "src": "código",
    "where": [
-    "085-meta.js:1029"
+    "085-meta.js:1028"
    ]
   },
   "Victoria": {
    "src": "código",
    "where": [
-    "085-meta.js:1043"
+    "085-meta.js:1042"
    ]
   },
   "Abandono": {
    "src": "código",
    "where": [
-    "085-meta.js:1043"
+    "085-meta.js:1042"
    ]
   },
   "Derrota": {
    "src": "código",
    "where": [
-    "085-meta.js:1043",
-    "085-meta.js:2103"
+    "085-meta.js:1042",
+    "085-meta.js:2102"
    ]
   },
   "{0} de {1}": {
    "src": "código",
    "where": [
-    "085-meta.js:1046",
-    "085-meta.js:1356"
+    "085-meta.js:1045",
+    "085-meta.js:1355"
    ]
   },
   "Tu rango · Temporada {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1051"
+    "085-meta.js:1050"
    ]
   },
   "{0} puntos · mejor: {1}": {
    "src": "código",
    "where": [
-    "085-meta.js:1051"
+    "085-meta.js:1050"
    ]
   },
   "Estás en el rango más alto.": {
    "src": "código",
    "where": [
-    "085-meta.js:1053"
+    "085-meta.js:1052"
    ]
   },
   "{0} puntos para {1}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1053"
+    "085-meta.js:1052"
    ]
   },
   "{0} Solo cuentan las partidas de la Liga 3 vs 3 (aliados bots; rivales en {1}). Ganar: +{2} · perder o abandonar: −{3}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1053"
+    "085-meta.js:1052"
    ]
   },
   "Protección activa:": {
    "src": "código",
    "where": [
-    "085-meta.js:1054"
+    "085-meta.js:1053"
    ]
   },
   "acabas de subir, tu primera derrota no te baja de rango.": {
    "src": "código",
    "where": [
-    "085-meta.js:1054"
+    "085-meta.js:1053"
    ]
   },
   "Recién llegado a un rango, la primera derrota no te baja.": {
    "src": "código",
    "where": [
-    "085-meta.js:1054"
+    "085-meta.js:1053"
    ]
   },
   "{0}La temporada termina el {1}: entonces bajas 1 rango (no a cero) y el pase vuelve a empezar.": {
    "src": "código",
    "where": [
-    "085-meta.js:1054"
+    "085-meta.js:1053"
    ]
   },
   "Jugar Liga 3 vs 3": {
    "src": "código",
    "where": [
-    "085-meta.js:1055"
+    "085-meta.js:1054"
    ]
   },
   "Desde nivel {0} (tienes {1})": {
    "src": "código",
    "where": [
-    "085-meta.js:1055"
+    "085-meta.js:1054"
    ]
   },
   "Los 6 rangos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1056"
+   ]
+  },
+  "Almirante del Faro: desde {0} puntos.": {
    "src": "código",
    "where": [
     "085-meta.js:1057"
@@ -4334,379 +4554,392 @@
   "Almirante del Faro: en Roblox serán los 50 mejores; aquí, sin servidores, desde {0} puntos.": {
    "src": "código",
    "where": [
-    "085-meta.js:1058"
+    "085-meta.js:1057"
    ]
   },
   "Tabla de la Liga 3 vs 3": {
    "src": "código",
    "where": [
-    "085-meta.js:1059"
+    "085-meta.js:1058"
    ]
   },
   "Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.": {
    "src": "código",
    "where": [
-    "085-meta.js:1060"
+    "085-meta.js:1059"
    ]
   },
   "Últimas partidas · {0} de {1} ganadas": {
    "src": "código",
    "where": [
-    "085-meta.js:1062"
+    "085-meta.js:1061"
    ]
   },
   "Todavía no jugaste la Liga 3 vs 3.": {
    "src": "código",
    "where": [
-    "085-meta.js:1062"
+    "085-meta.js:1061"
    ]
   },
   "Hecha": {
    "src": "código",
    "where": [
-    "085-meta.js:1072",
-    "085-meta.js:1366"
+    "085-meta.js:1071",
+    "085-meta.js:1365"
    ]
   },
   "Cambiar": {
    "src": "código",
    "where": [
-    "085-meta.js:1072",
-    "085-meta.js:1366"
+    "085-meta.js:1071",
+    "085-meta.js:1365"
    ]
   },
   "Cada misión da {0} XP y cristales ({1} las diarias, {2} las semanales). Se completan al terminar una partida.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1074",
+    "085-meta.js:1368"
+   ]
+  },
+  "· ya cambiaste una hoy": {
    "src": "código",
    "where": [
     "085-meta.js:1075",
     "085-meta.js:1369"
    ]
   },
-  "· ya cambiaste una hoy": {
-   "src": "código",
-   "where": [
-    "085-meta.js:1076",
-    "085-meta.js:1370"
-   ]
-  },
   "· puedes cambiar 1 al día": {
    "src": "código",
    "where": [
-    "085-meta.js:1076",
-    "085-meta.js:1370"
+    "085-meta.js:1075",
+    "085-meta.js:1369"
    ]
   },
   "Diarias{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1076",
-    "085-meta.js:1370"
+    "085-meta.js:1075",
+    "085-meta.js:1369"
    ]
   },
   "Semanales": {
    "src": "código",
    "where": [
-    "085-meta.js:1077",
-    "085-meta.js:1371"
+    "085-meta.js:1076",
+    "085-meta.js:1370"
    ]
   },
   "Misiones": {
    "src": "código",
    "where": [
-    "085-meta.js:1083",
-    "085-meta.js:1101",
-    "085-meta.js:1360",
-    "085-meta.js:1369"
+    "085-meta.js:1082",
+    "085-meta.js:1100",
+    "085-meta.js:1359",
+    "085-meta.js:1368"
    ]
   },
   "· ¡listo!": {
    "src": "código",
    "where": [
-    "085-meta.js:1084"
+    "085-meta.js:1083"
    ]
   },
   "Premio diario{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1084"
+    "085-meta.js:1083"
    ]
   },
   "· {0} para reclamar": {
    "src": "código",
    "where": [
-    "085-meta.js:1085"
+    "085-meta.js:1084"
    ]
   },
   "Pase del Faro{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1085"
+    "085-meta.js:1084"
    ]
   },
   "Pase del Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:1100"
+    "085-meta.js:1099"
    ]
   },
   "{0} por hacer": {
    "src": "código",
    "where": [
-    "085-meta.js:1101"
+    "085-meta.js:1100"
    ]
   },
   "Premio diario": {
    "src": "código",
    "where": [
-    "085-meta.js:1102",
-    "085-meta.js:1375"
+    "085-meta.js:1101",
+    "085-meta.js:1374"
    ]
   },
   "¡Listo para reclamar!": {
    "src": "código",
    "where": [
-    "085-meta.js:1102"
+    "085-meta.js:1101"
    ]
   },
   "Vuelve mañana": {
    "src": "código",
    "where": [
-    "085-meta.js:1102"
+    "085-meta.js:1101"
    ]
   },
   "Códigos": {
    "src": "código",
    "where": [
-    "085-meta.js:1103",
-    "085-meta.js:1380"
+    "085-meta.js:1102",
+    "085-meta.js:1379"
    ]
   },
   "Canjea un código": {
    "src": "código",
    "where": [
-    "085-meta.js:1103"
+    "085-meta.js:1102"
    ]
   },
   "Copia de tu progreso": {
    "src": "código",
    "where": [
-    "085-meta.js:1104",
-    "085-meta.js:1387"
+    "085-meta.js:1103",
+    "085-meta.js:1386"
    ]
   },
   "Llévalo a otro iPad": {
    "src": "código",
    "where": [
-    "085-meta.js:1104"
+    "085-meta.js:1103"
    ]
   },
   "Acerca de": {
    "src": "código",
    "where": [
-    "085-meta.js:1105"
+    "085-meta.js:1104"
    ]
   },
   "Versión {0} y créditos": {
    "src": "código",
    "where": [
-    "085-meta.js:1105"
+    "085-meta.js:1104"
    ]
   },
   "Modo creador": {
    "src": "código",
    "where": [
-    "085-meta.js:1106",
-    "085-meta.js:2001",
-    "085-meta.js:2096"
+    "085-meta.js:1105",
+    "085-meta.js:2000",
+    "085-meta.js:2095"
    ]
   },
   "Apagado": {
    "src": "código",
    "where": [
-    "085-meta.js:1106",
-    "085-meta.js:1402"
+    "085-meta.js:1105",
+    "085-meta.js:1401"
    ]
   },
   "Apariencias": {
    "src": "código",
    "where": [
-    "085-meta.js:1114"
+    "085-meta.js:1113"
    ]
   },
   "Cofres": {
    "src": "código",
    "where": [
-    "085-meta.js:1114"
+    "085-meta.js:1113"
    ]
   },
   "Taller": {
    "src": "código",
    "where": [
-    "085-meta.js:1114",
-    "085-meta.js:1559",
-    "085-meta.js:1560"
+    "085-meta.js:1113",
+    "085-meta.js:1558",
+    "085-meta.js:1559"
    ]
   },
   "Cristales": {
    "src": "código",
    "where": [
-    "085-meta.js:1114"
+    "085-meta.js:1113"
    ]
   },
   "Solo cambian cómo se ven tus tropas y tu Núcleo: vida, daño y velocidad = iguales.": {
    "src": "código",
    "where": [
-    "085-meta.js:1119"
+    "085-meta.js:1118"
    ]
   },
   "Ya es tuyo": {
    "src": "código",
    "where": [
-    "085-meta.js:1126"
+    "085-meta.js:1125"
    ]
   },
   "Abrir · {0} cristales": {
    "src": "código",
    "where": [
-    "085-meta.js:1133"
+    "085-meta.js:1132"
    ]
   },
   "Cada cofre da un aspecto ({0} %), un plano ({1} %) o fragmentos ({2} %). Garantía: 1 legendario cada {3} cofres (te faltan {4}). Un aspecto repetido se convierte en fragmentos ({5}).": {
    "src": "código",
    "where": [
-    "085-meta.js:1135"
+    "085-meta.js:1134"
    ]
   },
   "Tienes": {
    "src": "código",
    "where": [
-    "085-meta.js:1139"
+    "085-meta.js:1138"
    ]
   },
   "fragmentos. Ganas fragmentos con los aspectos repetidos, en algunos cofres y jugando (+{0} por partida, +{1} si ganas).": {
    "src": "código",
    "where": [
-    "085-meta.js:1139"
+    "085-meta.js:1138"
    ]
   },
   "Fabricar · {0} fragmentos": {
    "src": "código",
    "where": [
-    "085-meta.js:1143"
+    "085-meta.js:1142"
    ]
   },
   "Todavía no tienes planos: salen en los cofres.": {
    "src": "código",
    "where": [
-    "085-meta.js:1144"
+    "085-meta.js:1143"
    ]
   },
   "Los cristales se ganan jugando: partidas, misiones, pase y premio diario. Comprarlos con dinero real solo estará en Roblox.": {
    "src": "código",
    "where": [
-    "085-meta.js:1146"
+    "085-meta.js:1145"
    ]
   },
   "Solo en Roblox": {
    "src": "código",
    "where": [
-    "085-meta.js:1148"
+    "085-meta.js:1147"
    ]
   },
   "Tienda": {
    "src": "código",
    "where": [
-    "085-meta.js:1150"
+    "085-meta.js:1149"
    ]
   },
   "Nuevo": {
    "src": "código",
    "where": [
-    "085-meta.js:1163"
+    "085-meta.js:1162"
    ]
   },
   "Nada con ese nombre en este filtro.": {
    "src": "código",
    "where": [
-    "085-meta.js:1164"
+    "085-meta.js:1163"
    ]
   },
   "Precio": {
    "src": "código",
    "where": [
-    "085-meta.js:1174",
-    "085-meta.js:1192"
+    "085-meta.js:1173",
+    "085-meta.js:1191"
    ]
   },
   "y {0} de energía": {
    "src": "código",
    "where": [
-    "085-meta.js:1174",
-    "085-meta.js:1192"
+    "085-meta.js:1173",
+    "085-meta.js:1191"
+   ]
+  },
+  "{0} monedas{1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1173",
+    "085-meta.js:1191"
    ]
   },
   "Tiempo": {
    "src": "código",
    "where": [
-    "085-meta.js:1176",
-    "085-meta.js:2012"
+    "085-meta.js:1175",
+    "085-meta.js:2011"
    ]
   },
   "Se produce en": {
    "src": "código",
    "where": [
-    "085-meta.js:1177"
+    "085-meta.js:1176"
    ]
   },
   "Dispara salvas de {0}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1180"
+    "085-meta.js:1179"
    ]
   },
   "Daño en área: a lo que esté a {0} casillas del blanco le llega el {1} %.": {
    "src": "código",
    "where": [
-    "085-meta.js:1181"
+    "085-meta.js:1180"
    ]
   },
   "Un solo uso: se destruye al atacar.": {
    "src": "código",
    "where": [
-    "085-meta.js:1182"
+    "085-meta.js:1181"
    ]
   },
   "infantería": {
    "src": "código",
    "where": [
-    "085-meta.js:1183"
+    "085-meta.js:1182"
    ]
   },
   "tropas de tierra": {
    "src": "código",
    "where": [
-    "085-meta.js:1183"
+    "085-meta.js:1182"
    ]
   },
   "Lleva {0} plazas de {1}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1183"
+    "085-meta.js:1182"
    ]
   },
   "Hangar para {0} Cazas.": {
    "src": "código",
    "where": [
-    "085-meta.js:1184"
+    "085-meta.js:1183"
    ]
   },
   "Sigilo: solo se ve de cerca o con detectores.": {
    "src": "código",
    "where": [
-    "085-meta.js:1185"
+    "085-meta.js:1184"
    ]
   },
   "Detecta submarinos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1185"
+   ]
+  },
+  "Construye y repara.": {
    "src": "código",
    "where": [
     "085-meta.js:1186"
@@ -4715,1135 +4948,1209 @@
   "Cura a los soldados cercanos.": {
    "src": "código",
    "where": [
-    "085-meta.js:1188"
+    "085-meta.js:1187"
    ]
   },
   "Solo con «Arsenal estratégico» (Personalizado). Un misil, un uso por partida; alcance {0} casillas; {1} s de preparación.": {
    "src": "código",
    "where": [
-    "085-meta.js:1189"
+    "085-meta.js:1188"
    ]
   },
   "No pelea.": {
    "src": "código",
    "where": [
-    "085-meta.js:1190"
+    "085-meta.js:1189"
    ]
   },
   "Empiezas con uno": {
    "src": "código",
    "where": [
-    "085-meta.js:1192"
+    "085-meta.js:1191"
    ]
   },
   "Tiempo de obra": {
    "src": "código",
    "where": [
-    "085-meta.js:1193"
+    "085-meta.js:1192"
    ]
   },
   "Límite": {
    "src": "código",
    "where": [
-    "085-meta.js:1195"
+    "085-meta.js:1194"
    ]
   },
   "{0} por jugador": {
    "src": "código",
    "where": [
-    "085-meta.js:1195"
+    "085-meta.js:1194"
    ]
   },
   "Dónde": {
    "src": "código",
    "where": [
-    "085-meta.js:1196"
+    "085-meta.js:1195"
    ]
   },
   "solo en": {
    "src": "código",
    "where": [
-    "085-meta.js:1196"
+    "085-meta.js:1195"
    ]
   },
   "Ingreso": {
    "src": "código",
    "where": [
-    "085-meta.js:1197"
+    "085-meta.js:1196"
    ]
   },
   "Niveles": {
    "src": "código",
    "where": [
-    "085-meta.js:1198"
+    "085-meta.js:1197"
+   ]
+  },
+  "hasta {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1197"
    ]
   },
   "Produce": {
    "src": "código",
    "where": [
-    "085-meta.js:1199"
+    "085-meta.js:1198"
    ]
   },
   "En nivel 4 lanza el misil nuclear. Con «Arsenal estratégico» comparte el único uso con el Lanzador nuclear móvil.": {
    "src": "código",
    "where": [
-    "085-meta.js:1201"
+    "085-meta.js:1200"
+   ]
+  },
+  "Nuevo ·": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1203"
    ]
   },
   "Conoce tu ejército": {
    "src": "código",
    "where": [
-    "085-meta.js:1220"
+    "085-meta.js:1219"
    ]
   },
   "Todo lo que hoy existe en el juego. Toca una tarjeta para ver su ficha.": {
    "src": "código",
    "where": [
-    "085-meta.js:1220"
+    "085-meta.js:1219"
    ]
   },
   "{0} tropas · {1} edificios": {
    "src": "código",
    "where": [
-    "085-meta.js:1221"
+    "085-meta.js:1220"
    ]
   },
   "Buscar tropa o edificio…": {
    "src": "código",
    "where": [
-    "085-meta.js:1222"
+    "085-meta.js:1221"
    ]
   },
   "Buscar tropa o edificio": {
    "src": "código",
    "where": [
-    "085-meta.js:1222"
+    "085-meta.js:1221"
    ]
   },
   "Normal": {
    "src": "código",
    "where": [
-    "085-meta.js:1245"
+    "085-meta.js:1244"
    ]
   },
   "Equipado": {
    "src": "código",
    "where": [
-    "085-meta.js:1245",
-    "085-meta.js:1249"
+    "085-meta.js:1244",
+    "085-meta.js:1248"
    ]
   },
   "Equipar": {
    "src": "código",
    "where": [
-    "085-meta.js:1245",
-    "085-meta.js:1249",
-    "085-meta.js:1436"
+    "085-meta.js:1244",
+    "085-meta.js:1248",
+    "085-meta.js:1435"
    ]
   },
   "Inventario": {
    "src": "código",
    "where": [
-    "085-meta.js:1252"
+    "085-meta.js:1251"
    ]
   },
   "Toca un aspecto para equiparlo. Se ve en tus tropas y tu Núcleo en la próxima partida.": {
    "src": "código",
    "where": [
-    "085-meta.js:1253"
+    "085-meta.js:1252"
    ]
   },
   "faro-de-ambar-progreso-{0}.txt": {
    "src": "código",
    "where": [
-    "085-meta.js:1261"
+    "085-meta.js:1260"
    ]
   },
   "Aquí no se puede descargar el archivo: usa «Copiar» y guarda el texto.": {
    "src": "código",
    "where": [
-    "085-meta.js:1267",
-    "085-meta.js:1277"
+    "085-meta.js:1266",
+    "085-meta.js:1276"
    ]
   },
   "Archivo guardado. En el otro iPad, usa «Elegir archivo».": {
    "src": "código",
    "where": [
-    "085-meta.js:1272"
+    "085-meta.js:1271"
    ]
   },
   "Espera un momento y vuelve a tocar «Descargar archivo».": {
    "src": "código",
    "where": [
-    "085-meta.js:1276"
+    "085-meta.js:1275"
    ]
   },
   "¿Reemplazar? Nivel {0} · toca otra vez": {
    "src": "código",
    "where": [
-    "085-meta.js:1298"
+    "085-meta.js:1297"
    ]
   },
   "Listo: cargaste tu progreso (nivel {0}, {1} cristales).": {
    "src": "código",
    "where": [
-    "085-meta.js:1303"
+    "085-meta.js:1302"
    ]
   },
   "Acerca de Faro de Ámbar": {
    "src": "código",
    "where": [
-    "085-meta.js:1326"
+    "085-meta.js:1325"
    ]
   },
   "· prototipo web de un juego de estrategia sobre islas de hexágonos, hecho para jugar en el iPad.": {
    "src": "código",
    "where": [
-    "085-meta.js:1326"
+    "085-meta.js:1325"
    ]
   },
   "Novedades de esta versión": {
    "src": "código",
    "where": [
-    "085-meta.js:1327"
+    "085-meta.js:1326"
    ]
   },
   "Créditos": {
    "src": "código",
    "where": [
-    "085-meta.js:1329"
+    "085-meta.js:1328"
    ]
   },
   "Modelos 3D hechos con Blender para este juego.": {
    "src": "código",
    "where": [
-    "085-meta.js:1330"
+    "085-meta.js:1329"
    ]
   },
   "Cielo de ambiente: Poly Haven (CC0).": {
    "src": "código",
    "where": [
-    "085-meta.js:1331"
+    "085-meta.js:1330"
    ]
   },
   "Caminar y correr: CMU Graphics Lab Motion Capture Database.": {
    "src": "código",
    "where": [
-    "085-meta.js:1332"
+    "085-meta.js:1331"
    ]
   },
   "Motor 3D: three.js r128.": {
    "src": "código",
    "where": [
-    "085-meta.js:1333"
+    "085-meta.js:1332"
    ]
   },
   "Elige un modo": {
    "src": "código",
    "where": [
-    "085-meta.js:1337"
+    "085-meta.js:1336"
    ]
   },
   "Desde nivel {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1340"
+    "085-meta.js:1339"
    ]
   },
   "Elige un mapa": {
    "src": "código",
    "where": [
-    "085-meta.js:1343"
+    "085-meta.js:1342"
    ]
   },
   "Reclamado": {
    "src": "código",
    "where": [
-    "085-meta.js:1353"
+    "085-meta.js:1352"
    ]
   },
   "Reclamar": {
    "src": "código",
    "where": [
-    "085-meta.js:1353"
+    "085-meta.js:1352"
    ]
   },
   "Pase del Faro · Temporada {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1356"
+    "085-meta.js:1355"
    ]
   },
   "Pista gratis de {0} niveles. Cada {1} XP subes un nivel del pase. Esta temporada llevas {2} XP (nivel {3}). Termina el {4}: entonces el pase vuelve a empezar.": {
    "src": "código",
    "where": [
-    "085-meta.js:1356"
+    "085-meta.js:1355"
    ]
   },
   "Reclamar todo": {
    "src": "código",
    "where": [
-    "085-meta.js:1357"
+    "085-meta.js:1356"
    ]
   },
   "Entra cada día para avanzar. Si faltas un día, la racha baja 1.{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1375"
+    "085-meta.js:1374"
    ]
   },
   "Día {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1377"
+    "085-meta.js:1376"
    ]
   },
   "Cofre": {
    "src": "código",
    "where": [
-    "085-meta.js:1377"
+    "085-meta.js:1376"
    ]
   },
   "del Faro": {
    "src": "código",
    "where": [
-    "085-meta.js:1377"
+    "085-meta.js:1376"
+   ]
+  },
+  "cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1376"
    ]
   },
   "Reclamar día {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1378"
+    "085-meta.js:1377"
    ]
   },
   "Ya reclamaste hoy": {
    "src": "código",
    "where": [
-    "085-meta.js:1378"
+    "085-meta.js:1377"
    ]
   },
   "Escribe un código": {
    "src": "código",
    "where": [
-    "085-meta.js:1380"
+    "085-meta.js:1379"
    ]
   },
   "Canjear": {
    "src": "código",
    "where": [
-    "085-meta.js:1382"
+    "085-meta.js:1381"
    ]
   },
   "Cada código se usa una vez. Los códigos nuevos se anuncian en las actualizaciones.": {
    "src": "código",
    "where": [
-    "085-meta.js:1384"
+    "085-meta.js:1383"
    ]
   },
-  "Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador (en Roblox se guardarán en tu cuenta).": {
+  "(en Roblox se guardarán en tu cuenta)": {
    "src": "código",
    "where": [
-    "085-meta.js:1387"
+    "085-meta.js:1386"
+   ]
+  },
+  "Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador{0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1386"
    ]
   },
   "1 · Guardar: copia este texto o descárgalo": {
    "src": "código",
    "where": [
-    "085-meta.js:1388"
+    "085-meta.js:1387"
    ]
   },
   "Copiar": {
    "src": "código",
    "where": [
-    "085-meta.js:1390"
+    "085-meta.js:1389"
    ]
   },
   "Descargar archivo": {
    "src": "código",
    "where": [
-    "085-meta.js:1391"
+    "085-meta.js:1390"
    ]
   },
   "2 · Cargar: pega aquí una copia (reemplaza tu progreso de este navegador)": {
    "src": "código",
    "where": [
-    "085-meta.js:1392"
+    "085-meta.js:1391"
    ]
   },
   "Cargar copia": {
    "src": "código",
    "where": [
-    "085-meta.js:1394"
+    "085-meta.js:1393"
    ]
   },
   "Elegir archivo": {
    "src": "código",
    "where": [
-    "085-meta.js:1395"
+    "085-meta.js:1394"
    ]
   },
   "Zona de creadores": {
    "src": "código",
    "where": [
-    "085-meta.js:1399",
-    "085-meta.js:1411"
+    "085-meta.js:1398",
+    "085-meta.js:1410"
    ]
   },
   "Solo lo ves tú: la plataforma confirma que eres el dueño de este juego.": {
    "src": "código",
    "where": [
-    "085-meta.js:1399"
+    "085-meta.js:1398"
    ]
   },
   "Entraste con la contraseña de creadores. Se vuelve a pedir cada vez que abres el juego.": {
    "src": "código",
    "where": [
-    "085-meta.js:1399"
+    "085-meta.js:1398"
    ]
   },
   "{0} Los demás jugadores no pueden abrirla.": {
    "src": "código",
    "where": [
-    "085-meta.js:1399"
+    "085-meta.js:1398"
    ]
   },
   "Monedas y energía infinitas · todo desbloqueado": {
    "src": "código",
    "where": [
-    "085-meta.js:1400"
+    "085-meta.js:1399"
    ]
   },
   "Construcción rápida": {
    "src": "código",
    "where": [
-    "085-meta.js:1403"
+    "085-meta.js:1402"
    ]
   },
   "Sí": {
    "src": "código",
    "where": [
-    "085-meta.js:1404"
+    "085-meta.js:1403"
    ]
   },
   "Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.": {
    "src": "código",
    "where": [
-    "085-meta.js:1406"
+    "085-meta.js:1405"
    ]
   },
   "Cerrar la zona de creadores": {
    "src": "código",
    "where": [
-    "085-meta.js:1407"
+    "085-meta.js:1406"
    ]
   },
   "Solo para los creadores del juego. Escribe la contraseña para entrar.": {
    "src": "código",
    "where": [
-    "085-meta.js:1411"
+    "085-meta.js:1410"
    ]
   },
   "Contraseña": {
    "src": "código",
    "where": [
-    "085-meta.js:1412"
+    "085-meta.js:1411"
    ]
   },
   "Entrar": {
    "src": "código",
    "where": [
-    "085-meta.js:1414"
+    "085-meta.js:1413"
    ]
   },
   "Se vuelve a pedir cada vez que abres el juego. Después de {0} intentos fallidos hay que esperar {1} s.": {
    "src": "código",
    "where": [
-    "085-meta.js:1416"
+    "085-meta.js:1415"
+   ]
+  },
+  "{0} fragmentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1420"
    ]
   },
   "Ahora tienes {0}. Úsalos en el Taller con un plano.": {
    "src": "código",
    "where": [
-    "085-meta.js:1421"
+    "085-meta.js:1420"
    ]
   },
   "Genial": {
    "src": "código",
    "where": [
-    "085-meta.js:1422",
-    "085-meta.js:1428",
-    "085-meta.js:1435"
+    "085-meta.js:1421",
+    "085-meta.js:1427",
+    "085-meta.js:1434"
    ]
   },
   "Plano: {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1426"
+    "085-meta.js:1425"
    ]
   },
   "Fabrícalo en el Taller con {0} fragmentos (tienes {1}).": {
    "src": "código",
    "where": [
-    "085-meta.js:1427"
+    "085-meta.js:1426"
    ]
   },
   "Ir al Taller": {
    "src": "código",
    "where": [
-    "085-meta.js:1429"
+    "085-meta.js:1428"
    ]
   },
   "Repetido: se convierte en {0} fragmentos": {
    "src": "código",
    "where": [
-    "085-meta.js:1434"
+    "085-meta.js:1433"
    ]
   },
   "¡Nuevo! Ya está en tu Inventario": {
    "src": "código",
    "where": [
-    "085-meta.js:1434"
+    "085-meta.js:1433"
    ]
   },
   "Aceptar": {
    "src": "código",
    "where": [
-    "085-meta.js:1439"
+    "085-meta.js:1438"
    ]
   },
   "Zona de creadores cerrada": {
    "src": "código",
    "where": [
-    "085-meta.js:1468"
+    "085-meta.js:1467"
    ]
   },
   "Liga 3 vs 3": {
    "src": "código",
    "where": [
-    "085-meta.js:1481",
-    "085-meta.js:1760"
+    "085-meta.js:1480",
+    "085-meta.js:1759"
    ]
   },
   "La Liga 3 vs 3 se abre en el nivel {0}. Ahora estás en el nivel {1}: juega otras partidas para subir.": {
    "src": "código",
    "where": [
-    "085-meta.js:1481"
+    "085-meta.js:1480"
    ]
   },
   "Copiado. Pégalo en «Cargar» en el otro iPad o navegador.": {
    "src": "código",
    "where": [
-    "085-meta.js:1517"
+    "085-meta.js:1516"
    ]
   },
   "¡Fabricaste {0}! Ya está en tu Inventario.": {
    "src": "código",
    "where": [
-    "085-meta.js:1560"
+    "085-meta.js:1559"
+   ]
+  },
+  "+{0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1608",
+    "085-meta.js:2002",
+    "085-meta.js:2097"
    ]
   },
   "Escribe un código.": {
    "src": "código",
    "where": [
-    "085-meta.js:1619"
+    "085-meta.js:1618"
    ]
   },
   "Ese código no existe.": {
    "src": "código",
    "where": [
-    "085-meta.js:1620"
+    "085-meta.js:1619"
    ]
   },
   "Ya usaste este código.": {
    "src": "código",
    "where": [
-    "085-meta.js:1621"
+    "085-meta.js:1620"
    ]
   },
   "¡Listo! {0}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1624"
+    "085-meta.js:1623"
    ]
   },
   "Compraste {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1647"
+    "085-meta.js:1646"
    ]
   },
   "No tienes el plano de ese aspecto": {
    "src": "código",
    "where": [
-    "085-meta.js:1655"
+    "085-meta.js:1654"
    ]
   },
   "Ya tienes ese aspecto": {
    "src": "código",
    "where": [
-    "085-meta.js:1656"
+    "085-meta.js:1655"
    ]
   },
   "Te faltan {0} fragmentos": {
    "src": "código",
    "where": [
-    "085-meta.js:1658"
+    "085-meta.js:1657"
    ]
   },
   "Logros · {0} de {1}": {
    "src": "código",
    "where": [
-    "085-meta.js:1743"
+    "085-meta.js:1742"
    ]
   },
   "Logrado el {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1749"
+    "085-meta.js:1748"
    ]
   },
   "Rango": {
    "src": "código",
    "where": [
-    "085-meta.js:1762"
+    "085-meta.js:1761"
+   ]
+  },
+  "% victorias": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1761"
    ]
   },
   "Oro": {
    "src": "código",
    "where": [
-    "085-meta.js:1765"
+    "085-meta.js:1764"
    ]
   },
   "Plata": {
    "src": "código",
    "where": [
-    "085-meta.js:1765"
+    "085-meta.js:1764"
    ]
   },
   "Bronce": {
    "src": "código",
    "where": [
-    "085-meta.js:1765"
+    "085-meta.js:1764"
    ]
   },
   "(tú)": {
    "src": "código",
    "where": [
-    "085-meta.js:1766"
+    "085-meta.js:1765"
    ]
   },
   "Top jugadores · Temporada {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1769"
+    "085-meta.js:1768"
    ]
   },
   "Los mejores de la Liga 3 vs 3 en esta temporada.": {
    "src": "código",
    "where": [
-    "085-meta.js:1770"
+    "085-meta.js:1769"
    ]
   },
   "Más victorias (todos los modos).": {
    "src": "código",
    "where": [
-    "085-meta.js:1770"
+    "085-meta.js:1769"
    ]
   },
   "Más islas tomadas (todos los modos).": {
    "src": "código",
    "where": [
-    "085-meta.js:1770"
+    "085-meta.js:1769"
    ]
   },
-  "{0} Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.": {
+  "Los demás son comandantes bot. Tu fila siempre se ve.": {
    "src": "código",
    "where": [
-    "085-meta.js:1770"
+    "085-meta.js:1769"
+   ]
+  },
+  "Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1769"
+   ]
+  },
+  "{0} {1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1769"
    ]
   },
   "Jugador": {
    "src": "código",
    "where": [
-    "085-meta.js:1772"
+    "085-meta.js:1771"
    ]
   },
   "Desafío semanal: {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1780"
+    "085-meta.js:1779"
    ]
   },
   "día": {
    "src": "código",
    "where": [
-    "085-meta.js:1783"
+    "085-meta.js:1782"
    ]
   },
   "días": {
    "src": "código",
    "where": [
-    "085-meta.js:1783"
+    "085-meta.js:1782"
    ]
   },
   "{0} · {1} · bots en {2}. Es el mismo mapa toda la semana; cambia en {3} {4} (el lunes).": {
    "src": "código",
    "where": [
-    "085-meta.js:1783"
+    "085-meta.js:1782"
    ]
   },
   "Ganado.": {
    "src": "código",
    "where": [
-    "085-meta.js:1784"
+    "085-meta.js:1783"
    ]
   },
   "Tu mejor tiempo:": {
    "src": "código",
    "where": [
-    "085-meta.js:1784"
+    "085-meta.js:1783"
    ]
   },
   ". Intenta bajarlo.": {
    "src": "código",
    "where": [
-    "085-meta.js:1784"
+    "085-meta.js:1783"
    ]
   },
   "Premio la primera vez que lo ganas:": {
    "src": "código",
    "where": [
-    "085-meta.js:1784"
+    "085-meta.js:1783"
+   ]
+  },
+  "{0} Intentos: {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1783"
    ]
   },
   "Jugar desafío": {
    "src": "código",
    "where": [
-    "085-meta.js:1785"
+    "085-meta.js:1784"
    ]
   },
   "· protección de rango: no bajaste": {
    "src": "código",
    "where": [
-    "085-meta.js:1812"
+    "085-meta.js:1811"
    ]
   },
   "Liga 3 vs 3{0}: {1}{2} puntos · {3}{4}": {
    "src": "código",
    "where": [
-    "085-meta.js:1812"
+    "085-meta.js:1811"
    ]
   },
   "Campo de pruebas: sin XP, cristales ni misiones": {
    "src": "código",
    "where": [
-    "085-meta.js:1832"
+    "085-meta.js:1831"
    ]
   },
   "Ganar": {
    "src": "código",
    "where": [
-    "085-meta.js:1841"
+    "085-meta.js:1840"
    ]
   },
   "Islas tomadas ({0})": {
    "src": "código",
    "where": [
-    "085-meta.js:1842"
+    "085-meta.js:1841"
    ]
   },
   "Núcleos destruidos ({0})": {
    "src": "código",
    "where": [
-    "085-meta.js:1843"
+    "085-meta.js:1842"
    ]
   },
   "Personalizado: mitad de XP": {
    "src": "código",
    "where": [
-    "085-meta.js:1852"
+    "085-meta.js:1851"
+   ]
+  },
+  "Fragmentos: +{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1856"
    ]
   },
   "Desafío semanal ganado: +{0} cristales": {
    "src": "código",
    "where": [
-    "085-meta.js:1872"
+    "085-meta.js:1871"
    ]
   },
   "Insignia «Primer Faro», 150 cristales y el aspecto Soldado Dorado": {
    "src": "código",
    "where": [
-    "085-meta.js:1901"
+    "085-meta.js:1900"
+   ]
+  },
+  "(+{0} cristales)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1928"
    ]
   },
   "Logro: {0}{1}": {
    "src": "código",
    "where": [
-    "085-meta.js:1929"
+    "085-meta.js:1928"
    ]
   },
   "Ganador": {
    "src": "código",
    "where": [
-    "085-meta.js:1952"
+    "085-meta.js:1951"
    ]
   },
   "Seguía en pie": {
    "src": "código",
    "where": [
-    "085-meta.js:1952"
+    "085-meta.js:1951"
    ]
   },
   "Cayó a los {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1956"
+    "085-meta.js:1955"
    ]
   },
   "Las torretas y defensas enemigas te hicieron mucho daño. Atácalas desde lejos con Tanques o Lanzamisiles.": {
    "src": "código",
    "where": [
-    "085-meta.js:1971"
+    "085-meta.js:1970"
    ]
   },
   "La infantería enemiga te desgastó. Prueba Escopeteros, Jeeps o Torretas mejoradas con miniguns.": {
    "src": "código",
    "where": [
-    "085-meta.js:1972"
+    "085-meta.js:1971"
    ]
   },
   "Los vehículos enemigos te superaron. Los Cazadores y Coheteros hacen más daño a tanques.": {
    "src": "código",
    "where": [
-    "085-meta.js:1973"
+    "085-meta.js:1972"
    ]
   },
   "Te atacaron desde el aire. Construye AIR DEFENSE y Camiones antiaéreos cerca del Núcleo.": {
    "src": "código",
    "where": [
-    "085-meta.js:1974"
+    "085-meta.js:1973"
    ]
   },
   "Los barcos atacaron tu costa. Pon Torretas en la costa, ten Destructores y mejora el Núcleo para la Cúpula.": {
    "src": "código",
    "where": [
-    "085-meta.js:1975"
+    "085-meta.js:1974"
    ]
   },
   "Los Lanzamisiles te atacaron de lejos. Sube el Núcleo a nivel 3 y compra la Cúpula.": {
    "src": "código",
    "where": [
-    "085-meta.js:1976"
+    "085-meta.js:1975"
    ]
   },
   "Entrena Constructores pronto y construye más Granjas y energía: con más monedas tendrás un ejército más grande.": {
    "src": "código",
    "where": [
-    "085-meta.js:1979"
+    "085-meta.js:1978"
    ]
   },
   "Tu Núcleo cayó": {
    "src": "código",
    "where": [
-    "085-meta.js:1989"
+    "085-meta.js:1988"
    ]
   },
   "Tu Núcleo cayó. Puedes repetir la misión cuando quieras.": {
    "src": "código",
    "where": [
-    "085-meta.js:1995"
+    "085-meta.js:1994"
    ]
   },
   "Se abrió la misión {0}: {1}.": {
    "src": "código",
    "where": [
-    "085-meta.js:1996"
+    "085-meta.js:1995"
    ]
   },
   "Misión cumplida.{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1996"
+    "085-meta.js:1995"
    ]
   },
   "¡Terminaste la campaña! El Faro de Ámbar vuelve a brillar.": {
    "src": "código",
    "where": [
-    "085-meta.js:1997"
+    "085-meta.js:1996"
    ]
   },
   "Primera vez: {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:1998"
+    "085-meta.js:1997"
    ]
   },
   "1 estrella nueva": {
    "src": "código",
    "where": [
-    "085-meta.js:1998"
+    "085-meta.js:1997"
    ]
   },
   "{0} estrellas nuevas": {
    "src": "código",
    "where": [
-    "085-meta.js:1998"
+    "085-meta.js:1997"
    ]
   },
   "Sin XP ni cristales": {
    "src": "código",
    "where": [
-    "085-meta.js:2001",
-    "085-meta.js:2096"
+    "085-meta.js:2000",
+    "085-meta.js:2095"
    ]
   },
   "Por jugar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2002",
+    "085-meta.js:2097"
+   ]
+  },
+  "¡Subiste de nivel!": {
    "src": "código",
    "where": [
     "085-meta.js:2003",
     "085-meta.js:2098"
    ]
   },
-  "¡Subiste de nivel!": {
-   "src": "código",
-   "where": [
-    "085-meta.js:2004",
-    "085-meta.js:2099"
-   ]
-  },
   "¡Misión cumplida!": {
    "src": "código",
    "where": [
-    "085-meta.js:2008"
+    "085-meta.js:2007"
    ]
   },
   "Misión fallida": {
    "src": "código",
    "where": [
-    "085-meta.js:2008"
+    "085-meta.js:2007"
    ]
   },
   "Conseguida": {
    "src": "código",
    "where": [
-    "085-meta.js:2010"
+    "085-meta.js:2009"
    ]
   },
   "Tropas perdidas": {
    "src": "código",
    "where": [
-    "085-meta.js:2013"
+    "085-meta.js:2012"
    ]
   },
   "Edificios perdidos": {
    "src": "código",
    "where": [
-    "085-meta.js:2014"
+    "085-meta.js:2013"
    ]
   },
   "Vida del Núcleo": {
    "src": "código",
    "where": [
-    "085-meta.js:2015"
+    "085-meta.js:2014"
    ]
   },
   "Premios": {
    "src": "código",
    "where": [
-    "085-meta.js:2017"
+    "085-meta.js:2016"
    ]
   },
   "Misiones completadas: {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:2019",
-    "085-meta.js:2119"
+    "085-meta.js:2018",
+    "085-meta.js:2118"
    ]
   },
   "Mirar el final": {
    "src": "código",
    "where": [
-    "085-meta.js:2022"
+    "085-meta.js:2021"
    ]
   },
   "Siguiente misión": {
    "src": "código",
    "where": [
-    "085-meta.js:2023"
+    "085-meta.js:2022"
    ]
   },
   "Cómo fue la partida": {
    "src": "código",
    "where": [
-    "085-meta.js:2036"
+    "085-meta.js:2035"
    ]
   },
   "Tropas de combate": {
    "src": "código",
    "where": [
-    "085-meta.js:2037"
+    "085-meta.js:2036"
    ]
   },
   "Ver como tabla": {
    "src": "código",
    "where": [
-    "085-meta.js:2039"
+    "085-meta.js:2038"
    ]
   },
   "Monedas/min (final)": {
    "src": "código",
    "where": [
-    "085-meta.js:2039"
+    "085-meta.js:2038"
    ]
   },
   "Monedas/min (máx.)": {
    "src": "código",
    "where": [
-    "085-meta.js:2039"
+    "085-meta.js:2038"
    ]
   },
   "Tropas (máx.)": {
    "src": "código",
    "where": [
-    "085-meta.js:2039"
+    "085-meta.js:2038"
    ]
   },
   "{0} de cada imperio a lo largo de la partida": {
    "src": "código",
    "where": [
-    "085-meta.js:2078"
+    "085-meta.js:2077"
    ]
   },
   "Tu equipo mantuvo el Faro {0}.": {
    "src": "código",
    "where": [
-    "085-meta.js:2093"
+    "085-meta.js:2092"
    ]
   },
   "Otro imperio mantuvo el Faro el tiempo necesario.": {
    "src": "código",
    "where": [
-    "085-meta.js:2093"
+    "085-meta.js:2092"
    ]
   },
   "Todos los Núcleos rivales cayeron. El archipiélago es tuyo.": {
    "src": "código",
    "where": [
-    "085-meta.js:2094"
+    "085-meta.js:2093"
    ]
   },
   "Tu Núcleo fue destruido. Seguiste mirando: ganó {0}.": {
    "src": "código",
    "where": [
-    "085-meta.js:2094"
+    "085-meta.js:2093"
    ]
   },
   "Tu Núcleo fue destruido.": {
    "src": "código",
    "where": [
-    "085-meta.js:2094"
+    "085-meta.js:2093"
    ]
   },
   "Incluye misiones": {
    "src": "código",
    "where": [
-    "085-meta.js:2098"
+    "085-meta.js:2097"
    ]
   },
   "Partida finalizada": {
    "src": "código",
    "where": [
-    "085-meta.js:2103"
+    "085-meta.js:2102"
    ]
   },
   "¡Victoria!": {
    "src": "código",
    "where": [
-    "085-meta.js:2103"
+    "085-meta.js:2102"
    ]
   },
   "Duración": {
    "src": "código",
    "where": [
-    "085-meta.js:2105"
+    "085-meta.js:2104"
    ]
   },
   "Territorio máximo (casillas)": {
    "src": "código",
    "where": [
-    "085-meta.js:2106"
+    "085-meta.js:2105"
    ]
   },
   "Experiencia": {
    "src": "código",
    "where": [
-    "085-meta.js:2107"
+    "085-meta.js:2106"
    ]
   },
   "Tropas entrenadas": {
    "src": "código",
    "where": [
-    "085-meta.js:2111"
+    "085-meta.js:2110"
    ]
   },
   "Posiciones": {
    "src": "código",
    "where": [
-    "085-meta.js:2114"
+    "085-meta.js:2113"
    ]
   },
   "Premios{0}": {
    "src": "código",
    "where": [
-    "085-meta.js:2117"
+    "085-meta.js:2116"
    ]
   },
   "Premio del Tutorial: {0}": {
    "src": "código",
    "where": [
-    "085-meta.js:2120"
+    "085-meta.js:2119"
    ]
   },
   "Seguir mirando": {
    "src": "código",
    "where": [
-    "085-meta.js:2124"
+    "085-meta.js:2123"
    ]
   },
   "Mirar el mapa": {
    "src": "código",
    "where": [
-    "085-meta.js:2125"
+    "085-meta.js:2124"
    ]
   },
   "Revancha": {
    "src": "código",
    "where": [
-    "085-meta.js:2126"
+    "085-meta.js:2125"
    ]
   },
   "Volver al vestíbulo": {
    "src": "código",
    "where": [
-    "085-meta.js:2127"
+    "085-meta.js:2126"
    ]
   },
   "🎬 Doble premio": {
    "src": "código",
    "where": [
-    "085-meta.js:2128"
+    "085-meta.js:2127"
    ]
   },
   "Premio doble: +{0} XP y +{1} cristales más": {
    "src": "código",
    "where": [
-    "085-meta.js:2154"
+    "085-meta.js:2153"
    ]
   },
   "¡Premio doble! +{0} XP y +{1} cristales": {
    "src": "código",
    "where": [
-    "085-meta.js:2155"
+    "085-meta.js:2154"
    ]
   },
   "No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».": {
@@ -7882,35 +8189,27 @@
    "src": "datos",
    "where": []
   },
-  "Todo tu catálogo: 57 tropas y 19 edificios nuevos (infantería, blindados, artillería, drones, helicópteros, aviones y flota), cada uno con su modelo 3D.": {
+  "El juego ahora está en español y en inglés: elige el idioma en Ajustes · Interfaz (si no, usa el de tu navegador).": {
    "src": "datos",
    "where": []
   },
-  "Sistemas nuevos: anfibios, Puente modular, Puerta reforzada, Búnker con soldados adentro, mando, suministros, combustible, interferencia, minas navales y Centro de investigación.": {
+  "Todo viene dentro del juego: el motor 3D y las letras ya no se descargan de otros sitios.": {
    "src": "datos",
    "where": []
   },
-  "Transporte aéreo y paracaidistas; Complejo estratégico y Submarino estratégico (comparten el uso único del Arsenal estratégico).": {
+  "Funciona aunque el navegador no deje guardar (por ejemplo, en modo incógnito) y te avisa que el progreso no se guardará.": {
    "src": "datos",
    "where": []
   },
-  "«Tu ejército» en la portada: tu base y un desfile de tropas en 3D detrás del vestíbulo.": {
+  "Se ve bien también en pantallas apaisadas chicas, desde 640 × 360.": {
    "src": "datos",
    "where": []
   },
-  "Modo «Campo de pruebas»: todo construido y mucho dinero para probar cada tropa y edificio.": {
+  "Mientras juegas, espacio, flechas y rueda ya no mueven la página.": {
    "src": "datos",
    "where": []
   },
-  "Ajustes «A tu manera» por secciones, pestaña Misiones y filtros nuevos en el Arsenal.": {
-   "src": "datos",
-   "where": []
-  },
-  "Zona de creadores con contraseña (botón «Creadores» del vestíbulo).": {
-   "src": "datos",
-   "where": []
-  },
-  "Nombres de tu catálogo: Médico de campaña, Hospital de campaña, Fragata de escolta, Molino eólico y Avión de combate furtivo.": {
+  "Versión preparada para Poki: anuncios de Poki entre partidas y «🎬 Doble premio» opcional al terminar.": {
    "src": "datos",
    "where": []
   },
@@ -8162,10 +8461,6 @@
    "src": "datos",
    "where": []
   },
-  "edificios": {
-   "src": "datos",
-   "where": []
-  },
   "en tierra": {
    "src": "datos",
    "where": []
@@ -8195,6 +8490,14 @@
    "where": []
   },
   "Aviación": {
+   "src": "datos",
+   "where": []
+  },
+  "Brigada Tóxica": {
+   "src": "datos",
+   "where": []
+  },
+  "Premio del Tutorial": {
    "src": "datos",
    "where": []
   },
@@ -8278,7 +8581,7 @@
    "src": "html",
    "where": []
   },
-  "v1.8": {
+  "v1.9": {
    "src": "html",
    "where": []
   },

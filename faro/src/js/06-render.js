@@ -1683,7 +1683,7 @@ class Renderer {
         const idle = g.time - bl.lastWork > 1.5 && bl.type !== 'outpost';
         // v0.9: «Esperando constructor» mientras nadie trabaja; «Construyendo» cuando llega.
         const coming = idle && g.units.some((u) => u.alive && u.buildTarget === bl && u.state === 'build');
-        const verb = bl.upgrading ? `Mejorando a nivel ${bl.upgrading.level}` : idle ? T$('Esperando constructor') : T$('Construyendo');
+        const verb = bl.upgrading ? L$`Mejorando a nivel ${bl.upgrading.level}` : idle ? T$('Esperando constructor') : T$('Construyendo');
         const text = `${verb} · ${Math.floor(k * 100)} %`;
         const note = coming ? T$('Constructor en camino') : T$('Sin constructor');
         ctx.font = '600 11px system-ui, sans-serif';

@@ -26,6 +26,7 @@ const DETECT = () => {
   return (text) => {
     let t = ` ${text} `;
     for (const k of KEEP) t = t.split(k).join(' ');
+    t = t.replace(/FARO\d[\w.=-]*/g, ' '); // texto de la copia del progreso (código, no idioma)
     const words = t.split(/[^A-Za-zÁÉÍÓÚáéíóúÑñÜü¿¡]+/).filter(Boolean);
     const bad = [];
     for (const w of words) {

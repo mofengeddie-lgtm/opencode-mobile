@@ -90,14 +90,12 @@ const LOBBY_MAPS = ['archipelago', 'open', 'continent', 'bay', 'reef', 'mesa', '
 const MAP_THUMBS = {};
 // Lo que trae esta versión (ventana «Acerca de»).
 const ABOUT_NEWS = [
-  'Todo tu catálogo: 57 tropas y 19 edificios nuevos (infantería, blindados, artillería, drones, helicópteros, aviones y flota), cada uno con su modelo 3D.',
-  'Sistemas nuevos: anfibios, Puente modular, Puerta reforzada, Búnker con soldados adentro, mando, suministros, combustible, interferencia, minas navales y Centro de investigación.',
-  'Transporte aéreo y paracaidistas; Complejo estratégico y Submarino estratégico (comparten el uso único del Arsenal estratégico).',
-  '«Tu ejército» en la portada: tu base y un desfile de tropas en 3D detrás del vestíbulo.',
-  'Modo «Campo de pruebas»: todo construido y mucho dinero para probar cada tropa y edificio.',
-  'Ajustes «A tu manera» por secciones, pestaña Misiones y filtros nuevos en el Arsenal.',
-  'Zona de creadores con contraseña (botón «Creadores» del vestíbulo).',
-  'Nombres de tu catálogo: Médico de campaña, Hospital de campaña, Fragata de escolta, Molino eólico y Avión de combate furtivo.',
+  'El juego ahora está en español y en inglés: elige el idioma en Ajustes · Interfaz (si no, usa el de tu navegador).',
+  'Todo viene dentro del juego: el motor 3D y las letras ya no se descargan de otros sitios.',
+  'Funciona aunque el navegador no deje guardar (por ejemplo, en modo incógnito) y te avisa que el progreso no se guardará.',
+  'Se ve bien también en pantallas apaisadas chicas, desde 640 × 360.',
+  'Mientras juegas, espacio, flechas y rueda ya no mueven la página.',
+  'Versión preparada para Poki: anuncios de Poki entre partidas y «🎬 Doble premio» opcional al terminar.',
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.
@@ -658,7 +656,7 @@ function passReward(t) {
   if (t % 10 === 0) return { chest: 'faro', text: T$('Cofre del Faro') };
   if (t % 5 === 0) return { chest: 'isla', text: T$('Cofre de Isla') };
   const n = 20 + 5 * Math.floor((t - 1) / 10);
-  return { crystals: n, text: `${n} cristales` };
+  return { crystals: n, text: L$`${n} cristales` };
 }
 
 // ---------- modo creador (solo la cuenta dueña del juego) ----------
@@ -716,7 +714,7 @@ const Creator = {
         if (fails >= CREATOR_PASS.tries) sessionStorage.setItem('faro-creator-lock', String(Date.now() + CREATOR_PASS.wait * 1000));
       } catch (err) { /* sin almacenamiento */ }
       return fails >= CREATOR_PASS.tries ? L$`Contraseña incorrecta. Espera ${CREATOR_PASS.wait} s para volver a intentar.`
-        : L$`Contraseña incorrecta (${CREATOR_PASS.tries - fails} ${CREATOR_PASS.tries - fails === 1 ? 'intento' : 'intentos'} más).`;
+        : L$`Contraseña incorrecta (${CREATOR_PASS.tries - fails} ${CREATOR_PASS.tries - fails === 1 ? 'intento' : T$('intentos')} más).`;
     }
     this.byPass = true;
     this.owner = true;
@@ -871,17 +869,18 @@ class Lobby {
 
   leftHtml() {
     const item = (sub, label, hint) => `<button type="button" data-act="sub" data-sub="${sub}" class="${this.sub === sub ? 'on' : ''}"><span class="lm-label">${label}</span>${hint ? `<small>${hint}</small>` : ''}</button>`;
-    const off = (label) => `<button type="button" disabled title="${L$`Necesita servidores`}"><span class="lm-label">${label}</span><small>${L$`Roblox`}</small></button>`;
+    // v1.9: en Poki no se nombra a otra plataforma: sin los botones que esperan servidores de Roblox.
+    const off = (label) => (Platform.name === 'poki' ? '' : `<button type="button" disabled title="${L$`Necesita servidores`}"><span class="lm-label">${label}</span><small>${L$`Roblox`}</small></button>`);
     return `<nav class="lmenu panel" aria-label="${L$`Menú del vestíbulo`}">
       ${item('main', T$('Jugar'))}
-      ${item('campaign', T$('Campaña'), `${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
+      ${item('campaign', T$('Campaña'), L$`${this.campaignStars()} de ${CAMPAIGN.length * 3} ★`)}
       ${item('custom', T$('Personalizado'), T$('mitad de XP'))}
-      ${item('tutorial', T$('Tutorial'), this.P.tutorialDone ? 'hecho' : 'premio')}
+      ${item('tutorial', T$('Tutorial'), this.P.tutorialDone ? T$('hecho') : T$('premio'))}
       ${item('ranks', T$('Rangos'), rankName(this.P.ranked.points))}
       ${item('top', T$('Top jugadores'), `T. ${seasonOf(Profile.now()).no}`)}
-      ${item('weekly', T$('Desafío semanal'), ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : 'nuevo')}
+      ${item('weekly', T$('Desafío semanal'), ((this.P.weekly || {})[weeklyFor(Profile.now()).week] || {}).won ? 'ganado' : T$('nuevo'))}
       <button type="button" data-act="settings"><span class="lm-label">${L$`Ajustes`}</span><small>${L$`A tu manera`}</small></button>
-      ${Platform.name === 'poki' ? '' : `<button type="button" data-act="creatorzone" id="btn-creatorzone"><span class="lm-label">${L$`Creadores`}</span><small>${Creator.owner ? 'abierta' : T$('con contraseña')}</small></button>`}${off(T$('Servidores'))}
+      ${Platform.name === 'poki' ? '' : `<button type="button" data-act="creatorzone" id="btn-creatorzone"><span class="lm-label">${L$`Creadores`}</span><small>${Creator.owner ? T$('abierta') : T$('con contraseña')}</small></button>`}${off(T$('Servidores'))}
     </nav>`;
   }
 
@@ -930,7 +929,7 @@ class Lobby {
             <small>${L$`Versión ${GAME_VERSION}`}</small></div>
           <h2>${L$`Faro de`} <span>${L$`Ámbar`}</span></h2>
           <p>${L$`Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.`}</p>
-          <ul class="cover-news" aria-label="${L$`Novedades`}">${['93 tropas y 42 edificios', T$('Tu ejército en la portada'), T$('Campo de pruebas'), T$('Español e inglés'), T$('Ajustes a tu manera')].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="${L$`Novedades`}">${[T$('93 tropas y 42 edificios'), T$('Tu ejército en la portada'), T$('Campo de pruebas'), T$('Español e inglés'), T$('Ajustes a tu manera')].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="hero-play">
           <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>${L$`Jugar`}</span></button>
@@ -976,7 +975,7 @@ class Lobby {
         <small class="fieldnote">${L$`Activado: cada jugador tiene`} <b>${L$`un solo uso estratégico`}</b> ${L$`en toda la partida, con el misil del AIR DEFENSE de nivel 4 o con el Lanzador nuclear móvil (que solo existe con esta opción). Desactivado: todo sigue como siempre.`}</small></div>
       <div class="row">
         <button class="btn gold" type="button" data-act="play" id="btn-play-custom">${L$`Jugar personalizado`}</button>
-        <button class="btn" type="button" disabled>${L$`Unirse con código · Disponible en Roblox`}</button>
+        ${Platform.name === 'poki' ? '' : `<button class="btn" type="button" disabled>${L$`Unirse con código · Disponible en Roblox`}</button>`}
       </div>
     </section>`;
   }
@@ -1022,7 +1021,7 @@ class Lobby {
       <ol class="steps">${TUTORIAL_STEPS.map((s) => `<li>${esc(s.text)}</li>`).join('')}</ol>
       <div class="prizes">
         <div><b>${L$`Primer Faro`}</b><span>${L$`Insignia`}</span></div>
-        <div><b>150 cristales</b><span>${L$`Una sola vez`}</span></div>
+        <div><b>${L$`150 cristales`}</b><span>${L$`Una sola vez`}</span></div>
         <div><b>${L$`Soldado Dorado`}</b><span>${L$`Aspecto legendario`}</span></div>
       </div>
       <p>${done ? T$('Ya recibiste el premio. Puedes repetir el tutorial cuando quieras.') : T$('El premio se entrega la primera vez que lo terminas.')}</p>
@@ -1055,7 +1054,7 @@ class Lobby {
         <div class="row"><button class="btn gold" type="button" data-act="ranked" id="btn-ranked" ${locked ? 'aria-disabled="true"' : ''}>${L$`Jugar Liga 3 vs 3`}</button>${locked ? `<small class="lockmsg">${L$`Desde nivel ${RANKED_LEVEL} (tienes ${lv})`}</small>` : ''}</div>
       </section>
       <section class="lcard panel"><h3>${L$`Los 6 rangos`}</h3><ol class="ranklist">${ladder}</ol>
-        <p class="queue">${L$`Almirante del Faro: en Roblox serán los 50 mejores; aquí, sin servidores, desde ${fmt(RANK_MIN[5])} puntos.`}</p></section>
+        <p class="queue">${Platform.name === 'poki' ? L$`Almirante del Faro: desde ${fmt(RANK_MIN[5])} puntos.` : L$`Almirante del Faro: en Roblox serán los 50 mejores; aquí, sin servidores, desde ${fmt(RANK_MIN[5])} puntos.`}</p></section>
       <section class="lcard panel"><h3>${L$`Tabla de la Liga 3 vs 3`}</h3>
         <p class="queue">${L$`Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.`}</p>
         <ol class="ladder" id="ladder">${ladderRows(P).map((r) => `<li class="${r.me ? 'me' : ''}"><b>${r.pos}.º</b><span>${esc(r.name)}${r.bot ? ' <small>bot</small>' : ''}</span><i style="background:${RANK_COLORS[rankIndex(r.points)]}"></i><em>${rankName(r.points)}</em><strong>${r.points}</strong></li>`).join('')}</ol></section>
@@ -1123,7 +1122,7 @@ class Lobby {
     return `<div class="item ${own ? 'owned' : ''}">
             <img alt="" src="${Thumbs.get(SKIN_SLOTS[s.slot].model, PLAYER_COLORS[0], s.look)}">
             <b>${esc(s.name)}</b><span class="rar ${s.rar}">${RARITY[s.rar].name}</span>
-            ${own ? `<small>${L$`Ya es tuyo`}</small>` : `<button class="btn" type="button" data-act="buy" data-id="${s.id}" ${P.crystals < price ? 'disabled' : ''}>${fmt(price)} cristales</button>`}
+            ${own ? `<small>${L$`Ya es tuyo`}</small>` : `<button class="btn" type="button" data-act="buy" data-id="${s.id}" ${P.crystals < price ? 'disabled' : ''}>${L$`${fmt(price)} cristales`}</button>`}
           </div>`;
   }).join('')}</div>`;
     } else if (this.shopTab === 'chests') {
@@ -1144,7 +1143,7 @@ class Lobby {
         : `<p class="queue">${L$`Todavía no tienes planos: salen en los cofres.`}</p>`}`;
     } else {
       inner = `<p>${L$`Los cristales se ganan jugando: partidas, misiones, pase y premio diario. Comprarlos con dinero real solo estará en Roblox.`}</p>
-        <div class="shopgrid">${CRYSTAL_PACKS.map((c) => `<div class="item"><b>${esc(c.name)}</b><span>${fmt(c.amount)} cristales</span>
+        <div class="shopgrid">${CRYSTAL_PACKS.map((c) => `<div class="item"><b>${esc(c.name)}</b><span>${L$`${fmt(c.amount)} cristales`}</span>
           <button class="btn" type="button" disabled>${L$`Solo en Roblox`}</button></div>`).join('')}</div>`;
     }
     return `<section class="lcard panel"><header class="rowx"><h2>${L$`Tienda`}</h2><span class="crystals"><i></i><b>${Creator.active() ? '∞' : fmt(P.crystals)}</b></span></header>
@@ -1171,37 +1170,37 @@ class Lobby {
     const notes = [];
     if (it.kind === 'unit') {
       const makers = Object.values(BUILDINGS).filter((b) => b.produces && b.produces.includes(it.key)).map((b) => b.name);
-      rows.push([T$('Precio'), `${fmt(d.cost)} monedas${d.energy ? ` ${L$`y ${d.energy} de energía`}` : ''}`]);
+      rows.push([T$('Precio'), L$`${fmt(d.cost)} monedas${d.energy ? ` ${L$`y ${d.energy} de energía`}` : ''}`]);
       rows.push([T$('Comunidad'), `${d.pop} ${d.pop === 1 ? 'plaza' : 'plazas'}`]);
       rows.push([T$('Tiempo'), `${d.build} s`]);
       rows.push([T$('Se produce en'), makers.join(', ') || '—']);
       extra = this.app.ui.unitTilesHtml({ def: d, maxHp: d.hp, vet: 0 });
       const w = d.weapon;
       if (w && w.salvo > 1) notes.push(L$`Dispara salvas de ${w.salvo}.`);
-      if (w && w.splash) notes.push(L$`Daño en área: a lo que esté a ${String(w.splash.r).replace('.', ',')} casillas del blanco le llega el ${Math.round(w.splash.pct * 100)} %.`);
+      if (w && w.splash) notes.push(L$`Daño en área: a lo que esté a ${w.splash.r.toLocaleString(I18N.locale())} casillas del blanco le llega el ${Math.round(w.splash.pct * 100)} %.`);
       if (d.kamikaze) notes.push(T$('Un solo uso: se destruye al atacar.'));
       if (d.capacity) notes.push(L$`Lleva ${d.capacity} plazas de ${d.carries === 'inf' ? T$('infantería') : T$('tropas de tierra')}.`);
       if (d.hangar) notes.push(L$`Hangar para ${d.hangar} Cazas.`);
       if (d.stealth) notes.push(T$('Sigilo: solo se ve de cerca o con detectores.'));
       if (d.detects) notes.push(T$('Detecta submarinos.'));
-      if (d.builds) notes.push('Construye y repara.');
+      if (d.builds) notes.push(T$('Construye y repara.'));
       if (d.healAura) notes.push(T$('Cura a los soldados cercanos.'));
       if (d.strategic) notes.push(L$`Solo con «Arsenal estratégico» (Personalizado). Un misil, un uso por partida; alcance ${STRATEGIC.range} casillas; ${STRATEGIC.prep} s de preparación.`);
       if (!w && !d.strategic && !d.builds && !d.healAura) notes.push(T$('No pelea.'));
     } else {
-      rows.push([T$('Precio'), d.cost ? `${fmt(d.cost)} monedas${d.energyCost ? ` ${L$`y ${d.energyCost} de energía`}` : ''}` : T$('Empiezas con uno')]);
+      rows.push([T$('Precio'), d.cost ? L$`${fmt(d.cost)} monedas${d.energyCost ? ` ${L$`y ${d.energyCost} de energía`}` : ''}` : T$('Empiezas con uno')]);
       rows.push([T$('Tiempo de obra'), `${d.build} s`]);
       rows.push([T$('Vida'), fmt(d.hp)]);
       if (d.limit) rows.push([T$('Límite'), L$`${d.limit} por jugador`]);
       if (d.on) rows.push([T$('Dónde'), Array.isArray(d.on) ? T$('solo en ') + d.on.map((t) => TERRAIN[t].name.toLowerCase()).join(' o ') : ARSENAL_ON[d.on] || String(d.on)]);
       if (d.income) rows.push([T$('Ingreso'), L$`+${fmt(d.income)} monedas/min`]);
-      if (d.maxLevel) rows.push([T$('Niveles'), `hasta ${d.maxLevel}`]);
+      if (d.maxLevel) rows.push([T$('Niveles'), L$`hasta ${d.maxLevel}`]);
       if (d.produces) rows.push([T$('Produce'), d.produces.map((t) => UNITS[t].name).join(', ')]);
-      if (d.weapon) rows.push([T$('Alcance'), `${d.weapon.range} casillas`]);
+      if (d.weapon) rows.push([T$('Alcance'), L$`${d.weapon.range} casillas`]);
       if (it.key === 'aadef') notes.push(T$('En nivel 4 lanza el misil nuclear. Con «Arsenal estratégico» comparte el único uso con el Lanzador nuclear móvil.'));
     }
     return `<div class="arsbig"><img alt="" src="${Thumbs.get(it.key, PLAYER_COLORS[0])}"></div>
-      <span class="lbl">${ARSENAL_NEW.includes(it.key) ? 'Nuevo · ' : ''}${esc(arsenalRole(it))}</span>
+      <span class="lbl">${ARSENAL_NEW.includes(it.key) ? T$('Nuevo · ') : ''}${esc(arsenalRole(it))}</span>
       <h3 id="ars-name">${esc(d.name)}</h3>
       <p>${esc(d.desc || '')}</p>
       <dl class="arsrows">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
@@ -1374,7 +1373,7 @@ class Lobby {
       const can = Profile.dailyClaimable();
       html = head(T$('Premio diario')) + `<p>${L$`Entra cada día para avanzar. Si faltas un día, la racha baja 1.${D.lost ? ` Faltaste y bajaste ${D.lost}.` : ''}`}</p>
         <div class="daygrid">${DAILY_REWARDS.map((r, i) => `<div class="day ${i < D.idx ? 'done' : ''} ${i === D.idx && can ? 'today' : ''} ${r === 'faro' ? 'big' : ''}">
-          <span>${L$`Día ${i + 1}`}</span><b>${r === 'faro' ? T$('Cofre') : r}</b><small>${r === 'faro' ? T$('del Faro') : 'cristales'}</small></div>`).join('')}</div>
+          <span>${L$`Día ${i + 1}`}</span><b>${r === 'faro' ? T$('Cofre') : r}</b><small>${r === 'faro' ? T$('del Faro') : T$('cristales')}</small></div>`).join('')}</div>
         <div class="row"><button class="btn gold" type="button" data-act="dailyclaim" ${can ? '' : 'disabled'}>${can ? L$`Reclamar día ${D.idx + 1}` : T$('Ya reclamaste hoy')}</button></div>`;
     } else if (n === 'codes') {
       html = head(T$('Códigos')) + `<form id="code-form" class="field"><label for="code-input">${L$`Escribe un código`}</label>
@@ -1384,7 +1383,7 @@ class Lobby {
         <p>${L$`Cada código se usa una vez. Los códigos nuevos se anuncian en las actualizaciones.`}</p>`;
     } else if (n === 'backup') {
       const D = this.modalData || {};
-      html = head(T$('Copia de tu progreso')) + `<p>${L$`Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador (en Roblox se guardarán en tu cuenta).`}</p>
+      html = head(T$('Copia de tu progreso')) + `<p>${L$`Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador${Platform.name === 'poki' ? '' : T$(' (en Roblox se guardarán en tu cuenta)')}.`}</p>
         <div class="field"><label for="bk-out">${L$`1 · Guardar: copia este texto o descárgalo`}</label>
           <textarea id="bk-out" readonly rows="3" spellcheck="false">${esc(Profile.exportCode())}</textarea>
           <div class="row"><button class="btn gold" type="button" data-act="bk-copy" id="btn-bk-copy">${L$`Copiar`}</button>
@@ -1418,7 +1417,7 @@ class Lobby {
       const r = this.modalData;
       if (r.kind === 'frags') {
         html = head(esc(r.chest)) + `<div class="item equipped" style="cursor:default"><div class="fragicon" aria-hidden="true"></div>
-          <b>${r.frags} fragmentos</b><small>${L$`Ahora tienes ${this.P.fragments}. Úsalos en el Taller con un plano.`}</small></div>
+          <b>${L$`${r.frags} fragmentos`}</b><small>${L$`Ahora tienes ${this.P.fragments}. Úsalos en el Taller con un plano.`}</small></div>
           <div class="row"><button class="btn gold" type="button" data-act="close">${L$`Genial`}</button></div>`;
       } else if (r.kind === 'plan') {
         html = head(esc(r.chest)) + `<div class="item equipped plan" style="cursor:default">
@@ -1606,7 +1605,7 @@ class Lobby {
     if (r === 'faro') this.openChest('faro', true);
     else {
       P.crystals += r;
-      this.app.ui.toast(`+${r} cristales`, 'good');
+      this.app.ui.toast(L$`+${r} cristales`, 'good');
     }
     Profile.save();
     this.render();
@@ -1746,7 +1745,7 @@ class Lobby {
       return `<div class="ach ${on ? 'on' : ''}" data-ach="${a.id}"><span class="achbadge" style="--ac:${a.color}">${esc(a.icon)}</span>
         <div><b>${esc(a.name)}</b><small>${esc(a.desc)}</small>
         ${pr ? `<div class="xpbar"><i style="width:${Math.min(100, (pr[0] / pr[1]) * 100)}%"></i></div><small>${fmt(pr[0])} / ${fmt(pr[1])}</small>` : ''}
-        <em>${on ? L$`Logrado el ${prettyDate(A[a.id])}` : a.crystals ? `${a.crystals} cristales` : T$('Insignia')}</em></div></div>`;
+        <em>${on ? L$`Logrado el ${prettyDate(A[a.id])}` : a.crystals ? L$`${a.crystals} cristales` : T$('Insignia')}</em></div></div>`;
     }).join('')}</div></section>`;
   }
 
@@ -1759,7 +1758,7 @@ class Lobby {
     const S = seasonOf(Profile.now());
     const tabs = [['liga', T$('Liga 3 vs 3')], ['wins', T$('Victorias')], ['islands', T$('Islas tomadas')]]
       .map(([k, l]) => `<button type="button" data-act="toptab" data-v="${k}" class="${tab === k ? 'on' : ''}" aria-pressed="${tab === k}">${l}</button>`).join('');
-    const head = tab === 'liga' ? `<th>${L$`Rango`}</th><th>${L$`Puntos`}</th><th>% victorias</th>` : tab === 'wins' ? `<th>${L$`Victorias`}</th>` : `<th>${L$`Islas tomadas`}</th>`;
+    const head = tab === 'liga' ? `<th>${L$`Rango`}</th><th>${L$`Puntos`}</th><th>${L$`% victorias`}</th>` : tab === 'wins' ? `<th>${L$`Victorias`}</th>` : `<th>${L$`Islas tomadas`}</th>`;
     const cells = (r) => (tab === 'liga' ? `<td>${rankName(r.points)}</td><td>${fmt(r.points)}</td><td>${Math.round(r.pct * 100)} %</td>`
       : tab === 'wins' ? `<td>${fmt(r.wins)}</td>` : `<td>${fmt(r.islands)}</td>`);
     const row = (r) => `<tr class="${r.me ? 'me' : ''}"><td>${r.pos <= 3 ? `<span class="medal m${r.pos}" aria-label="${[T$('Oro'), T$('Plata'), T$('Bronce')][r.pos - 1]}">${r.pos}</span>` : r.pos}</td>
@@ -1767,7 +1766,7 @@ class Lobby {
     const top = rows.slice(0, 10);
     const body = top.map(row).join('') + (me.pos > 10 ? `<tr class="gap"><td colspan="5">···</td></tr>${row(me)}` : '');
     return `<section class="lcard panel"><h2>${L$`Top jugadores · Temporada ${S.no}`}</h2>
-      <p class="queue">${L$`${tab === 'liga' ? T$('Los mejores de la Liga 3 vs 3 en esta temporada.') : tab === 'wins' ? T$('Más victorias (todos los modos).') : T$('Más islas tomadas (todos los modos).')} Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.`}</p>
+      <p class="queue">${L$`${tab === 'liga' ? T$('Los mejores de la Liga 3 vs 3 en esta temporada.') : tab === 'wins' ? T$('Más victorias (todos los modos).') : T$('Más islas tomadas (todos los modos).')} ${Platform.name === 'poki' ? T$('Los demás son comandantes bot. Tu fila siempre se ve.') : T$('Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.')}`}</p>
       <div class="subtabs">${tabs}</div>
       <table class="toptable" id="toptable"><thead><tr><th>#</th><th>${L$`Jugador`}</th>${head}</tr></thead><tbody>${body}</tbody></table></section>`;
   }
@@ -1781,7 +1780,7 @@ class Lobby {
       <div class="weeklybox"><img class="mapthumb" alt="" src="${mapThumb(W.mapKind, MODES[W.mode].players)}">
       <div><p id="weekly-desc">${esc(W.desc)}</p>
       <p class="queue">${L$`${esc(MODES[W.mode].name)} · ${esc(MAPS[W.mapKind].name)} · bots en ${DIFFICULTY[W.difficulty].name}. Es el mismo mapa toda la semana; cambia en ${days} ${days === 1 ? T$('día') : T$('días')} (el lunes).`}</p>
-      <p>${rec.won ? `<b>${L$`Ganado.`}</b> ${L$`Tu mejor tiempo:`} <b id="weekly-best">${fmtTime(rec.best)}</b>${L$`. Intenta bajarlo.`}` : `${L$`Premio la primera vez que lo ganas:`} <b>${WEEKLY_CRYSTALS} cristales</b>.`} Intentos: ${rec.tries}.</p>
+      <p>${L$`${rec.won ? `<b>${L$`Ganado.`}</b> ${L$`Tu mejor tiempo:`} <b id="weekly-best">${fmtTime(rec.best)}</b>${L$`. Intenta bajarlo.`}` : `${L$`Premio la primera vez que lo ganas:`} <b>${L$`${WEEKLY_CRYSTALS} cristales`}</b>.`} Intentos: ${rec.tries}.`}</p>
       <div class="row"><button class="btn gold" type="button" data-act="weekly" id="btn-weekly">${L$`Jugar desafío`}</button></div></div></div></section>`;
   }
 
@@ -1854,7 +1853,7 @@ class Lobby {
     // v1.2: fragmentos por jugar.
     out.frags = Math.round((FRAG_GAME.play + (win ? FRAG_GAME.win : 0)) * half);
     P.fragments = (P.fragments || 0) + out.frags;
-    if (out.frags) out.lines.push(`Fragmentos: +${out.frags}`);
+    if (out.frags) out.lines.push(L$`Fragmentos: +${out.frags}`);
     P.stats.games++;
     if (win) P.stats.wins++;
     P.stats.islands += me.stats.captures;
@@ -1926,7 +1925,7 @@ class Lobby {
     out.achievements = this.checkAchievements({ P, g: game, me, win });
     for (const a of out.achievements) {
       out.crystals += a.crystals;
-      out.lines.push(L$`Logro: ${a.name}${a.crystals ? ` (+${a.crystals} cristales)` : ''}`);
+      out.lines.push(L$`Logro: ${a.name}${a.crystals ? ` ${L$`(+${a.crystals} cristales)`}` : ''}`);
     }
     Profile.addXp(out.xp);
     P.crystals += out.crystals;
@@ -2000,7 +1999,7 @@ class Lobby {
     const prizes = r.creator
       ? `<div><b>${L$`Modo creador`}</b><span>${L$`Sin XP ni cristales`}</span></div>`
       : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
-         <div><b>+${fmt(r.crystals)} cristales</b><span>${esc(why || T$('Por jugar'))}</span></div>
+         <div><b>${L$`+${fmt(r.crystals)} cristales`}</b><span>${esc(why || T$('Por jugar'))}</span></div>
          <div><b>${L$`Nivel ${r.level}`}</b><span>${r.levelUp ? T$('¡Subiste de nivel!') : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
     const core = me.core;
     return `
@@ -2095,7 +2094,7 @@ class Lobby {
     const prizes = r.creator
       ? `<div><b>${L$`Modo creador`}</b><span>${L$`Sin XP ni cristales`}</span></div>`
       : `<div><b>+${fmt(r.xp)} XP</b><span>${r.lines.map(esc).join(' · ')}</span></div>
-         <div><b>+${fmt(r.crystals)} cristales</b><span>${r.missions.length ? T$('Incluye misiones') : T$('Por jugar') + (win ? ' y ganar' : '')}</span></div>
+         <div><b>${L$`+${fmt(r.crystals)} cristales`}</b><span>${r.missions.length ? T$('Incluye misiones') : T$('Por jugar') + (win ? ' y ganar' : '')}</span></div>
          <div><b>${L$`Nivel ${r.level}`}</b><span>${r.levelUp ? T$('¡Subiste de nivel!') : `${fmt(this.P.xp % LEVEL_XP)} / ${fmt(LEVEL_XP)} XP`}</span></div>`;
     // v1.7: como en la UI 0.4: tres fichas arriba (Duración, Territorio, Experiencia) y los botones siempre a la vista.
     const land = Math.max(me.peakLand || 0, game.cells.reduce((n, c) => n + (c.owner === 0 ? 1 : 0), 0));

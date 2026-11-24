@@ -557,7 +557,7 @@ const App = {
       return;
     }
     this.groups[n] = list.slice();
-    this.ui.toast(`Grupo ${n}: ${list.length} ${list.length === 1 ? 'tropa' : 'tropas'}`, 'good');
+    this.ui.toast(`Grupo ${n}: ${list.length} ${list.length === 1 ? T$('tropa') : T$('tropas')}`, 'good');
     this.sound.play('click');
     this.ui.renderGroups(true);
   },

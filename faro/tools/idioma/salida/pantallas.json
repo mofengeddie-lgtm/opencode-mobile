@@ -1,1164 +1,693 @@
 {
  "file": "/home/user/opencode-mobile/faro/faro.html",
  "screens": 187,
- "withSpanish": 173,
+ "withSpanish": 0,
  "errors": [],
  "report": [
   {
    "screen": "vestíbulo",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "pestaña play",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "pestaña arsenal",
-   "bad": [
-    "monedas «buildings. Barely fights. | Price | 200 monedas | Housing | 1 plaza | Time | 4 s | Made»",
-    "Construye «acks | Max health | 100 | Speed | 1,6 | Construye y repara. | Your army | 40 in the parad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha builder",
-   "bad": [
-    "monedas «buildings. Barely fights. | Price | 200 monedas | Housing | 1 plaza | Time | 4 s | Made»",
-    "Construye «acks | Max health | 100 | Speed | 1,6 | Construye y repara. | Your army | 40 in the parad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha engineer",
-   "bad": [
-    "monedas «places the Small Turret. | Price | 500 monedas | Housing | 1 plaza | Time | 6 s | Made»",
-    "Construye «acks | Max health | 140 | Speed | 1,6 | Construye y repara. | Your army | 40 in the parad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha rifle",
-   "bad": [
-    "monedas «s and for taking islands. | Price | 400 monedas | Housing | 1 plaza | Time | 5 s | Made»",
-    "casillas «ealth | 260 | Damage/s | 22 | Range | 3 casillas | Speed | 1,5 | Weak against: | ships,»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha shotgun",
-   "bad": [
-    "monedas «ge up close, short range. | Price | 600 monedas | Housing | 1 plaza | Time | 6 s | Made»",
-    "casillas «ealth | 320 | Damage/s | 43 | Range | 2 casillas | Speed | 1,5 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha ranger",
-   "bad": [
-    "monedas «: helmet, vest and rifle. | Price | 700 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 360 | Damage/s | 40 | Range | 3 casillas | Speed | 1,6 | Weak against: | aircraf»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha sniper",
-   "bad": [
-    "monedas «nst infantry, low health. | Price | 900 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 170 | Damage/s | 34 | Range | 5 casillas | Speed | 1,3 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha breaker",
-   "bad": [
-    "monedas «Fires very fast up close. | Price | 950 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 380 | Damage/s | 60 | Range | 2 casillas | Speed | 1,5 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hunter",
-   "bad": [
-    "monedas «harder than the Sniper. | Price | 1,300 monedas | Housing | 1 plaza | Time | 9 s | Made»",
-    "casillas «ealth | 200 | Damage/s | 50 | Range | 6 casillas | Speed | 1,2 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha rocket",
-   "bad": [
-    "monedas «s, ships and buildings. | Price | 1,500 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "casillas «ealth | 230 | Damage/s | 36 | Range | 4 casillas | Speed | 1,3 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha jeep",
-   "bad": [
-    "monedas «l for hunting infantry. | Price | 1,600 monedas and 10 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 750 | Damage/s | 50 | Range | 3 casillas | Speed | 2,6 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha tank",
-   "bad": [
-    "monedas «esn't shoot at the air. | Price | 3,400 monedas and 30 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 2,200 | Damage/s | 63 | Range | 4 casillas | Speed | 1,2 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha aa",
-   "bad": [
-    "monedas «ly shoots at air units. | Price | 2,400 monedas and 20 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 900 | Damage/s | 77 | Range | 5 casillas | Speed | 1,8 | Strong against: | aircr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha arty",
-   "bad": [
-    "monedas «Only attacks buildings. | Price | 3,800 monedas and 40 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 700 | Damage/s | 63 | Range | 7 casillas | Speed | 1 | Doesn't attack: | infantr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha lighttank",
-   "bad": [
-    "monedas «nd supporting infantry. | Price | 2,200 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 1,300 | Damage/s | 63 | Range | 3 casillas | Speed | 2 | Doesn't attack: | submari»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha heavytank",
-   "bad": [
-    "monedas «aks tanks and defenses. | Price | 5,200 monedas and 45 energy | Housing | 4 plazas | Ti»",
-    "casillas «lth | 3,600 | Damage/s | 95 | Range | 3 casillas | Speed | 0,9 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha missiletruck",
-   "bad": [
-    "monedas «dings. Needs an escort. | Price | 4,200 monedas and 40 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 800 | Damage/s | 52 | Range | 6 casillas | Speed | 1,4 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha apc",
-   "bad": [
-    "monedas «and has a machine gun. | Price | 2,000 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 1,600 | Damage/s | 46 | Range | 3 casillas | Speed | 2 | Strong against: | infantr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha launcher",
-   "bad": [
-    "monedas «es. Slow and expensive. | Price | 7,000 monedas and 70 energy | Housing | 4 plazas | Ti»",
-    "casillas «lth | 1,200 | Damage/s | 64 | Range | 9 casillas | Speed | 0,8 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha nukelauncher",
-   "bad": [
-    "monedas «ight; needs an escort. | Price | 22,000 monedas and 80 energy | Housing | 4 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha medic",
-   "bad": [
-    "monedas «r second). Doesn't fight. | Price | 900 monedas | Housing | 1 plaza | Time | 8 s | Made»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha speedboat",
-   "bad": [
-    "monedas «and attacks the coast. | Price | 1,400 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "casillas «ealth | 650 | Damage/s | 48 | Range | 3 casillas | Speed | 2,8 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha boatEng",
-   "bad": [
-    "monedas «posts on other islands. | Price | 1,600 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "Construye «rbor | Max health | 500 | Speed | 2,2 | Construye y repara. | Your army | 40 in the parad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha barge",
-   "bad": [
-    "monedas «ds (a vehicle takes 2). | Price | 1,800 monedas | Housing | 1 plaza | Time | 10 s | Mad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha lander",
-   "bad": [
-    "monedas «and lands on the beach. | Price | 2,600 monedas | Housing | 1 plaza | Time | 12 s | Mad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha frigate",
-   "bad": [
-    "monedas «planes and helicopters. | Price | 3,600 monedas and 30 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 2,200 | Damage/s | 73 | Range | 6 casillas | Speed | 1,7 | Strong against: | aircr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha carrier",
-   "bad": [
-    "monedas «short-range defenses. | Price | 15,000 monedas and 120 energy | Housing | 8 plazas | T»",
-    "casillas «th | 9,000 | Damage/s | 116 | Range | 3 casillas | Speed | 1 | Strong against: | aircraf»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha destroyer",
-   "bad": [
-    "monedas «bmarines and the coast. | Price | 4,500 monedas and 30 energy | Housing | 4 plazas | Ti»",
-    "casillas «lth | 2,800 | Damage/s | 70 | Range | 5 casillas | Speed | 1,3 | Strong against: | ships»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha sub",
-   "bad": [
-    "monedas «and Harbors can see it. | Price | 3,800 monedas and 30 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 1,400 | Damage/s | 80 | Range | 3 casillas | Speed | 1,6 | Strong against: | ships»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha heli",
-   "bad": [
-    "monedas «sts cut its range to 2. | Price | 7,500 monedas and 60 energy | Housing | 4 plazas | Ti»",
-    "casillas «th | 2,400 | Damage/s | 107 | Range | 4 casillas | Speed | 2,3 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha apache",
-   "bad": [
-    "monedas «ir missile every 20 s. | Price | 10,000 monedas and 80 energy | Housing | 5 plazas | Ti»",
-    "casillas «th | 3,200 | Damage/s | 166 | Range | 4 casillas | Speed | 2,1 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha fighter",
-   "bad": [
-    "monedas «planes and helicopters. | Price | 6,000 monedas and 60 energy | Housing | 3 plazas | Ti»",
-    "casillas «th | 1,400 | Damage/s | 116 | Range | 5 casillas | Speed | 3,6 | Strong against: | aircr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha bomber",
-   "bad": [
-    "monedas «avy bombs on buildings. | Price | 9,000 monedas and 90 energy | Housing | 5 plazas | Ti»",
-    "casillas «th | 2,600 | Damage/s | 108 | Range | 1 casillas | Speed | 2 | Strong against: | buildin»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha drone",
-   "bad": [
-    "monedas «it away from anti-air. | Price | 2,600 monedas and 25 energy | Housing | 1 plaza | Tim»",
-    "casillas «ealth | 520 | Damage/s | 34 | Range | 5 casillas | Speed | 2,6 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha fpv",
-   "bad": [
-    "monedas «strong against vehicles. | Price | 900 monedas and 5 energy | Housing | 1 plaza | Time»",
-    "casillas «ealth | 90 | Damage/s | 380 | Range | 1 casillas | Speed | 3,4 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha mlrs",
-   "bad": [
-    "monedas «reload and low health. | Price | 4,800 monedas and 45 energy | Housing | 3 plazas | Ti»",
-    "casillas «health | 800 | Damage/s | 8 | Range | 7 casillas | Speed | 1,3 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha missileboat",
-   "bad": [
-    "monedas «es. Ambushes big ships. | Price | 2,600 monedas and 20 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 800 | Damage/s | 52 | Range | 5 casillas | Speed | 2,4 | Strong against: | ships»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha scout",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Scout | Sees 6 tiles and c»",
-    "monedas «0% faster. Fights little. | Price | 250 monedas | Housing | 1 plaza | Time | 4 s | Made»",
-    "casillas «ealth | 140 | Damage/s | 10 | Range | 3 casillas | Speed | 2 | Weak against: | vehicles,»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha soldier",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Soldier | Basic, cheap fig»",
-    "monedas «fighter. Good in numbers. | Price | 300 monedas | Housing | 1 plaza | Time | 4 s | Made»",
-    "casillas «ealth | 220 | Damage/s | 18 | Range | 3 casillas | Speed | 1,5 | Weak against: | vehicle»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha officer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Field Officer | Command: y»",
-    "monedas «with another command). | Price | 1,200 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "casillas «ealth | 260 | Damage/s | 12 | Range | 3 casillas | Speed | 1,5 | Weak against: | vehicle»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha radioman",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Radio Operator | Sees 8 ti»",
-    "monedas «d stealth units within 3. | Price | 900 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 200 | Damage/s | 10 | Range | 3 casillas | Speed | 1,5 | Weak against: | vehicle»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha sapper",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Sapper | Explosive charges»",
-    "monedas «ls. Disarms nearby mines. | Price | 800 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 300 | Damage/s | 24 | Range | 1 casillas | Speed | 1,5 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha mortar",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Mortar Team | 6-tile arcin»",
-    "monedas «fire with area damage. | Price | 1,100 monedas | Housing | 2 plazas | Time | 9 s | Mad»",
-    "casillas «ealth | 300 | Damage/s | 17 | Range | 6 casillas | Speed | 1,1 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha paratrooper",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Paratrooper | If you have»",
-    "monedas «ransport planes carry it. | Price | 900 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "casillas «ealth | 300 | Damage/s | 33 | Range | 3 casillas | Speed | 1,6 | Weak against: | ships,»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha marine",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Marine | Amphibious: walks»",
-    "monedas «he shallow coastal water. | Price | 800 monedas | Housing | 1 plaza | Time | 7 s | Made»",
-    "casillas «ealth | 320 | Damage/s | 30 | Range | 3 casillas | Speed | 1,5 | Weak against: | aircraf»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha atguided",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Anti-Tank Team | 6-tile gu»",
-    "monedas «roof (×2 vs vehicles). | Price | 1,600 monedas | Housing | 1 plaza | Time | 9 s | Made»",
-    "casillas «ealth | 240 | Damage/s | 45 | Range | 6 casillas | Speed | 1,2 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha gunner",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Heavy Machine Gunner | Rot»",
-    "monedas «llets against infantry. | Price | 1,000 monedas | Housing | 1 plaza | Time | 8 s | Made»",
-    "casillas «ealth | 340 | Damage/s | 75 | Range | 3 casillas | Speed | 1,2 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha antidrone",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Infantry | Anti-Drone Soldier | Jamme»",
-    "monedas «amage to everything else. | Price | 700 monedas | Housing | 1 plaza | Time | 6 s | Made»",
-    "casillas «ealth | 220 | Damage/s | 50 | Range | 4 casillas | Speed | 1,5 | Weak against: | infantr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha robodog",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Robot Dog | Patrols with ca»",
-    "monedas «ithin 3. Doesn't fight. | Price | 1,200 monedas and 5 energy | Housing | 1 plaza | Time»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha armoredcar",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Light Armored Car | Fast, w»",
-    "monedas «ed, with an autocannon. | Price | 1,900 monedas and 10 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 1,000 | Damage/s | 50 | Range | 3 casillas | Speed | 2,4 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha ifv",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Infantry Fighting Vehicle |»",
-    "monedas «fights with its cannon. | Price | 2,800 monedas and 20 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 1,700 | Damage/s | 56 | Range | 4 casillas | Speed | 1,8 | Weak against: | aircraf»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha trooptruck",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Troop Truck | Carries 8 sol»",
-    "monedas «ers. Little protection. | Price | 1,200 monedas and 5 energy | Housing | 2 plazas | Tim»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha ambulance",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Military Ambulance | Heals»",
-    "monedas «eir health per second). | Price | 1,500 monedas and 10 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha recovery",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Recovery Vehicle | Repairs»",
-    "monedas «eir health per second). | Price | 2,200 monedas and 15 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha supplytruck",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Supply Truck | Supplies: yo»",
-    "monedas «iles reload 20% faster. | Price | 1,600 monedas and 10 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha tanker",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Military Tanker Truck | Fue»",
-    "monedas «2 tiles go 20% faster. | Price | 1,500 monedas and 5 energy | Housing | 2 plazas | Tim»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha commandveh",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Command Vehicle | Command:»",
-    "monedas «tack with the Officer). | Price | 3,000 monedas and 20 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 1,600 | Damage/s | 35 | Range | 3 casillas | Speed | 1,6 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha mobileradar",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Mobile Radar | Sees 10 tile»",
-    "monedas «nes and mines within 8. | Price | 2,400 monedas and 20 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha howitzer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Self-Propelled Howitzer | 8»",
-    "monedas «llery with area damage. | Price | 4,600 monedas and 40 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 1,500 | Damage/s | 44 | Range | 8 casillas | Speed | 0,9 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha towedgun",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Towed Artillery | Cheap, sl»",
-    "monedas «ap, slow 7-tile cannon. | Price | 2,600 monedas and 10 energy | Housing | 2 plazas | Ti»",
-    "casillas «ealth | 800 | Damage/s | 34 | Range | 7 casillas | Speed | 0,7 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha tankdestroyer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Tank Destroyer | 5-tile lon»",
-    "monedas «t against tanks (×1.8). | Price | 3,600 monedas and 30 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 1,900 | Damage/s | 76 | Range | 5 casillas | Speed | 1,4 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha amphib",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Amphibious Transport | Amph»",
-    "monedas «er. Carries 6 soldiers. | Price | 2,400 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 1,500 | Damage/s | 30 | Range | 3 casillas | Speed | 1,8 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha bridgelayer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Bridge Layer | “Lay bridge”»",
-    "monedas «(pays for the bridge). | Price | 2,600 monedas and 20 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha clearer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Clearing Vehicle | Clears t»",
-    "monedas «d disarms nearby mines. | Price | 2,000 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 2,000 | Damage/s | 45 | Range | 1 casillas | Speed | 1,3 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha dozer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Armored Bulldozer | Builds»",
-    "monedas «n Engineer, with armor. | Price | 1,800 monedas and 10 energy | Housing | 2 plazas | Ti»",
-    "Construye «ry | Max health | 2,200 | Speed | 1,3 | Construye y repara. | Your army | 40 in the parad»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha thermo",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Vehicle | Thermobaric Rocket Launcher»",
-    "monedas «trong against infantry. | Price | 5,200 monedas and 45 energy | Housing | 3 plazas | Ti»",
-    "casillas «alth | 1,300 | Damage/s | 6 | Range | 5 casillas | Speed | 1 | Strong against: | infantr»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha scoutdrone",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Drone | Scout Drone | Sees 8 tiles fr»",
-    "monedas «m the air. Doesn't fight. | Price | 800 monedas and 5 energy | Housing | 1 plaza | Time»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha cargodrone",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Drone | Cargo Drone | Supplies from t»",
-    "monedas «iles reload 20% faster. | Price | 1,200 monedas and 10 energy | Housing | 1 plaza | Tim»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha interceptor",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Drone | Interceptor Drone | Hunts dro»",
-    "monedas «copters (×2 vs drones). | Price | 1,400 monedas and 10 energy | Housing | 1 plaza | Tim»",
-    "casillas «ealth | 300 | Damage/s | 60 | Range | 3 casillas | Speed | 3,6 | Weak against: | buildin»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha navaldrone",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Naval Surface Drone | Scouts t»",
-    "monedas «nes and mines within 3. | Price | 1,000 monedas and 5 energy | Housing | 1 plaza | Time»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha subdrone",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Submarine | Underwater Drone | Travel»",
-    "monedas «nes and mines within 3. | Price | 1,200 monedas and 5 energy | Housing | 1 plaza | Time»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha transheli",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Helicopter | Transport Helicopter | C»",
-    "monedas «drops them on any land. | Price | 5,000 monedas and 40 energy | Housing | 3 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha rescueheli",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Helicopter | Rescue Helicopter | Heal»",
-    "monedas «ircraft within 2 tiles. | Price | 4,000 monedas and 30 energy | Housing | 3 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha navalheli",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Helicopter | Naval Patrol Helicopter»",
-    "monedas «em with torpedoes (×2). | Price | 6,000 monedas and 50 energy | Housing | 4 plazas | Ti»",
-    "casillas «lth | 2,000 | Damage/s | 50 | Range | 3 casillas | Speed | 2,3 | Strong against: | subma»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha attackjet",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Ground Attack Plane | 30 mm c»",
-    "monedas «destroys tanks (×1.8). | Price | 7,000 monedas and 60 energy | Housing | 4 plazas | Ti»",
-    "casillas «th | 2,600 | Damage/s | 160 | Range | 3 casillas | Speed | 2,4 | Strong against: | vehic»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha heavybomber",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Conventional Bomber | Heavy b»",
-    "monedas «bases. Shows on radar. | Price | 11,000 monedas and 100 energy | Housing | 6 plazas | T»",
-    "casillas «th | 4,200 | Damage/s | 128 | Range | 1 casillas | Speed | 1,6 | Strong against: | build»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha transportplane",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Military Transport Plane | Ca»",
-    "monedas «drops them on any land. | Price | 6,000 monedas and 50 energy | Housing | 4 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha awacs",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Airborne Surveillance Plane |»",
-    "monedas «nd submarines within 8. | Price | 7,500 monedas and 60 energy | Housing | 4 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha tankerplane",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Refueling Plane | Repairs you»",
-    "monedas «eir health per second). | Price | 6,500 monedas and 50 energy | Housing | 4 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha ewplane",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Electronic Warfare Plane | Ja»",
-    "monedas «ssile (×2 vs defenses). | Price | 8,000 monedas and 70 energy | Housing | 4 plazas | Ti»",
-    "casillas «lth | 2,400 | Damage/s | 37 | Range | 6 casillas | Speed | 2,2 | Weak against: | vehicle»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha gunship",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Plane | Gunship | Circles over the ta»",
-    "monedas «eways with area damage. | Price | 9,500 monedas and 80 energy | Housing | 5 plazas | Ti»",
-    "casillas «lth | 3,800 | Damage/s | 80 | Range | 5 casillas | Speed | 1,4 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha gunboat",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Gunboat | Cheap naval support»",
-    "monedas «port against the coast. | Price | 2,200 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «lth | 1,300 | Damage/s | 50 | Range | 4 casillas | Speed | 2 | Strong against: | buildin»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha battleship",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Battleship | The strongest shi»",
-    "monedas «ainst bases and ships. | Price | 12,000 monedas and 100 energy | Housing | 6 plazas | T»",
-    "casillas «th | 7,000 | Damage/s | 100 | Range | 7 casillas | Speed | 0,9 | Strong against: | ships»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha patrolboat",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Coastal Patrol Boat | Watches»",
-    "monedas «ls submarines within 3. | Price | 1,600 monedas and 10 energy | Housing | 1 plaza | Tim»",
-    "casillas «ealth | 900 | Damage/s | 32 | Range | 3 casillas | Speed | 2,6 | Strong against: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha corvette",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Corvette | Bow cannon and poin»",
-    "monedas «y missiles and rockets. | Price | 3,200 monedas and 25 energy | Housing | 3 plazas | Ti»",
-    "casillas «lth | 2,000 | Damage/s | 66 | Range | 5 casillas | Speed | 2 | Detects submarines. | You»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha cruiser",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Command Cruiser | 7-tile missi»",
-    "monedas «ips) and point defense. | Price | 9,000 monedas and 80 energy | Housing | 5 plazas | Ti»",
-    "casillas «lth | 5,200 | Damage/s | 86 | Range | 7 casillas | Speed | 1,1 | Strong against: | ships»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha landingship",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Landing Ship | Carries 12 seat»",
-    "monedas «rops them on the coast. | Price | 4,200 monedas and 30 energy | Housing | 4 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha logship",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Logistics Ship | Repairs your»",
-    "monedas «them reload 20% faster. | Price | 3,500 monedas and 20 energy | Housing | 3 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hospitalship",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Hospital Ship | Repairs your s»",
-    "monedas «oldiers within 3 tiles. | Price | 4,000 monedas and 20 energy | Housing | 3 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hovercraft",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Military Hovercraft | Amphibio»",
-    "monedas «6 seats (vehicles too). | Price | 2,600 monedas and 20 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha minesweeper",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Minesweeper | Reveals and dest»",
-    "monedas «s mines within 3 tiles. | Price | 2,000 monedas and 15 energy | Housing | 2 plazas | Ti»",
-    "casillas «th | 1,400 | Damage/s | 120 | Range | 3 casillas | Speed | 1,8 | Doesn't attack: | infan»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha minelayer",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Ship | Minelayer | “Lay mine”: leaves»",
-    "monedas «xplodes on enemy ships. | Price | 2,500 monedas and 20 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha reconsub",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Submarine | Reconnaissance Submarine»",
-    "monedas «nes and mines within 3. | Price | 3,000 monedas and 25 energy | Housing | 2 plazas | Ti»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha stratsub",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Strategic | Strategic Submarine | Hid»",
-    "monedas «match. Doesn't fight. | Price | 24,000 monedas and 100 energy | Housing | 5 plazas | T»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha core",
-   "bad": [
-    "hasta «00 | Income | +900 coins/min | Levels | hasta 3 | Makes | Builder | Range | 4 casilla»",
-    "casillas «| hasta 3 | Makes | Builder | Range | 4 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha farm",
-   "bad": [
-    "monedas «tile land (marked plots). | Price | 300 monedas | Build time | 6 s | Health | 350 | Lim»",
-    "hasta «nd | Income | +240 coins/min | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha pump",
-   "bad": [
-    "monedas «on land (dark patches). | Price | 1,400 monedas | Build time | 10 s | Health | 700 | Li»",
-    "hasta «nd | Income | +650 coins/min | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha mine",
-   "bad": [
-    "monedas «in. Only on gold veins. | Price | 1,000 monedas | Build time | 10 s | Health | 650 | Li»",
-    "hasta «in | Income | +600 coins/min | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha rig",
-   "bad": [
-    "monedas «lt by the Builder Ship. | Price | 2,000 monedas | Build time | 14 s | Health | 900 | Li»",
-    "hasta «| Income | +1,100 coins/min | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha house",
-   "bad": [
-    "monedas «+20 more (+30 in total). | Price | 500 monedas | Build time | 6 s | Health | 400 | Lim»",
-    "hasta «per player | Where | on land | Levels | hasta 2 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha solar",
-   "bad": [
-    "monedas «every 10 s. On any land. | Price | 200 monedas | Build time | 5 s | Health | 300 | Lim»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha wind",
-   "bad": [
-    "monedas «every 10 s. On any land. | Price | 300 monedas | Build time | 6 s | Health | 400 | Lim»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hydro",
-   "bad": [
-    "monedas «s. On land next to water. | Price | 700 monedas | Build time | 9 s | Health | 600 | Lim»",
-    "hasta «here | on land next to water | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha tidal",
-   "bad": [
-    "monedas «lt by the Builder Ship. | Price | 1,000 monedas | Build time | 11 s | Health | 700 | Li»",
-    "hasta «shallow water near the coast | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha wave",
-   "bad": [
-    "monedas «lt by the Builder Ship. | Price | 1,500 monedas | Build time | 13 s | Health | 800 | Li»",
-    "hasta «player | Where | in deep sea | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha barracks",
-   "bad": [
-    "monedas «der to the Paratrooper. | Price | 1,000 monedas | Build time | 10 s | Health | 900 | Li»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Makes | Builder, Engineer, Rifleman»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha factory",
-   "bad": [
-    "monedas «s and support vehicles. | Price | 3,000 monedas and 50 energy | Build time | 16 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Makes | Jeep, Light Armored Car, Ar»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha harbor",
-   "bad": [
-    "monedas «nd repairs nearby ones. | Price | 2,200 monedas | Build time | 14 s | Health | 1,300 |»",
-    "hasta «the water next to the shore | Levels | hasta 3 | Makes | Speedboat, Missile Boat, Bu»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha helipad",
-   "bad": [
-    "monedas «arby aircraft. Up to 6. | Price | 4,000 monedas and 80 energy | Build time | 18 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Makes | Scout Drone, Kamikaze Drone»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha turret",
-   "bad": [
-    "monedas «and anti-air. Up to 20. | Price | 1,500 monedas | Build time | 10 s | Health | 1,100 |»",
-    "hasta «per player | Where | on land | Levels | hasta 4 | Range | 4 casillas | Your army | 40»",
-    "casillas «on land | Levels | hasta 4 | Range | 4 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha miniturret",
-   "bad": [
-    "monedas «an Engineer can build it. | Price | 400 monedas | Build time | 5 s | Health | 500 | Lim»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Range | 3 casillas | Your army | 40»",
-    "casillas «on land | Levels | hasta 3 | Range | 3 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha aadef",
-   "bad": [
-    "monedas «es the nuclear missile. | Price | 2,000 monedas | Build time | 12 s | Health | 1,000 |»",
-    "hasta «per player | Where | on land | Levels | hasta 4 | Range | 6 casillas | At level 4 it»",
-    "casillas «on land | Levels | hasta 4 | Range | 6 casillas | At level 4 it launches the nuclear mi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha wall",
-   "bad": [
-    "monedas «walls. Yours get through. | Price | 30 monedas | Build time | 3 s | Health | 1,500 | L»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hospital",
-   "bad": [
-    "monedas «3 big hospital (8%/s). | Price | 2,000 monedas | Build time | 12 s | Health | 700 | Li»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha airport",
-   "bad": [
-    "monedas «nd repairs nearby ones. | Price | 6,000 monedas and 100 energy | Build time | 22 s | He»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Makes | Stealth Fighter Jet, Stealt»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha antinuke",
-   "bad": [
-    "monedas «iles (one every 1.5 s). | Price | 9,000 monedas and 120 energy | Build time | 20 s | He»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha outpost",
-   "bad": [
-    "monedas «ineers and builder ships. | Price | 800 monedas | Build time | 8 s | Health | 800 | Lim»",
-    "hasta «| 800 | Limit | 6 per player | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha corral",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Economy | Livestock Corral | +280 coi»",
-    "monedas «0 coins/min. On any land. | Price | 600 monedas | Build time | 7 s | Health | 500 | Lim»",
-    "hasta «nd | Income | +280 coins/min | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha powerplant",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Energy | Power Plant | +25 energy eve»",
-    "monedas «strongest power source. | Price | 3,000 monedas | Build time | 14 s | Health | 1,200 |»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha dronecenter",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Production | Drone Center | Makes dro»",
-    "monedas «repairs nearby drones. | Price | 2,200 monedas and 20 energy | Build time | 12 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Makes | Attack Drone, Kamikaze Dron»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha shipyard",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Production | Main Shipyard | In water»",
-    "monedas «ships and repairs them. | Price | 4,000 monedas and 30 energy | Build time | 18 s | Hea»",
-    "hasta «the water next to the shore | Levels | hasta 3 | Makes | Escort Frigate, Command Cru»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha workshop",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Maintenance Workshop | Repa»",
-    "monedas «(30 health per second). | Price | 1,800 monedas | Build time | 10 s | Health | 1,200 |»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha research",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Research Center | Researche»",
-    "monedas «Armor, Aim and Engines. | Price | 3,000 monedas and 20 energy | Build time | 14 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha radarstation",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Radar Station | Sees 12 til»",
-    "monedas «nes and mines within 8. | Price | 2,000 monedas and 30 energy | Build time | 10 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha depot",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Logistics Depot | Supplies:»",
-    "monedas «. +5 energy every 10 s. | Price | 2,500 monedas | Build time | 12 s | Health | 1,300 |»",
-    "hasta «per player | Where | on land | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha hq",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Advanced Command Center | G»",
-    "monedas «troops within 3 tiles. | Price | 3,500 monedas and 20 energy | Build time | 16 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha bunker",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Garrison Bunker | Fires on»",
-    "monedas «t falls, they come out. | Price | 1,600 monedas | Build time | 10 s | Health | 2,000 |»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Range | 4 casillas | Your army | 40»",
-    "casillas «on land | Levels | hasta 1 | Range | 4 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha gate",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Reinforced Gate | A wall wi»",
-    "monedas «sed, nobody gets through. | Price | 400 monedas | Build time | 5 s | Health | 2,500 | L»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha coastal",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Coastal Defense Battery | 7»",
-    "monedas «On land next to water. | Price | 3,000 monedas and 20 energy | Build time | 14 s | Hea»",
-    "hasta «here | on land next to water | Levels | hasta 3 | Range | 7 casillas | Your army | 40»",
-    "casillas «to water | Levels | hasta 3 | Range | 7 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha ciws",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Point Defense | Shoots down»",
-    "monedas «at drones and aircraft. | Price | 1,800 monedas and 20 energy | Build time | 10 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Range | 3 casillas | Your army | 40»",
-    "casillas «on land | Levels | hasta 1 | Range | 3 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha laser",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Laser Tower | Beam against»",
-    "monedas «double against drones. | Price | 2,500 monedas and 40 energy | Build time | 12 s | Hea»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Range | 5 casillas | Your army | 40»",
-    "casillas «on land | Levels | hasta 1 | Range | 5 casillas | Your army | 40 in the parade | Music:»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha watchtower",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Watchtower | Sees 9 tiles a»",
-    "monedas «ls hidden units within 4. | Price | 600 monedas | Build time | 6 s | Health | 600 | Lim»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha silo",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Defense | Strategic Complex | Only wi»",
-    "monedas «single strategic use. | Price | 15,000 monedas and 100 energy | Build time | 30 s | He»",
-    "hasta «per player | Where | on land | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha bridge",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Modular Bridge | In shallow»",
-    "monedas «ps no longer get through. | Price | 800 monedas | Build time | 8 s | Health | 1,000 | L»",
-    "hasta «shallow water near the coast | Levels | hasta 1 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "ficha dock",
-   "bad": [
-    "Nuevo «New | Logistics Dock | Support | New | Nuevo · Support | Logistics Dock | In water n»",
-    "monedas «ships (20 per second). | Price | 1,500 monedas | Build time | 8 s | Health | 1,000 | L»",
-    "hasta «the water next to the shore | Levels | hasta 3 | Your army | 40 in the parade | Musi»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Know your army | Everything in the game today. Tap a card to see its details. | 93 troops · 41 buildings | All | Infantry | Land | Drones | Helicopters | Aviation | Sea | Buildings | Strategic | Builder | Infantry "
   },
   {
    "screen": "fichas del Arsenal",
@@ -1167,441 +696,243 @@
   },
   {
    "screen": "pestaña shop",
-   "bad": [
-    "cristales «e same. | Soldados Selva | Common | 150 cristales | Vehículos Selva | Common | 150 crista»",
-    "Vehículos «ldados Selva | Common | 150 cristales | Vehículos Selva | Common | 150 cristales | Barcos»",
-    "Barcos «ículos Selva | Common | 150 cristales | Barcos Selva | Rare | 300 cristales | Núcleo S»",
-    "Núcleo «| Barcos Selva | Rare | 300 cristales | Núcleo Selva | Epic | 600 cristales | Soldados»",
-    "Ártico «Selva | Epic | 600 cristales | Soldados Ártico | Common | 150 cristales | Vehículos Ár»",
-    "Neón «Legendary | 1,200 cristales | Soldados Neón | Rare | 300 cristales | Vehículos Neón»",
-    "Tóxica «| Legendary | 1,200 cristales | Brigada Tóxica | Legendary | 1,200 cristales | Your ar»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | They only change how your troops and your Core look: health, damage and speed stay the same. | Soldados Selva | Common | 150 cristales | Vehículos Selva | Common | "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | They only change how your troops and your Core look: health, damage and speed stay the same. | Jungle Soldiers | Common | 150 crystals | Jungle Vehicles | Common | "
   },
   {
    "screen": "tienda skins",
-   "bad": [
-    "cristales «e same. | Soldados Selva | Common | 150 cristales | Vehículos Selva | Common | 150 crista»",
-    "Vehículos «ldados Selva | Common | 150 cristales | Vehículos Selva | Common | 150 cristales | Barcos»",
-    "Barcos «ículos Selva | Common | 150 cristales | Barcos Selva | Rare | 300 cristales | Núcleo S»",
-    "Núcleo «| Barcos Selva | Rare | 300 cristales | Núcleo Selva | Epic | 600 cristales | Soldados»",
-    "Ártico «Selva | Epic | 600 cristales | Soldados Ártico | Common | 150 cristales | Vehículos Ár»",
-    "Neón «Legendary | 1,200 cristales | Soldados Neón | Rare | 300 cristales | Vehículos Neón»",
-    "Tóxica «| Legendary | 1,200 cristales | Brigada Tóxica | Legendary | 1,200 cristales | Your ar»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | They only change how your troops and your Core look: health, damage and speed stay the same. | Soldados Selva | Common | 150 cristales | Vehículos Selva | Common | "
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | They only change how your troops and your Core look: health, damage and speed stay the same. | Jungle Soldiers | Common | 150 crystals | Jungle Vehicles | Common | "
   },
   {
    "screen": "tienda chests",
    "bad": [],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | Island Chest | Common | 60 % | Rare | 28 % | Epic | 10 % | Legendary | 2 % | Open · 350 crystals | Lighthouse Chest | Common | 40 % | Rare | 38 % | Epic | 17 % | Le"
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | Island Chest | Common | 60 % | Rare | 28 % | Epic | 10 % | Legendary | 2 % | Open · 350 crystals | Lighthouse Chest | Common | 40 % | Rare | 38 % | Epic | 17 % | Le"
   },
   {
    "screen": "tienda workshop",
    "bad": [],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | You have | 0 | fragments. You get fragments from duplicate looks, some chests and playing (+4 per match, +8 if you win). | You don't have blueprints yet: they come "
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | You have | 0 | fragments. You get fragments from duplicate looks, some chests and playing (+4 per match, +8 if you win). | You don't have blueprints yet: they come "
   },
   {
    "screen": "tienda crystals",
-   "bad": [
-    "cristales «y be on Roblox. | Bag of crystals | 100 cristales | Only on Roblox | Box of crystals | 55»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | Crystals are earned by playing: matches, missions, pass and daily reward. Buying them with real money will only be on Roblox. | Bag of crystals | 100 cristales | On"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Shop | 0 | Looks | Chests | Workshop | Crystals | Crystals are earned by playing: matches, missions, pass and daily reward. Buying them with real money will only be on Roblox. | Bag of crystals | 100 crystals | Onl"
   },
   {
    "screen": "vestíbulo main",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "vestíbulo campaign",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | The Li"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | The Ligh"
   },
   {
    "screen": "vestíbulo custom",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Custom"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Custom |"
   },
   {
    "screen": "vestíbulo tutorial",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "cristales «island | First Lighthouse | Badge | 150 cristales | Only once | Golden Soldier | Legendar»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Tutori"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Tutorial"
   },
   {
    "screen": "vestíbulo ranks",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | R | Yo"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | R | Your"
   },
   {
    "screen": "vestíbulo top",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Top pl"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Top play"
   },
   {
    "screen": "vestíbulo weekly",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "cristales «Reward the first time you win it: | 150 cristales | . Intentos: 0. | Play challenge | Lev»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Weekly"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Weekly c"
   },
   {
    "screen": "ventana modes",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana maps",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana pass",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»",
-    "cristales «n: then the pass starts again. | 1 | 20 cristales | 300 XP | 2 | 20 cristales | 600 XP |»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana missions",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana daily",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»",
-    "cristales «, the streak drops by 1. | Day 1 | 20 | cristales | Day 2 | 20 | cristales | Day 3 | 30 |»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana codes",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana backup",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»",
-    "FARO «· Save: copy this text or download it | FARO1.1ogf419.eyJ2IjoxLCJzZWVkIjoxMjUyNDc2Nj»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana about",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana about",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana codes",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ventana copy",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ajustes interfaz",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ajustes sonido",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ajustes camara",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ajustes accesibilidad",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "ajustes controles",
-   "bad": [
-    "de «ons | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | pr»",
-    "premio «de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1»",
-    "nuevo «Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | pass»",
-    "tropas «and air, and take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover»",
-    "edificios «d take the Lighthouse. | 93 tropas y 42 edificios | Your army on the cover | Sandbox | Sp»"
-   ],
-   "sample": "Faro de | Ámbar | v1.8 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 de 18 ★ | Custom | half XP | Tutorial | premio | Ranks | Recruit | Top players | T. 1 | Weekly challenge | nuevo | Settings | Your way | Creators | password protected | Servers | Roblox | Versio"
+   "bad": [],
+   "sample": "Faro de | Ámbar | v1.9 | Play | Arsenal | Shop | Inventory | Missions | 0 | Level 1 | Play | Campaign | 0 of 18 ★ | Custom | half XP | Tutorial | reward | Ranks | Recruit | Top players | T. 1 | Weekly challenge | new | Settings | Your way | Creators | password protected | Servers | Roblox | Version "
   },
   {
    "screen": "partida",
    "bad": [],
-   "sample": "Coins | 2,001 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 0 | Income | +0/min | Population | 0/0 | Energy | 0 | +0/10 s | Match | 00:00 | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag or the Lighthouse with infantry | Destroy an enemy Core | "
   },
   {
    "screen": "construir eco",
    "bad": [],
-   "sample": "Coins | 2,001 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,021 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir energy",
    "bad": [],
-   "sample": "Coins | 2,001 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,021 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir prod",
    "bad": [],
-   "sample": "Coins | 2,001 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir def",
    "bad": [],
-   "sample": "Coins | 2,001 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
    "screen": "construir sup",
    "bad": [],
-   "sample": "Coins | 2,006 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
+   "sample": "Coins | 2,025 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture a Flag"
   },
   {
-   "screen": "ficha de edificio 433",
-   "bad": [
-    "Nivel «Buy Dome · 6,000 | Builder | 200 | 1 | Nivel 1 → nivel 2 | Vida 6,000 → 8,000 | Escu»",
-    "nivel «· 6,000 | Builder | 200 | 1 | Nivel 1 → nivel 2 | Vida 6,000 → 8,000 | Escudo 1,200 →»",
-    "Vida «Builder | 200 | 1 | Nivel 1 → nivel 2 | Vida 6,000 → 8,000 | Escudo 1,200 → 1,600 |»",
-    "Mejorar «ster | Damage 45 → 70 | Alcance 4 → 5 | Mejorar a nivel 2 · 2,500 | Rally point | Coins»"
-   ],
-   "sample": "Coins | 1,000,002 | Income | +1,140/min | Population | 1/20 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
-  },
-  {
-   "screen": "ficha de edificio 434",
-   "bad": [
-    "Nivel «| Level 1 | 350 / 350 | More details | Nivel 1 → nivel 2 | Vida 350 → 560 | Escudo 7»",
-    "nivel «| 350 / 350 | More details | Nivel 1 → nivel 2 | Vida 350 → 560 | Escudo 70 → 112 |»",
-    "Vida «50 | More details | Nivel 1 → nivel 2 | Vida 350 → 560 | Escudo 70 → 112 | Coins 240»",
-    "Mejorar «do 70 → 112 | Coins 240 → 384 per min | Mejorar a nivel 2 · 150 | Demolish | Coins: tap»"
-   ],
-   "sample": "Coins | 1,000,005 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
-  },
-  {
-   "screen": "ficha de edificio 451",
-   "bad": [
-    "Nivel «00 | 1 | Anti-Drone Soldier | 700 | 1 | Nivel 1 → nivel 2 | Vida 900 → 1,440 | Escudo»",
-    "nivel «nti-Drone Soldier | 700 | 1 | Nivel 1 → nivel 2 | Vida 900 → 1,440 | Escudo 180 → 288»",
-    "Vida «Soldier | 700 | 1 | Nivel 1 → nivel 2 | Vida 900 → 1,440 | Escudo 180 → 288 | Trains»",
-    "Mejorar «Escudo 180 → 288 | Trains 40% faster | Mejorar a nivel 2 · 500 | Rally point | Demolis»"
-   ],
-   "sample": "Coins | 1,000,008 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
-  },
-  {
-   "screen": "ficha de edificio 452",
-   "bad": [
-    "Nivel «| 10 | 2 | Robot Dog | 1,200 | 5 | 1 | Nivel 1 → nivel 2 | Vida 1,500 → 2,400 | Escu»",
-    "nivel «| Robot Dog | 1,200 | 5 | 1 | Nivel 1 → nivel 2 | Vida 1,500 → 2,400 | Escudo 300 → 4»",
-    "Vida «g | 1,200 | 5 | 1 | Nivel 1 → nivel 2 | Vida 1,500 → 2,400 | Escudo 300 → 480 | Trai»",
-    "Mejorar «Escudo 300 → 480 | Trains 40% faster | Mejorar a nivel 2 · 1,500 | Rally point | Demol»"
-   ],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
-  },
-  {
-   "screen": "ficha de edificio 453",
+   "screen": "ficha de edificio 421",
    "bad": [],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,005 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
-   "screen": "ficha de edificio 454",
+   "screen": "ficha de edificio 422",
    "bad": [],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,008 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
-   "screen": "ficha de edificio 455",
+   "screen": "ficha de edificio 439",
    "bad": [],
-   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:00 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
-   "screen": "ficha de edificio 456",
-   "bad": [
-    "casillas «ails | Radar · | No targets | Range | 4 casillas | Reload | 0,9 s | Damage to aircraft p»",
-    "Nivel «s | Damage to aircraft per shot | 32 | Nivel 1 → nivel 2 | Vida 1,100 → 1,760 | Escu»",
-    "nivel «e to aircraft per shot | 32 | Nivel 1 → nivel 2 | Vida 1,100 → 1,760 | Escudo 220 → 3»",
-    "Vida «aft per shot | 32 | Nivel 1 → nivel 2 | Vida 1,100 → 1,760 | Escudo 220 → 352 | Dama»",
-    "Mejorar «20 → 352 | Damage 40 → 64 | 1 minigun | Mejorar a nivel 2 · 750 | Demolish | Coins: tap»"
-   ],
-   "sample": "Coins | 1,000,022 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "screen": "ficha de edificio 440",
+   "bad": [],
+   "sample": "Coins | 1,000,011 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
-   "screen": "ficha de edificio 457",
-   "bad": [
-    "casillas «ails | Radar · | No targets | Range | 6 casillas | Reload | 2,4 s · burst of 2 | Damage»",
-    "Nivel «our ): launches the nuclear missile. | Nivel 1 → nivel 2 | Vida 1,000 → 1,600 | Escu»",
-    "nivel «unches the nuclear missile. | Nivel 1 → nivel 2 | Vida 1,000 → 1,600 | Escudo 200 → 3»",
-    "Vida «nuclear missile. | Nivel 1 → nivel 2 | Vida 1,000 → 1,600 | Escudo 200 → 320 | Dama»",
-    "Mejorar «320 | Damage 90 → 144 | Alcance 6 → 7 | Mejorar a nivel 2 · 1,000 | Demolish | Coins: t»"
-   ],
-   "sample": "Coins | 1,000,024 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "screen": "ficha de edificio 441",
+   "bad": [],
+   "sample": "Coins | 1,000,015 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
-   "screen": "ficha de edificio 458",
-   "bad": [
-    "Nivel «| Level 1 | 400 / 400 | More details | Nivel 1 → Apartment | Now it is Apartment | V»",
-    "Vida «l 1 → Apartment | Now it is Apartment | Vida 400 → 640 | Escudo 80 → 128 | Comunidad»",
-    "Mejorar «640 | Escudo 80 → 128 | Comunidad +20 | Mejorar a Apartment · 1,500 | Demolish | Coins:»"
-   ],
-   "sample": "Coins | 1,000,024 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "screen": "ficha de edificio 442",
+   "bad": [],
+   "sample": "Coins | 1,000,015 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+  },
+  {
+   "screen": "ficha de edificio 443",
+   "bad": [],
+   "sample": "Coins | 1,000,018 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+  },
+  {
+   "screen": "ficha de edificio 444",
+   "bad": [],
+   "sample": "Coins | 1,000,025 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+  },
+  {
+   "screen": "ficha de edificio 445",
+   "bad": [],
+   "sample": "Coins | 1,000,028 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+  },
+  {
+   "screen": "ficha de edificio 446",
+   "bad": [],
+   "sample": "Coins | 1,000,031 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "ficha de tropas",
-   "bad": [
-    "la «| 1,000,029 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s |»",
-    "cámara «the Core (Space) | Centrar | Centrar la cámara en la selección | Clear selection | Cle»",
-    "selección «ce) | Centrar | Centrar la cámara en la selección | Clear selection | Clear selection | I»"
-   ],
-   "sample": "Coins | 1,000,029 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "bad": [],
+   "sample": "Coins | 1,000,031 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "pausa",
-   "bad": [
-    "la «| 1,000,029 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s |»",
-    "cámara «the Core (Space) | Centrar | Centrar la cámara en la selección | Clear selection | Cle»",
-    "selección «ce) | Centrar | Centrar la cámara en la selección | Clear selection | Clear selection | I»"
-   ],
-   "sample": "Coins | 1,000,029 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:01 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
+   "bad": [],
+   "sample": "Coins | 1,000,033 | Income | +1,140/min | Population | 1/30 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Capture"
   },
   {
    "screen": "final",
-   "bad": [
-    "cristales «12 · Achievement: Express Victory (+100 cristales) | +235 cristales | Includes missions |»",
-    "la «| 1,000,042 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s»",
-    "cámara «the Core (Space) | Centrar | Centrar la cámara en la selección | Clear selection | Cle»",
-    "selección «ce) | Centrar | Centrar la cámara en la selección | Clear selection | Clear selection | I»"
-   ],
-   "sample": "Coins | 1,000,042 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Captur"
+   "bad": [],
+   "sample": "Coins | 1,000,045 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s | Match | 00:03 | You | Red | Orange | Violet | Pink | Turquoise | First steps | Hide | Train one more Builder at the Core | Build a power source (Solar or Wind) | Build a Barracks | Have 5 combat troops | Captur"
   },
   {
    "screen": "misión 1",
    "bad": [],
-   "sample": "Coins | 1,000,042 | Income | +1,140/min | Population | 1/105 | Energy | 9,999 | +0/10 s | Match | 00:02 | You | Red | Orange | Violet | Pink | Turquoise | Mission 1 · First Light | Hide | Income: 1,140 / 1,600 per min | Combat troops: 0 / 5 | In under 6 min | quedan 06:00 | Without losing buildings "
+   "sample": "Coins | 2,000 | Income | +1,140/min | Population | 1/20 | Energy | 60 | +0/10 s | Match | 00:00 | You | Red | Mission 1 · First Light | Hide | Income: 1,140 / 1,600 per min | Combat troops: 0 / 5 | In under 6 min | quedan 06:00 | Without losing buildings | llevas 0 | Build | Economy | Energy | Produ"
   },
   {
    "screen": "avisos",

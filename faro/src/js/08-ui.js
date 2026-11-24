@@ -480,7 +480,7 @@ class UI {
     const box = $('toasts');
     const el = document.createElement('div');
     el.className = 'toast upcard good';
-    const name = b.def.levelNames ? b.def.levelNames[level] : `${b.def.name} · nivel ${level}`;
+    const name = b.def.levelNames ? b.def.levelNames[level] : L$`${b.def.name} · nivel ${level}`;
     el.innerHTML = `<b>${L$`${ICON_UP} ${esc(name)}: qué mejoró`}</b><ul>${lines.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>`;
     el.style.pointerEvents = 'auto';
     el.addEventListener('click', () => el.remove());
@@ -980,7 +980,7 @@ class UI {
       const hp = Math.round((list.reduce((a, x) => a + x.hp / x.maxHp, 0) / list.length) * 100);
       const cells = [`<span>${L$`Estado`}</span><b>${esc(this.planeState(u))}</b>`, `<span>${L$`Vida`}</span><b>${hp} %</b>`];
       if (type === 'fighter') {
-        cells.push(`<span>${L$`Misiles aire-aire`}</span><b>${w.dmg} · ×${w.mult.air} a aviones</b>`, `<span>${L$`Alcance`}</span><b>${w.range} casillas</b>`);
+        cells.push(`<span>${L$`Misiles aire-aire`}</span><b>${L$`${w.dmg} · ×${w.mult.air} a aviones`}</b>`, `<span>${L$`Alcance`}</span><b>${L$`${w.range} casillas`}</b>`);
       } else {
         const cd = Math.max(0, u.cd || 0);
         const seen = g.time - (u.lastShot || -99) < 3;
@@ -1018,10 +1018,10 @@ class UI {
     const g = this.app.game;
     const w = g.weaponOf(b);
     const air = (w.mult.air || 0) > 0;
-    const rows = [`<span>${L$`Alcance`}</span><b>${w.range} casillas</b>`,
-      `<span>${L$`Recarga`}</span><b>${w.cd.toLocaleString('es-ES')} s${w.salvo ? ` ${L$`· ráfaga de ${w.salvo}`}` : ''}</b>`,
+    const rows = [`<span>${L$`Alcance`}</span><b>${L$`${w.range} casillas`}</b>`,
+      `<span>${L$`Recarga`}</span><b>${w.cd.toLocaleString(I18N.locale())} s${w.salvo ? ` ${L$`· ráfaga de ${w.salvo}`}` : ''}</b>`,
       `<span>${w.salvo ? T$('Daño a aeronaves por ráfaga') : T$('Daño a aeronaves por tiro')}</span><b>${air ? fmt(w.dmg * w.mult.air * (w.salvo || 1)) : 'no'}</b>`];
-    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push(`<span>${L$`Detecta furtivos`}</span><b>a 3 casillas</b>`);
+    if (b.type === 'aadef' || (b.def.aaLevel && b.level >= b.def.aaLevel)) rows.push(`<span>${L$`Detecta furtivos`}</span><b>${L$`a 3 casillas`}</b>`);
     const t = b.lockOn && b.lockOn.alive && g.inRange(b, w, b.lockOn) ? b.lockOn : b.autoTarget && b.autoTarget.alive ? b.autoTarget : null;
     let status = `<b class="radar-idle">${L$`Sin blancos`}</b>`;
     if (t) {
@@ -1070,9 +1070,9 @@ class UI {
     if (w) {
       const mult = 1 + (u.vet || 0) * VETERAN.dmg;
       tiles.push([T$('Daño/s'), fmt((w.dmg * mult) / w.cd), u.vet ? 'gold' : '']);
-      tiles.push([T$('Alcance'), `${w.range} casillas`, '']);
+      tiles.push([T$('Alcance'), L$`${w.range} casillas`, '']);
     }
-    tiles.push([T$('Velocidad'), d.speed.toLocaleString('es-ES'), '']);
+    tiles.push([T$('Velocidad'), d.speed.toLocaleString(I18N.locale()), '']);
     let html = `<div class="coretiles unittiles">${tiles.map(([k, v, c]) => `<div class="ctile ${c}"><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
     if (w) {
       const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
@@ -1095,9 +1095,9 @@ class UI {
     parts.push(`<div><span>${L$`Vida`}</span> <b>${fmt(u.hp)}</b></div>`);
     if (w) {
       parts.push(`<div><span>${L$`Daño/s`}</span> <b>${fmt(w.dmg / w.cd)}</b></div>`);
-      parts.push(`<div><span>${L$`Alcance`}</span> <b>${w.range}</b> casillas</div>`);
+      parts.push(`<div><span>${L$`Alcance`}</span> <b>${w.range}</b> ${L$`casillas`}</div>`);
     }
-    parts.push(`<div><span>${L$`Velocidad`}</span> <b>${u.speed.toLocaleString('es-ES')}</b></div>`);
+    parts.push(`<div><span>${L$`Velocidad`}</span> <b>${u.speed.toLocaleString(I18N.locale())}</b></div>`);
     parts.push(`<div><span>${L$`Población`}</span> <b>${u.pop}</b>${u.energy ? ` · <span>${L$`Energía`}</span> <b>${u.energy}</b>` : ''}</div>`);
     if (w) {
       const cls = ['inf', 'veh', 'ship', 'sub', 'air', 'bld'];
@@ -1439,7 +1439,7 @@ class UI {
       const k = b.upgrading ? b.upgrading.progress : b.progress;
       const idle = g.time - b.lastWork > 1.5 && b.type !== 'outpost';
       const by = d.builtBy === 'sea' ? T$('un Barco constructor') : d.builtBy === 'engineer' ? T$('un Ingeniero') : T$('un Constructor o Ingeniero');
-      html += `<div class="queue"><b>${b.upgrading ? `Mejorando a nivel ${b.upgrading.level}` : T$('En construcción')}</b> · ${Math.floor(k * 100)} % · ` +
+      html += `<div class="queue"><b>${b.upgrading ? L$`Mejorando a nivel ${b.upgrading.level}` : T$('En construcción')}</b> · ${Math.floor(k * 100)} % · ` +
         (idle ? `<span style="color:#ffb4b5">${L$`Sin constructor: selecciona ${by} y toca la obra.`}</span>` : T$('Un constructor está trabajando.')) + '</div>';
     }
     if (b.type === 'core') {
@@ -1454,7 +1454,7 @@ class UI {
         [T$('Comunidad'), `+${g.bPop(b)}`, ''],
         [T$('Láser'), `${L.laser.beams > 1 ? '2 × ' : ''}${L.laser.dmg} · ${L.laser.range} cas.`, ''],
         [T$('Emergencia'), emer[0], emer[1]],
-        [T$('Cúpula'), dome ? (dome.hp > 0 ? `Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
+        [T$('Cúpula'), dome ? (dome.hp > 0 ? L$`Nivel ${dome.level} · ${Math.round((dome.hp / dome.maxHp) * 100)} %`
           : `Rota · ${Math.max(0, Math.ceil(DOME.recover - (g.time - dome.brokenAt)))} s`) : (b.level < 3 ? T$('Núcleo nivel 3') : T$('Disponible')),
         dome ? (dome.hp > 0 ? 'good' : 'bad') : 'muted'],
       ];
@@ -1543,11 +1543,11 @@ class UI {
     if (own && b.built && !b.upgrading && b.level < maxLv) {
       // v0.9: antes de pagar, qué vas a ganar con la mejora.
       const prev = g.upgradePreview(b).map((t) => t.replace(/^Ahora es /, 'Pasa a ser '));
-      if (prev.length) html += `<div class="nextup"><small>Nivel ${b.level} → ${d.levelNames ? esc(d.levelNames[b.level + 1]) : `nivel ${b.level + 1}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
+      if (prev.length) html += `<div class="nextup"><small>${L$`Nivel ${b.level} → ${d.levelNames ? esc(d.levelNames[b.level + 1]) : L$`nivel ${b.level + 1}`}`}</small>${prev.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`;
     }
     if (b.built && !b.upgrading && b.level < maxLv) {
-      const nextName = d.levelNames ? d.levelNames[b.level + 1] : `nivel ${b.level + 1}`;
-      acts.push(`<button class="btn gold" type="button" data-act="upgrade">${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}</button>`);
+      const nextName = d.levelNames ? d.levelNames[b.level + 1] : L$`nivel ${b.level + 1}`;
+      acts.push(`<button class="btn gold" type="button" data-act="upgrade">${L$`${bi('upgrade')}Mejorar a ${nextName} · ${fmt(g.upgradeCost(b))}`}</button>`);
     }
     if (d.produces && b.built) acts.push(`<button class="btn" type="button" data-act="rally">${bi('rally')}${b.rally >= 0 ? T$('Mover punto de reunión') : T$('Punto de reunión')}</button>`);
     if (b.type !== 'core') {
@@ -1610,10 +1610,10 @@ class UI {
     const stars = (u) => (u.vet ? ` <span class="vetstars" title="${L$`Veterana: ${u.kills} eliminaciones`}">${'★'.repeat(u.vet)}</span>` : '');
     const vets = sel.filter((u) => u.vet).length;
     const title = sel.length === 1 ? esc(first.def.name) + stars(first) : `${esc(this.groupName(sel))}${vets ? ` <span class="vetstars">★ ${vets}</span>` : ''}`;
-    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` · ${first.kills || 0} eliminaciones${first.vet < 3 ? ` ${L$`(próxima estrella con ${VETERAN.kills[first.vet || 0]})`}` : ''}` : '') : L$`${sel.length} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.`;
+    const sub = sel.length === 1 ? esc(first.def.desc) + (first.def.weapon ? ` ${L$`· ${first.kills || 0} eliminaciones${first.vet < 3 ? ` ${L$`(próxima estrella con ${VETERAN.kills[first.vet || 0]})`}` : ''}`}` : '') : L$`${sel.length} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.`;
     // v1.7: «Centrar» junto a «Quitar selección», y la orden actual siempre a la vista.
     let html = this.head(first.type, PLAYER_COLORS[0], title, sub).replace('<div class="headbtns">',
-      `<div class="headbtns"><button class="btn icon" type="button" data-act="center" id="btn-center" aria-label="Centrar la cámara en la selección" title="Centrar">${bi('center')}</button>`);
+      `<div class="headbtns"><button class="btn icon" type="button" data-act="center" id="btn-center" aria-label="${L$`Centrar la cámara en la selección`}" title="${L$`Centrar`}">${bi('center')}</button>`);
     html += `<div class="queue selorder" id="sel-order">${L$`Orden actual:`} <b>${esc(this.orderText(sel))}</b></div>`;
     if (sel.length === 1) html += this.unitTilesHtml(first);
     if (sel.length === 1 && first.def.strategic) html += this.mobileHtml(first);
@@ -1870,7 +1870,7 @@ class UI {
         this.toast(T$('No alcanza el dinero para ninguna mejora'), 'bad');
         app.sound.play('error');
       } else {
-        this.toast(L$`Mejorando ${res.n} ${res.n === 1 ? 'edificio' : 'edificios'} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
+        this.toast(L$`Mejorando ${res.n} ${res.n === 1 ? T$('edificio') : T$('edificios')} (−${fmt(res.spent)}): tus constructores van a cada obra`, 'good');
       }
       this.renderSel(true);
     } else if (act === 'autoup') {
@@ -2037,7 +2037,7 @@ class UI {
   // Si atacan algo tuyo fuera de la pantalla, una flecha en el borde apunta hacia allá.
   addEdgeAlert(text, x, z) {
     const now = performance.now();
-    let label = text.replace(/^Atacan tu /, '').replace(/^Perdiste: /, 'Perdiste ').replace(/^Perdiste /, 'Perdiste ');
+    let label = text.replace(/^Atacan tu /, '').replace(/^Perdiste: /, T$('Perdiste ')).replace(/^Perdiste /, T$('Perdiste '));
     if (/Núcleo/.test(text)) label = T$('Núcleo');
     else if (/tropas/i.test(text)) label = T$('Tropas');
     if (label.length > 18) label = label.slice(0, 17) + '…';
@@ -2164,7 +2164,7 @@ class UI {
       }
       const rival = best >= 0 ? g.players.findIndex((pl) => pl.team === best) : -1;
       const bar = (t, color) => `<span class="bar"><i style="width:${Math.min(100, (t / KING_TIME) * 100)}%;background:${color}"></i></span>`;
-      $('king').innerHTML = L$`Faro: ${ownerTeam < 0 ? 'libre' : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
+      $('king').innerHTML = L$`Faro: ${ownerTeam < 0 ? T$('libre') : esc(g.players[faro.owner].name)} · Tú ${bar(myT, hexColor(PLAYER_COLORS[0]))}` +
         (rival >= 0 ? ` ${esc(g.players[rival].name)} ${bar(bestT, hexColor(PLAYER_COLORS[rival]))}` : '');
     }
     $('stat-pop').classList.toggle('full', p.popUsed >= p.popCap);

@@ -18,4 +18,10 @@ function i18nApplyData() {
   for (const l of Object.values(t.lists)) I18N.applyList(l);
   for (const m of Object.values(t.maps)) for (const k of Object.keys(m)) if (typeof m[k] === 'string') m[k] = T$(m[k]);
   for (const list of Object.values(t.pairs)) for (const pair of list) pair[1] = T$(pair[1]);
+  // Aspectos armados al cargar (lugar + estilo): se vuelven a armar con los nombres traducidos.
+  for (const s of SKINS) {
+    if (s.id === `${s.look}_${s.slot}` && SKIN_LOOKS[s.look] && SKIN_SLOTS[s.slot] && !['toxico_inf', 'dorado_inf'].includes(s.id)) s.name = `${SKIN_LOOKS[s.look].name} ${SKIN_SLOTS[s.slot].name}`;
+    else s.name = T$(s.name);
+    if (s.special) s.special = T$(s.special);
+  }
 }

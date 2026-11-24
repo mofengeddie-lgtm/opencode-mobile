@@ -70,6 +70,8 @@ async function pageKeys() {
     for (const l of Object.values(t.lists)) for (const v of l) if (typeof v === 'string' && isText(v)) data.add(v.trim());
     for (const m of Object.values(t.maps)) for (const v of Object.values(m)) if (typeof v === 'string' && isText(v)) data.add(v.trim());
     for (const l of Object.values(t.pairs)) for (const pr of l) if (isText(pr[1])) data.add(pr[1].trim());
+    // Aspectos fijos (los demás se arman con lugar + estilo, ya traducidos).
+    for (const sk of SKINS) { if (sk.id === 'toxico_inf' || sk.id === 'dorado_inf') data.add(sk.name); if (sk.special) data.add(sk.special); }
     return { data: [...data] };
   });
   await b.close();

@@ -390,7 +390,7 @@ class Input {
       if (landers.length) {
         g.orderBoard(landers, target);
         this.r.addMoveMarker(target.cell, 0x7dd3ff);
-        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? 'tropa' : 'tropas'} a ${target.def.name}`);
+        app.ui.toast(`Subiendo ${landers.length} ${landers.length === 1 ? T$('tropa') : T$('tropas')} a ${target.def.name}`);
         app.sound.play('order');
         return;
       }

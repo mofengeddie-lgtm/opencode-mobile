@@ -936,14 +936,14 @@ class Game {
   upgradeLines(b, before, after) {
     const out = [];
     const n = (v) => fmt(Math.round(v));
-    if (after.hp > before.hp) out.push(`Vida ${n(before.hp)} → ${n(after.hp)}`);
-    if (after.shield > before.shield) out.push(`Escudo ${n(before.shield)} → ${n(after.shield)}`);
+    if (after.hp > before.hp) out.push(L$`Vida ${n(before.hp)} → ${n(after.hp)}`);
+    if (after.shield > before.shield) out.push(L$`Escudo ${n(before.shield)} → ${n(after.shield)}`);
     if (after.income > before.income) out.push(L$`Monedas ${n(before.income)} → ${n(after.income)} por min`);
-    if (after.pop > before.pop) out.push(`Comunidad +${after.pop - before.pop}`);
+    if (after.pop > before.pop) out.push(L$`Comunidad +${after.pop - before.pop}`);
     if (after.energy > before.energy) out.push(L$`Energía ${before.energy} → ${after.energy} cada 10 s`);
     if (after.prod > before.prod) out.push(L$`Entrena ${Math.round((after.prod / before.prod - 1) * 100)} % más rápido`);
     if (after.dmg > before.dmg) out.push(L$`Daño ${before.dmg} → ${after.dmg}`);
-    if (after.range > before.range) out.push(`Alcance ${before.range} → ${after.range}`);
+    if (after.range > before.range) out.push(L$`Alcance ${before.range} → ${after.range}`);
     if (after.beams > before.beams) out.push(T$('Doble láser'));
     if (after.guns > before.guns) out.push(`${after.guns} minigun${after.guns > 1 ? 's' : ''}`);
     if (after.aa && !before.aa) out.push(T$('Ahora dispara a aeronaves'));
@@ -982,7 +982,7 @@ class Game {
     if (b.owner === 0) {
       const lines = this.upgradeLines(b, before, this.snapshot(b));
       this.emit('upgraded', { b, level: lv, lines });
-      this.emit('toast', { text: `${b.def.name}: nivel ${lv}`, kind: 'good' });
+      this.emit('toast', { text: L$`${b.def.name}: nivel ${lv}`, kind: 'good' });
       this.emit('sound', { name: 'done' });
     }
   }

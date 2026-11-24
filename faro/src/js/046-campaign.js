@@ -271,7 +271,7 @@ const Campaign = {
         live = n <= s.max;
         ok = won && live;
         now = `llevas ${n}`;
-        why = L$`Perdiste ${n} ${s.kind === 'lostBld' ? (n === 1 ? 'edificio' : 'edificios') : (n === 1 ? 'tropa' : 'tropas')}`;
+        why = L$`Perdiste ${n} ${s.kind === 'lostBld' ? (n === 1 ? T$('edificio') : T$('edificios')) : (n === 1 ? T$('tropa') : T$('tropas'))}`;
       } else if (s.kind === 'coreEnd') {
         live = coreK >= s.min;
         ok = won && live;
