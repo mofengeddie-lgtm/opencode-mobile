@@ -1,6 +1,8 @@
 // Ayudas para correr las pruebas de v0.1-v0.4 en la v0.5 (vestíbulo nuevo y sin tropas iniciales).
 const SP = __dirname;
 async function routes(page) {
+  // v1.9: las fuentes vienen dentro del juego y las capturas esperan a que carguen: más tiempo por defecto (antes 30 s).
+  page.setDefaultTimeout(120000);
   // v1.9: el juego elige el idioma del navegador y Chromium dice «en-US»: las pruebas de antes lo quieren en español.
   await page.addInitScript(() => {
     if (window.FARO_TEST_LANG) return;
