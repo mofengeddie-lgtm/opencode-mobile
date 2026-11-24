@@ -16,6 +16,7 @@ const errsAll = [];
 async function open(browser, w, h, { url = GAME, init = null, wait = true, three = true, media = null } = {}) {
   const context = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: media || 'no-preference' });
   const page = await context.newPage();
+  page.setDefaultTimeout(120000); // v1.9: más tiempo para las capturas (las fuentes ahora vienen adentro y se esperan).
   page.errs = [];
   page.on('pageerror', (e) => page.errs.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error' && !m.text().includes('ERR_FAILED')) page.errs.push(m.text()); });

@@ -148,11 +148,22 @@ def take(r, ver):
     by_ver[ver] = by_ver.get(ver, 0) + 1
 
 
+# Repeticiones a solas de las que dependen del tiempo (vale la más nueva).
+REDO = {'results-v17-on-v19.json': ['results-v17-N10.json']}
+redone = []
 for name, pat, ver in SUITES:
     data = sp(name)
     if not isinstance(data, list):
         not_run.append(name.replace('results-', '').replace('-on-v19.json', ''))
         continue
+    for rn in REDO.get(name, []):
+        rd = sp(rn)
+        if isinstance(rd, list) and os.path.getmtime(os.path.join(SP, rn)) > os.path.getmtime(os.path.join(SP, name)):
+            redo = {x['id']: x for x in rd if x.get('id') != 'errores'}
+            for x in data:
+                if x['id'] in redo and x['ok'] != redo[x['id']]['ok']:
+                    redone.append(f"{x['id']} {'bien' if redo[x['id']]['ok'] else 'mal'} al repetirla sola (en la tanda: {'bien' if x['ok'] else 'mal'})")
+            data = [redo.get(x['id'], x) for x in data]
     for x in data:
         if pat and re.match(pat, x['id']):
             take(x, ver)
@@ -224,7 +235,8 @@ rev_ok = bool(rev) and rev['summary']['catalog_ok'] == rev['summary']['catalog_t
 extra = load(os.path.join(HERE, 'results-v19-regress.json')) or {}
 vers = ', '.join(f'{v}: {n}' for v, n in sorted(by_ver.items(), key=lambda kv: [int(p) for p in kv[0][1:].split('.')], reverse=True))
 ev17 = (f"Pruebas anteriores en la v1.9: {len(old) - len(fails)} de {len(old)} bien ({vers})" + (f" · fallan: {', '.join(fails)}" if fails else '') +
-        ' (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01)' +
+        ' (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01; M01, la pantalla de error cuando no llega el motor 3D, ya no aplica: el motor viene dentro del archivo, lo cubren P01 y P16)' +
+        (' · repetidas a solas: ' + '; '.join(redone) if redone else '') +
         (' · ' + ' · '.join(PLANNED[k] for k in sorted(set(planned_seen))) if planned_seen else '') +
         (' · no corrieron: ' + ', '.join(not_run) if not_run else '') + '. ' +
         (f"Números de tropas y edificios iguales a la v1.7 ({'sí' if num['ok'] else 'NO'}). " if num else 'Números: no corrió. ') +
