@@ -72,15 +72,23 @@ if cl and pa:
 else:
     put('P10', 'np', 'no corrió el revisor de idioma')
 
-# P12: el español queda igual que en la v1.8.
+# P12: el español queda igual que en la v1.8. Antes de comparar se quitan los cambios planeados: el número de versión,
+# las etiquetas de novedades de la portada y el selector de idioma de la pausa.
 p12 = sp('results-v19-p12.json')
 if p12:
-    PLANNED = [r'tropas y 42 edificios|Todo tu catálogo', r'IDIOMA · LANGUAGE|Idioma · Language', r'1\.9|1\.8']
-    bad = [d for d in p12['diffs'] if not any(re.search(pt, d['v18'] + ' ' + d['v19']) for pt in PLANNED)]
-    detail = '; '.join(f"{d['k']}: «{d['v18'][:60]}» → «{d['v19'][:60]}»" for d in p12['diffs'])
-    put('P12', 'ok' if not bad else 'fail',
-        f"{p12['screens']} pantallas en español comparadas texto por texto con la v1.8: {p12['same']} idénticas; las otras {len(p12['diffs'])} solo cambian "
-        f"en lo planeado (etiquetas de novedades de la portada, el selector de idioma de la pausa, el número de versión){' · sin planear: ' + ', '.join(d['k'] for d in bad) if bad else ''} · {detail}")
+    def norm(t):
+        t = re.sub(r'v1\.[89]\b|1\.[89]\b', 'vX', t)
+        t = t.replace('Todo tu catálogo: 93 tropas Tu ejército en la portada Campo de pruebas Ajustes a tu manera Programa revisor', '[novedades]')
+        t = t.replace('93 tropas y 42 edificios Tu ejército en la portada Campo de pruebas Español e inglés Ajustes a tu manera', '[novedades]')
+        t = re.sub(r'IDIOMA · LANGUAGE Español English (Automático: el idioma de tu navegador o de Poki\.|Elegido por ti\.) ?', '', t)
+        return re.sub(r'\s+', ' ', t).strip()
+    a, c = p12['a'], p12['c']
+    raw_same = sum(1 for k in a if a[k] == c.get(k))
+    diff = [k for k in a if norm(a[k]) != norm(c.get(k, ''))]
+    put('P12', 'ok' if not diff else 'fail',
+        f"{len(a)} pantallas en español (vestíbulo y sus partes, partida, construir, fichas, pausa y final) comparadas texto por texto con la v1.8: "
+        f"{raw_same} idénticas tal cual; quitando lo planeado (número de versión, etiquetas de novedades de la portada y el selector de idioma de la pausa) "
+        f"{len(a) - len(diff)} de {len(a)} idénticas" + (f" · distintas: {', '.join(diff)}" if diff else ''))
 else:
     put('P12', 'np', 'no corrió')
 

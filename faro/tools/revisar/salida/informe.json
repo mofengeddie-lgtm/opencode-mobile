@@ -1,9 +1,9 @@
 {
- "at": "2026-11-20 16:18",
+ "at": "2026-11-24 18:14",
  "game": {
   "file": "/home/user/opencode-mobile/faro/faro.html",
-  "sha": "962a30f8e0a1358b9088e893759a95686c37f122",
-  "version": "1.8",
+  "sha": "d8bcdd37e90ea3420bc4217248e96340e55dd97e",
+  "version": "1.9",
   "units": 93,
   "buildings": 42,
   "models": 156

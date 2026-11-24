@@ -202,7 +202,8 @@ def check_ui(game: dict, ui_dir: str) -> list:
     text = game['text']
     out = []
     for screen, what, pats, img in PLAN.UI_CHECKS:
-        missing = [p for p in pats if p not in text]
+        # v1.9: un patrón puede tener alternativas separadas por « || » (los textos ahora pueden ir envueltos para traducir).
+        missing = [p for p in pats if not any(alt in text for alt in p.split(' || '))]
         out.append({'screen': screen, 'what': what, 'missing': missing, 'state': 'ok' if not missing else 'falta',
                     'img': os.path.join(ui_dir, img)})
     return out

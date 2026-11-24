@@ -313,7 +313,7 @@ UI_CHECKS = [
     ('03 Modos', 'Modo «Campo de pruebas» para ver y probar todas las tropas', ['Campo de pruebas'], 'ui04-04.jpg'),
     ('04 Partida', 'Barra con Monedas, Ingresos, Energía, Población y Partida', ['>Monedas<', '>Ingresos<', '>Energía<', '>Población<', '>Partida<'], 'ui04-05.jpg'),
     ('04 Partida', 'Selección: vida del grupo, orden actual, Centrar y Quitar selección', ['Vida del grupo', 'Orden actual', 'btn-center', 'Quitar selección'], 'ui04-05.jpg'),
-    ('05 Construcción', 'Categorías, vista previa, motivo y «N de 32 edificios»', ['data-why', 'Girar', 'edificios</span>'], 'ui04-06.jpg'),
+    ('05 Construcción', 'Categorías, vista previa, motivo y «N de 32 edificios»', ['data-why', 'Girar', 'edificios</span> || edificios`}</span>'], 'ui04-06.jpg'),
     ('06 Producción', 'Cola con plazas reservadas y comunidad al terminar', ['plazas reservadas', 'Comunidad al terminar', 'Punto de reunión'], 'ui04-07.jpg'),
     ('07 Transporte', 'Pasajeros con nombre y plazas', ['paxbox', 'en camino', 'Desembarcar'], 'ui04-08.jpg'),
     ('08 Aviación', 'Aeronaves con su estado y puesto', ['planecard', 'Aeropuerto militar'], 'ui04-09.jpg'),
