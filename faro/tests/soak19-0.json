@@ -1,0 +1,198 @@
+{
+ "games": [
+  {
+   "tag": "conquest/archipelago/easy/5000",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 7346,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "duos/open/normal/5017/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 12685,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 1
+   }
+  },
+  {
+   "tag": "league/continent/hard/5034",
+   "result": "victory",
+   "time": 786,
+   "ms": 9360,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 1
+   }
+  },
+  {
+   "tag": "king/bay/easy/5051/estrategico",
+   "result": "victory",
+   "time": 1034,
+   "ms": 5196,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 1
+   }
+  },
+  {
+   "tag": "blitz/reef/normal/5068",
+   "result": "victory",
+   "time": 1653,
+   "ms": 4758,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 3
+   }
+  },
+  {
+   "tag": "duel/mesa/hard/5085/estrategico",
+   "result": "defeat",
+   "time": 377,
+   "ms": 3144,
+   "nukes": {},
+   "mobile": 0,
+   "used": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "ffa/dunes/easy/5102",
+   "result": "victory",
+   "time": 993,
+   "ms": 1772,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 0
+   }
+  },
+  {
+   "tag": "big/archipelago/normal/5119/estrategico",
+   "result": "sin terminar",
+   "time": 1200,
+   "ms": 6974,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 2
+   }
+  },
+  {
+   "tag": "teams/open/hard/5136",
+   "result": "defeat",
+   "time": 607,
+   "ms": 3057,
+   "nukes": {},
+   "mobile": 0,
+   "used": null,
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 0,
+    "missileboat": 1
+   }
+  },
+  {
+   "tag": "fog/continent/easy/5153/estrategico",
+   "result": "victory",
+   "time": 1071,
+   "ms": 2952,
+   "nukes": {
+    "0": 1
+   },
+   "mobile": 1,
+   "used": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "newUnits": {
+    "drone": 0,
+    "fpv": 0,
+    "mlrs": 1,
+    "missileboat": 0
+   }
+  }
+ ],
+ "issues": {}
+}
