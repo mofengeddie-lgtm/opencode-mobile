@@ -1,0 +1,12 @@
+{
+  "name": "faro-modelos",
+  "private": true,
+  "description": "Herramienta para comprimir los modelos 3D del juego (meshopt sin cuantizar).",
+  "type": "module",
+  "dependencies": {
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
+    "meshoptimizer": "1.2.0"
+  }
+}

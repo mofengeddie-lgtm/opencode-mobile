@@ -1,0 +1,44 @@
+[
+ {
+  "id": "K01",
+  "name": "Patrullar: van y vuelven y pelean en el camino",
+  "ok": true,
+  "ev": "3 Artilleros patrullan entre su lugar y un punto a 7-8 casillas: en 2 min hicieron 18 tramos (distancia al punto entre 0 y 7 casillas); un Artillero enemigo cerca del camino: lo atacaron (true) y lo eliminaron (true); después siguen patrullando (true)"
+ },
+ {
+  "id": "K02",
+  "name": "Mantener posición: no persiguen, pero disparan a lo que tienen a tiro",
+  "ok": true,
+  "ev": "con «Mantener posición»: ante un enemigo a 5 casillas se movió 0 casillas; a uno a 2 casillas le disparó (true) sin moverse (0 casillas). Sin la orden, la misma tropa salió a perseguir (5 casillas)"
+ },
+ {
+  "id": "K03",
+  "name": "Veteranas: estrellas con 3, 8 y 15 eliminaciones",
+  "ok": true,
+  "ev": "con 3 eliminaciones: 1 estrella (vida máxima ×1.1); con 8: 2 (×1.2); con 15: 3 (×1.3); un disparo de la veterana de 3 estrellas quita 11.9 y el de una tropa nueva 9.6 (×1.24)"
+ },
+ {
+  "id": "K04",
+  "name": "Reparación sola: el Constructor libre repara lo dañado cerca",
+  "ok": true,
+  "ev": "Solar al 40 % a 3 casillas del Constructor sin trabajo: con «Reparación sola» quedó al 100 % (a los 8 s); apagada, quedó al 40 %"
+ },
+ {
+  "id": "K05",
+  "name": "Producción continua: sigue entrenando y espera sin gastar",
+  "ok": true,
+  "ev": "con 1.000 monedas y «Siempre»: entrenó 2 Artilleros más y se quedó esperando («Monedas insuficientes»), nunca con monedas negativas (mínimo 217); con 2.000 monedas más siguió (3 más); con la comunidad llena (20) espera («Población llena: construye o amplía Casas») y no gasta (0 monedas)"
+ },
+ {
+  "id": "K08sim",
+  "name": "Reglas del desafío",
+  "ok": true,
+  "ev": "«Sin fábricas»: «Desafío: sin Fábrica»; «Cielo cerrado»: Helipuerto «Desafío: sin Helipuerto ni Aeropuerto», Aeropuerto «Desafío: sin Helipuerto ni Aeropuerto»; «Bolsillos vacíos»: empiezas con 800 monedas y los bots con 2000; la regla no frena a los bots (true)"
+ },
+ {
+  "id": "K11vet",
+  "name": "Los bots también tienen veteranas",
+  "ok": true,
+  "ev": "3 partidas de 15 min: 11 de 57 tropas vivas con estrellas (1 con 3)"
+ }
+]

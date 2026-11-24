@@ -12,3 +12,9 @@ coverage/
 *.tsbuildinfo
 .opencode/
 .sisyphus/
+__pycache__/
+# v1.9: la versión para Poki se arma con «node faro/build.mjs --poki» (no se guarda el archivo armado)
+faro/poki/
+# v1.9: dependencias de la herramienta de modelos (se instalan con npm install)
+faro/tools/modelos/node_modules/
+faro/tools/modelos/package-lock.json

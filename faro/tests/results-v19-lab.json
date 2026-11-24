@@ -1,0 +1,75 @@
+{
+ "game": "file:///home/user/opencode-mobile/faro/faro.html",
+ "version": "1.9",
+ "lang": "es",
+ "ok": true,
+ "failed": [],
+ "panelText": "LABORATORIO\n\nPara probar cada tropa en menos de un minuto. Solo en el Campo de pruebas: no da XP, cristales ni misiones.\n\nVELOCIDAD\nPausa\n0,5×\n1×\n2×\n4×\n+1 paso\nREGLAS\nRecursos de sobra\nObras al instante\nTú no pierdes vida\nEl rival no pierde vida\nBots del rival\nCREAR TROPA · 93 TIPOS\nTodos\nInfantería\nTierra\nDrones\nHelicópteros\nAviación\nMar\nEstratégico\nTuya\nDel rival\n×1\n×5\nConstructor\ntierra · 200\nIngeniero\ntierra · 500\nArtillero\ntierra · 400\nEscopetero\ntierra · 600\nRanger\ntierra · 700\nFrancotirador\ntierra · 900\nRompedor\ntierra · 950\nCazador\ntierra · 1300\nCohetero\ntierra · 1500\nJeep\ntierra · 1600\nTanque\ntierra · 3400\nCamión antiaéreo\ntierra · 2400\nLanzamisiles\ntierra · 3800\nTanque ligero\ntierra · 2200\nTanque pesado\ntierra · 5200\nCamión de misiles\ntierra · 4200\nTransporte blindado de personal\ntierra · 2000\nLanzador DF-17\ntierra · 7000\nLanzador nuclear móvil\ntierra · 22.000\nMédico de campaña\ntierra · 900\nLancha rápida\nmar · 1400\nBarco constructor\nmar · 1600\nBarcaza\nmar · 1800\nLancha de desembarco\nmar · 2600\nFragata de escolta\nmar · 3600\nPortaaviones\nmar · 15.000\nDestructor\nmar · 4500\nSubmarino\nmar · 3800\nHelicóptero\naire · 7500\nApache Guardián\naire · 10.000\nAvión de combate furtivo\naire · 6000\nBombardero furtivo\naire · 9000\nDron de ataque\naire · 2600\nDron kamikaze\naire · 900\nLanzacohetes múltiple\ntierra · 4800\nLancha misilera\nmar · 2600\nExplorador\ntierra · 250\nSoldado\ntierra · 300\nOficial de campo\ntierra · 1200\nOperador de comunicaciones\ntierra · 900\nZapador\ntierra · 800\nEquipo de mortero\ntierra · 1100\nParacaidista\ntierra · 900\nInfante de marina\nanfibio · 800\nEquipo antitanque\ntierra · 1600\nAmetrallador pesado\ntierra · 1000\nSoldado antidrones\ntierra · 700\nPerro robot\ntierra · 1200\nBlindado ligero\ntierra · 1900\nVehículo de combate de infantería\ntierra · 2800\nCamión de tropas\ntierra · 1200\nAmbulancia militar\ntierra · 1500\nVehículo de recuperación\ntierra · 2200\nCamión de suministros\ntierra · 1600\nCamión cisterna militar\ntierra · 1500\nVehículo de mando\ntierra · 3000\nRadar móvil\ntierra · 2400\nObús autopropulsado\ntierra · 4600\nArtillería remolcada\ntierra · 2600\nCazacarros\ntierra · 3600\nTransporte anfibio\nanfibio · 2400\nVehículo lanzapuentes\ntierra · 2600\nVehículo de despeje\ntierra · 2000\nTopadora blindada\ntierra · 1800\nLanzacohetes termobárico\ntierra · 5200\nDron explorador\naire · 800\nDron de carga\naire · 1200\nDron interceptor\naire · 1400\nDron naval de superficie\nmar · 1000\nDron submarino\nmar · 1200\nHelicóptero de transporte\naire · 5000\nHelicóptero de rescate\naire · 4000\nHelicóptero de patrulla naval\naire · 6000\nAvión de apoyo terrestre\naire · 7000\nBombardero convencional\naire · 11.000\nAvión de transporte militar\naire · 6000\nAvión de vigilancia aérea\naire · 7500\nAvión de reabastecimiento\naire · 6500\nAvión de apoyo electrónico\naire · 8000\nAvión artillado\naire · 9500\nCañonera\nmar · 2200\nAcorazado\nmar · 12.000\nPatrullera costera\nmar · 1600\nCorbeta\nmar · 3200\nCrucero de mando\nmar · 9000\nBuque de desembarco\nmar · 4200\nBuque logístico\nmar · 3500\nBuque hospital\nmar · 4000\nAerodeslizador militar\nanfibio · 2600\nDragaminas\nmar · 2000\nBuque minador\nmar · 2500\nSubmarino de reconocimiento\nmar · 3000\nSubmarino estratégico\nmar · 24.000\n\nToca una tropa y después el mapa. Se crea gratis, sin esperar.\n\nDIANAS DE PRÁCTICA\nInfantería\nBlindado\nAire\nSuperficie\nSubmarino\n\nPon una diana: aparece a 6-10 casillas de tu Núcleo. No se mueve, no dispara y no se rompe. Daño/s cuenta los últimos 10 s.\n\nDAÑO HECHO POR TUS TROPAS\n\nTodavía nada. Cuenta el daño de tus tropas contra cualquier blanco.\n\nESCENARIO\nMover al instante\nContadores a cero\nQuitar dianas\nQuitar todas las tropas\nREGISTRO\nAquí aparece lo que haces en el Laboratorio y las tropas que caen.",
+ "results": [
+  {
+   "id": "lab-boton",
+   "ok": true,
+   "ev": "Campo de pruebas: botón del matraz visible (true), 44×44 px; aviso al entrar: «Laboratorio: toca el matraz de arriba para crear tropas, poner dianas y cambiar la velocidad»"
+  },
+  {
+   "id": "lab-panel",
+   "ok": true,
+   "ev": "se abre con el matraz (true); secciones: Velocidad / Reglas / Crear tropa · 93 tipos / Dianas de práctica / Daño hecho por tus tropas / Escenario / Registro; 93 tropas para crear de 93; botones de menos de 44 px: 0; dentro de la pantalla: true"
+  },
+  {
+   "id": "lab-buscar",
+   "ok": true,
+   "ev": "«tanque»: 4 (Tanque, Tanque ligero, Tanque pesado, Equipo antitanque); sin resultados: «Ninguna tropa se llama «zzzz».»; filtro de mar: 24 tropas, todas de agua (true)"
+  },
+  {
+   "id": "lab-velocidad",
+   "ok": true,
+   "ev": "en pausa el reloj no avanza (0.92 → 0.92); «+1 paso» avanza 0.10 s; marca del botón: pausa «II», 2× «2×», 1× sin marca (true); con un cuadro de 0,05 s: 0,5× 0.025 s, 1× 0.05, 2× 0.1, 4× 0.2"
+  },
+  {
+   "id": "lab-crear",
+   "ok": true,
+   "ev": "Artillero (rifle) tuyo: el panel se cierra (true), barra «Artillero ×1 · tuya · Toca el mapa donde aparece»; 1.er toque 0 → 1 («e · puesta 1 vez»), 2.º toque → 2 («· puesta 2 veces»), «Terminar» sale (true) · ×5 Tanque: 0 → 5 · Destructor en tierra: no se crea (0 → 0), aviso «Destructor: solo va en el agua»; en el agua: 0 → 1 · Artillero del rival: 0 → 1 («Artillero ×1 · del rival · Toca el mapa donde aparece»)"
+  },
+  {
+   "id": "lab-dianas",
+   "ok": true,
+   "ev": "5 dianas del rival (rifle, tank, heli, destroyer, sub) a 6-7 casillas de tu Núcleo; aviso «Diana de submarino puesta. Manda tus tropas a atacarla.»; en 3 s de partida no se mueven ni apuntan (true); con dos golpes de 1.000.000 y 50 siguen vivas (true) y con la misma vida (true); los dos golpes suman 1000050 a su total, por segundo 322597; tabla con 5 filas; «Daño hecho»: Artillero 1000050 (en el panel: true)"
+  },
+  {
+   "id": "lab-reglas",
+   "ok": true,
+   "ev": "recursos de sobra: con 10 monedas vuelve a 500000; apagado queda en 12 · obras al instante: una Casa nueva queda hecha en 0,1 s apagado false, encendido true · pierden vida (tú, rival): normal true,true, «Tú no pierdes vida» false,true, las dos false,false, apagadas true,true · bots del rival: encendidos [1], apagados [] · botones al final: res=true instant=false inv0=false inv1=false ai=false"
+  },
+  {
+   "id": "lab-guardado",
+   "ok": true,
+   "ev": "partida guardada y vuelta a abrir: Laboratorio true, velocidad 2×, recursos de sobra true, registro con 32 líneas, las 5 dianas con su daño igual (true)"
+  },
+  {
+   "id": "lab-mover",
+   "ok": true,
+   "ev": "sin tropas elegidas avisa «Elige primero las tropas que quieres mover»; con 3 Tanques: barra «Toca adónde mover al instante las 3 tropas elegidas», tras tocar el mapa quedan a 0, 1, 1 casillas del toque, en casillas distintas; aviso «3 tropas movidas»"
+  },
+  {
+   "id": "lab-quitar",
+   "ok": true,
+   "ev": "«Contadores a cero» (true); «Quitar dianas»: quedan 0; «Quitar todas las tropas» pide otro toque («¿Seguro? Toca otra vez», siguen 12 de 12) y después quedan 3, solo tus constructores (true); registro (últimas 8): 00:07Quitaste 9 tropas (quedan tus constructores) / 00:06Velocidad: 1× / 00:06Quitaste 5 dianas / 00:06Contadores de daño a cero"
+  },
+  {
+   "id": "lab-normal",
+   "ok": true,
+   "ev": "«Todos contra todos»: sin Laboratorio (true), sin botón del matraz (true), el reloj avanza normal (0.05 s por cuadro de 0,05 s)"
+  },
+  {
+   "id": "lab-pantallas",
+   "ok": true,
+   "ev": "celular horizontal: matraz libre true, panel dentro de la pantalla true (se desplaza), sin desplazamiento lateral true, botones chicos 0 · Poki 640×360: matraz libre true, panel dentro de la pantalla true (se desplaza), sin desplazamiento lateral true, botones chicos 0 · iPad vertical: matraz libre true, panel dentro de la pantalla true (se desplaza), sin desplazamiento lateral true, botones chicos 0"
+  },
+  {
+   "id": "errores",
+   "ok": true,
+   "ev": "sin errores en la consola"
+  }
+ ]
+}

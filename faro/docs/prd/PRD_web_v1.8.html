@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="fecha" content="18 NOV 2026">
+<title>Faro de Ámbar · PRD prototipo web v1.8</title>
+<style>
+@page { size: A4; }
+:root { --ink: #17313a; --teal: #1b6b63; --amber: #d99a2b; --soft: #f1f3f1; --line: #d9dfdc; --muted: #5d6b70; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.5; }
+h1 { font-size: 30pt; margin: 0 0 4px; line-height: 1.1; }
+h2 { font-size: 19pt; margin: 0 0 10px; line-height: 1.2; page-break-after: avoid; }
+h3 { color: var(--teal); font-size: 12pt; margin: 16px 0 6px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.eyebrow { font-size: 8.5pt; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+.sub { color: var(--teal); font-size: 15pt; margin: 0 0 12px; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 18px; }
+.tiles.t5 { grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 8px; }
+.tile { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.tile b { display: block; color: var(--teal); font-size: 11pt; }
+.t5 .tile b { font-size: 12pt; white-space: nowrap; }
+.tile span { font-size: 9pt; }
+section { page-break-before: always; }
+section.first { page-break-before: auto; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9pt; page-break-inside: auto; }
+table.cat { font-size: 8pt; }
+th { background: var(--teal); color: #fff; text-align: left; padding: 6px 8px; font-weight: 700; }
+td { padding: 5px 7px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { page-break-inside: avoid; }
+tbody tr:nth-child(odd) td { background: var(--soft); }
+ul { margin: 0 0 8px; padding-left: 18px; }
+li { margin-bottom: 3px; }
+.chip { white-space: nowrap; display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 8pt; font-weight: 700; }
+.pend { background: #e3e7e5; color: #3d4a4f; }
+.ok { background: #d5f0dd; color: #165a2b; }
+.fail { background: #f8d6d6; color: #8a1f1f; }
+.np { background: #f6e6c4; color: #6b4a0b; }
+.note { border-left: 3px solid var(--amber); padding: 6px 10px; background: #fbf5e8; margin: 8px 0 12px; font-size: 9.5pt; }
+.small { font-size: 8pt; color: var(--muted); }
+.figs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 12px; }
+.figs.f4 { grid-template-columns: repeat(4, 1fr); }
+.figs.f3 { grid-template-columns: 2fr 1fr 0.75fr; align-items: start; }
+.figs figure { margin: 0; }
+.figs img { width: 100%; display: block; border-radius: 6px; border: 1px solid var(--line); }
+.figs figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 3px; }
+#pruebas td:first-child { white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="eyebrow">Faro de Ámbar · Prototipo web</div>
+  <h1>Faro de Ámbar</h1>
+  <p class="sub">PRD del prototipo web · versión 1.8</p>
+  <p class="meta">18 de noviembre de 2026 · Estado: <b id="estado">Terminada (pruebas abajo)</b> · Fuente: tu pedido «falta mucho de la documentación y de las imágenes que te di: son todas las tropas nuevas; revísalas otra vez y agrega las que faltan; la imagen de la portada se ve en la web pero no en el juego, repárala; y sigue mejorando todo; antes, un PRD y un PDF completos, y un programa solo para revisar si el juego tiene los elementos de mis archivos, con los datos, la información y las imágenes».</p>
+  <div class="tiles">
+    <div class="tile"><b>Todas tus tropas</b><span>57 tropas y 18 edificios nuevos, con modelo 3D de Blender cada uno: tu catálogo de 110 pasa a estar completo en el juego.</span></div>
+    <div class="tile"><b>Tu ejército en la portada</b><span>La escena con la base y todo el ejército que ves en el sitio (y en tu pantalla 02) pasa a estar detrás del vestíbulo del juego. Más un modo «Campo de pruebas».</span></div>
+    <div class="tile"><b>Programa revisor</b><span>Lee tus archivos y el juego, y dice qué está y qué falta, con tus imágenes al lado de las del juego. Informe en HTML, PDF y JSON.</span></div>
+  </div>
+
+  <h3>1. Lo que pasó y lo que pides</h3>
+  <p>Revisé otra vez tus archivos: el catálogo de tu PRD 1.8 (secciones 37 a 54: 78 tropas y 32 edificios), tu PDF «Equipamiento militar 2» (texto y las 19 imágenes de sus 15 páginas), tu Dirección visual UI 0.4 (14 pantallas y 2 vehículos) y las imágenes de modelos de tu PDF v1.8 (31 modelos 0.2 y 2 escenas). Tienes razón: en la v1.7 solo entró un primer lote. El juego publicado tiene 36 tropas y 23 edificios, y la documentación no traía tus imágenes.</p>
+  <p>«La imagen de la portada»: en el sitio se ve una escena armada con la base y todo el ejército; en el juego, el vestíbulo tiene un fondo plano. Tu pantalla 02 de la UI 0.4 pide justo eso: «Tu ejército» detrás del vestíbulo. Eso se arregla en esta versión.</p>
+  <div class="figs">
+    <figure><img src="../roblox/ui-0.4/ui04-03.jpg" alt="Tu pantalla 02 Vestíbulo"><figcaption>Tu pantalla 02 · Vestíbulo (UI 0.4): el ejército en 3D detrás del menú. Es la guía de la portada nueva.</figcaption></figure>
+    <figure><img src="../roblox/modelos-0.2/escena-base.jpg" alt="Tu escena Base terrestre"><figcaption>Tu escena «Base terrestre» (PDF v1.8, página 13): base, tropas y vehículos juntos.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>2. Qué tenía el juego y qué tiene ahora (programa revisor)</h2>
+  <p>Resultado real del programa revisor antes de esta versión (juego v1.7) y sobre el juego terminado. «En el juego» = existe, con modelo 3D, tu nombre y tu productor; cómo funciona cada uno en una partida lo dicen las pruebas de la sección 9.</p>
+  <h3>Antes · juego v1.7</h3><div class="tiles t5"><div class="tile"><b>38 de 110</b><span>Tu catálogo</span></div><div class="tile"><b>24 de 78</b><span>Tropas</span></div><div class="tile"><b>14 de 32</b><span>Edificios</span></div><div class="tile"><b>25 de 57</b><span>Equipamiento</span></div><div class="tile"><b>13 de 19</b><span>Pantallas UI 0.4</span></div></div>
+<h3>Después · juego v1.8</h3>
+<div class="tiles t5">
+<div class="tile"><b>110 de 110</b><span>Tu catálogo</span></div>
+<div class="tile"><b>78 de 78</b><span>Tropas</span></div>
+<div class="tile"><b>32 de 32</b><span>Edificios</span></div>
+<div class="tile"><b>57 de 57</b><span>Equipamiento</span></div>
+<div class="tile"><b>19 de 19</b><span>Pantallas UI 0.4</span></div>
+</div>
+<p class="small">Informe del 2026-11-20 16:18 sobre el juego v1.8 publicado (93 tropas, 42 edificios, 156 modelos 3D). «En el juego» = existe, con modelo, tu nombre y tu productor.</p>
+<table><thead><tr><th style="width:30%">Grupo de tu catálogo</th><th>Lo que falta hoy</th></tr></thead><tbody>
+</tbody></table>
+  <h3>Cómo se revisa</h3>
+  <ul>
+    <li><b>Tus archivos</b>: lee las tablas de tu PRD 1.8 tal como están (nombre, función, forma y productor), tu lista de equipamiento (busca cada sistema en el texto; los de las capturas se anotan con su número de imagen) y las pantallas de la UI 0.4.</li>
+    <li><b>El juego</b>: lee el archivo real faro.html (los datos de tropas y edificios, los 3D incrustados y los textos de la interfaz). Con «--fotos» lo abre en Chromium y saca la miniatura 3D de cada elemento.</li>
+    <li><b>Estado</b>: «En el juego» (existe, con modelo, tu nombre o uno que empieza igual, y tu productor), «Con aviso» (existe pero algo no coincide, y dice qué), «Falta».</li>
+  </ul>
+</section>
+
+<section>
+  <h2>3. Tropas nuevas · 57</h2>
+  <p>Una tropa por cada fila de tu catálogo que falta, más las de tu lista de equipamiento que no tenían lugar (Equipo antitanque, Ametrallador pesado, Soldado antidrones, Perro robot, Lanzacohetes termobárico, Avión artillado y Submarino estratégico). Los números son una propuesta para probar: tú decides el balance. Precio en monedas y energía (⚡); velocidad en casillas por segundo.</p>
+  <h3>Infantería y personal · 11</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Explorador</b><div class="small">PRD 1.8 · 38</div></td><td>Cuartel</td><td>250</td><td>140 · 2,0 · 1</td><td class="small">8 · 0,8 s · 3 · bala</td><td>Ve 6 casillas y captura Banderas y el Faro un 50 % más rápido.<div class="small">Modelo: Soldado ligero con gorra, prismáticos y mochila chica.</div></td></tr>
+<tr><td><b>Soldado</b><div class="small">PRD 1.8 · 38 y Equipamiento (soldado)</div></td><td>Cuartel</td><td>300</td><td>220 · 1,5 · 1</td><td class="small">13 · 0,7 s · 3 · bala</td><td>Combatiente básico y barato.<div class="small">Modelo: Soldado de bloques con casco y rifle compacto.</div></td></tr>
+<tr><td><b>Oficial de campo</b><div class="small">PRD 1.8 · 39</div></td><td>Cuartel</td><td>1.200</td><td>260 · 1,5 · 1</td><td class="small">10 · 0,8 s · 3 · bala</td><td>Mando: las tropas propias a 2 casillas hacen un 15 % más de daño (no se suma con otro Oficial ni con un Vehículo de mando).<div class="small">Modelo: Uniforme con gorra de mando y tableta con el color del equipo.</div></td></tr>
+<tr><td><b>Operador de comunicaciones</b><div class="small">PRD 1.8 · 39</div></td><td>Cuartel</td><td>900</td><td>200 · 1,5 · 1</td><td class="small">8 · 0,8 s · 3 · bala</td><td>Ve 8 casillas y descubre submarinos, minas y unidades ocultas cerca.<div class="small">Modelo: Mochila de radio grande con antena y auriculares.</div></td></tr>
+<tr><td><b>Zapador</b><div class="small">PRD 1.8 · 39 y Equipamiento (MICLIC)</div></td><td>Cuartel</td><td>800</td><td>300 · 1,5 · 1</td><td class="small">60 · 2,5 s · 1 · cargas (×3 a edificios, ×4 a muros)</td><td>Cargas explosivas contra muros y edificios; desactiva minas cercanas.<div class="small">Modelo: Casco con visor, equipo de trabajo y cargas a la espalda.</div></td></tr>
+<tr><td><b>Equipo de mortero</b><div class="small">PRD 1.8 · 39 y Equipamiento (morteros)</div></td><td>Cuartel</td><td>1.100</td><td>300 · 1,1 · 2</td><td class="small">70 · 4 s · 6 · granada con daño en área</td><td>Tiro curvo de largo alcance con daño en área.<div class="small">Modelo: Dos soldados junto a un mortero sobre base redonda.</div></td></tr>
+<tr><td><b>Paracaidista</b><div class="small">PRD 1.8 · 39</div></td><td>Cuartel</td><td>900</td><td>300 · 1,6 · 1</td><td class="small">20 · 0,6 s · 3 · bala</td><td>Si tienes Aeropuerto militar, sale en paracaídas sobre el punto de reunión (si lo ves). Los aviones de transporte lo lanzan donde quieras.<div class="small">Modelo: Soldado con mochila de paracaídas.</div></td></tr>
+<tr><td><b>Infante de marina</b><div class="small">PRD 1.8 · 39</div></td><td>Cuartel</td><td>800</td><td>320 · 1,5 · 1</td><td class="small">18 · 0,6 s · 3 · bala</td><td>Anfibio: camina por el agua poco profunda de la costa.<div class="small">Modelo: Soldado con chaleco ancho y marcas navales.</div></td></tr>
+<tr><td><b>Equipo antitanque</b><div class="small">Equipamiento (misiles portátiles)</div></td><td>Cuartel</td><td>1.600</td><td>240 · 1,2 · 1</td><td class="small">180 · 4 s · 6 · misil guiado (×2 a vehículos)</td><td>Misil guiado que cae sobre el techo de los tanques.<div class="small">Modelo: Soldado con lanzador grueso al hombro y mira.</div></td></tr>
+<tr><td><b>Ametrallador pesado</b><div class="small">Equipamiento (minigun)</div></td><td>Cuartel</td><td>1.000</td><td>340 · 1,2 · 1</td><td class="small">9 · 0,12 s · 3 · ráfaga</td><td>Ametralladora rotativa: muchísimas balas contra infantería.<div class="small">Modelo: Soldado grande con ametralladora rotativa.</div></td></tr>
+<tr><td><b>Soldado antidrones</b><div class="small">Equipamiento (rifles antidrones)</div></td><td>Cuartel</td><td>700</td><td>220 · 1,5 · 1</td><td class="small">40 · 0,8 s · 4 · inhibidor (×3 a drones)</td><td>Corta la señal de los drones: muy fuerte contra drones.<div class="small">Modelo: Soldado con fusil inhibidor de antenas.</div></td></tr>
+</tbody></table>
+<h3>Tierra: blindados, artillería y apoyo · 18</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Perro robot</b><div class="small">Equipamiento (perros robot)</div></td><td>Fábrica</td><td>1.200 + 5 ⚡</td><td>400 · 2,4 · 1</td><td class="small">—</td><td>Patrulla: ve 7 casillas y descubre lo oculto. No pelea.<div class="small">Modelo: Robot de cuatro patas con cámara.</div></td></tr>
+<tr><td><b>Blindado ligero</b><div class="small">PRD 1.8 · 40</div></td><td>Fábrica</td><td>1.900 + 10 ⚡</td><td>1000 · 2,4 · 2</td><td class="small">30 · 0,6 s · 3 · cañón automático</td><td>Rápido y con ruedas.<div class="small">Modelo: Carro de ruedas con torreta baja.</div></td></tr>
+<tr><td><b>Vehículo de combate de infantería</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>2.800 + 20 ⚡</td><td>1700 · 1,8 · 3</td><td class="small">45 · 0,8 s · 4 · cañón</td><td>Lleva 4 soldados y pelea.<div class="small">Modelo: Orugas, torreta chica y portón trasero.</div></td></tr>
+<tr><td><b>Camión de tropas</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>1.200 + 5 ⚡</td><td>700 · 2,2 · 2</td><td class="small">—</td><td>Lleva 8 soldados; poca protección.<div class="small">Modelo: Cabina militar y caja cubierta con lona.</div></td></tr>
+<tr><td><b>Ambulancia militar</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>1.500 + 10 ⚡</td><td>800 · 2,2 · 2</td><td class="small">—</td><td>Cura a la infantería a 2 casillas (6 % de su vida por segundo).<div class="small">Modelo: Caja cerrada clara con cruz y baliza.</div></td></tr>
+<tr><td><b>Vehículo de recuperación</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>2.200 + 15 ⚡</td><td>1800 · 1,4 · 2</td><td class="small">—</td><td>Repara vehículos a 1 casilla (4 % por segundo).<div class="small">Modelo: Chasis pesado con grúa corta.</div></td></tr>
+<tr><td><b>Camión de suministros</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>1.600 + 10 ⚡</td><td>800 · 2,0 · 2</td><td class="small">—</td><td>Suministros: las tropas propias a 2 casillas recargan un 20 % más rápido.<div class="small">Modelo: Camión de caja abierta con cajas.</div></td></tr>
+<tr><td><b>Camión cisterna militar</b><div class="small">PRD 1.8 · 41</div></td><td>Fábrica</td><td>1.500 + 5 ⚡</td><td>900 · 2,0 · 2</td><td class="small">—</td><td>Combustible: los vehículos propios a 2 casillas van un 20 % más rápido.<div class="small">Modelo: Cabina baja y depósito cilíndrico.</div></td></tr>
+<tr><td><b>Vehículo de mando</b><div class="small">PRD 1.8 · 42</div></td><td>Fábrica</td><td>3.000 + 20 ⚡</td><td>1600 · 1,6 · 3</td><td class="small">14 · 0,4 s · 3 · ametralladora</td><td>Mando: +15 % de daño a las tropas propias a 3 casillas (no se suma con el Oficial).<div class="small">Modelo: Caja alta con dos antenas.</div></td></tr>
+<tr><td><b>Radar móvil</b><div class="small">PRD 1.8 · 42</div></td><td>Fábrica</td><td>2.400 + 20 ⚡</td><td>900 · 1,5 · 2</td><td class="small">—</td><td>Ve 10 casillas y descubre aviones furtivos y submarinos.<div class="small">Modelo: Camión con antena plana grande.</div></td></tr>
+<tr><td><b>Obús autopropulsado</b><div class="small">PRD 1.8 · 42 y Equipamiento (artillería autopropulsada)</div></td><td>Fábrica</td><td>4.600 + 40 ⚡</td><td>1500 · 0,9 · 3</td><td class="small">220 · 5 s · 8 · obús con daño en área</td><td>Artillería de muy largo alcance.<div class="small">Modelo: Orugas, torreta amplia y cañón largo.</div></td></tr>
+<tr><td><b>Artillería remolcada</b><div class="small">PRD 1.8 · 42 y Equipamiento (M777)</div></td><td>Fábrica</td><td>2.600 + 10 ⚡</td><td>800 · 0,7 · 2</td><td class="small">170 · 5 s · 7 · obús con daño en área</td><td>Barata y lenta.<div class="small">Modelo: Cañón sobre dos ruedas con base abierta.</div></td></tr>
+<tr><td><b>Cazacarros</b><div class="small">PRD 1.8 · 42</div></td><td>Fábrica</td><td>3.600 + 30 ⚡</td><td>1900 · 1,4 · 3</td><td class="small">200 · 2,6 s · 5 · obús (×1,8 a vehículos)</td><td>Especialista contra tanques.<div class="small">Modelo: Casco bajo y cañón dominante.</div></td></tr>
+<tr><td><b>Transporte anfibio</b><div class="small">PRD 1.8 · 43 y Equipamiento (anfibios)</div></td><td>Fábrica</td><td>2.400 + 15 ⚡</td><td>1500 · 1,8 · 2</td><td class="small">12 · 0,4 s · 3 · ametralladora</td><td>Anfibio: va por tierra y por agua poco profunda; lleva 6 soldados.<div class="small">Modelo: Casco ancho de proa redonda.</div></td></tr>
+<tr><td><b>Vehículo lanzapuentes</b><div class="small">PRD 1.8 · 43</div></td><td>Fábrica</td><td>2.600 + 20 ⚡</td><td>1600 · 1,4 · 2</td><td class="small">—</td><td>«Tender puente»: pone un Puente modular en el agua poco profunda de al lado.<div class="small">Modelo: Orugas con dos tramos de puente plegados.</div></td></tr>
+<tr><td><b>Vehículo de despeje</b><div class="small">PRD 1.8 · 43</div></td><td>Fábrica</td><td>2.000 + 15 ⚡</td><td>2000 · 1,3 · 2</td><td class="small">90 · 2 s · 1 · rodillo (×2,5 a edificios)</td><td>Abre paso: rompe muros y obras, y desactiva minas.<div class="small">Modelo: Vehículo pesado con rodillo frontal.</div></td></tr>
+<tr><td><b>Topadora blindada</b><div class="small">PRD 1.8 · 43</div></td><td>Fábrica</td><td>1.800 + 10 ⚡</td><td>2200 · 1,3 · 2</td><td class="small">—</td><td>Construye y repara como un Ingeniero, con blindaje.<div class="small">Modelo: Orugas cortas, cabina protegida y pala.</div></td></tr>
+<tr><td><b>Lanzacohetes termobárico</b><div class="small">Equipamiento (TOS-1A)</div></td><td>Fábrica</td><td>5.200 + 45 ⚡</td><td>1300 · 1,0 · 3</td><td class="small">60 · 10 s · 5 · salva de 8 con daño en área</td><td>Nube de fuego en un área: muy fuerte contra infantería.<div class="small">Modelo: Orugas con caja de 24 tubos.</div></td></tr>
+</tbody></table>
+<h3>Drones · 3</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Dron explorador</b><div class="small">PRD 1.8 · 44</div></td><td>Helipuerto</td><td>800 + 5 ⚡</td><td>150 · 3,2 · 1</td><td class="small">—</td><td>Ve 8 casillas desde el aire.<div class="small">Modelo: Cuadricóptero chico con cámara.</div></td></tr>
+<tr><td><b>Dron de carga</b><div class="small">PRD 1.8 · 44</div></td><td>Centro de drones</td><td>1.200 + 10 ⚡</td><td>250 · 2,6 · 1</td><td class="small">—</td><td>Suministros desde el aire: +20 % de recarga a las tropas a 2 casillas.<div class="small">Modelo: Cuatro rotores y caja colgante.</div></td></tr>
+<tr><td><b>Dron interceptor</b><div class="small">PRD 1.8 · 44</div></td><td>Centro de drones</td><td>1.400 + 10 ⚡</td><td>300 · 3,6 · 1</td><td class="small">60 · 1 s · 3 · solo aire (×2 a drones)</td><td>Caza drones y helicópteros.<div class="small">Modelo: Ala en flecha y cuerpo chico.</div></td></tr>
+</tbody></table>
+<h3>Helicópteros · 3</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Helicóptero de transporte</b><div class="small">PRD 1.8 · 45</div></td><td>Helipuerto</td><td>5.000 + 40 ⚡</td><td>2000 · 2,4 · 3</td><td class="small">—</td><td>Lleva 8 soldados y los baja en cualquier tierra.<div class="small">Modelo: Fuselaje ancho, puerta lateral y dos rotores.</div></td></tr>
+<tr><td><b>Helicóptero de rescate</b><div class="small">PRD 1.8 · 45</div></td><td>Helipuerto</td><td>4.000 + 30 ⚡</td><td>1600 · 2,5 · 3</td><td class="small">—</td><td>Cura a la infantería y repara aeronaves a 2 casillas.<div class="small">Modelo: Cabina redonda, patines y cruz.</div></td></tr>
+<tr><td><b>Helicóptero de patrulla naval</b><div class="small">PRD 1.8 · 45 y Equipamiento (Seahawk)</div></td><td>Helipuerto</td><td>6.000 + 50 ⚡</td><td>2000 · 2,3 · 4</td><td class="small">200 · 4 s · 3 · torpedo (×2 a submarinos)</td><td>Descubre submarinos y los ataca con torpedos.<div class="small">Modelo: Cuerpo medio con cúpula de sonar.</div></td></tr>
+</tbody></table>
+<h3>Aviación de ala fija · 7</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Avión de apoyo terrestre</b><div class="small">PRD 1.8 · 46 y Equipamiento (A-10)</div></td><td>Aeropuerto militar</td><td>7.000 + 60 ⚡</td><td>2600 · 2,4 · 4</td><td class="small">40 · 0,25 s · 3 · cañón de 30 mm (×1,8 a vehículos)</td><td>Vuela bajo y destruye tanques.<div class="small">Modelo: Alas rectas anchas y dos motores atrás.</div></td></tr>
+<tr><td><b>Bombardero convencional</b><div class="small">PRD 1.8 · 46 y Equipamiento (B-52, B-1B)</div></td><td>Aeropuerto militar</td><td>11.000 + 100 ⚡</td><td>4200 · 1,6 · 6</td><td class="small">900 · 7 s · 1 · bombas con daño en área</td><td>Bombardero pesado: destruye bases. Se ve en el radar.<div class="small">Modelo: Avión grande, alas largas y cuatro motores.</div></td></tr>
+<tr><td><b>Avión de transporte militar</b><div class="small">PRD 1.8 · 46 y Equipamiento (C-17)</div></td><td>Aeropuerto militar</td><td>6.000 + 50 ⚡</td><td>3000 · 2,0 · 4</td><td class="small">—</td><td>Lleva 10 soldados y los baja en cualquier tierra.<div class="small">Modelo: Fuselaje grande, ala alta y rampa.</div></td></tr>
+<tr><td><b>Avión de vigilancia aérea</b><div class="small">PRD 1.8 · 46</div></td><td>Aeropuerto militar</td><td>7.500 + 60 ⚡</td><td>2200 · 1,8 · 4</td><td class="small">—</td><td>Ve 14 casillas y descubre aviones furtivos.<div class="small">Modelo: Avión con disco grande encima.</div></td></tr>
+<tr><td><b>Avión de reabastecimiento</b><div class="small">PRD 1.8 · 46</div></td><td>Aeropuerto militar</td><td>6.500 + 50 ⚡</td><td>2600 · 2,0 · 4</td><td class="small">—</td><td>Repara aeronaves propias a 3 casillas (3 % por segundo).<div class="small">Modelo: Fuselaje largo con pértiga trasera.</div></td></tr>
+<tr><td><b>Avión de apoyo electrónico</b><div class="small">PRD 1.8 · 46 y Equipamiento (HARM)</div></td><td>Aeropuerto militar</td><td>8.000 + 70 ⚡</td><td>2400 · 2,2 · 4</td><td class="small">300 · 8 s · 6 · misil antirradar (×2 a defensas)</td><td>Interferencia: las defensas enemigas a 4 casillas disparan un 40 % más lento.<div class="small">Modelo: Avión mediano con antenas.</div></td></tr>
+<tr><td><b>Avión artillado</b><div class="small">Equipamiento (AC-130)</div></td><td>Aeropuerto militar</td><td>9.500 + 80 ⚡</td><td>3800 · 1,4 · 5</td><td class="small">120 · 1,5 s · 5 · obús lateral con daño en área</td><td>Da vueltas sobre el blanco y dispara de costado.<div class="small">Modelo: Avión de carga con cañones al costado.</div></td></tr>
+</tbody></table>
+<h3>Flota naval y drones de mar · 14</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Dron naval de superficie</b><div class="small">PRD 1.8 · 44</div></td><td>Puerto</td><td>1.000 + 5 ⚡</td><td>400 · 3,0 · 1</td><td class="small">—</td><td>Explora el mar: ve 7 casillas y descubre submarinos y minas.<div class="small">Modelo: Casco bajo de dos flotadores y mástil.</div></td></tr>
+<tr><td><b>Dron submarino</b><div class="small">PRD 1.8 · 44</div></td><td>Puerto</td><td>1.200 + 5 ⚡</td><td>300 · 2,0 · 1</td><td class="small">—</td><td>Va oculto bajo el agua y descubre submarinos y minas.<div class="small">Modelo: Cápsula pequeña con aletas.</div></td></tr>
+<tr><td><b>Cañonera</b><div class="small">PRD 1.8 · 47</div></td><td>Puerto</td><td>2.200 + 15 ⚡</td><td>1300 · 2,0 · 2</td><td class="small">90 · 1,8 s · 4 · cañón</td><td>Apoyo naval barato contra la costa.<div class="small">Modelo: Casco compacto con cañón al frente.</div></td></tr>
+<tr><td><b>Acorazado</b><div class="small">PRD 1.8 · 47</div></td><td>Puerto</td><td>12.000 + 100 ⚡</td><td>7000 · 0,9 · 6</td><td class="small">400 · 4 s · 7 · salva de 2 con daño en área</td><td>El buque más fuerte contra bases y barcos.<div class="small">Modelo: Casco ancho y tres torres grandes.</div></td></tr>
+<tr><td><b>Patrullera costera</b><div class="small">PRD 1.8 · 48</div></td><td>Puerto</td><td>1.600 + 10 ⚡</td><td>900 · 2,6 · 1</td><td class="small">16 · 0,5 s · 3 · ametralladora</td><td>Vigila la costa: ve 7 casillas y descubre submarinos.<div class="small">Modelo: Casco estrecho y cabina alta.</div></td></tr>
+<tr><td><b>Corbeta</b><div class="small">PRD 1.8 · 48 y Equipamiento (corbetas, Mk 45, Phalanx)</div></td><td>Puerto</td><td>3.200 + 25 ⚡</td><td>2000 · 2,0 · 3</td><td class="small">80 · 1,2 s · 5 · cañón de proa</td><td>Defensa de punto: derriba misiles y cohetes cerca.<div class="small">Modelo: Casco corto, puente central y cañón.</div></td></tr>
+<tr><td><b>Crucero de mando</b><div class="small">PRD 1.8 · 48 y Equipamiento (VLS, Aegis)</div></td><td>Astillero mayor</td><td>9.000 + 80 ⚡</td><td>5200 · 1,1 · 5</td><td class="small">260 · 3 s · 7 · misiles de lanzamiento vertical</td><td>Mando naval (+15 % de daño a barcos a 3 casillas) y derriba misiles cerca.<div class="small">Modelo: Casco amplio y mástil alto.</div></td></tr>
+<tr><td><b>Buque de desembarco</b><div class="small">PRD 1.8 · 48 y Equipamiento (buques anfibios)</div></td><td>Astillero mayor</td><td>4.200 + 30 ⚡</td><td>3200 · 1,4 · 4</td><td class="small">—</td><td>Lleva 12 plazas (soldados y vehículos) y los baja en la costa.<div class="small">Modelo: Casco ancho y rampa frontal grande.</div></td></tr>
+<tr><td><b>Buque logístico</b><div class="small">PRD 1.8 · 48</div></td><td>Puerto</td><td>3.500 + 20 ⚡</td><td>2600 · 1,3 · 3</td><td class="small">—</td><td>Repara barcos a 3 casillas (2 % por segundo) y los hace recargar un 20 % más rápido.<div class="small">Modelo: Cubierta con contenedores y grúa.</div></td></tr>
+<tr><td><b>Buque hospital</b><div class="small">PRD 1.8 · 49</div></td><td>Astillero mayor</td><td>4.000 + 20 ⚡</td><td>3000 · 1,2 · 3</td><td class="small">—</td><td>Repara barcos y cura a la infantería a 3 casillas.<div class="small">Modelo: Casco blanco con cruz.</div></td></tr>
+<tr><td><b>Aerodeslizador militar</b><div class="small">PRD 1.8 · 49 y Equipamiento (aerodeslizadores)</div></td><td>Puerto</td><td>2.600 + 20 ⚡</td><td>1400 · 2,8 · 2</td><td class="small">—</td><td>Anfibio: va por agua y tierra de la costa; lleva 6 plazas (también vehículos).<div class="small">Modelo: Base con faldón y dos ventiladores.</div></td></tr>
+<tr><td><b>Dragaminas</b><div class="small">PRD 1.8 · 49</div></td><td>Puerto</td><td>2.000 + 15 ⚡</td><td>1400 · 1,8 · 2</td><td class="small">120 · 1 s · 3 · solo minas</td><td>Descubre y destruye minas.<div class="small">Modelo: Casco compacto con brazo trasero.</div></td></tr>
+<tr><td><b>Buque minador</b><div class="small">PRD 1.8 · 49 y Equipamiento (minas navales)</div></td><td>Puerto</td><td>2.500 + 20 ⚡</td><td>1500 · 1,6 · 2</td><td class="small">—</td><td>«Sembrar mina»: deja una mina oculta (hasta 8). Explota con barcos enemigos.<div class="small">Modelo: Cubierta trasera con módulos.</div></td></tr>
+<tr><td><b>Submarino de reconocimiento</b><div class="small">PRD 1.8 · 49</div></td><td>Astillero mayor</td><td>3.000 + 25 ⚡</td><td>1200 · 1,8 · 2</td><td class="small">—</td><td>Oculto: ve 8 casillas y descubre submarinos.<div class="small">Modelo: Casco compacto y vela chica.</div></td></tr>
+</tbody></table>
+<h3>Estratégico · 1</h3><table class="cat"><thead><tr><th style="width:17%">Tropa</th><th style="width:11%">Sale de</th><th style="width:9%">Precio</th><th style="width:12%">Vida · vel. · pobl.</th><th style="width:16%">Arma</th><th>Lo especial</th></tr></thead><tbody>
+<tr><td><b>Submarino estratégico</b><div class="small">Equipamiento (submarinos estratégicos)</div></td><td>Astillero mayor</td><td>24.000 + 100 ⚡</td><td>2600 · 1,2 · 5</td><td class="small">misil nuclear (un uso)</td><td>Solo con «Arsenal estratégico»: un misil, comparte el uso único.<div class="small">Modelo: Casco largo con tapas de misiles.</div></td></tr>
+</tbody></table>
+</section>
+
+<section>
+  <h2>4. Edificios nuevos · 18</h2>
+  <p>Los 16 que faltan de tu catálogo, más dos de tu lista de equipamiento (Defensa de punto y Torre láser). Pestaña nueva «Apoyo» en Construir; el Astillero mayor y el Centro de drones van en «Producción».</p>
+  <table class="cat"><thead><tr><th style="width:18%">Edificio</th><th style="width:10%">Pestaña</th><th style="width:9%">Precio</th><th style="width:12%">Vida · tiempo · límite</th><th style="width:14%">Dónde</th><th>Lo que hace</th></tr></thead><tbody>
+<tr><td><b>Corral de ganadería</b><div class="small">PRD 1.8 · 52</div></td><td>Economía</td><td>600</td><td>500 · 7 s · 8</td><td>tierra</td><td>+280 monedas/min.<div class="small">Modelo: Cercado con cobertizo y animales.</div></td></tr>
+<tr><td><b>Central de energía</b><div class="small">PRD 1.8 · 54</div></td><td>Energía</td><td>3.000</td><td>1200 · 14 s · 2</td><td>tierra</td><td>La energía más fuerte (+25 cada 10 s).<div class="small">Modelo: Módulos industriales y chimeneas con luces.</div></td></tr>
+<tr><td><b>Taller de mantenimiento</b><div class="small">PRD 1.8 · 53</div></td><td>Apoyo</td><td>1.800</td><td>1200 · 10 s · 3</td><td>tierra</td><td>Repara vehículos a 2 casillas (30 por segundo).<div class="small">Modelo: Nave baja con portón y grúa.</div></td></tr>
+<tr><td><b>Centro de investigación</b><div class="small">PRD 1.8 · 53</div></td><td>Apoyo</td><td>3.000 + 20 ⚡</td><td>1400 · 14 s · 1</td><td>tierra</td><td>3 investigaciones: Blindaje (+10 % de vida a vehículos), Puntería (+10 % de daño a infantería) y Motores (+15 % de velocidad a aeronaves).<div class="small">Modelo: Laboratorios modulares y torre corta.</div></td></tr>
+<tr><td><b>Estación de radar</b><div class="small">PRD 1.8 · 53</div></td><td>Apoyo</td><td>2.000 + 30 ⚡</td><td>900 · 10 s · 2</td><td>tierra</td><td>Ve 12 casillas y descubre furtivos y submarinos a 8.<div class="small">Modelo: Base con antena de plato grande.</div></td></tr>
+<tr><td><b>Centro de drones</b><div class="small">PRD 1.8 · 53</div></td><td>Producción</td><td>2.200 + 20 ⚡</td><td>1100 · 12 s · 2</td><td>tierra</td><td>Produce drones y los repara.<div class="small">Modelo: Taller con plataformas y antenas.</div></td></tr>
+<tr><td><b>Astillero mayor</b><div class="small">PRD 1.8 · 53</div></td><td>Producción</td><td>4.000 + 30 ⚡</td><td>2200 · 18 s · 1</td><td>agua junto a la orilla</td><td>Produce los buques grandes.<div class="small">Modelo: Dique ancho con grúas.</div></td></tr>
+<tr><td><b>Depósito logístico</b><div class="small">PRD 1.8 · 53</div></td><td>Apoyo</td><td>2.500</td><td>1300 · 12 s · 2</td><td>tierra</td><td>Suministros: las tropas a 3 casillas recargan un 20 % más rápido; +5 de energía cada 10 s.<div class="small">Modelo: Almacenes y contenedores.</div></td></tr>
+<tr><td><b>Centro de mando avanzado</b><div class="small">PRD 1.8 · 53</div></td><td>Apoyo</td><td>3.500 + 20 ⚡</td><td>2400 · 16 s · 1</td><td>tierra</td><td>Gana territorio (3 casillas) y da +10 % de daño a las tropas a 3 casillas.<div class="small">Modelo: Edificio bajo protegido con mástil.</div></td></tr>
+<tr><td><b>Búnker de guarnición</b><div class="small">PRD 1.8 · 54</div></td><td>Defensa</td><td>1.600</td><td>2000 · 10 s · 6</td><td>tierra</td><td>Dispara solo; caben 4 soldados y cada uno suma un 25 % de daño.<div class="small">Modelo: Volumen bajo de hormigón con aberturas.</div></td></tr>
+<tr><td><b>Puerta reforzada</b><div class="small">PRD 1.8 · 54</div></td><td>Defensa</td><td>400</td><td>2500 · 5 s · 10</td><td>tierra</td><td>Muro con puerta: abierta deja pasar a tus tropas y aliados; cerrada no pasa nadie.<div class="small">Modelo: Dos pilares y hojas con bandas de color.</div></td></tr>
+<tr><td><b>Puente modular</b><div class="small">PRD 1.8 · 54</div></td><td>Apoyo</td><td>800</td><td>1000 · 8 s · 10</td><td>agua poco profunda junto a tierra</td><td>Las tropas de tierra cruzan por encima (los barcos ya no pasan por esa casilla).<div class="small">Modelo: Tablero recto con barandas.</div></td></tr>
+<tr><td><b>Muelle logístico</b><div class="small">PRD 1.8 · 54</div></td><td>Apoyo</td><td>1.500</td><td>1000 · 8 s · 3</td><td>agua junto a la orilla</td><td>Repara barcos a 2 casillas (20 por segundo).<div class="small">Modelo: Pasarela ancha con rampa y cajas.</div></td></tr>
+<tr><td><b>Torre de observación</b><div class="small">PRD 1.8 · 54</div></td><td>Defensa</td><td>600</td><td>600 · 6 s · 6</td><td>tierra</td><td>Ve 9 casillas y descubre lo oculto a 4.<div class="small">Modelo: Torre alta y estrecha.</div></td></tr>
+<tr><td><b>Batería de defensa costera</b><div class="small">PRD 1.8 · 54</div></td><td>Defensa</td><td>3.000 + 20 ⚡</td><td>1800 · 14 s · 4</td><td>tierra junto al agua</td><td>Cañón contra barcos (×1,8) de 7 casillas.<div class="small">Modelo: Base con cañón grande hacia el agua.</div></td></tr>
+<tr><td><b>Complejo estratégico</b><div class="small">PRD 1.8 · 54 y 55</div></td><td>Defensa</td><td>15.000 + 100 ⚡</td><td>3000 · 30 s · 1</td><td>tierra</td><td>Solo con «Arsenal estratégico»: lanza el DF-5C (misil nuclear, comparte el uso único).<div class="small">Modelo: Plataforma con compuerta redonda y señal ámbar.</div></td></tr>
+<tr><td><b>Defensa de punto</b><div class="small">Equipamiento (Phalanx, C-RAM, Cúpula de Hierro)</div></td><td>Defensa</td><td>1.800 + 20 ⚡</td><td>900 · 10 s · 6</td><td>tierra</td><td>Derriba misiles y cohetes a 3 casillas y dispara a drones.<div class="small">Modelo: Torreta con cañón rotativo y radar.</div></td></tr>
+<tr><td><b>Torre láser</b><div class="small">Equipamiento (HELIOS)</div></td><td>Defensa</td><td>2.500 + 40 ⚡</td><td>900 · 12 s · 4</td><td>tierra</td><td>Rayo contra aeronaves (×2 a drones), 5 casillas.<div class="small">Modelo: Torre con emisor y paneles.</div></td></tr>
+</tbody></table>
+  <h3>Cambios a lo que ya existe</h3>
+  <ul>
+    <li><b>Nombres de tu catálogo</b>: fighter → «Avión de combate furtivo», medic → «Médico de campaña», hospital → «Hospital de campaña», frigate → «Fragata de escolta», wind → «Molino eólico», apc → «Transporte blindado de personal». «AIR DEFENSE» se queda (lo elegiste en la v0.9).</li>
+    <li><b>Productores de tu catálogo</b>: el Dron de ataque y el Dron kamikaze salen también del Centro de drones; la Fragata y el Portaaviones también del Astillero mayor. Siguen saliendo de donde salían.</li>
+    <li><b>Lo que ya existía no cambia sus números</b> (precio, vida, daño): así la campaña y las partidas de antes se juegan igual.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>5. Tu lista «Equipamiento militar moderno»</h2>
+  <p>Cada sistema de tu PDF y su lugar en el juego. 55 entran como tropa, edificio o arma; 2 quedan fuera con su motivo. Las fotos de prensa y las capturas de búsquedas de tu PDF no se copian al proyecto (son de otros sitios): el documento dice qué muestra cada página y qué tropa salió de ella.</p>
+  <table class="cat"><thead><tr><th style="width:9%">Grupo</th><th style="width:34%">Sistema de tu lista</th><th style="width:14%">Fuente</th><th>En el juego</th></tr></thead><tbody>
+<tr><td>Aérea</td><td>F-35 Lightning II (avión furtivo)</td><td class="small">texto «F-35»</td><td>Avión de combate furtivo</td></tr>
+<tr><td>Aérea</td><td>B-2 Spirit (bombardero furtivo)</td><td class="small">texto «B-2»</td><td>Bombardero furtivo</td></tr>
+<tr><td>Aérea</td><td>A-10 Thunderbolt II (ataque a tierra)</td><td class="small">texto «A-10»</td><td>Avión de apoyo terrestre</td></tr>
+<tr><td>Aérea</td><td>AC-130 Ghostrider (avión artillado)</td><td class="small">texto «AC-130»</td><td>Avión artillado</td></tr>
+<tr><td>Aérea</td><td>B-1B Lancer (bombardero pesado)</td><td class="small">texto «B-1B»</td><td>Bombardero convencional</td></tr>
+<tr><td>Aérea</td><td>B-52 Stratofortress (bombardero pesado)</td><td class="small">texto «B-52»</td><td>Bombardero convencional</td></tr>
+<tr><td>Aérea</td><td>AH-64 Apache (helicóptero de combate)</td><td class="small">texto «AH-64»</td><td>Apache Guardián</td></tr>
+<tr><td>Aérea</td><td>MH-60R Seahawk (helicóptero naval)</td><td class="small">texto «Seahawk»</td><td>Helicóptero de patrulla naval</td></tr>
+<tr><td>Aérea</td><td>MQ-9 Reaper (dron)</td><td class="small">texto «MQ-9»</td><td>Dron de ataque</td></tr>
+<tr><td>Aérea</td><td>Drones kamikaze FPV</td><td class="small">texto «FPV»</td><td>Dron kamikaze</td></tr>
+<tr><td>Aérea</td><td>Misil aire-aire AIM-120 AMRAAM</td><td class="small">texto «AIM-120»</td><td>Arma de: Avión de combate furtivo</td></tr>
+<tr><td>Aérea</td><td>Misil antirradar AGM-88 HARM</td><td class="small">texto «HARM»</td><td>Arma de: Avión de apoyo electrónico</td></tr>
+<tr><td>Aérea</td><td>Bombas guiadas JDAM y Paveway</td><td class="small">texto «JDAM»</td><td>Arma de: Bombardero convencional</td></tr>
+<tr><td>Aérea</td><td>Bomba antibúnker GBU-57</td><td class="small">texto «GBU-57»</td><td>Arma de: Bombardero furtivo</td></tr>
+<tr><td>Aérea</td><td>Aviones de carga gigantes (C-17 Globemaster III)</td><td class="small">imagen 18</td><td>Avión de transporte militar</td></tr>
+<tr><td>Naval</td><td>Portaaviones nuclear (USS Gerald R. Ford)</td><td class="small">texto «Ford»</td><td>Portaaviones</td></tr>
+<tr><td>Naval</td><td>Destructores (lanzamiento vertical VLS y Aegis)</td><td class="small">texto «Destructores»</td><td>Destructor</td></tr>
+<tr><td>Naval</td><td>Fragatas</td><td class="small">texto «Fragatas»</td><td>Fragata de escolta</td></tr>
+<tr><td>Naval</td><td>Corbetas</td><td class="small">texto «Corbetas»</td><td>Corbeta</td></tr>
+<tr><td>Naval</td><td>Interceptor SM-3 (Aegis)</td><td class="small">texto «SM-3»</td><td>Arma de: Crucero de mando</td></tr>
+<tr><td>Naval</td><td>Submarino de ataque (clase Virginia)</td><td class="small">texto «Virginia»</td><td>Submarino</td></tr>
+<tr><td>Naval</td><td>Submarino estratégico (clase Ohio, Trident II)</td><td class="small">texto «Ohio»</td><td>Submarino estratégico</td></tr>
+<tr><td>Naval</td><td>Misil de crucero Tomahawk</td><td class="small">texto «Tomahawk»</td><td>Arma de: Crucero de mando</td></tr>
+<tr><td>Naval</td><td>Lanchas rápidas misileras (Harpoon, Exocet, NSM)</td><td class="small">texto «Lanchas Rápidas Misileras»</td><td>Lancha misilera</td></tr>
+<tr><td>Naval</td><td>Buques anfibios de desembarco</td><td class="small">texto «Buques Anfibios»</td><td>Buque de desembarco</td></tr>
+<tr><td>Naval</td><td>Aerodeslizadores (LCAC)</td><td class="small">texto «aerodeslizadores»</td><td>Aerodeslizador militar</td></tr>
+<tr><td>Naval</td><td>Cañón naval Mk 45</td><td class="small">texto «Mk 45»</td><td>Arma de: Corbeta</td></tr>
+<tr><td>Naval</td><td>Sistema Phalanx CIWS</td><td class="small">texto «Phalanx»</td><td>Defensa de punto</td></tr>
+<tr><td>Naval</td><td>Minas navales</td><td class="small">texto «Minas Navales»</td><td>Buque minador</td></tr>
+<tr><td>Naval</td><td>Cañones láser en destructores</td><td class="small">imagen 14</td><td>Torre láser</td></tr>
+<tr><td>Terrestre</td><td>Tanque M1A2 Abrams</td><td class="small">texto «Abrams»</td><td>Tanque pesado</td></tr>
+<tr><td>Terrestre</td><td>Artillería autopropulsada (obuses)</td><td class="small">texto «Artillería Autopropulsada»</td><td>Obús autopropulsado</td></tr>
+<tr><td>Terrestre</td><td>Obús remolcado M777</td><td class="small">texto «M777»</td><td>Artillería remolcada</td></tr>
+<tr><td>Terrestre</td><td>Morteros</td><td class="small">texto «Morteros»</td><td>Equipo de mortero</td></tr>
+<tr><td>Terrestre</td><td>Lanzacohetes M142 HIMARS</td><td class="small">texto «HIMARS»</td><td>Lanzacohetes múltiple</td></tr>
+<tr><td>Terrestre</td><td>Misiles ATACMS (submuniciones)</td><td class="small">texto «ATACMS»</td><td>Arma de: Lanzacohetes múltiple</td></tr>
+<tr><td>Terrestre</td><td>Lanzacohetes termobárico TOS-1A</td><td class="small">texto «TOS-1A»</td><td>Lanzacohetes termobárico</td></tr>
+<tr><td>Terrestre</td><td>Misil hipersónico DF-17</td><td class="small">texto «DF-17»</td><td>Lanzador DF-17</td></tr>
+<tr><td>Terrestre</td><td>Misil hipersónico Dark Eagle</td><td class="small">texto «Dark Eagle»</td><td>Lanzador DF-17</td></tr>
+<tr><td>Terrestre</td><td>Misil balístico intercontinental (ICBM)</td><td class="small">texto «ICBM»</td><td>Complejo estratégico</td></tr>
+<tr><td>Terrestre</td><td>Escudos THAAD y Patriot</td><td class="small">texto «THAAD»</td><td>Escudo antimisiles</td></tr>
+<tr><td>Terrestre</td><td>Cúpula de Hierro y C-RAM</td><td class="small">texto «C-RAM»</td><td>Defensa de punto</td></tr>
+<tr><td>Terrestre</td><td>Misil portátil Javelin</td><td class="small">texto «Javelin»</td><td>Equipo antitanque</td></tr>
+<tr><td>Terrestre</td><td>Lanzacohetes portátiles AT4, Carl Gustaf y RPG-7</td><td class="small">texto «RPG-7»</td><td>Cohetero</td></tr>
+<tr><td>Terrestre</td><td>Rifle Barrett .50</td><td class="small">texto «Barrett»</td><td>Cazador</td></tr>
+<tr><td>Terrestre</td><td>Ametralladora rotativa (Minigun)</td><td class="small">texto «Minigun»</td><td>Ametrallador pesado</td></tr>
+<tr><td>Terrestre</td><td>Carga lineal MICLIC</td><td class="small">texto «MICLIC»</td><td>Arma de: Zapador</td></tr>
+<tr><td>Terrestre</td><td>Mina Claymore</td><td class="small">texto «Claymore»</td><td><span class="chip pend">Fuera</span> Mina antipersonal escondida en tierra: el juego no tiene minas en tierra; el Zapador usa cargas a la vista.</td></tr>
+<tr><td>Terrestre</td><td>Láser HELIOS</td><td class="small">texto «HELIOS»</td><td>Torre láser</td></tr>
+<tr><td>Terrestre</td><td>Rifles antidrones</td><td class="small">texto «Antidrones»</td><td>Soldado antidrones</td></tr>
+<tr><td>Terrestre</td><td>Perros robot</td><td class="small">texto «Perros Robot»</td><td>Perro robot</td></tr>
+<tr><td>Capturas</td><td>Logística e ingeniería (camiones, grúas, ambulancias)</td><td class="small">imagen 9</td><td>Camión de suministros</td></tr>
+<tr><td>Capturas</td><td>Equipamiento individual del soldado (visión nocturna)</td><td class="small">imagen 16</td><td>Soldado</td></tr>
+<tr><td>Capturas</td><td>Submarinos nucleares (interior y exterior)</td><td class="small">imagen 17</td><td>Submarino</td></tr>
+<tr><td>Capturas</td><td>Lanzadores DF-17 en desfile</td><td class="small">imagen 8</td><td>Lanzador DF-17</td></tr>
+<tr><td>Capturas</td><td>Lanzador de misil grande sobre camión (desfile)</td><td class="small">imagen 7</td><td>Lanzador nuclear móvil · un misil</td></tr>
+<tr><td>Capturas</td><td>Fuerzas espaciales y satélites militares</td><td class="small">imagen 14</td><td><span class="chip pend">Fuera</span> El juego no tiene espacio ni órbita; la vigilancia de largo alcance la hacen el Avión de vigilancia y la Estación de radar.</td></tr>
+</tbody></table>
+</section>
+
+<section>
+  <h2>6. Sistemas nuevos del juego</h2>
+  <p>Lo que hace falta programar para que cada tropa nueva haga lo suyo, no solo que exista.</p>
+  <table><thead><tr><th style="width:24%">Sistema</th><th>Regla</th></tr></thead><tbody>
+    <tr><td><b>Anfibio</b></td><td>Nuevo tipo de movimiento: tierra y agua poco profunda de la costa (Infante de marina, Transporte anfibio, Aerodeslizador). El agua profunda sigue siendo solo de barcos.</td></tr>
+    <tr><td><b>Auras</b></td><td>Mando: +15 % de daño a las tropas propias cerca (Oficial 2 casillas, Vehículo de mando 3, Centro de mando 3 con +10 %, Crucero a barcos); no se suman, vale la mayor. Suministros: recarga un 20 % más rápida (Camión de suministros, Dron de carga, Depósito, Buque logístico). Combustible: +20 % de velocidad a vehículos (Camión cisterna). Interferencia: defensas enemigas un 40 % más lentas (Avión de apoyo electrónico).</td></tr>
+    <tr><td><b>Curar y reparar</b></td><td>Ambulancia y Helicóptero de rescate curan infantería; Vehículo de recuperación y Taller reparan vehículos; Avión de reabastecimiento repara aeronaves; Buque logístico, Buque hospital y Muelle logístico reparan barcos.</td></tr>
+    <tr><td><b>Detección</b></td><td>Submarinos, minas y el Dron submarino van ocultos: solo se ven (y se les puede disparar) con un detector cerca: Operador de comunicaciones, Radar móvil, Perro robot, Patrullera, Dron naval, Submarino de reconocimiento, Helicóptero naval, Avión de vigilancia, Estación de radar y Torre de observación.</td></tr>
+    <tr><td><b>Minas navales</b></td><td>El Buque minador siembra hasta 8 minas ocultas; una mina explota con el primer barco enemigo a 1 casilla (500 de daño). El Dragaminas, el Zapador y el Vehículo de despeje las quitan.</td></tr>
+    <tr><td><b>Transporte aéreo y paracaídas</b></td><td>Helicóptero de transporte (8 plazas) y Avión de transporte (10) suben soldados en su base o en tierra y los bajan en cualquier tierra. El Paracaidista sale del Cuartel; si tienes Aeropuerto militar cae en paracaídas en el punto de reunión que ves.</td></tr>
+    <tr><td><b>Búnker</b></td><td>Edificio con guarnición: entran hasta 4 soldados; cada uno suma un 25 % al daño del Búnker; si el Búnker cae, salen con la vida que tenían.</td></tr>
+    <tr><td><b>Puerta y puente</b></td><td>Puerta reforzada: muro que deja pasar a tus tropas y aliados. Puente modular: se pone en agua poco profunda junto a tierra; por ahí cruzan las tropas de tierra (de todos), los barcos ya no pasan por esa casilla; se puede destruir. El Vehículo lanzapuentes lo tiende sin Constructor.</td></tr>
+    <tr><td><b>Centro de investigación</b></td><td>Tres investigaciones de 2500 monedas y 45 s cada una: Blindaje (+10 % de vida a vehículos), Puntería (+10 % de daño a infantería) y Motores (+15 % de velocidad a aeronaves).</td></tr>
+    <tr><td><b>Arsenal estratégico ampliado</b></td><td>Con el modificador «Arsenal estratégico»: Lanzador nuclear móvil, Submarino estratégico y Complejo estratégico (silo DF-5C) comparten el mismo uso único por jugador (1/1 → 0/1), con la misma preparación, confirmación y aviso de la v1.7.</td></tr>
+    <tr><td><b>Defensa de punto y antidrones</b></td><td>Corbeta, Crucero, Fragata de escolta y la Defensa de punto derriban misiles y cohetes que pasan cerca (con espera entre disparos). Soldado antidrones, Dron interceptor y Torre láser hacen más daño a drones.</td></tr>
+    <tr><td><b>Constructores nuevos</b></td><td>Topadora blindada: construye y repara como un Ingeniero. Vehículo de despeje: rompe muros y obras.</td></tr>
+    <tr><td><b>Bots</b></td><td>En Normal y Difícil, los bots usan algunas tropas nuevas según su forma de jugar (sin cambiar cuánto gastan).</td></tr>
+  </tbody></table>
+</section>
+
+<section>
+  <h2>7. Portada, vestíbulo y Campo de pruebas</h2>
+  <h3>«Tu ejército» detrás del vestíbulo</h3>
+  <ul>
+    <li>Al abrir el juego, detrás del vestíbulo se arma una escena 3D con el mismo motor de la partida: tu Núcleo con edificios alrededor, soldados en fila, tanques, artillería, barcos en la costa y aeronaves volando. Cámara que gira despacio, como la imagen de tu pantalla 02 y del sitio.</li>
+    <li>Cada vez que vuelves al vestíbulo cambian algunas tropas del desfile (muestra también las nuevas). Etiqueta «Tu ejército» arriba, como en tu maqueta.</li>
+    <li>Con «Ahorro de batería» o «Más fluido» la escena es más chica y se mueve menos; al entrar a una partida se apaga para no gastar.</li>
+  </ul>
+  <div class="figs f3"><figure><img src="img-v18/vestibulo-ipad-horizontal.png" alt=""><figcaption>Vestíbulo v1.8 en iPad horizontal: tu base en vivo en la portada.</figcaption></figure><figure><img src="img-v18/vestibulo-ipad-vertical.png" alt=""><figcaption>iPad vertical.</figcaption></figure><figure><img src="img-v18/vestibulo-celular.png" alt=""><figcaption>Celular vertical.</figcaption></figure></div>
+  <h3>Campo de pruebas</h3>
+  <p>Modo nuevo en «Elige un modo»: un mapa tranquilo con todos los productores ya construidos, 500.000 monedas y energía de sobra; los bots no atacan. Sirve para mirar y probar cada tropa y edificio. No cuenta para rangos ni misiones.</p>
+  <h3>Zona de creadores con contraseña (agregado durante la v1.8)</h3>
+  <p>Pediste, mientras se hacía esta versión, una zona solo para los creadores que pida contraseña al entrar. En el menú del vestíbulo hay un botón «Creadores»: pide la contraseña que diste y, si es correcta, abre la zona con el modo creador (monedas y energía infinitas, construcción rápida). Se vuelve a pedir cada vez que se abre el juego; después de 5 intentos fallidos hay que esperar 60 s. El juego guarda solo una huella (SHA-256) de la contraseña, no la contraseña. En una página web esto frena a los jugadores, pero no a quien sepa leer el código; en Roblox la contraseña se comprobará en el servidor.</p>
+  <h3>Ajustes «A tu manera» y Misiones (tu UI 0.4)</h3>
+  <ul>
+    <li>Ajustes con secciones como tu pantalla 13: Interfaz (tamaño, letra grande), Sonido (música, efectos), Cámara (giro, cámara al ataque), Accesibilidad (daltonismo, reducir destellos, ahorro de batería) y Controles (ayuda táctil). Botón «Restablecer». Se abre desde el vestíbulo y desde la pausa.</li>
+    <li>Pestaña «Misiones» en el vestíbulo, como en tu pantalla 02 (las misiones ya existían dentro de otro botón).</li>
+    <li>Arsenal con los filtros de tu PRD 1.8 (sección 56): Infantería, Tierra, Drones, Helicópteros, Aviación, Mar, Edificios y Estratégico.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>8. Documentación y programa revisor</h2>
+  <h3>Lo que se suma al documento completo</h3>
+  <ul>
+    <li><b>Tus documentos e imágenes</b>: los 31 modelos 0.2 y las 2 escenas de tu PDF v1.8, tus 14 pantallas UI 0.4 y tus 2 vehículos, la lista de equipamiento entera y, página por página, qué muestra cada imagen de tu PDF de equipamiento.</li>
+    <li><b>Catálogo completo con estado</b>: las 110 entradas de tu catálogo con la clave del juego, el productor, el modelo y su estado, más las tropas extra.</li>
+    <li><b>Informe del revisor</b>: el resultado final con tus imágenes y las miniaturas del juego.</li>
+    <li>El registro de la v1.8 y el código nuevo (incluido el programa revisor).</li>
+  </ul>
+  <h3>Programa revisor (faro/tools/revisar)</h3>
+  <table><thead><tr><th style="width:28%">Archivo</th><th>Para qué</th></tr></thead><tbody>
+    <tr><td>revisar.py</td><td>El programa. «python3 revisar.py» revisa faro.html y escribe salida/informe.html, informe.pdf e informe.json. Opciones: --juego (otra versión), --fotos (miniaturas 3D del juego), --sin-pdf, --estricto (falla si falta algo).</td></tr>
+    <tr><td>plan_v18.py</td><td>Tu nombre → clave del juego, el plan de cada tropa y edificio, tu lista de equipamiento y las revisiones de la UI 0.4.</td></tr>
+    <tr><td>datos.cjs</td><td>Saca del archivo del juego los datos de tropas, edificios y modelos 3D.</td></tr>
+    <tr><td>fotos.cjs</td><td>Abre el juego en Chromium y guarda la miniatura 3D de cada elemento.</td></tr>
+    <tr><td>extraer_refs.py</td><td>Saca tus imágenes de modelos de tu PDF v1.8.</td></tr>
+  </tbody></table>
+  <h3>Modelos 3D</h3>
+  <p>75 modelos nuevos con Blender en el estilo de tus modelos 0.2: bloques, soldados verdes, vehículos verde militar, flota gris, color del equipo en paneles y banderas. Cada uno con sus partes que se mueven (torreta, rotor, hélices). El archivo del juego crece unos 2 MB.</p>
+</section>
+
+<section>
+  <h2>9. Pruebas de aceptación · 20 de 21 aprobadas</h2>
+  <p>Resultado real de cada prueba, con su evidencia. Las pruebas en Chromium (sin tarjeta gráfica) no sustituyen una prueba en tu iPad: eso lo pruebas tú.</p>
+  <table id="pruebas"><thead><tr><th style="width:7%">N.º</th><th>Prueba</th><th style="width:12%">Estado</th><th style="width:26%">Evidencia</th></tr></thead><tbody>
+<tr><td>O01</td><td><b>Revisor: tu catálogo completo</b><br>«python3 faro/tools/revisar/revisar.py --estricto» da 110 de 110 «En el juego»: cada tropa y edificio existe, con su modelo 3D, tu nombre (o uno que empieza igual) y el productor que pusiste.</td><td><span class="chip ok">Aprobada</span></td><td class="small">revisar.py --estricto: salida 0 · 110 de 110 «En el juego» (78 de 78 tropas, 32 de 32 edificios), 110 con modelo 3D · juego v1.8 · 2026-11-20 16:18</td></tr>
+<tr><td>O02</td><td><b>Revisor: equipamiento militar</b><br>Los 57 sistemas de tu lista quedan en el juego (como tropa, edificio o arma) salvo los 2 «fuera» con motivo escrito (mina Claymore y satélites).</td><td><span class="chip ok">Aprobada</span></td><td class="small">55 sistemas en el juego (tropa, edificio o arma) + 2 fuera con motivo (Mina Claymore, Fuerzas espaciales y satélites militares)</td></tr>
+<tr><td>O03</td><td><b>Revisor: UI 0.4</b><br>Las 19 revisiones de tus 14 pantallas dan «En el juego».</td><td><span class="chip ok">Aprobada</span></td><td class="small">19 de 19 revisiones de tus pantallas</td></tr>
+<tr><td>O04</td><td><b>Cada tropa nueva se produce</b><br>En Campo de pruebas, las 57 tropas nuevas se encargan en su productor, salen al mapa y obedecen una orden de mover (prueba automática, una por una).</td><td><span class="chip ok">Aprobada</span></td><td class="small">93 de 93 tropas producidas y movidas (nuevas: 57 de 57)</td></tr>
+<tr><td>O05</td><td><b>Cada edificio nuevo se construye</b><br>Los 18 edificios nuevos se colocan en su lugar (tierra, costa o agua poco profunda), se terminan y hacen lo suyo (prueba automática).</td><td><span class="chip ok">Aprobada</span></td><td class="small">18 de 18 edificios nuevos terminados · corral da monedas: sí · central da energía: sí · centro de drones produce: sí · astillero produce: sí · taller repara vehículos: sí · muelle repara barcos: sí · centro de mando gana territorio: sí</td></tr>
+<tr><td>O06</td><td><b>Anfibios</b><br>Infante de marina, Transporte anfibio y Aerodeslizador cruzan el agua poco profunda; los barcos normales siguen sin pisar tierra y los soldados normales sin pisar agua.</td><td><span class="chip ok">Aprobada</span></td><td class="small">marine en agua baja: sí · marine no en mar profundo: sí · soldado no en agua: sí · barco no en tierra: sí · marine llegó al agua: sí · aerodeslizador subió a la costa: sí</td></tr>
+<tr><td>O07</td><td><b>Puente y puerta</b><br>El Vehículo lanzapuentes tiende un Puente y la infantería cruza a la otra isla; la Puerta reforzada deja pasar a tus tropas y frena a las enemigas.</td><td><span class="chip ok">Aprobada</span></td><td class="small">puente tendido: sí · pagó el puente: sí · tierra cruza: sí · barcos no: sí · soldado sobre el puente: sí · puerta: tuyos pasan: sí · puerta: enemigos no: sí · cerrada: nadie: sí</td></tr>
+<tr><td>O08</td><td><b>Auras</b><br>Oficial o Vehículo de mando: +15 % de daño (no se suman entre ellos); suministros: recarga un 20 % más rápida; combustible: +20 % de velocidad; interferencia: defensas enemigas un 40 % más lentas. Medido en la simulación.</td><td><span class="chip ok">Aprobada</span></td><td class="small">mando +15 % (no se suman): sí · suministros +20 % recarga: sí · combustible +20 % vehículos: sí · daño ×1,15: sí · interferencia −40 %: sí</td></tr>
+<tr><td>O09</td><td><b>Detección y minas</b><br>Un submarino enemigo oculto solo se ve con un detector cerca; una mina se ve con el Dragaminas y explota (500 de daño) cuando pasa un barco enemigo.</td><td><span class="chip ok">Aprobada</span></td><td class="small">submarino oculto sin detector: sí · la Patrullera lo descubre: sí · mina sembrada: sí · el enemigo no ve la mina: sí · mina explota con barco enemigo (500): sí · Dragaminas la quita: sí</td></tr>
+<tr><td>O10</td><td><b>Transporte aéreo y paracaídas</b><br>El Helicóptero de transporte (8) y el Avión de transporte (10) suben soldados y los bajan en cualquier tierra; el Paracaidista cae en el punto de reunión si tienes Aeropuerto.</td><td><span class="chip ok">Aprobada</span></td><td class="small">8 soldados subieron: sí · bajaron lejos, en tierra: sí · del avión, en paracaídas: sí · Paracaidista cae en la reunión: sí</td></tr>
+<tr><td>O11</td><td><b>Búnker</b><br>Hasta 4 soldados entran al Búnker; cada uno suma un 25 % de daño; salen vivos si el Búnker cae.</td><td><span class="chip ok">Aprobada</span></td><td class="small">entran 4 (no 5): sí · daño ×2 con 4 adentro: sí · salen vivos al caer: sí</td></tr>
+<tr><td>O12</td><td><b>Centro de investigación</b><br>Las 3 investigaciones cuestan 2500, tardan y cambian los números prometidos (vida de vehículos, daño de infantería, velocidad de aeronaves).</td><td><span class="chip ok">Aprobada</span></td><td class="small">cuesta 2500: sí · una a la vez: sí · sin dinero no empieza: sí · Blindaje +10 % vida: sí · Puntería +10 % daño: sí · Motores lista: sí</td></tr>
+<tr><td>O13</td><td><b>Arsenal estratégico ampliado</b><br>Lanzador nuclear móvil, Submarino estratégico y Complejo estratégico comparten un solo uso; sin el modificador no aparecen ni los usan los bots.</td><td><span class="chip ok">Aprobada</span></td><td class="small">sin el modificador no aparecen: sí · silo: primero se prepara: sí · silo lanza el DF-5C: sí · después, el lanzador móvil no puede (0/1): sí · ni el submarino estratégico: sí</td></tr>
+<tr><td>O14</td><td><b>Portada: «Tu ejército» en el vestíbulo</b><br>Al abrir el juego, detrás del vestíbulo se ve tu base con tropas, vehículos, barcos y aeronaves en 3D (como tu pantalla 02 y el sitio); se detiene al entrar a la partida. Capturas en iPad horizontal, vertical y celular.</td><td><span class="chip ok">Aprobada</span></td><td class="small">ipad-horizontal: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · al tocar Jugar: partida nueva sí, sin desfile sí (1 tropas tuyas) · con «Más fluido»: 22 tropas · ipad-vertical: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · celular: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta oculta, cámara gira sí · capturas en docs/prd/img-v18/</td></tr>
+<tr><td>O15</td><td><b>Campo de pruebas</b><br>Modo nuevo: empiezas con todos los productores, mucho dinero y energía, sin enemigos que ataquen; todas las tropas y edificios se pueden encargar.</td><td><span class="chip ok">Aprobada</span></td><td class="small">modo en la lista: sí · bots 0 · monedas 500003 · población 240 · Arsenal estratégico sí · productores hechos: barracks, factory, helipad, airport, dronecenter, harbor, shipyard · Fábrica: 29 tropas · «Blindaje» tocado: armor · pestañas: Economía, Energía, Producción, Defensa, Apoyo · puerta cerrada desde su panel: sí · XP 0 → 0 (Campo de pruebas: sin XP, cristales ni misiones)</td></tr>
+<tr><td>O16</td><td><b>Ajustes «A tu manera» y Misiones</b><br>Ajustes con 5 secciones (Interfaz, Sonido, Cámara, Accesibilidad, Controles) y «Restablecer»; pestaña «Misiones» en el vestíbulo. Se guardan y se recuperan.</td><td><span class="chip ok">Aprobada</span></td><td class="small">secciones con controles: interfaz 3, sonido 5, camara 6, accesibilidad 3, controles 21 · «Reducir destellos» y 120 %: sí · después de recargar: true / 120 · «Restablecer»: destellos false, 100 %, calidad auto · los controles vuelven a la pausa: sí · Misiones: 6 misiones en la pestaña</td></tr>
+<tr><td>O17</td><td><b>Bots con tropas nuevas</b><br>En Normal y Difícil los bots usan algunas tropas nuevas; 30 partidas largas sin errores, sin bloqueos y sin tropas atascadas.</td><td><span class="chip ok">Aprobada</span></td><td class="small">tropas nuevas en los bots: Normal 38 (11 %), Difícil 69 (8 %), Fácil 0 · 30 partidas largas de 20 min con chequeos cada segundo: sin problemas</td></tr>
+<tr><td>O18</td><td><b>Sin regresiones</b><br>Las pruebas de las versiones anteriores siguen pasando; la campaña y el balance de lo que ya existía quedan iguales (las tropas viejas no cambian sus números).</td><td><span class="chip fail">Fallida</span></td><td class="small">Pruebas anteriores en la v1.8: 123 de 125 bien (v1.7: 11, v1.6: 5, v1.5: 13, v1.4: 14, v1.3: 14, v1.2: 7, v1.1: 11, v1.0: 12, v0.9: 18, v0.8: 10, v0.7: 10) · fallan: N14, L10 (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01) · L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.8: los 6 nombres de tu documento y las tropas y edificios nuevos · N05 (Arsenal) espera los conteos de la v1.7 (93 tropas y 41 edificios): ahora hay 134 tarjetas y filtros nuevos (drones con las aeronaves, estratégicos) · repetidas a solas: N04 bien al repetirla sola (en la tanda: mal); N14 mal al repetirla sola (en la tanda: mal); L10 mal al repetirla sola (en la tanda: mal); K15web bien al repetirla sola (en la tanda: mal); J06web bien al repetirla sola (en la tanda: mal). Números: 36 tropas y 23 edificios de la v1.7, modos y dificultades iguales (sí). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 5 de 5 (3:11, 5:19, 3:07, 3:07, 3:06); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:53, 2:51); M5 ganó 2 de 3 (13:38, 26:34); M6 piloto atento ganó 6 de 6 (17:14, 23:15, 20:10, 21:02, 25:35, 21:31). Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad; en la v1.8 los bots también usan tropas nuevas): v1.7 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0; v1.8 Fácil 16-0-0, Normal 7-8-1, Difícil 0-16-0. 5 tamaños: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien. Con letra grande y colores para daltonismo: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien. L10 y N14 fallan en la medida de cuadros por segundo con el bucle normal; en esta máquina sin tarjeta gráfica esa medida salta mucho (la misma v1.4 dio 0,7 en la tanda de la v1.7 y 1,9 en esta; la misma v1.7 dio 2,0 en su tanda y 0,9 hoy). Medida exacta por cuadro, forzando a terminar de dibujar (90 tropas, Alta calidad, mediana de 12 cuadros): contra la v1.4, 1068 ms frente a 1149 ms de la v1.8 (8 % más); contra la v1.7, 1076 ms frente a 1114 ms (3,5 % más, con los mismos 393 dibujos y 161.906 triángulos); en 60 s con el bucle normal, la v1.7 hizo 57 y 51 cuadros y la v1.8 51 y 50. N14 además pide la meta de peso vieja de 3,5 MB: faro.html pesa 4,08 MB (3,26 MB son los modelos 3D; el plan de la v1.8 la cambió por 6 MB en O19).</td></tr>
+<tr><td>O19</td><td><b>Tamaño y velocidad</b><br>faro.html pesa 6 MB o menos; carga y fluidez en partida no empeoran más de un 15 % frente a la v1.7 (Chromium; el iPad físico lo pruebas tú).</td><td><span class="chip ok">Aprobada</span></td><td class="small">faro.html: 4.07 MB (máx. 6) · cuadros por segundo con 90 tropas (Más fluido, Chromium sin tarjeta gráfica): v1.7 2.89 · v1.8 2.91 · carga hasta el vestíbulo: v1.7 4.3 s · v1.8 4.3 s</td></tr>
+<tr><td>O21</td><td><b>Zona de creadores con contraseña (agregado)</b><br>El botón «Creadores» del vestíbulo pide la contraseña que diste; la mala no entra, la buena abre la zona y el modo creador; se vuelve a pedir cada vez que se abre el juego; tras 5 intentos fallidos hay que esperar 60 s; la contraseña no aparece escrita en la página.</td><td><span class="chip ok">Aprobada</span></td><td class="small">al abrir: creador no · la contraseña no aparece escrita en la página: sí · «Creadores» pide contraseña: sí · contraseña mala: «Contraseña incorrecta (4 intentos más).» · contraseña buena: zona abierta sí (ventana «creator») · modo creador en partida: monedas 1000001 · al abrir el juego de nuevo: se vuelve a pedir (sí) · 5 intentos fallidos: espera 60 s («Demasiados intentos. Espera 60 s.»)</td></tr>
+<tr><td>O20</td><td><b>Documento, sitio y PDF</b><br>El documento completo suma tus documentos e imágenes, el catálogo con estado y el informe del revisor; el sitio se vuelve a armar con todas las tropas y se publica.</td><td><span class="chip ok">Aprobada</span></td><td class="small">documento completo: 372 páginas, con los capítulos 09-11 (tus documentos e imágenes, tu catálogo con estado, el revisor): sí, 87 imágenes tuyas · registro v1.8 escrito · sitio rearmado con capturas de la v1.8, filtros nuevos y el arreglo del filtro, publicado en su enlace (versión 3): sí · juego publicado en su enlace (versión 22) · informe del revisor en PDF · PRD final en PDF</td></tr>
+  </tbody></table>
+  <h3>Riesgos y decisiones abiertas</h3>
+  <ul>
+    <li><b>Balance</b>: los números de las 75 piezas nuevas son una propuesta; los ajusto con la simulación de bots, pero el balance final lo decides tú.</li>
+    <li><b>Tamaño y velocidad</b>: con unas 75 piezas más, el archivo y la carga crecen. Si la prueba O19 falla, bajo el detalle de los modelos antes de publicar.</li>
+    <li><b>Puente</b>: lo puede cruzar cualquiera (también el enemigo), como un puente real; se puede destruir.</li>
+    <li><b>Fuera</b>: la mina Claymore (no hay minas en tierra) y los satélites (no hay espacio en el juego).</li>
+    <li><b>Roblox</b>: esto sigue siendo el prototipo web. Empezar en Roblox Studio lo decides tú.</li>
+  </ul>
+</section>
+
+</body>
+</html>

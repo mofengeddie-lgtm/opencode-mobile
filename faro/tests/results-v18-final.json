@@ -1,0 +1,86 @@
+{
+ "O01": {
+  "status": "ok",
+  "evidence": "revisar.py --estricto: salida 0 · 110 de 110 «En el juego» (78 de 78 tropas, 32 de 32 edificios), 110 con modelo 3D · juego v1.8 · 2026-11-20 16:18"
+ },
+ "O02": {
+  "status": "ok",
+  "evidence": "55 sistemas en el juego (tropa, edificio o arma) + 2 fuera con motivo (Mina Claymore, Fuerzas espaciales y satélites militares)"
+ },
+ "O03": {
+  "status": "ok",
+  "evidence": "19 de 19 revisiones de tus pantallas"
+ },
+ "O04": {
+  "status": "ok",
+  "evidence": "93 de 93 tropas producidas y movidas (nuevas: 57 de 57)"
+ },
+ "O05": {
+  "status": "ok",
+  "evidence": "18 de 18 edificios nuevos terminados · corral da monedas: sí · central da energía: sí · centro de drones produce: sí · astillero produce: sí · taller repara vehículos: sí · muelle repara barcos: sí · centro de mando gana territorio: sí"
+ },
+ "O06": {
+  "status": "ok",
+  "evidence": "marine en agua baja: sí · marine no en mar profundo: sí · soldado no en agua: sí · barco no en tierra: sí · marine llegó al agua: sí · aerodeslizador subió a la costa: sí"
+ },
+ "O07": {
+  "status": "ok",
+  "evidence": "puente tendido: sí · pagó el puente: sí · tierra cruza: sí · barcos no: sí · soldado sobre el puente: sí · puerta: tuyos pasan: sí · puerta: enemigos no: sí · cerrada: nadie: sí"
+ },
+ "O08": {
+  "status": "ok",
+  "evidence": "mando +15 % (no se suman): sí · suministros +20 % recarga: sí · combustible +20 % vehículos: sí · daño ×1,15: sí · interferencia −40 %: sí"
+ },
+ "O09": {
+  "status": "ok",
+  "evidence": "submarino oculto sin detector: sí · la Patrullera lo descubre: sí · mina sembrada: sí · el enemigo no ve la mina: sí · mina explota con barco enemigo (500): sí · Dragaminas la quita: sí"
+ },
+ "O10": {
+  "status": "ok",
+  "evidence": "8 soldados subieron: sí · bajaron lejos, en tierra: sí · del avión, en paracaídas: sí · Paracaidista cae en la reunión: sí"
+ },
+ "O11": {
+  "status": "ok",
+  "evidence": "entran 4 (no 5): sí · daño ×2 con 4 adentro: sí · salen vivos al caer: sí"
+ },
+ "O12": {
+  "status": "ok",
+  "evidence": "cuesta 2500: sí · una a la vez: sí · sin dinero no empieza: sí · Blindaje +10 % vida: sí · Puntería +10 % daño: sí · Motores lista: sí"
+ },
+ "O13": {
+  "status": "ok",
+  "evidence": "sin el modificador no aparecen: sí · silo: primero se prepara: sí · silo lanza el DF-5C: sí · después, el lanzador móvil no puede (0/1): sí · ni el submarino estratégico: sí"
+ },
+ "O14": {
+  "status": "ok",
+  "evidence": "ipad-horizontal: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · al tocar Jugar: partida nueva sí, sin desfile sí (1 tropas tuyas) · con «Más fluido»: 22 tropas · ipad-vertical: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta visible, cámara gira sí · celular: 40 tropas (infantería, vehículos, mar, aire), 19 edificios, portada en vivo sí, etiqueta oculta, cámara gira sí · capturas en docs/prd/img-v18/"
+ },
+ "O15": {
+  "status": "ok",
+  "evidence": "modo en la lista: sí · bots 0 · monedas 500003 · población 240 · Arsenal estratégico sí · productores hechos: barracks, factory, helipad, airport, dronecenter, harbor, shipyard · Fábrica: 29 tropas · «Blindaje» tocado: armor · pestañas: Economía, Energía, Producción, Defensa, Apoyo · puerta cerrada desde su panel: sí · XP 0 → 0 (Campo de pruebas: sin XP, cristales ni misiones)"
+ },
+ "O16": {
+  "status": "ok",
+  "evidence": "secciones con controles: interfaz 3, sonido 5, camara 6, accesibilidad 3, controles 21 · «Reducir destellos» y 120 %: sí · después de recargar: true / 120 · «Restablecer»: destellos false, 100 %, calidad auto · los controles vuelven a la pausa: sí · Misiones: 6 misiones en la pestaña"
+ },
+ "O19": {
+  "status": "ok",
+  "evidence": "faro.html: 4.07 MB (máx. 6) · cuadros por segundo con 90 tropas (Más fluido, Chromium sin tarjeta gráfica): v1.7 2.89 · v1.8 2.91 · carga hasta el vestíbulo: v1.7 4.3 s · v1.8 4.3 s"
+ },
+ "O21": {
+  "status": "ok",
+  "evidence": "al abrir: creador no · la contraseña no aparece escrita en la página: sí · «Creadores» pide contraseña: sí · contraseña mala: «Contraseña incorrecta (4 intentos más).» · contraseña buena: zona abierta sí (ventana «creator») · modo creador en partida: monedas 1000001 · al abrir el juego de nuevo: se vuelve a pedir (sí) · 5 intentos fallidos: espera 60 s («Demasiados intentos. Espera 60 s.»)"
+ },
+ "O17": {
+  "status": "ok",
+  "evidence": "tropas nuevas en los bots: Normal 38 (11 %), Difícil 69 (8 %), Fácil 0 · 30 partidas largas de 20 min con chequeos cada segundo: sin problemas"
+ },
+ "O18": {
+  "status": "fail",
+  "evidence": "Pruebas anteriores en la v1.8: 123 de 125 bien (v1.7: 11, v1.6: 5, v1.5: 13, v1.4: 14, v1.3: 14, v1.2: 7, v1.1: 11, v1.0: 12, v0.9: 18, v0.8: 10, v0.7: 10) · fallan: N14, L10 (H03, I08, I09 e I09sim siguen reemplazadas por J09, J10 y L01) · L01sim (reglas iguales a la v1.4) marca solo los cambios planeados de la v1.8: los 6 nombres de tu documento y las tropas y edificios nuevos · N05 (Arsenal) espera los conteos de la v1.7 (93 tropas y 41 edificios): ahora hay 134 tarjetas y filtros nuevos (drones con las aeronaves, estratégicos) · repetidas a solas: N04 bien al repetirla sola (en la tanda: mal); N14 mal al repetirla sola (en la tanda: mal); L10 mal al repetirla sola (en la tanda: mal); K15web bien al repetirla sola (en la tanda: mal); J06web bien al repetirla sola (en la tanda: mal). Números: 36 tropas y 23 edificios de la v1.7, modos y dificultades iguales (sí). Campaña: M1 ganó 3 de 3 (3:33, 5:41, 5:03); M2 ganó 3 de 3 (6:00, 6:00, 6:00); M3 órdenes de jugador ganó 5 de 5 (3:11, 5:19, 3:07, 3:07, 3:06); M4 órdenes de jugador ganó 3 de 3 (2:53, 2:53, 2:51); M5 ganó 2 de 3 (13:38, 26:34); M6 piloto atento ganó 6 de 6 (17:14, 23:15, 20:10, 21:02, 25:35, 21:31). Equilibrio (piloto de nivel medio contra los bots, 16 partidas por dificultad; en la v1.8 los bots también usan tropas nuevas): v1.7 Fácil 16-0-0, Normal 8-7-1, Difícil 0-16-0; v1.8 Fácil 16-0-0, Normal 7-8-1, Difícil 0-16-0. 5 tamaños: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien. Con letra grande y colores para daltonismo: ipad-h: bien · 16x9: bien · ipad-v: bien · cel-h: bien · cel-v: bien. L10 y N14 fallan en la medida de cuadros por segundo con el bucle normal; en esta máquina sin tarjeta gráfica esa medida salta mucho (la misma v1.4 dio 0,7 en la tanda de la v1.7 y 1,9 en esta; la misma v1.7 dio 2,0 en su tanda y 0,9 hoy). Medida exacta por cuadro, forzando a terminar de dibujar (90 tropas, Alta calidad, mediana de 12 cuadros): contra la v1.4, 1068 ms frente a 1149 ms de la v1.8 (8 % más); contra la v1.7, 1076 ms frente a 1114 ms (3,5 % más, con los mismos 393 dibujos y 161.906 triángulos); en 60 s con el bucle normal, la v1.7 hizo 57 y 51 cuadros y la v1.8 51 y 50. N14 además pide la meta de peso vieja de 3,5 MB: faro.html pesa 4,08 MB (3,26 MB son los modelos 3D; el plan de la v1.8 la cambió por 6 MB en O19)."
+ },
+ "O20": {
+  "status": "ok",
+  "evidence": "documento completo: 372 páginas, con los capítulos 09-11 (tus documentos e imágenes, tu catálogo con estado, el revisor): sí, 87 imágenes tuyas · registro v1.8 escrito · sitio rearmado con capturas de la v1.8, filtros nuevos y el arreglo del filtro, publicado en su enlace (versión 3): sí · juego publicado en su enlace (versión 22) · informe del revisor en PDF · PRD final en PDF"
+ }
+}

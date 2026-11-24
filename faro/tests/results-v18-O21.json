@@ -1,0 +1,12 @@
+[
+ {
+  "id": "O21",
+  "ok": true,
+  "ev": "al abrir: creador no · la contraseña no aparece escrita en la página: sí · «Creadores» pide contraseña: sí · contraseña mala: «Contraseña incorrecta (4 intentos más).» · contraseña buena: zona abierta sí (ventana «creator») · modo creador en partida: monedas 1000001 · al abrir el juego de nuevo: se vuelve a pedir (sí) · 5 intentos fallidos: espera 60 s («Demasiados intentos. Espera 60 s.»)"
+ },
+ {
+  "id": "errores",
+  "ok": true,
+  "ev": "sin errores de página"
+ }
+]

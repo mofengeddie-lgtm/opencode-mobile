@@ -1,0 +1,52 @@
+[
+ {
+  "id": "P01",
+  "ok": true,
+  "ev": "Poki: sin red, cargó three.js r128, 156 modelos y las fuentes de adentro (true); se jugó una partida hasta la victoria · pedidos a otros sitios: 0 (aparte del script del SDK de Poki) · el archivo nombra CDN o Google Fonts: false · errores: 0"
+ },
+ {
+  "id": "P16",
+  "ok": true,
+  "ev": "web: sin red, cargó three.js r128, 156 modelos y las fuentes de adentro (true); se jugó una partida hasta la victoria · pedidos a otros sitios: 0 · el archivo nombra CDN o Google Fonts: false · errores: 0"
+ },
+ {
+  "id": "P02",
+  "ok": true,
+  "ev": "al cargar: gameLoadingFinished · al entrar a la partida: commercialBreak (sin gameplayStart hasta tocar) · primer toque: gameplayStart (true) · recorrido completo + 3 min de toques y teclas al azar (4056 acciones): 67 eventos, 22 gameplayStart y 22 gameplayStop, dos iguales seguidos: false, eventos durante un anuncio: 0 · errores: 0"
+ },
+ {
+  "id": "P03",
+  "ok": true,
+  "ev": "«Jugar»: anuncio con la capa que frena los toques (true) · ESC pausa (true) · «Seguir»: anuncio; durante el anuncio el sonido queda «suspended», el tiempo de la partida no se mueve (0.53 → 0.53 s) y la tecla B y un toque no hacen nada (panel abierto: false) · al terminar: sigue (0.63 s), sonido «running» · ir al vestíbulo: anuncios 2 → 2 (sin anuncio)"
+ },
+ {
+  "id": "P04",
+  "ok": true,
+  "ev": "botón «🎬 Doble premio» con 🎬, color rgb(47, 63, 122) (verde: false), el botón normal «Volver al vestíbulo» es igual o más grande (true) y está al lado (true) · video visto: cristales 235 → 470 (+235, el premio era 235), XP 300 → 600, aviso «¡Premio doble! +300 XP y +235 cristales», una sola vez (470) · sin video (bloqueador): cristales 130 → 130, sin aviso de premio (true) · Campo de pruebas: sin botón (true)"
+ },
+ {
+  "id": "P05",
+  "ok": true,
+  "ev": "con el script real (aquí solo llega game-cdn.poki.com; los demás servidores de Poki no y el SDK avisa que el juego no está en Poki): PokiSDK cargó (true), init sin respuesta: el juego siguió a los 6 s; eventos: init-sin-respuesta > gameLoadingFinished > commercialBreak > commercialBreak-fin > gameplayStart; la partida corre (30 s) · SDK que nunca contesta: la carga siguió sin él (vestíbulo listo a los 7.4 s de abrir) y el anuncio que nunca empieza suelta el juego a los 8 s (init-sin-respuesta > gameLoadingFinished > commercialBreak > anuncio-sin-respuesta > commercialBreak-fin); la partida empezó (28 s en total con esta máquina sin tarjeta gráfica) · sin el script (bloqueado): la partida empieza igual, sin SDK (true)"
+ },
+ {
+  "id": "P07",
+  "ok": true,
+  "ev": "con un almacenamiento que falla en cada lectura y escritura: el vestíbulo avisa «Este navegador no deja guardar: tu progreso se perderá al cerrar el juego.» · se jugó una partida de 2 min, pausa, victoria y vuelta al vestíbulo (XP de la sesión: 250) · errores: 0"
+ },
+ {
+  "id": "P11",
+  "ok": true,
+  "ev": "Poki «es» → es («Jugar») · Poki «en» → en («Play») · Poki «fr» → en («Play») · Poki «pt» → en («Play») · navegador «es-AR» → es («Jugar») · navegador «en-GB» → en («Play») · Ajustes «English» con Poki en español: se vuelve a abrir en en («Play»), guardado «en»"
+ },
+ {
+  "id": "P14",
+  "ok": true,
+  "ev": "sin botón «Creadores» (true) · enlaces de salida: 0 · menciones a Roblox: vestíbulo false, tienda false · pestañas de la tienda: skins, chests, workshop (sin compras de cristales) · mensajes de consola (log/info/debug) en carga, partida y final: 0 · el código de la zona de creadores sigue en el archivo, apagado en Poki (true)"
+ },
+ {
+  "id": "P06",
+  "ok": true,
+  "ev": "juego en un iframe de 1031×580 dentro de una página de 3.000 px: tras espacio, flechas, Av Pág y 6 giros de rueda la página sigue en 0 px · la rueda sobre una lista del juego la desplaza (0 → 300 px) y la página sigue en 0 px (repetida sola: la corrida de la tanda esperaba 0,5 s y no llegaba a ver el desplazamiento de la lista, que se aplica en el cuadro siguiente; la prueba ahora espera 5 s en las dos partes. El juego no cambió.)"
+ }
+]

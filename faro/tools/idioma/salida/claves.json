@@ -1,0 +1,9557 @@
+{
+ "total": 1783,
+ "code": 1117,
+ "data": 566,
+ "html": 155,
+ "missing": [],
+ "unused": [],
+ "keys": {
+  "Infantería": {
+   "src": "código",
+   "where": [
+    "00-config.js:28",
+    "085-meta.js:138"
+   ]
+  },
+  "Blindado": {
+   "src": "código",
+   "where": [
+    "00-config.js:28"
+   ]
+  },
+  "Aire": {
+   "src": "código",
+   "where": [
+    "00-config.js:28",
+    "08-ui.js:750"
+   ]
+  },
+  "Superficie": {
+   "src": "código",
+   "where": [
+    "00-config.js:28"
+   ]
+  },
+  "Submarino": {
+   "src": "código",
+   "where": [
+    "00-config.js:28",
+    "085-meta.js:138"
+   ]
+  },
+  "Pausa": {
+   "src": "código",
+   "where": [
+    "00-config.js:35"
+   ]
+  },
+  "0,5×": {
+   "src": "código",
+   "where": [
+    "00-config.js:35"
+   ]
+  },
+  "Personalizado": {
+   "src": "código",
+   "where": [
+    "04-world.js:13",
+    "085-meta.js:879",
+    "085-meta.js:967"
+   ]
+  },
+  "Esa tropa no existe": {
+   "src": "código",
+   "where": [
+    "04-world.js:142",
+    "04-world.js:152"
+   ]
+  },
+  "{0}: solo va en el agua": {
+   "src": "código",
+   "where": [
+    "04-world.js:144"
+   ]
+  },
+  "{0}: va en tierra o en agua poco profunda, sin edificios": {
+   "src": "código",
+   "where": [
+    "04-world.js:145"
+   ]
+  },
+  "{0}: va en tierra, sin edificios encima": {
+   "src": "código",
+   "where": [
+    "04-world.js:146"
+   ]
+  },
+  "Creaste {0} × {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:165"
+   ]
+  },
+  "Creaste {0} × {1} del rival": {
+   "src": "código",
+   "where": [
+    "04-world.js:165"
+   ]
+  },
+  "No hay esa diana": {
+   "src": "código",
+   "where": [
+    "04-world.js:174"
+   ]
+  },
+  "No hay lugar para la diana de {0} cerca de tu base": {
+   "src": "código",
+   "where": [
+    "04-world.js:188"
+   ]
+  },
+  "Diana de {0} ({1})": {
+   "src": "código",
+   "where": [
+    "04-world.js:195"
+   ]
+  },
+  "No hay lugar libre cerca": {
+   "src": "código",
+   "where": [
+    "04-world.js:217"
+   ]
+  },
+  "Moviste 1 tropa al instante": {
+   "src": "código",
+   "where": [
+    "04-world.js:232"
+   ]
+  },
+  "Moviste {0} tropas al instante": {
+   "src": "código",
+   "where": [
+    "04-world.js:232"
+   ]
+  },
+  "Quitaste 1 diana": {
+   "src": "código",
+   "where": [
+    "04-world.js:254"
+   ]
+  },
+  "Quitaste {0} dianas": {
+   "src": "código",
+   "where": [
+    "04-world.js:254"
+   ]
+  },
+  "Quitaste 1 tropa (quedan tus constructores)": {
+   "src": "código",
+   "where": [
+    "04-world.js:255"
+   ]
+  },
+  "Quitaste {0} tropas (quedan tus constructores)": {
+   "src": "código",
+   "where": [
+    "04-world.js:255"
+   ]
+  },
+  "Contadores de daño a cero": {
+   "src": "código",
+   "where": [
+    "04-world.js:264"
+   ]
+  },
+  "Bots del rival: encendidos": {
+   "src": "código",
+   "where": [
+    "04-world.js:277"
+   ]
+  },
+  "Bots del rival: apagados": {
+   "src": "código",
+   "where": [
+    "04-world.js:277"
+   ]
+  },
+  "En este modo no hay alianzas": {
+   "src": "código",
+   "where": [
+    "04-world.js:326",
+    "04-world.js:368"
+   ]
+  },
+  "Ese imperio ya no está": {
+   "src": "código",
+   "where": [
+    "04-world.js:327"
+   ]
+  },
+  "{0} ya es tu aliado": {
+   "src": "código",
+   "where": [
+    "04-world.js:328"
+   ]
+  },
+  "{0}: «Ya te contesté. Pregúntame más tarde.»": {
+   "src": "código",
+   "where": [
+    "04-world.js:330"
+   ]
+  },
+  "Solo quedamos nosotros: uno tiene que ganar.": {
+   "src": "código",
+   "where": [
+    "04-world.js:333"
+   ]
+  },
+  "Hace poco me atacaste. No confío en ti.": {
+   "src": "código",
+   "where": [
+    "04-world.js:334"
+   ]
+  },
+  "Yo peleo solo.": {
+   "src": "código",
+   "where": [
+    "04-world.js:345"
+   ]
+  },
+  "Todavía no. Muéstrame que vale la pena.": {
+   "src": "código",
+   "where": [
+    "04-world.js:345"
+   ]
+  },
+  "Trato hecho: ahora somos aliados. ¡Vamos por los demás!": {
+   "src": "código",
+   "where": [
+    "04-world.js:347"
+   ]
+  },
+  "{0} aceptó la alianza": {
+   "src": "código",
+   "where": [
+    "04-world.js:348"
+   ]
+  },
+  "No tienes aliados": {
+   "src": "código",
+   "where": [
+    "04-world.js:370"
+   ]
+  },
+  "¡De nada!": {
+   "src": "código",
+   "where": [
+    "04-world.js:429"
+   ]
+  },
+  "¡Para eso estamos!": {
+   "src": "código",
+   "where": [
+    "04-world.js:429"
+   ]
+  },
+  "Cuando quieras.": {
+   "src": "código",
+   "where": [
+    "04-world.js:429"
+   ]
+  },
+  "¡Gracias, compañero!": {
+   "src": "código",
+   "where": [
+    "04-world.js:430"
+   ]
+  },
+  "¡Seguimos así!": {
+   "src": "código",
+   "where": [
+    "04-world.js:430"
+   ]
+  },
+  "¡Juntos somos fuertes!": {
+   "src": "código",
+   "where": [
+    "04-world.js:430"
+   ]
+  },
+  "¡Atento! Pongo defensas.": {
+   "src": "código",
+   "where": [
+    "04-world.js:431"
+   ]
+  },
+  "¡Visto! Vigilo mi lado.": {
+   "src": "código",
+   "where": [
+    "04-world.js:431"
+   ]
+  },
+  "¡Gracias por avisar!": {
+   "src": "código",
+   "where": [
+    "04-world.js:431"
+   ]
+  },
+  "Casilla no válida": {
+   "src": "código",
+   "where": [
+    "04-world.js:796",
+    "04-world.js:3098",
+    "04-world.js:3124",
+    "04-world.js:3205"
+   ]
+  },
+  "Desafío: sin Fábrica": {
+   "src": "código",
+   "where": [
+    "04-world.js:799"
+   ]
+  },
+  "Desafío: sin Helipuerto ni Aeropuerto": {
+   "src": "código",
+   "where": [
+    "04-world.js:800"
+   ]
+  },
+  "Solo con «Arsenal estratégico»": {
+   "src": "código",
+   "where": [
+    "04-world.js:803",
+    "04-world.js:3090",
+    "04-world.js:3198"
+   ]
+  },
+  "Es territorio enemigo": {
+   "src": "código",
+   "where": [
+    "04-world.js:807",
+    "04-world.js:965"
+   ]
+  },
+  "Fuera de tu territorio": {
+   "src": "código",
+   "where": [
+    "04-world.js:809"
+   ]
+  },
+  "el Faro": {
+   "src": "código",
+   "where": [
+    "04-world.js:811",
+    "04-world.js:2131",
+    "04-world.js:2147"
+   ]
+  },
+  "una Bandera": {
+   "src": "código",
+   "where": [
+    "04-world.js:811",
+    "04-world.js:2131",
+    "04-world.js:2147"
+   ]
+  },
+  "Aquí está {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:811"
+   ]
+  },
+  "Casilla ocupada": {
+   "src": "código",
+   "where": [
+    "04-world.js:812",
+    "04-world.js:964"
+   ]
+  },
+  "Las vetas de oro son para Minas": {
+   "src": "código",
+   "where": [
+    "04-world.js:813"
+   ]
+  },
+  "La tierra fértil es para Granjas": {
+   "src": "código",
+   "where": [
+    "04-world.js:813"
+   ]
+  },
+  "El petróleo en tierra es para Bombas de petróleo": {
+   "src": "código",
+   "where": [
+    "04-world.js:814"
+   ]
+  },
+  "Solo en": {
+   "src": "código",
+   "where": [
+    "04-world.js:817"
+   ]
+  },
+  "Debe ir sobre tierra": {
+   "src": "código",
+   "where": [
+    "04-world.js:819"
+   ]
+  },
+  "Debe ir en tierra junto al agua": {
+   "src": "código",
+   "where": [
+    "04-world.js:821"
+   ]
+  },
+  "Debe ir en el agua, junto a la orilla": {
+   "src": "código",
+   "where": [
+    "04-world.js:823"
+   ]
+  },
+  "Debe ir en agua poco profunda junto a la costa": {
+   "src": "código",
+   "where": [
+    "04-world.js:825"
+   ]
+  },
+  "Debe ir en mar profundo": {
+   "src": "código",
+   "where": [
+    "04-world.js:827"
+   ]
+  },
+  "Límite alcanzado ({0})": {
+   "src": "código",
+   "where": [
+    "04-world.js:830",
+    "04-world.js:983",
+    "04-world.js:3024",
+    "08-ui.js:257"
+   ]
+  },
+  "Monedas insuficientes": {
+   "src": "código",
+   "where": [
+    "04-world.js:831",
+    "04-world.js:985",
+    "04-world.js:1025",
+    "04-world.js:2066"
+   ]
+  },
+  "Energía insuficiente ({0}): construye energías (Solar, Eólica...)": {
+   "src": "código",
+   "where": [
+    "04-world.js:832",
+    "04-world.js:986"
+   ]
+  },
+  "un Barco constructor (en el Puerto)": {
+   "src": "código",
+   "where": [
+    "04-world.js:897"
+   ]
+  },
+  "un Ingeniero (en el Cuartel)": {
+   "src": "código",
+   "where": [
+    "04-world.js:897"
+   ]
+  },
+  "un Constructor (en el Núcleo o el Cuartel)": {
+   "src": "código",
+   "where": [
+    "04-world.js:898"
+   ]
+  },
+  "Obra en espera: tu constructor está ocupado; irá al terminar.": {
+   "src": "código",
+   "where": [
+    "04-world.js:899"
+   ]
+  },
+  "Obra en espera: necesitas {0}.": {
+   "src": "código",
+   "where": [
+    "04-world.js:899"
+   ]
+  },
+  "Elige una casilla de tierra": {
+   "src": "código",
+   "where": [
+    "04-world.js:961"
+   ]
+  },
+  "No sobre vetas de oro: ponlo al lado": {
+   "src": "código",
+   "where": [
+    "04-world.js:962"
+   ]
+  },
+  "Ese punto se captura con infantería": {
+   "src": "código",
+   "where": [
+    "04-world.js:963"
+   ]
+  },
+  "Debe estar en la costa": {
+   "src": "código",
+   "where": [
+    "04-world.js:966"
+   ]
+  },
+  "Aún en construcción": {
+   "src": "código",
+   "where": [
+    "04-world.js:973",
+    "04-world.js:1017"
+   ]
+  },
+  "No se produce aquí": {
+   "src": "código",
+   "where": [
+    "04-world.js:974"
+   ]
+  },
+  "Cola llena (5)": {
+   "src": "código",
+   "where": [
+    "04-world.js:975"
+   ]
+  },
+  "Solo con «Arsenal estratégico» (Personalizado)": {
+   "src": "código",
+   "where": [
+    "04-world.js:977"
+   ]
+  },
+  "Uso estratégico agotado (0/1)": {
+   "src": "código",
+   "where": [
+    "04-world.js:978",
+    "04-world.js:3093",
+    "04-world.js:3118",
+    "04-world.js:3200",
+    "08-ui.js:1249"
+   ]
+  },
+  "Población llena: construye o amplía Casas": {
+   "src": "código",
+   "where": [
+    "04-world.js:988"
+   ]
+  },
+  "Ya se está mejorando": {
+   "src": "código",
+   "where": [
+    "04-world.js:1018"
+   ]
+  },
+  "Este edificio no se mejora": {
+   "src": "código",
+   "where": [
+    "04-world.js:1019"
+   ]
+  },
+  "{0}: nivel máximo": {
+   "src": "código",
+   "where": [
+    "04-world.js:1019"
+   ]
+  },
+  "Solo {0} {1} pueden llegar a nivel 4": {
+   "src": "código",
+   "where": [
+    "04-world.js:1022"
+   ]
+  },
+  "Necesita el Núcleo en nivel {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1033"
+   ]
+  },
+  "Mejora automática: {0} a nivel {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1080"
+   ]
+  },
+  "Vida {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1113"
+   ]
+  },
+  "Escudo {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1114"
+   ]
+  },
+  "Monedas {0} → {1} por min": {
+   "src": "código",
+   "where": [
+    "04-world.js:1115"
+   ]
+  },
+  "Comunidad +{0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1116"
+   ]
+  },
+  "Energía {0} → {1} cada 10 s": {
+   "src": "código",
+   "where": [
+    "04-world.js:1117"
+   ]
+  },
+  "Entrena {0} % más rápido": {
+   "src": "código",
+   "where": [
+    "04-world.js:1118"
+   ]
+  },
+  "Daño {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1119"
+   ]
+  },
+  "Alcance {0} → {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1120"
+   ]
+  },
+  "Doble láser": {
+   "src": "código",
+   "where": [
+    "04-world.js:1121"
+   ]
+  },
+  "Ahora dispara a aeronaves": {
+   "src": "código",
+   "where": [
+    "04-world.js:1123"
+   ]
+  },
+  "Cura {0} % por segundo": {
+   "src": "código",
+   "where": [
+    "04-world.js:1124"
+   ]
+  },
+  "Ya puedes comprar la Cúpula": {
+   "src": "código",
+   "where": [
+    "04-world.js:1125"
+   ]
+  },
+  "Puede lanzar el misil nuclear": {
+   "src": "código",
+   "where": [
+    "04-world.js:1126"
+   ]
+  },
+  "Ahora es {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1127"
+   ]
+  },
+  "{0}: nivel {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1159"
+   ]
+  },
+  "{0}: no queda lugar": {
+   "src": "código",
+   "where": [
+    "04-world.js:1272"
+   ]
+  },
+  "sin soldados": {
+   "src": "código",
+   "where": [
+    "04-world.js:1288"
+   ]
+  },
+  "vacío": {
+   "src": "código",
+   "where": [
+    "04-world.js:1288"
+   ]
+  },
+  "Acércate a la orilla para desembarcar": {
+   "src": "código",
+   "where": [
+    "04-world.js:1298"
+   ]
+  },
+  "Vuela sobre tierra para bajar a las tropas": {
+   "src": "código",
+   "where": [
+    "04-world.js:1299"
+   ]
+  },
+  "No hay lugar para bajar": {
+   "src": "código",
+   "where": [
+    "04-world.js:1299"
+   ]
+  },
+  "{0}: bengalas, esquivó un misil": {
+   "src": "código",
+   "where": [
+    "04-world.js:1610"
+   ]
+  },
+  "La Cúpula se rompió. Vuelve en {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:1729"
+   ]
+  },
+  "¡Escudo de emergencia! {0} s de protección": {
+   "src": "código",
+   "where": [
+    "04-world.js:1750"
+   ]
+  },
+  "{0} activó su escudo de emergencia": {
+   "src": "código",
+   "where": [
+    "04-world.js:1751"
+   ]
+  },
+  "¡Tu Núcleo está bajo ataque!": {
+   "src": "código",
+   "where": [
+    "04-world.js:1766"
+   ]
+  },
+  "Atacan tu {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1769"
+   ]
+  },
+  "Tus tropas pelean en tu territorio": {
+   "src": "código",
+   "where": [
+    "04-world.js:1771"
+   ]
+  },
+  "{0}: {1} veterano ({2} eliminaciones)": {
+   "src": "código",
+   "where": [
+    "04-world.js:1799"
+   ]
+  },
+  "Cayó {0} (tuya)": {
+   "src": "código",
+   "where": [
+    "04-world.js:1831"
+   ]
+  },
+  "Cayó {0} (rival)": {
+   "src": "código",
+   "where": [
+    "04-world.js:1831"
+   ]
+  },
+  "Perdiste: {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:1848"
+   ]
+  },
+  "Tu Núcleo ha caído": {
+   "src": "código",
+   "where": [
+    "04-world.js:1874"
+   ]
+  },
+  "{0} ha sido eliminado": {
+   "src": "código",
+   "where": [
+    "04-world.js:1874"
+   ]
+  },
+  "Solo quedamos nosotros: se acabó la alianza. ¡Que gane el mejor!": {
+   "src": "código",
+   "where": [
+    "04-world.js:1897"
+   ]
+  },
+  "La alianza se rompió: solo puede quedar un imperio": {
+   "src": "código",
+   "where": [
+    "04-world.js:1898"
+   ]
+  },
+  "La Cúpula volvió a levantarse": {
+   "src": "código",
+   "where": [
+    "04-world.js:1988"
+   ]
+  },
+  "Mejora el Núcleo a nivel 3 para comprar la Cúpula": {
+   "src": "código",
+   "where": [
+    "04-world.js:2064"
+   ]
+  },
+  "La Cúpula ya está en nivel 3": {
+   "src": "código",
+   "where": [
+    "04-world.js:2065"
+   ]
+  },
+  "Perdiste {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:2131"
+   ]
+  },
+  "¡Capturaste {0}!": {
+   "src": "código",
+   "where": [
+    "04-world.js:2158"
+   ]
+  },
+  "{0} capturó {1}": {
+   "src": "código",
+   "where": [
+    "04-world.js:2158"
+   ]
+  },
+  "{0} capturó el Faro": {
+   "src": "código",
+   "where": [
+    "04-world.js:2162"
+   ]
+  },
+  "{0}: no puede llegar a {1} para repararlo": {
+   "src": "código",
+   "where": [
+    "04-world.js:2687"
+   ]
+  },
+  "{0} dejó de esperar a {1}: no pudo venir a buscarla": {
+   "src": "código",
+   "where": [
+    "04-world.js:2721"
+   ]
+  },
+  "El ingeniero no puede llegar ahí": {
+   "src": "código",
+   "where": [
+    "04-world.js:2736"
+   ]
+  },
+  "El ingeniero espera: faltan monedas para el puesto (800)": {
+   "src": "código",
+   "where": [
+    "04-world.js:2829"
+   ]
+  },
+  "Puesto avanzado fundado": {
+   "src": "código",
+   "where": [
+    "04-world.js:2837"
+   ]
+  },
+  "{0} desactivó una mina": {
+   "src": "código",
+   "where": [
+    "04-world.js:2939"
+   ]
+  },
+  "¡Mina! {0} chocó con una mina": {
+   "src": "código",
+   "where": [
+    "04-world.js:2948"
+   ]
+  },
+  "Necesita un Centro de investigación terminado": {
+   "src": "código",
+   "where": [
+    "04-world.js:2959"
+   ]
+  },
+  "Investigación desconocida": {
+   "src": "código",
+   "where": [
+    "04-world.js:2960"
+   ]
+  },
+  "Ya investigada": {
+   "src": "código",
+   "where": [
+    "04-world.js:2962"
+   ]
+  },
+  "Investigando {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:2963"
+   ]
+  },
+  "Monedas insuficientes ({0})": {
+   "src": "código",
+   "where": [
+    "04-world.js:2964",
+    "04-world.js:3025",
+    "04-world.js:3121",
+    "04-world.js:3142"
+   ]
+  },
+  "Investigación terminada: {0}": {
+   "src": "código",
+   "where": [
+    "04-world.js:2997"
+   ]
+  },
+  "Necesita un Vehículo lanzapuentes": {
+   "src": "código",
+   "where": [
+    "04-world.js:3021"
+   ]
+  },
+  "Bájalo del transporte primero": {
+   "src": "código",
+   "where": [
+    "04-world.js:3022",
+    "04-world.js:3201"
+   ]
+  },
+  "Acércate a agua poco profunda junto a la orilla": {
+   "src": "código",
+   "where": [
+    "04-world.js:3026"
+   ]
+  },
+  "Necesita un Buque minador": {
+   "src": "código",
+   "where": [
+    "04-world.js:3045"
+   ]
+  },
+  "Solo en el agua": {
+   "src": "código",
+   "where": [
+    "04-world.js:3047"
+   ]
+  },
+  "Ya hay algo en esta casilla": {
+   "src": "código",
+   "where": [
+    "04-world.js:3048"
+   ]
+  },
+  "Límite de minas ({0})": {
+   "src": "código",
+   "where": [
+    "04-world.js:3049"
+   ]
+  },
+  "Preparando la mina: faltan {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:3050"
+   ]
+  },
+  "No es una puerta": {
+   "src": "código",
+   "where": [
+    "04-world.js:3064"
+   ]
+  },
+  "Necesita un Complejo estratégico": {
+   "src": "código",
+   "where": [
+    "04-world.js:3089"
+   ]
+  },
+  "Termina primero la obra": {
+   "src": "código",
+   "where": [
+    "04-world.js:3091"
+   ]
+  },
+  "Agotado: ya lanzó su misil (0/1)": {
+   "src": "código",
+   "where": [
+    "04-world.js:3092"
+   ]
+  },
+  "Preparando: faltan {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:3095",
+    "04-world.js:3202"
+   ]
+  },
+  "Demasiado lejos": {
+   "src": "código",
+   "where": [
+    "04-world.js:3099",
+    "04-world.js:3125"
+   ]
+  },
+  "Muy cerca de tu Núcleo": {
+   "src": "código",
+   "where": [
+    "04-world.js:3101",
+    "04-world.js:3126",
+    "04-world.js:3208"
+   ]
+  },
+  "Necesita un AIR DEFENSE de nivel 4": {
+   "src": "código",
+   "where": [
+    "04-world.js:3116"
+   ]
+  },
+  "Termina primero la mejora": {
+   "src": "código",
+   "where": [
+    "04-world.js:3117"
+   ]
+  },
+  "Recargando: faltan {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:3119"
+   ]
+  },
+  "Con Arsenal estratégico hay un solo uso por partida": {
+   "src": "código",
+   "where": [
+    "04-world.js:3138"
+   ]
+  },
+  "Necesitas 3 AIR DEFENSE de nivel 4 listos (tienes {0})": {
+   "src": "código",
+   "where": [
+    "04-world.js:3140"
+   ]
+  },
+  "Necesita un lanzador estratégico": {
+   "src": "código",
+   "where": [
+    "04-world.js:3197"
+   ]
+  },
+  "Agotado: ya usó su único misil (0/1)": {
+   "src": "código",
+   "where": [
+    "04-world.js:3199"
+   ]
+  },
+  "Demasiado lejos (alcance: {0} casillas)": {
+   "src": "código",
+   "where": [
+    "04-world.js:3206"
+   ]
+  },
+  "Misil nuclear lanzado: llega en {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:3246"
+   ]
+  },
+  "¡Misil nuclear en camino! Llega en {0} s": {
+   "src": "código",
+   "where": [
+    "04-world.js:3246"
+   ]
+  },
+  "¡Un misil nuclear! ¡Todos a cubierto!": {
+   "src": "código",
+   "where": [
+    "04-world.js:3252"
+   ]
+  },
+  "¡Tu Escudo antimisiles derribó el misil nuclear!": {
+   "src": "código",
+   "where": [
+    "04-world.js:3274"
+   ]
+  },
+  "El Escudo antimisiles enemigo derribó tu misil": {
+   "src": "código",
+   "where": [
+    "04-world.js:3274"
+   ]
+  },
+  "Radiación por {0} s donde cayó el misil": {
+   "src": "código",
+   "where": [
+    "04-world.js:3298"
+   ]
+  },
+  "Misión {0} · {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:15"
+   ]
+  },
+  "Llega a {0} monedas por minuto y ten {1} tropas de combate.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:32"
+   ]
+  },
+  "Aguanta {0} minutos con tu Núcleo en pie.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:33"
+   ]
+  },
+  "Toma el Faro y mantenlo {0} s en total.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:34"
+   ]
+  },
+  "Captura {0} Banderas de otras islas.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:35"
+   ]
+  },
+  "Sé el último Núcleo en pie.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:36"
+   ]
+  },
+  "Destruye el Núcleo enemigo.": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:36"
+   ]
+  },
+  "En menos de {0} min": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:40"
+   ]
+  },
+  "Sin perder edificios": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:41"
+   ]
+  },
+  "Pierdes {0} edificios o menos": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:41"
+   ]
+  },
+  "Pierdes {0} tropas o menos": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:42"
+   ]
+  },
+  "Núcleo sobre el {0} % al terminar": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:43"
+   ]
+  },
+  "Tu Núcleo nunca baja del {0} %": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:44"
+   ]
+  },
+  "Bandera de otra isla: {0} de {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:189"
+   ]
+  },
+  "Ingresos: {0} / {1} por min": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:229"
+   ]
+  },
+  "Tropas de combate: {0} / {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:230"
+   ]
+  },
+  "· ¡es tuyo!": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:238"
+   ]
+  },
+  "Faro en tu poder: {0} / {1} s{2}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:239"
+   ]
+  },
+  "Banderas de otras islas: {0} / {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:242"
+   ]
+  },
+  "Núcleo enemigo destruido": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:246"
+   ]
+  },
+  "Destruye el Núcleo enemigo": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:246"
+   ]
+  },
+  "Núcleos rivales caídos: {0} / {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:247"
+   ]
+  },
+  "Termina la misión": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:258"
+   ]
+  },
+  "No se cumplió la meta": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:258"
+   ]
+  },
+  "se acabó el tiempo": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:267"
+   ]
+  },
+  "Tardaste {0}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:268"
+   ]
+  },
+  "edificio": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "08-ui.js:2089"
+   ]
+  },
+  "edificios": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "08-ui.js:2089"
+   ]
+  },
+  "tropa": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "07-input.js:393",
+    "09-main.js:560"
+   ]
+  },
+  "tropas": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274",
+    "07-input.js:393",
+    "09-main.js:560"
+   ]
+  },
+  "Perdiste {0} {1}": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:274"
+   ]
+  },
+  "Tu Núcleo terminó al {0} %": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:279"
+   ]
+  },
+  "mínimo {0} %": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:283"
+   ]
+  },
+  "Tu Núcleo bajó al {0} %": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:284"
+   ]
+  },
+  "Hay que terminar la misión": {
+   "src": "código",
+   "where": [
+    "046-campaign.js:286"
+   ]
+  },
+  "No tengo tropas libres ahora, ¡aguanta!": {
+   "src": "código",
+   "where": [
+    "05-ai.js:864"
+   ]
+  },
+  "¡Voy a ayudarte con {0} tropas!": {
+   "src": "código",
+   "where": [
+    "05-ai.js:872"
+   ]
+  },
+  "No llego a tu base desde aquí.": {
+   "src": "código",
+   "where": [
+    "05-ai.js:872"
+   ]
+  },
+  "¡Vamos por {0}! Mando {1} tropas.": {
+   "src": "código",
+   "where": [
+    "05-ai.js:890"
+   ]
+  },
+  "Atacaré a {0} con la próxima oleada.": {
+   "src": "código",
+   "where": [
+    "05-ai.js:890"
+   ]
+  },
+  "¡Voy a ayudarte!": {
+   "src": "código",
+   "where": [
+    "05-ai.js:1067"
+   ]
+  },
+  "En disputa": {
+   "src": "código",
+   "where": [
+    "06-render.js:1606"
+   ]
+  },
+  "☢ Radiación · {0}:{1}": {
+   "src": "código",
+   "where": [
+    "06-render.js:1632"
+   ]
+  },
+  "Mejorando a nivel {0}": {
+   "src": "código",
+   "where": [
+    "06-render.js:1686",
+    "08-ui.js:1658"
+   ]
+  },
+  "Esperando constructor": {
+   "src": "código",
+   "where": [
+    "06-render.js:1686"
+   ]
+  },
+  "Construyendo": {
+   "src": "código",
+   "where": [
+    "06-render.js:1686",
+    "07-input.js:354"
+   ]
+  },
+  "Constructor en camino": {
+   "src": "código",
+   "where": [
+    "06-render.js:1688"
+   ]
+  },
+  "Sin constructor": {
+   "src": "código",
+   "where": [
+    "06-render.js:1688"
+   ]
+  },
+  "No hay tropas tuyas en el recuadro": {
+   "src": "código",
+   "where": [
+    "07-input.js:175"
+   ]
+  },
+  "Elige primero tropas que puedan pelear": {
+   "src": "código",
+   "where": [
+    "07-input.js:275"
+   ]
+  },
+  "Toca el otro punto: irán y volverán entre aquí y allí, peleando en el camino": {
+   "src": "código",
+   "where": [
+    "07-input.js:280"
+   ]
+  },
+  "Toca el destino: avanzarán peleando con todo lo que encuentren": {
+   "src": "código",
+   "where": [
+    "07-input.js:281"
+   ]
+  },
+  "Patrulla": {
+   "src": "código",
+   "where": [
+    "07-input.js:315"
+   ]
+  },
+  "{0} tropas patrullan": {
+   "src": "código",
+   "where": [
+    "07-input.js:315"
+   ]
+  },
+  "{0} entre aquí y allí": {
+   "src": "código",
+   "where": [
+    "07-input.js:315"
+   ]
+  },
+  "Esas tropas no pueden patrullar": {
+   "src": "código",
+   "where": [
+    "07-input.js:315"
+   ]
+  },
+  "Avanza": {
+   "src": "código",
+   "where": [
+    "07-input.js:322"
+   ]
+  },
+  "{0} tropas avanzan": {
+   "src": "código",
+   "where": [
+    "07-input.js:322"
+   ]
+  },
+  "Tus tropas seleccionadas no pueden atacar eso": {
+   "src": "código",
+   "where": [
+    "07-input.js:337"
+   ]
+  },
+  "{0} constructores en": {
+   "src": "código",
+   "where": [
+    "07-input.js:354"
+   ]
+  },
+  "Reparando {0}": {
+   "src": "código",
+   "where": [
+    "07-input.js:367"
+   ]
+  },
+  "Quédate junto al punto sin enemigos cerca para capturarlo": {
+   "src": "código",
+   "where": [
+    "07-input.js:378"
+   ]
+  },
+  "Solo la infantería captura puntos": {
+   "src": "código",
+   "where": [
+    "07-input.js:379"
+   ]
+  },
+  "Toca primero una casilla dorada": {
+   "src": "código",
+   "where": [
+    "07-input.js:464"
+   ]
+  },
+  "El ingeniero va en camino (cuesta 800 al llegar)": {
+   "src": "código",
+   "where": [
+    "07-input.js:564"
+   ]
+  },
+  "Toca algo de un rival": {
+   "src": "código",
+   "where": [
+    "07-input.js:595"
+   ]
+  },
+  "con {0} tropas": {
+   "src": "código",
+   "where": [
+    "07-input.js:602"
+   ]
+  },
+  "Tus aliados atacan a {0}{1}": {
+   "src": "código",
+   "where": [
+    "07-input.js:602"
+   ]
+  },
+  "El Bombardero va": {
+   "src": "código",
+   "where": [
+    "07-input.js:610"
+   ]
+  },
+  "Los Bombarderos van": {
+   "src": "código",
+   "where": [
+    "07-input.js:610"
+   ]
+  },
+  "{0} a bombardear la zona": {
+   "src": "código",
+   "where": [
+    "07-input.js:610"
+   ]
+  },
+  "¡{0} misiles nucleares lanzados a la vez!": {
+   "src": "código",
+   "where": [
+    "07-input.js:622"
+   ]
+  },
+  "No se pudo mover": {
+   "src": "código",
+   "where": [
+    "07-input.js:639"
+   ]
+  },
+  "1 tropa movida": {
+   "src": "código",
+   "where": [
+    "07-input.js:644"
+   ]
+  },
+  "{0} tropas movidas": {
+   "src": "código",
+   "where": [
+    "07-input.js:644"
+   ]
+  },
+  "· {0} no pueden estar ahí": {
+   "src": "código",
+   "where": [
+    "07-input.js:645"
+   ]
+  },
+  "Punto de reunión fijado": {
+   "src": "código",
+   "where": [
+    "07-input.js:652"
+   ]
+  },
+  "Campaña · Misión {0} de {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:87",
+    "085-meta.js:2008"
+   ]
+  },
+  "Meta": {
+   "src": "código",
+   "where": [
+    "08-ui.js:91"
+   ]
+  },
+  "Estrellas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:92"
+   ]
+  },
+  "★ Termina la misión": {
+   "src": "código",
+   "where": [
+    "08-ui.js:92"
+   ]
+  },
+  "Consejo:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:95",
+    "085-meta.js:2021",
+    "085-meta.js:2122"
+   ]
+  },
+  "¡A jugar!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:96"
+   ]
+  },
+  "Vestíbulo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:97",
+    "085-meta.js:2026"
+   ]
+  },
+  "ya no se puede": {
+   "src": "código",
+   "where": [
+    "08-ui.js:123"
+   ]
+  },
+  "Mostrar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:202",
+    "08-ui.js:451"
+   ]
+  },
+  "Ocultar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:202",
+    "08-ui.js:451"
+   ]
+  },
+  "Mostrar minimapa": {
+   "src": "código",
+   "where": [
+    "08-ui.js:215"
+   ]
+  },
+  "Plegar minimapa": {
+   "src": "código",
+   "where": [
+    "08-ui.js:215"
+   ]
+  },
+  "Arrastra para seleccionar varias tropas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:221"
+   ]
+  },
+  "Ajustes restablecidos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:390"
+   ]
+  },
+  "sí": {
+   "src": "código",
+   "where": [
+    "08-ui.js:408",
+    "08-ui.js:1694",
+    "08-ui.js:1724",
+    "08-ui.js:1895",
+    "08-ui.js:1900",
+    "09-main.js:518"
+   ]
+  },
+  "Ahorro de batería": {
+   "src": "código",
+   "where": [
+    "08-ui.js:410"
+   ]
+  },
+  "Colores para daltonismo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:411"
+   ]
+  },
+  "Letra grande": {
+   "src": "código",
+   "where": [
+    "08-ui.js:412"
+   ]
+  },
+  "Reducir destellos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:414"
+   ]
+  },
+  "Giro de la cámara en el vestíbulo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:415"
+   ]
+  },
+  "En esta pantalla se usa {0} % para que todo quepa.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:421"
+   ]
+  },
+  "Agranda los paneles, las listas y los avisos. Los botones nunca bajan de 44 px.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:421"
+   ]
+  },
+  "Música: sí (toca para apagarla)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:431"
+   ]
+  },
+  "Música: no (toca para encenderla)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:431"
+   ]
+  },
+  "Sonido: sí": {
+   "src": "código",
+   "where": [
+    "08-ui.js:435"
+   ]
+  },
+  "Sonido: no": {
+   "src": "código",
+   "where": [
+    "08-ui.js:435"
+   ]
+  },
+  "Silenciar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:437"
+   ]
+  },
+  "Activar sonido": {
+   "src": "código",
+   "where": [
+    "08-ui.js:437"
+   ]
+  },
+  "Primeros pasos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:454"
+   ]
+  },
+  "Laboratorio: toca el matraz de arriba para crear tropas, poner dianas y cambiar la velocidad": {
+   "src": "código",
+   "where": [
+    "08-ui.js:472"
+   ]
+  },
+  "{0} · nivel {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:500"
+   ]
+  },
+  "{0} {1}: qué mejoró": {
+   "src": "código",
+   "where": [
+    "08-ui.js:501"
+   ]
+  },
+  "Ver": {
+   "src": "código",
+   "where": [
+    "08-ui.js:524",
+    "08-ui.js:553"
+   ]
+  },
+  "Toca «Terminar» para salir del modo construir": {
+   "src": "código",
+   "where": [
+    "08-ui.js:573"
+   ]
+  },
+  "Toca «Cancelar» para salir de este modo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:573"
+   ]
+  },
+  "Toca una casilla dorada (por ejemplo, esta)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:594"
+   ]
+  },
+  "No quedan casillas libres": {
+   "src": "código",
+   "where": [
+    "08-ui.js:594"
+   ]
+  },
+  "Toca «Construir» para poner la obra": {
+   "src": "código",
+   "where": [
+    "08-ui.js:596"
+   ]
+  },
+  "Abre «Construir»": {
+   "src": "código",
+   "where": [
+    "08-ui.js:598"
+   ]
+  },
+  "Abre la pestaña «{0}»": {
+   "src": "código",
+   "where": [
+    "08-ui.js:599"
+   ]
+  },
+  "Toca tu Núcleo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:604"
+   ]
+  },
+  "Entrena un Constructor": {
+   "src": "código",
+   "where": [
+    "08-ui.js:605"
+   ]
+  },
+  "Granja": {
+   "src": "código",
+   "where": [
+    "08-ui.js:610"
+   ]
+  },
+  "Economía": {
+   "src": "código",
+   "where": [
+    "08-ui.js:610"
+   ]
+  },
+  "Solar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:611"
+   ]
+  },
+  "Energía": {
+   "src": "código",
+   "where": [
+    "08-ui.js:611",
+    "08-ui.js:1132",
+    "08-ui.js:1308"
+   ]
+  },
+  "Cuartel": {
+   "src": "código",
+   "where": [
+    "08-ui.js:614"
+   ]
+  },
+  "Producción": {
+   "src": "código",
+   "where": [
+    "08-ui.js:614",
+    "08-ui.js:632",
+    "08-ui.js:2237"
+   ]
+  },
+  "El Constructor va a la obra: espera a que termine el Cuartel": {
+   "src": "código",
+   "where": [
+    "08-ui.js:618"
+   ]
+  },
+  "Toca tu Cuartel": {
+   "src": "código",
+   "where": [
+    "08-ui.js:619"
+   ]
+  },
+  "Entrena Artilleros (tienes {0} de 3)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:620"
+   ]
+  },
+  "Toca «Ejército» para elegir a tus soldados": {
+   "src": "código",
+   "where": [
+    "08-ui.js:628",
+    "08-ui.js:644"
+   ]
+  },
+  "Toca el Núcleo del bot para tomar su isla": {
+   "src": "código",
+   "where": [
+    "08-ui.js:629"
+   ]
+  },
+  "Puerto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:632"
+   ]
+  },
+  "El Constructor va a la obra: espera a que termine el Puerto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:635"
+   ]
+  },
+  "El Puerto fabrica la Barcaza: espera": {
+   "src": "código",
+   "where": [
+    "08-ui.js:636"
+   ]
+  },
+  "Toca tu Puerto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:637"
+   ]
+  },
+  "Entrena una Barcaza: lleva tropas por el mar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:638"
+   ]
+  },
+  "Espera a tus soldados ({0} de 3)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:641"
+   ]
+  },
+  "Los soldados suben a la Barcaza: espera": {
+   "src": "código",
+   "where": [
+    "08-ui.js:643"
+   ]
+  },
+  "Toca la Barcaza para subirlos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:645"
+   ]
+  },
+  "La Barcaza navega hacia la isla del bot: espera": {
+   "src": "código",
+   "where": [
+    "08-ui.js:651"
+   ]
+  },
+  "Toca tu Barcaza": {
+   "src": "código",
+   "where": [
+    "08-ui.js:652",
+    "08-ui.js:656"
+   ]
+  },
+  "Toca el mar junto a la isla del bot para llevarla": {
+   "src": "código",
+   "where": [
+    "08-ui.js:654"
+   ]
+  },
+  "No hay costa libre junto a la isla del bot": {
+   "src": "código",
+   "where": [
+    "08-ui.js:654"
+   ]
+  },
+  "Toca «Desembarcar»": {
+   "src": "código",
+   "where": [
+    "08-ui.js:657"
+   ]
+  },
+  "Lo tapa un panel: toca este punto del minimapa para centrarlo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:709"
+   ]
+  },
+  "Está fuera de la pantalla: toca este punto del minimapa para ir allí": {
+   "src": "código",
+   "where": [
+    "08-ui.js:710"
+   ]
+  },
+  "Tierra": {
+   "src": "código",
+   "where": [
+    "08-ui.js:748"
+   ]
+  },
+  "Mar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:749"
+   ]
+  },
+  "Todo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:751"
+   ]
+  },
+  "Constructores": {
+   "src": "código",
+   "where": [
+    "08-ui.js:752"
+   ]
+  },
+  "Rueda de selección": {
+   "src": "código",
+   "where": [
+    "08-ui.js:764"
+   ]
+  },
+  "Elegir": {
+   "src": "código",
+   "where": [
+    "08-ui.js:765"
+   ]
+  },
+  "¿Romper la alianza con {0}? Toca «Romper» otra vez": {
+   "src": "código",
+   "where": [
+    "08-ui.js:818"
+   ]
+  },
+  "Rompiste la alianza. Ahora somos rivales otra vez.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:826"
+   ]
+  },
+  "Ya no eres aliado de {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:827"
+   ]
+  },
+  "Tú": {
+   "src": "código",
+   "where": [
+    "08-ui.js:843",
+    "085-meta.js:290",
+    "085-meta.js:377"
+   ]
+  },
+  "Todavía no hay mensajes de aliados.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:845"
+   ]
+  },
+  "Todavía no hay mensajes.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:845"
+   ]
+  },
+  "¡Gracias!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:847"
+   ]
+  },
+  "¡Bien hecho!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:847"
+   ]
+  },
+  "¡Cuidado!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:847"
+   ]
+  },
+  "¡Ayuda!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:848",
+    "08-ui.js:1162"
+   ]
+  },
+  "¡Ataquemos!": {
+   "src": "código",
+   "where": [
+    "08-ui.js:849",
+    "08-ui.js:1163"
+   ]
+  },
+  "Cuando tengas aliados, aquí puedes mandarles mensajes rápidos.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:850"
+   ]
+  },
+  "Mensajes": {
+   "src": "código",
+   "where": [
+    "08-ui.js:851",
+    "08-ui.js:1165"
+   ]
+  },
+  "Cerrar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:851",
+    "08-ui.js:927",
+    "08-ui.js:1112",
+    "08-ui.js:1132",
+    "08-ui.js:1165",
+    "085-meta.js:1322",
+    "085-meta.js:1335"
+   ]
+  },
+  "Todos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:852"
+   ]
+  },
+  "Aliados": {
+   "src": "código",
+   "where": [
+    "08-ui.js:853"
+   ]
+  },
+  "No tienes aliados que te lean": {
+   "src": "código",
+   "where": [
+    "08-ui.js:864"
+   ]
+  },
+  "Tus aliados mandan {0} tropas a tu base": {
+   "src": "código",
+   "where": [
+    "08-ui.js:876"
+   ]
+  },
+  "Tus aliados no tienen tropas libres": {
+   "src": "código",
+   "where": [
+    "08-ui.js:876"
+   ]
+  },
+  "Laboratorio": {
+   "src": "código",
+   "where": [
+    "08-ui.js:927"
+   ]
+  },
+  "Para probar cada tropa en menos de un minuto. Solo en el Campo de pruebas: no da XP, cristales ni misiones.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:928"
+   ]
+  },
+  "Velocidad": {
+   "src": "código",
+   "where": [
+    "08-ui.js:929",
+    "08-ui.js:930",
+    "08-ui.js:1282",
+    "08-ui.js:1307"
+   ]
+  },
+  "Avanza 0,1 s": {
+   "src": "código",
+   "where": [
+    "08-ui.js:932"
+   ]
+  },
+  "+1 paso": {
+   "src": "código",
+   "where": [
+    "08-ui.js:932"
+   ]
+  },
+  "Reglas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:934",
+    "08-ui.js:935"
+   ]
+  },
+  "Recursos de sobra": {
+   "src": "código",
+   "where": [
+    "08-ui.js:936"
+   ]
+  },
+  "Obras al instante": {
+   "src": "código",
+   "where": [
+    "08-ui.js:936"
+   ]
+  },
+  "Tú no pierdes vida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:936"
+   ]
+  },
+  "El rival no pierde vida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:936"
+   ]
+  },
+  "Bots del rival": {
+   "src": "código",
+   "where": [
+    "08-ui.js:936"
+   ]
+  },
+  "Crear tropa": {
+   "src": "código",
+   "where": [
+    "08-ui.js:938"
+   ]
+  },
+  "Crear tropa · {0} tipos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:939"
+   ]
+  },
+  "Buscar por nombre": {
+   "src": "código",
+   "where": [
+    "08-ui.js:940"
+   ]
+  },
+  "Buscar tropa por nombre": {
+   "src": "código",
+   "where": [
+    "08-ui.js:940"
+   ]
+  },
+  "Tuya": {
+   "src": "código",
+   "where": [
+    "08-ui.js:942"
+   ]
+  },
+  "Del rival": {
+   "src": "código",
+   "where": [
+    "08-ui.js:942"
+   ]
+  },
+  "Toca una tropa y después el mapa. Se crea gratis, sin esperar.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:945"
+   ]
+  },
+  "Dianas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:947"
+   ]
+  },
+  "Dianas de práctica": {
+   "src": "código",
+   "where": [
+    "08-ui.js:948"
+   ]
+  },
+  "Daño hecho": {
+   "src": "código",
+   "where": [
+    "08-ui.js:952"
+   ]
+  },
+  "Daño hecho por tus tropas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:953"
+   ]
+  },
+  "Escenario": {
+   "src": "código",
+   "where": [
+    "08-ui.js:956",
+    "08-ui.js:957"
+   ]
+  },
+  "Mover al instante": {
+   "src": "código",
+   "where": [
+    "08-ui.js:958"
+   ]
+  },
+  "Contadores a cero": {
+   "src": "código",
+   "where": [
+    "08-ui.js:958"
+   ]
+  },
+  "Quitar dianas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:959"
+   ]
+  },
+  "¿Seguro? Toca otra vez": {
+   "src": "código",
+   "where": [
+    "08-ui.js:959",
+    "08-ui.js:1770"
+   ]
+  },
+  "Quitar todas las tropas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:959"
+   ]
+  },
+  "Registro": {
+   "src": "código",
+   "where": [
+    "08-ui.js:961",
+    "08-ui.js:962"
+   ]
+  },
+  "mar · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:979"
+   ]
+  },
+  "aire · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:979"
+   ]
+  },
+  "anfibio · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:979"
+   ]
+  },
+  "tierra · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:979"
+   ]
+  },
+  "Ninguna tropa se llama «{0}».": {
+   "src": "código",
+   "where": [
+    "08-ui.js:981"
+   ]
+  },
+  "Diana": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1001"
+   ]
+  },
+  "Daño total": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1001"
+   ]
+  },
+  "Daño/s": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1001",
+    "08-ui.js:1279",
+    "08-ui.js:1304"
+   ]
+  },
+  "Pon una diana: aparece a 6-10 casillas de tu Núcleo. No se mueve, no dispara y no se rompe. Daño/s cuenta los últimos 10 s.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1003"
+   ]
+  },
+  "Todavía nada. Cuenta el daño de tus tropas contra cualquier blanco.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1007"
+   ]
+  },
+  "Aquí aparece lo que haces en el Laboratorio y las tropas que caen.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1011"
+   ]
+  },
+  "Velocidad: {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1028"
+   ]
+  },
+  "Tú: no pierde vida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1039"
+   ]
+  },
+  "Tú: pierde vida normal": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1039"
+   ]
+  },
+  "El rival: no pierde vida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1040"
+   ]
+  },
+  "El rival: pierde vida normal": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1040"
+   ]
+  },
+  "Recursos de sobra: sí": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1043"
+   ]
+  },
+  "Recursos de sobra: no": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1043"
+   ]
+  },
+  "Obras al instante: sí": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1044"
+   ]
+  },
+  "Obras al instante: no": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1044"
+   ]
+  },
+  "Diana de {0} puesta. Manda tus tropas a atacarla.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1069"
+   ]
+  },
+  "Elige primero las tropas que quieres mover": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1073"
+   ]
+  },
+  "Monedas por minuto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1112",
+    "085-meta.js:2038"
+   ]
+  },
+  "Subtotal": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1115"
+   ]
+  },
+  "Total": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1117"
+   ]
+  },
+  "Construye Granjas y Minas para ganar más.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1118"
+   ]
+  },
+  "Sin energías": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1133"
+   ]
+  },
+  "Disponible": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1135",
+    "08-ui.js:1674"
+   ]
+  },
+  "La producen Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, buques de guerra, helicópteros, la Fábrica y el Helipuerto.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1136"
+   ]
+  },
+  "Romper": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1154"
+   ]
+  },
+  "Aliarse": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1155"
+   ]
+  },
+  "A tus aliados:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1161"
+   ]
+  },
+  "Toca «Aliarse» para proponer una alianza: los aliados no se atacan y comparten lo que ven. Al final solo puede ganar uno.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1164"
+   ]
+  },
+  "Imperio": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166",
+    "085-meta.js:2040"
+   ]
+  },
+  "Estilo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166"
+   ]
+  },
+  "Territorio": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166"
+   ]
+  },
+  "Ejército": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166"
+   ]
+  },
+  "Edificios": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166"
+   ]
+  },
+  "Puntos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1166",
+    "085-meta.js:1763"
+   ]
+  },
+  "En combate": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1173"
+   ]
+  },
+  "En vuelo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1174"
+   ]
+  },
+  "Patrulla en círculo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1175"
+   ]
+  },
+  "Estado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1188"
+   ]
+  },
+  "Vida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1188",
+    "08-ui.js:1302",
+    "08-ui.js:1945",
+    "085-meta.js:1195"
+   ]
+  },
+  "Misiles aire-aire": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1190"
+   ]
+  },
+  "{0} · ×{1} a aviones": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1190"
+   ]
+  },
+  "Alcance": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1190",
+    "08-ui.js:1228",
+    "08-ui.js:1280",
+    "08-ui.js:1305",
+    "085-meta.js:1201"
+   ]
+  },
+  "{0} casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1190",
+    "08-ui.js:1228",
+    "08-ui.js:1280",
+    "085-meta.js:1201"
+   ]
+  },
+  "Bombas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1194"
+   ]
+  },
+  "Listas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1194"
+   ]
+  },
+  "Furtivo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1195"
+   ]
+  },
+  "Visible (acaba de soltar bombas)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1195"
+   ]
+  },
+  "Oculto: solo se ve a 3 casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1195"
+   ]
+  },
+  "«Bombardear zona»: toca un lugar y los Bombarderos van atacando los edificios que encuentren.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1201"
+   ]
+  },
+  "Los Cazas buscan solos aviones y helicópteros enemigos; con poca vida vuelven al Aeropuerto o al Helipuerto.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1202"
+   ]
+  },
+  "Ningún avión en la pista ahora.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1216"
+   ]
+  },
+  "Torre de control ·": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1218"
+   ]
+  },
+  "Caza": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1218"
+   ]
+  },
+  "Cazas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1218"
+   ]
+  },
+  "Bombardero": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1218"
+   ]
+  },
+  "Bombarderos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1218"
+   ]
+  },
+  "Repara {0} de vida por segundo a los aviones y helicópteros cercanos; los dañados vuelven solos aquí.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1220"
+   ]
+  },
+  "Recarga": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1229"
+   ]
+  },
+  "· ráfaga de {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1229"
+   ]
+  },
+  "Daño a aeronaves por ráfaga": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1230"
+   ]
+  },
+  "Daño a aeronaves por tiro": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1230"
+   ]
+  },
+  "Detecta furtivos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1231"
+   ]
+  },
+  "a 3 casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1231"
+   ]
+  },
+  "Sin blancos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1233"
+   ]
+  },
+  "Siguiendo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1237"
+   ]
+  },
+  "Fijado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1237"
+   ]
+  },
+  "Límite: 1 de 1": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1250"
+   ]
+  },
+  "Faltan {0} monedas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1252",
+    "08-ui.js:1436"
+   ]
+  },
+  "Faltan {0} de energía": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1253",
+    "08-ui.js:1436"
+   ]
+  },
+  "Comunidad llena: construye Casas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1254"
+   ]
+  },
+  "parada: falta energía": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1263"
+   ]
+  },
+  "la próxima en {0} · todas en {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1269"
+   ]
+  },
+  "lista en {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1269"
+   ]
+  },
+  "Vida máxima": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1276"
+   ]
+  },
+  "Fuerte contra:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1290",
+    "08-ui.js:1313"
+   ]
+  },
+  "Débil contra:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1291"
+   ]
+  },
+  "No ataca a:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1292",
+    "08-ui.js:1314"
+   ]
+  },
+  "casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1305"
+   ]
+  },
+  "Población": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1308"
+   ]
+  },
+  "No combate. {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1316"
+   ]
+  },
+  "Terminar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1348",
+    "08-ui.js:1349"
+   ]
+  },
+  "Cancelar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1348",
+    "08-ui.js:1349",
+    "08-ui.js:1606"
+   ]
+  },
+  "· {0} · Toca «Construir» para poner la obra aquí{1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1356"
+   ]
+  },
+  "· {0} · Toca una casilla dorada y luego «Construir»{1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1357"
+   ]
+  },
+  "No quedan casillas para {0} en tu territorio{1}. {2}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1358"
+   ]
+  },
+  "tuya": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1363"
+   ]
+  },
+  "del rival": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1363"
+   ]
+  },
+  "· puesta 1 vez": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1364"
+   ]
+  },
+  "· puesta {0} veces": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1364"
+   ]
+  },
+  "Toca el mapa donde aparece": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1365"
+   ]
+  },
+  "Toca adónde mover al instante la tropa elegida": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1367"
+   ]
+  },
+  "Toca adónde mover al instante las <b>{0}</b> tropas elegidas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1368"
+   ]
+  },
+  "Toca dónde fundar el": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1371"
+   ]
+  },
+  "Puesto avanzado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1371"
+   ]
+  },
+  "al llegar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1371"
+   ]
+  },
+  "No hay sitio alcanzable para fundar un puesto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1372"
+   ]
+  },
+  "Toca el": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1374"
+   ]
+  },
+  "punto de reunión": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1374"
+   ]
+  },
+  "para las tropas nuevas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1374"
+   ]
+  },
+  "Toca la zona del": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1377",
+    "08-ui.js:1380"
+   ]
+  },
+  "misil del Lanzador nuclear móvil": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1377"
+   ]
+  },
+  "(alcance {0} casillas). Después te pide confirmar.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1377",
+    "08-ui.js:1380"
+   ]
+  },
+  "No hay ninguna zona al alcance del lanzador: acércalo más.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1378"
+   ]
+  },
+  "Toca el blanco del": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1382"
+   ]
+  },
+  "misil nuclear": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1382"
+   ]
+  },
+  "· uso único: después te pide confirmar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1382"
+   ]
+  },
+  "· llega en {0} s{1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1382"
+   ]
+  },
+  "Toca un edificio, una tropa o el territorio del": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1384"
+   ]
+  },
+  "que quieres atacar con tus aliados": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1384"
+   ]
+  },
+  "Toca la": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1386"
+   ]
+  },
+  "zona a bombardear": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1386"
+   ]
+  },
+  "Bombardero va": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1386"
+   ]
+  },
+  "Bombarderos van": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1386"
+   ]
+  },
+  ": {0} {1} atacando los edificios que encuentren": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1386"
+   ]
+  },
+  "Toca el blanco de los": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1388"
+   ]
+  },
+  "3 misiles nucleares": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1388"
+   ]
+  },
+  "· llegan en {0} s": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1388"
+   ]
+  },
+  "Límite: {0} de {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1436"
+   ]
+  },
+  "{0}Menos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1522"
+   ]
+  },
+  "{0}Más detalles": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1522"
+   ]
+  },
+  "Quitar selección": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1523",
+    "08-ui.js:1523"
+   ]
+  },
+  "Escuadra terrestre": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1532"
+   ]
+  },
+  "Flota": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1532"
+   ]
+  },
+  "Escuadrilla aérea": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1532"
+   ]
+  },
+  "Grupo mixto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1532"
+   ]
+  },
+  "moviéndose": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1538"
+   ]
+  },
+  "subiendo al transporte": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1544"
+   ]
+  },
+  "yendo a fundar un puesto": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1545"
+   ]
+  },
+  "manteniendo posición": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1546"
+   ]
+  },
+  "disparando a lo que tiene a tiro": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1547"
+   ]
+  },
+  "en espera": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1548"
+   ]
+  },
+  "plaza reservada": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1564"
+   ]
+  },
+  "plazas reservadas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1564"
+   ]
+  },
+  "{0} en cola · {1} {2} · Comunidad al terminar: {3} / {4}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1564"
+   ]
+  },
+  "Arsenal estratégico · uso único": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1571",
+    "08-ui.js:1586"
+   ]
+  },
+  "Uso estratégico disponible. Al usarlo queda en 0 / 1 por el resto de la partida.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1573"
+   ]
+  },
+  "Agotado: ya usaste tu único uso estratégico de esta partida.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1573"
+   ]
+  },
+  "Preparando: faltan {0} s. Después podrás elegir la zona.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1582"
+   ]
+  },
+  "Disponible. Alcance: {0} casillas. Un Escudo antimisiles lo puede derribar.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1583"
+   ]
+  },
+  "Agotado: este lanzador ya usó su único misil. Volver a fabricarlo no devuelve el uso.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1584"
+   ]
+  },
+  "Agotado: ya usaste tu único uso estratégico con otro lanzador, el silo o el AIR DEFENSE.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1585"
+   ]
+  },
+  "{0}Elegir zona": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1589",
+    "08-ui.js:1811"
+   ]
+  },
+  "Complejo estratégico (DF-5C)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1597"
+   ]
+  },
+  "AIR DEFENSE de nivel 4": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1597"
+   ]
+  },
+  "territorio de {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1598"
+   ]
+  },
+  "zona sin dueño": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1598"
+   ]
+  },
+  "Arsenal estratégico · revisar uso": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1599"
+   ]
+  },
+  "¿Usar ahora?": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1600"
+   ]
+  },
+  "Esta acción consume tu": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1601"
+   ]
+  },
+  "única utilización estratégica": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1601"
+   ]
+  },
+  "de la partida.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1601"
+   ]
+  },
+  "Sale del {0}. Zona elegida: {1}. Llega en {2} s y los rivales reciben el aviso. No se puede recuperar el uso.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1602"
+   ]
+  },
+  "Disponibilidad": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1603"
+   ]
+  },
+  "Después de usarlo: 0 / {0} · Agotado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1604"
+   ]
+  },
+  "Confirmar uso único": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1605"
+   ]
+  },
+  "Uso estratégico gastado: 0 / {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1629"
+   ]
+  },
+  "+{0} monedas/min": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1640",
+    "085-meta.js:1198"
+   ]
+  },
+  "+{0} de población": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1641"
+   ]
+  },
+  "+{0} energía cada 10 s": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1642"
+   ]
+  },
+  "sin minigun": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1644"
+   ]
+  },
+  "Nivel {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1649",
+    "085-meta.js:848",
+    "085-meta.js:1099",
+    "085-meta.js:2005",
+    "085-meta.js:2100"
+   ]
+  },
+  "Nivel {0} de {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1649",
+    "085-meta.js:1101"
+   ]
+  },
+  "un Barco constructor": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1657"
+   ]
+  },
+  "un Ingeniero": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1657"
+   ]
+  },
+  "un Constructor o Ingeniero": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1657"
+   ]
+  },
+  "En construcción": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1658"
+   ]
+  },
+  "Sin constructor: selecciona {0} y toca la obra.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1659"
+   ]
+  },
+  "Un constructor está trabajando.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1659"
+   ]
+  },
+  "Activo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1667"
+   ]
+  },
+  "Usado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1667"
+   ]
+  },
+  "Listo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1667"
+   ]
+  },
+  "Monedas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1669"
+   ]
+  },
+  "Comunidad": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1670",
+    "085-meta.js:1176"
+   ]
+  },
+  "Láser": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1671"
+   ]
+  },
+  "Emergencia": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1672"
+   ]
+  },
+  "Cúpula": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1673"
+   ]
+  },
+  "Nivel {0} · {1} %": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1673"
+   ]
+  },
+  "Núcleo nivel 3": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1674"
+   ]
+  },
+  "La Cúpula nivel 3 da escudo a tus tropas mientras están dentro de ella.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1678"
+   ]
+  },
+  "{0}Mejorar todo · {1} de {2}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1693"
+   ]
+  },
+  "{0}Mejoras automáticas: {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1694"
+   ]
+  },
+  "Quedan {0} mejoras ({1} en total). «Mejorar todo» pone a mejorar las que alcanza tu dinero; las automáticas siguen hasta el máximo y guardan {2} para tropas.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1695"
+   ]
+  },
+  "Todo está al máximo.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1695"
+   ]
+  },
+  "Mejorar Cúpula a nivel {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1699"
+   ]
+  },
+  "Comprar Cúpula": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1699"
+   ]
+  },
+  "Necesita el Núcleo en nivel 3.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1700"
+   ]
+  },
+  "Nivel 3: escudo personal para todas tus tropas.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1700"
+   ]
+  },
+  "Absorbe el daño de barcos, aeronaves y Lanzamisiles a {0} casillas del Núcleo.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1701"
+   ]
+  },
+  "Última:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1721"
+   ]
+  },
+  "Sigue entrenando la última tropa mientras alcance el dinero y la comunidad": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1724"
+   ]
+  },
+  "{0}Siempre: {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1724"
+   ]
+  },
+  "Esperando: {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1725"
+   ]
+  },
+  "En cola ·": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1731"
+   ]
+  },
+  "Quitar {0} (te devuelve {1})": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1731"
+   ]
+  },
+  "Quitar {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1731"
+   ]
+  },
+  "Toca una para quitarla: te devuelve el dinero.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1733"
+   ]
+  },
+  "Toca una tropa para entrenarla; mantenla pulsada para ver su ficha.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1734"
+   ]
+  },
+  "☢ Misil nuclear · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1742"
+   ]
+  },
+  "Listo. Daña todo en {0} casillas y deja {1} s de radiación; un Escudo antimisiles lo puede derribar.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1743"
+   ]
+  },
+  "☢☢☢ Lanzar los 3 · {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1746"
+   ]
+  },
+  "Tus 3 AIR DEFENSE de nivel 4 disparan juntos al mismo blanco: un Escudo antimisiles solo puede derribar uno.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1747"
+   ]
+  },
+  "Nivel 4 (solo 3 de tus AIR DEFENSE): lanza el misil nuclear.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1749"
+   ]
+  },
+  "Carga lista": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1754"
+   ]
+  },
+  ": derriba un misil nuclear que caiga a 7 casillas.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1754"
+   ]
+  },
+  "Defensa de punto: derriba misiles y cohetes enemigos a {0} casillas · derribados:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1755"
+   ]
+  },
+  "nivel {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1762",
+    "08-ui.js:1765"
+   ]
+  },
+  "Nivel {0} → {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1762"
+   ]
+  },
+  "{0}Mejorar a {1} · {2}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1766"
+   ]
+  },
+  "Mover punto de reunión": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1768"
+   ]
+  },
+  "Punto de reunión": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1768"
+   ]
+  },
+  "Demoler": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1770"
+   ]
+  },
+  "Lista": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1787"
+   ]
+  },
+  "Abrir puerta": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1793"
+   ]
+  },
+  "Cerrar puerta": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1793"
+   ]
+  },
+  "Cerrada: no pasa nadie.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1794"
+   ]
+  },
+  "Abierta: pasan tus tropas y las de tus aliados.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1794"
+   ]
+  },
+  "Guarnición": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1798"
+   ]
+  },
+  "{0} / {1} soldados · +{2} % de daño": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1798"
+   ]
+  },
+  "Selecciona soldados y toca el Búnker para que entren.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1800"
+   ]
+  },
+  "{0}Sacar soldados": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1801"
+   ]
+  },
+  "Preparando el DF-5C: faltan {0} s.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1807"
+   ]
+  },
+  "DF-5C listo. Alcance: {0} casillas. Un Escudo antimisiles lo puede derribar.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1807"
+   ]
+  },
+  "Agotado: el silo ya lanzó su misil.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1808"
+   ]
+  },
+  "Agotado: ya usaste tu único uso estratégico.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1808"
+   ]
+  },
+  "Arsenal estratégico · DF-5C · uso único": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1809"
+   ]
+  },
+  "Descubre lo oculto a {0} casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1814"
+   ]
+  },
+  "Ve {0} casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1815"
+   ]
+  },
+  "Derribados: {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1816"
+   ]
+  },
+  "Interferencia enemiga: dispara {0} % más lento": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1817"
+   ]
+  },
+  "Veterana: {0} eliminaciones": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1826"
+   ]
+  },
+  "(próxima estrella con {0})": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1829"
+   ]
+  },
+  "· {0} eliminaciones{1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1829"
+   ]
+  },
+  "{0} tropas elegidas. Toca un destino para moverlas o un enemigo para atacarlo.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1829"
+   ]
+  },
+  "Centrar la cámara en la selección": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1832"
+   ]
+  },
+  "Centrar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1832"
+   ]
+  },
+  "Orden actual:": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1833",
+    "08-ui.js:1998"
+   ]
+  },
+  "Elegir solo {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1839"
+   ]
+  },
+  "Selecciona Cazas y toca el Portaaviones para guardarlos.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1848"
+   ]
+  },
+  "Selecciona soldados y toca el {0} para subirlos.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1849"
+   ]
+  },
+  "Selecciona tropas de tierra y toca la {0} para subirlas.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1850"
+   ]
+  },
+  "en camino": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1853"
+   ]
+  },
+  "Hangar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1854"
+   ]
+  },
+  "Pasajeros": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1854"
+   ]
+  },
+  "· {0} en camino": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1854"
+   ]
+  },
+  "Lanzar Cazas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1857"
+   ]
+  },
+  "Desembarcar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1857"
+   ]
+  },
+  "Lanzar en paracaídas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1857"
+   ]
+  },
+  "Bajar soldados": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1857"
+   ]
+  },
+  "{0}Bombardear zona": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1864"
+   ]
+  },
+  "Construye solo las obras pendientes. Tócalo y luego una obra para mandarlo; toca un edificio dañado para repararlo.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1868"
+   ]
+  },
+  "Pone un Puente modular en el agua poco profunda de al lado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1874"
+   ]
+  },
+  "{0}Tender puente · {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1874"
+   ]
+  },
+  "{0}Sembrar mina · {1} / {2}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1880"
+   ]
+  },
+  "{0}Fundar puesto · 800": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1885"
+   ]
+  },
+  "Avanzar atacando (F)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1890"
+   ]
+  },
+  "Toca el destino…": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1890"
+   ]
+  },
+  "Avanzar atacando": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1890"
+   ]
+  },
+  "Van y vuelven entre aquí y el punto que toques, peleando en el camino": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1893"
+   ]
+  },
+  "Toca el otro punto…": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1893"
+   ]
+  },
+  "Patrullando": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1893"
+   ]
+  },
+  "Patrullar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1893"
+   ]
+  },
+  "Se quedan quietas y solo disparan a lo que tienen a tiro": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1895"
+   ]
+  },
+  "{0}Mantener posición: {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1895"
+   ]
+  },
+  "Los Constructores e Ingenieros sin trabajo reparan solos los edificios dañados a {0} casillas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1900"
+   ]
+  },
+  "{0}Reparación sola: {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1900"
+   ]
+  },
+  "Bloque: juntas · Línea: una al lado de otra, de frente al destino": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1903"
+   ]
+  },
+  "línea": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1903"
+   ]
+  },
+  "{0}Formación: {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1903"
+   ]
+  },
+  "{0}Detener": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1905"
+   ]
+  },
+  "{0}Guardar en": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1907"
+   ]
+  },
+  "Guardar en el grupo {0} (Ctrl o Mayús + {1})": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1908"
+   ]
+  },
+  "Sin dueño": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1915"
+   ]
+  },
+  "En disputa: hay tropas de varios equipos cerca": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1916"
+   ]
+  },
+  "Para capturarlo: infantería a 1 casilla y sin enemigos a {0} casillas durante {1} s.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1918"
+   ]
+  },
+  "nadie lo ha controlado aún": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1927"
+   ]
+  },
+  "Rey del Faro (meta {0}): {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1927"
+   ]
+  },
+  "Enemigo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1935"
+   ]
+  },
+  "Aliado": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1935"
+   ]
+  },
+  "Nivel": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1946"
+   ]
+  },
+  "Fuerte contra": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1950"
+   ]
+  },
+  "nada en especial": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1950"
+   ]
+  },
+  "No ataca a": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1951"
+   ]
+  },
+  "Ataque": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1953"
+   ]
+  },
+  "no dispara": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1953"
+   ]
+  },
+  "Usa": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1955"
+   ]
+  },
+  "Vida del grupo · {0} % ({1} / {2})": {
+   "src": "código",
+   "where": [
+    "08-ui.js:1990"
+   ]
+  },
+  "Mejora de {0} pagada: un constructor la hará": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2078"
+   ]
+  },
+  "No alcanza el dinero para ninguna mejora": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2086"
+   ]
+  },
+  "Mejorando {0} {1} (−{2}): tus constructores van a cada obra": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2089"
+   ]
+  },
+  "Mejoras automáticas encendidas: se mejora solo hasta el máximo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2095"
+   ]
+  },
+  "Mejoras automáticas apagadas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2095"
+   ]
+  },
+  "Cúpula nivel {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2103"
+   ]
+  },
+  "Investigando: {0}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2119"
+   ]
+  },
+  "Tendiendo el puente…": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2137"
+   ]
+  },
+  "Mina sembrada (solo tú la ves)": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2137"
+   ]
+  },
+  "{0} en cola · {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2184"
+   ]
+  },
+  "Dejaron de patrullar": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2194"
+   ]
+  },
+  "Mantienen la posición: solo disparan a lo que tienen a tiro": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2201"
+   ]
+  },
+  "Vuelven a perseguir a los enemigos cercanos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2201"
+   ]
+  },
+  "Los constructores libres repararán solos": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2206"
+   ]
+  },
+  "Reparación sola apagada": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2206"
+   ]
+  },
+  "{0}: sigue entrenando {1} mientras alcance el dinero": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2211"
+   ]
+  },
+  "Perdiste": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2256",
+    "08-ui.js:2256"
+   ]
+  },
+  "Núcleo": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2257"
+   ]
+  },
+  "Tropas": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2258"
+   ]
+  },
+  "libre": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2383"
+   ]
+  },
+  "Faro: {0} · Tú {1}": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2383"
+   ]
+  },
+  "Elegido por ti.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2422"
+   ]
+  },
+  "Automático: el idioma de tu navegador o de Poki.": {
+   "src": "código",
+   "where": [
+    "08-ui.js:2422"
+   ]
+  },
+  "Base": {
+   "src": "código",
+   "where": [
+    "085-meta.js:135"
+   ]
+  },
+  "Especial": {
+   "src": "código",
+   "where": [
+    "085-meta.js:135"
+   ]
+  },
+  "Estratégico": {
+   "src": "código",
+   "where": [
+    "085-meta.js:137"
+   ]
+  },
+  "Vehículo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "Dron naval": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "Barco": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "Dron": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "Avión": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "Helicóptero": {
+   "src": "código",
+   "where": [
+    "085-meta.js:138"
+   ]
+  },
+  "{0} {1} {2}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:243"
+   ]
+  },
+  "Ese texto no es una copia del progreso de Faro de Ámbar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:516"
+   ]
+  },
+  "La copia está incompleta: cópiala entera otra vez": {
+   "src": "código",
+   "where": [
+    "085-meta.js:524"
+   ]
+  },
+  "La copia está incompleta o cambiada: cópiala entera otra vez": {
+   "src": "código",
+   "where": [
+    "085-meta.js:526"
+   ]
+  },
+  "La copia no se puede leer": {
+   "src": "código",
+   "where": [
+    "085-meta.js:528"
+   ]
+  },
+  "La copia no es de este juego": {
+   "src": "código",
+   "where": [
+    "085-meta.js:529"
+   ]
+  },
+  "Cofre del Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:658"
+   ]
+  },
+  "Cofre de Isla": {
+   "src": "código",
+   "where": [
+    "085-meta.js:659"
+   ]
+  },
+  "{0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:661",
+    "085-meta.js:1127",
+    "085-meta.js:1148",
+    "085-meta.js:1750",
+    "085-meta.js:1785"
+   ]
+  },
+  "Demasiados intentos. Espera {0} s.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:708"
+   ]
+  },
+  "Contraseña incorrecta. Espera {0} s para volver a intentar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:718"
+   ]
+  },
+  "intentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:719"
+   ]
+  },
+  "Contraseña incorrecta ({0} {1} más).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:719"
+   ]
+  },
+  "Zona de creadores abierta": {
+   "src": "código",
+   "where": [
+    "085-meta.js:789"
+   ]
+  },
+  "Empieza la Temporada {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:865"
+   ]
+  },
+  "El Pase del Faro vuelve a empezar desde el nivel 1. En la Liga 3 vs 3 bajas 1 rango: de {0} a {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:866"
+   ]
+  },
+  "Necesita servidores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:875"
+   ]
+  },
+  "Roblox": {
+   "src": "código",
+   "where": [
+    "085-meta.js:875"
+   ]
+  },
+  "Menú del vestíbulo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:876"
+   ]
+  },
+  "Jugar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:877",
+    "085-meta.js:937",
+    "085-meta.js:1005",
+    "085-meta.js:1841"
+   ]
+  },
+  "Campaña": {
+   "src": "código",
+   "where": [
+    "085-meta.js:878"
+   ]
+  },
+  "{0} de {1} ★": {
+   "src": "código",
+   "where": [
+    "085-meta.js:878"
+   ]
+  },
+  "mitad de XP": {
+   "src": "código",
+   "where": [
+    "085-meta.js:879"
+   ]
+  },
+  "Tutorial": {
+   "src": "código",
+   "where": [
+    "085-meta.js:880",
+    "085-meta.js:1021"
+   ]
+  },
+  "hecho": {
+   "src": "código",
+   "where": [
+    "085-meta.js:880"
+   ]
+  },
+  "premio": {
+   "src": "código",
+   "where": [
+    "085-meta.js:880"
+   ]
+  },
+  "Rangos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:881"
+   ]
+  },
+  "Top jugadores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:882"
+   ]
+  },
+  "Desafío semanal": {
+   "src": "código",
+   "where": [
+    "085-meta.js:883"
+   ]
+  },
+  "nuevo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:883"
+   ]
+  },
+  "Ajustes": {
+   "src": "código",
+   "where": [
+    "085-meta.js:884"
+   ]
+  },
+  "A tu manera": {
+   "src": "código",
+   "where": [
+    "085-meta.js:884"
+   ]
+  },
+  "Creadores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:885"
+   ]
+  },
+  "abierta": {
+   "src": "código",
+   "where": [
+    "085-meta.js:885"
+   ]
+  },
+  "con contraseña": {
+   "src": "código",
+   "where": [
+    "085-meta.js:885"
+   ]
+  },
+  "Servidores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:885"
+   ]
+  },
+  "Partida en pausa": {
+   "src": "código",
+   "where": [
+    "085-meta.js:893"
+   ]
+  },
+  "Volver a la partida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:894"
+   ]
+  },
+  "Abandonar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:895"
+   ]
+  },
+  "Partida guardada": {
+   "src": "código",
+   "where": [
+    "085-meta.js:899"
+   ]
+  },
+  "Continuar partida guardada": {
+   "src": "código",
+   "where": [
+    "085-meta.js:900"
+   ]
+  },
+  "Borrar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:901"
+   ]
+  },
+  "Versión {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:931",
+    "085-meta.js:1327"
+   ]
+  },
+  "Faro de": {
+   "src": "código",
+   "where": [
+    "085-meta.js:932"
+   ]
+  },
+  "Ámbar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:932"
+   ]
+  },
+  "Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:933"
+   ]
+  },
+  "Novedades": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "93 tropas y 42 edificios": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "Tu ejército en la portada": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "Laboratorio de pruebas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "Español e inglés": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "Ajustes a tu manera": {
+   "src": "código",
+   "where": [
+    "085-meta.js:934"
+   ]
+  },
+  "Este navegador no deja guardar: tu progreso se perderá al cerrar el juego.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:939"
+   ]
+  },
+  "Modo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:944",
+    "085-meta.js:969"
+   ]
+  },
+  "Mapa:": {
+   "src": "código",
+   "where": [
+    "085-meta.js:945"
+   ]
+  },
+  "{0}Cambiar modo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:947"
+   ]
+  },
+  "{0}Mapa": {
+   "src": "código",
+   "where": [
+    "085-meta.js:948"
+   ]
+  },
+  "{0}Otra isla": {
+   "src": "código",
+   "where": [
+    "085-meta.js:949"
+   ]
+  },
+  "Liga 3 vs 3 · {0} · {1} puntos. La dificultad la pone tu rango ({2}).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:951"
+   ]
+  },
+  "Dificultad de los bots": {
+   "src": "código",
+   "where": [
+    "085-meta.js:952"
+   ]
+  },
+  "Tus números": {
+   "src": "código",
+   "where": [
+    "085-meta.js:955"
+   ]
+  },
+  "Partidas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:957"
+   ]
+  },
+  "Victorias": {
+   "src": "código",
+   "where": [
+    "085-meta.js:957",
+    "085-meta.js:1761",
+    "085-meta.js:1763"
+   ]
+  },
+  "De victorias": {
+   "src": "código",
+   "where": [
+    "085-meta.js:957"
+   ]
+  },
+  "Islas tomadas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:958",
+    "085-meta.js:1761",
+    "085-meta.js:1763",
+    "085-meta.js:2111"
+   ]
+  },
+  "Núcleos destruidos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:958",
+    "085-meta.js:2113"
+   ]
+  },
+  "Jugando desde": {
+   "src": "código",
+   "where": [
+    "085-meta.js:958"
+   ]
+  },
+  "Arma tu partida contra bots. Da la mitad de XP.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:968"
+   ]
+  },
+  "Conquista": {
+   "src": "código",
+   "where": [
+    "085-meta.js:969"
+   ]
+  },
+  "Rey del Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:969"
+   ]
+  },
+  "Jugadores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:970"
+   ]
+  },
+  "2 (Duelo 1 vs 1)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:970"
+   ]
+  },
+  "Mapa": {
+   "src": "código",
+   "where": [
+    "085-meta.js:971"
+   ]
+  },
+  "Monedas iniciales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:972"
+   ]
+  },
+  "Dificultad": {
+   "src": "código",
+   "where": [
+    "085-meta.js:973"
+   ]
+  },
+  "Equipos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:974"
+   ]
+  },
+  "Todos contra todos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:974"
+   ]
+  },
+  "Dos equipos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:974"
+   ]
+  },
+  "Extras": {
+   "src": "código",
+   "where": [
+    "085-meta.js:975"
+   ]
+  },
+  "Sin niebla": {
+   "src": "código",
+   "where": [
+    "085-meta.js:975"
+   ]
+  },
+  "Niebla": {
+   "src": "código",
+   "where": [
+    "085-meta.js:975"
+   ]
+  },
+  "Ritmo normal": {
+   "src": "código",
+   "where": [
+    "085-meta.js:975"
+   ]
+  },
+  "Arsenal estratégico · opción experimental": {
+   "src": "código",
+   "where": [
+    "085-meta.js:976"
+   ]
+  },
+  "Desactivado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:976"
+   ]
+  },
+  "Activado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:976",
+    "085-meta.js:1107",
+    "085-meta.js:1402"
+   ]
+  },
+  "Activado: cada jugador tiene": {
+   "src": "código",
+   "where": [
+    "085-meta.js:977"
+   ]
+  },
+  "un solo uso estratégico": {
+   "src": "código",
+   "where": [
+    "085-meta.js:977"
+   ]
+  },
+  "en toda la partida, con el misil del AIR DEFENSE de nivel 4 o con el Lanzador nuclear móvil (que solo existe con esta opción). Desactivado: todo sigue como siempre.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:977"
+   ]
+  },
+  "Jugar personalizado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:979"
+   ]
+  },
+  "Unirse con código · Disponible en Roblox": {
+   "src": "código",
+   "where": [
+    "085-meta.js:980"
+   ]
+  },
+  "{0} de 3 estrellas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1004",
+    "085-meta.js:2010"
+   ]
+  },
+  "Repetir": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1005",
+    "085-meta.js:2025"
+   ]
+  },
+  "Termina la misión {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1006"
+   ]
+  },
+  "La ruta del Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1010"
+   ]
+  },
+  "Modo creador: todas abiertas.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1012"
+   ]
+  },
+  "Seis misiones para volver a encender el Faro de Ámbar. Cada una se abre al terminar la anterior y da hasta 3 estrellas:\n        una por terminarla y dos por las condiciones marcadas con ★.{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1011"
+   ]
+  },
+  "Premio la primera vez: cristales (50 a 250) y XP. Cada estrella nueva: +{0} cristales. Tienes {1} de {2} estrellas.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1014"
+   ]
+  },
+  "Tres pasos contra un bot lento con un Núcleo débil, que está en otra isla: para llegar hace falta una Barcaza.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1022"
+   ]
+  },
+  "Primer Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1025"
+   ]
+  },
+  "Insignia": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1025",
+    "085-meta.js:1750"
+   ]
+  },
+  "150 cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1026"
+   ]
+  },
+  "Una sola vez": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1026"
+   ]
+  },
+  "Soldado Dorado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1027"
+   ]
+  },
+  "Aspecto legendario": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1027"
+   ]
+  },
+  "Ya recibiste el premio. Puedes repetir el tutorial cuando quieras.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1029"
+   ]
+  },
+  "El premio se entrega la primera vez que lo terminas.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1029"
+   ]
+  },
+  "Empezar tutorial": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1030"
+   ]
+  },
+  "Victoria": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1044"
+   ]
+  },
+  "Abandono": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1044"
+   ]
+  },
+  "Derrota": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1044",
+    "085-meta.js:2104"
+   ]
+  },
+  "{0} de {1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1047",
+    "085-meta.js:1357"
+   ]
+  },
+  "Tu rango · Temporada {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1052"
+   ]
+  },
+  "{0} puntos · mejor: {1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1052"
+   ]
+  },
+  "Estás en el rango más alto.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1054"
+   ]
+  },
+  "{0} puntos para {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1054"
+   ]
+  },
+  "{0} Solo cuentan las partidas de la Liga 3 vs 3 (aliados bots; rivales en {1}). Ganar: +{2} · perder o abandonar: −{3}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1054"
+   ]
+  },
+  "Protección activa:": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1055"
+   ]
+  },
+  "acabas de subir, tu primera derrota no te baja de rango.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1055"
+   ]
+  },
+  "Recién llegado a un rango, la primera derrota no te baja.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1055"
+   ]
+  },
+  "{0}La temporada termina el {1}: entonces bajas 1 rango (no a cero) y el pase vuelve a empezar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1055"
+   ]
+  },
+  "Jugar Liga 3 vs 3": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1056"
+   ]
+  },
+  "Desde nivel {0} (tienes {1})": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1056"
+   ]
+  },
+  "Los 6 rangos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1058"
+   ]
+  },
+  "Almirante del Faro: desde {0} puntos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1059"
+   ]
+  },
+  "Almirante del Faro: en Roblox serán los 50 mejores; aquí, sin servidores, desde {0} puntos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1059"
+   ]
+  },
+  "Tabla de la Liga 3 vs 3": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1060"
+   ]
+  },
+  "Comandantes bot del juego (sin servidores no hay otros jugadores reales). Tu puesto cambia con tus puntos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1061"
+   ]
+  },
+  "Últimas partidas · {0} de {1} ganadas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1063"
+   ]
+  },
+  "Todavía no jugaste la Liga 3 vs 3.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1063"
+   ]
+  },
+  "Hecha": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1073",
+    "085-meta.js:1367"
+   ]
+  },
+  "Cambiar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1073",
+    "085-meta.js:1367"
+   ]
+  },
+  "Cada misión da {0} XP y cristales ({1} las diarias, {2} las semanales). Se completan al terminar una partida.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1076",
+    "085-meta.js:1370"
+   ]
+  },
+  "· ya cambiaste una hoy": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1077",
+    "085-meta.js:1371"
+   ]
+  },
+  "· puedes cambiar 1 al día": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1077",
+    "085-meta.js:1371"
+   ]
+  },
+  "Diarias{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1077",
+    "085-meta.js:1371"
+   ]
+  },
+  "Semanales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1078",
+    "085-meta.js:1372"
+   ]
+  },
+  "Misiones": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1084",
+    "085-meta.js:1102",
+    "085-meta.js:1361",
+    "085-meta.js:1370"
+   ]
+  },
+  "· ¡listo!": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1085"
+   ]
+  },
+  "Premio diario{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1085"
+   ]
+  },
+  "· {0} para reclamar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1086"
+   ]
+  },
+  "Pase del Faro{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1086"
+   ]
+  },
+  "Pase del Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1101"
+   ]
+  },
+  "{0} por hacer": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1102"
+   ]
+  },
+  "Premio diario": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1103",
+    "085-meta.js:1376"
+   ]
+  },
+  "¡Listo para reclamar!": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1103"
+   ]
+  },
+  "Vuelve mañana": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1103"
+   ]
+  },
+  "Códigos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1104",
+    "085-meta.js:1381"
+   ]
+  },
+  "Canjea un código": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1104"
+   ]
+  },
+  "Copia de tu progreso": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1105",
+    "085-meta.js:1388"
+   ]
+  },
+  "Llévalo a otro iPad": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1105"
+   ]
+  },
+  "Acerca de": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1106"
+   ]
+  },
+  "Versión {0} y créditos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1106"
+   ]
+  },
+  "Modo creador": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1107",
+    "085-meta.js:2002",
+    "085-meta.js:2097"
+   ]
+  },
+  "Apagado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1107",
+    "085-meta.js:1403"
+   ]
+  },
+  "Apariencias": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1115"
+   ]
+  },
+  "Cofres": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1115"
+   ]
+  },
+  "Taller": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1115",
+    "085-meta.js:1560",
+    "085-meta.js:1561"
+   ]
+  },
+  "Cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1115"
+   ]
+  },
+  "Solo cambian cómo se ven tus tropas y tu Núcleo: vida, daño y velocidad = iguales.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1120"
+   ]
+  },
+  "Ya es tuyo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1127"
+   ]
+  },
+  "Abrir · {0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1134"
+   ]
+  },
+  "Cada cofre da un aspecto ({0} %), un plano ({1} %) o fragmentos ({2} %). Garantía: 1 legendario cada {3} cofres (te faltan {4}). Un aspecto repetido se convierte en fragmentos ({5}).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1136"
+   ]
+  },
+  "Tienes": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1140"
+   ]
+  },
+  "fragmentos. Ganas fragmentos con los aspectos repetidos, en algunos cofres y jugando (+{0} por partida, +{1} si ganas).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1140"
+   ]
+  },
+  "Fabricar · {0} fragmentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1144"
+   ]
+  },
+  "Todavía no tienes planos: salen en los cofres.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1145"
+   ]
+  },
+  "Los cristales se ganan jugando: partidas, misiones, pase y premio diario. Comprarlos con dinero real solo estará en Roblox.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1147"
+   ]
+  },
+  "Solo en Roblox": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1149"
+   ]
+  },
+  "Tienda": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1151"
+   ]
+  },
+  "Nuevo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1164"
+   ]
+  },
+  "Nada con ese nombre en este filtro.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1165"
+   ]
+  },
+  "Precio": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1175",
+    "085-meta.js:1193"
+   ]
+  },
+  "y {0} de energía": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1175",
+    "085-meta.js:1193"
+   ]
+  },
+  "{0} monedas{1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1175",
+    "085-meta.js:1193"
+   ]
+  },
+  "Tiempo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1177",
+    "085-meta.js:2013"
+   ]
+  },
+  "Se produce en": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1178"
+   ]
+  },
+  "Dispara salvas de {0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1181"
+   ]
+  },
+  "Daño en área: a lo que esté a {0} casillas del blanco le llega el {1} %.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1182"
+   ]
+  },
+  "Un solo uso: se destruye al atacar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1183"
+   ]
+  },
+  "infantería": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1184"
+   ]
+  },
+  "tropas de tierra": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1184"
+   ]
+  },
+  "Lleva {0} plazas de {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1184"
+   ]
+  },
+  "Hangar para {0} Cazas.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1185"
+   ]
+  },
+  "Sigilo: solo se ve de cerca o con detectores.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1186"
+   ]
+  },
+  "Detecta submarinos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1187"
+   ]
+  },
+  "Construye y repara.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1188"
+   ]
+  },
+  "Cura a los soldados cercanos.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1189"
+   ]
+  },
+  "Solo con «Arsenal estratégico» (Personalizado). Un misil, un uso por partida; alcance {0} casillas; {1} s de preparación.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1190"
+   ]
+  },
+  "No pelea.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1191"
+   ]
+  },
+  "Empiezas con uno": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1193"
+   ]
+  },
+  "Tiempo de obra": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1194"
+   ]
+  },
+  "Límite": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1196"
+   ]
+  },
+  "{0} por jugador": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1196"
+   ]
+  },
+  "Dónde": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1197"
+   ]
+  },
+  "solo en": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1197"
+   ]
+  },
+  "Ingreso": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1198"
+   ]
+  },
+  "Niveles": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1199"
+   ]
+  },
+  "hasta {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1199"
+   ]
+  },
+  "Produce": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1200"
+   ]
+  },
+  "En nivel 4 lanza el misil nuclear. Con «Arsenal estratégico» comparte el único uso con el Lanzador nuclear móvil.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1202"
+   ]
+  },
+  "Nuevo ·": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1205"
+   ]
+  },
+  "Conoce tu ejército": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1221"
+   ]
+  },
+  "Todo lo que hoy existe en el juego. Toca una tarjeta para ver su ficha.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1221"
+   ]
+  },
+  "{0} tropas · {1} edificios": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1222"
+   ]
+  },
+  "Buscar tropa o edificio…": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1223"
+   ]
+  },
+  "Buscar tropa o edificio": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1223"
+   ]
+  },
+  "Normal": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1246"
+   ]
+  },
+  "Equipado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1246",
+    "085-meta.js:1250"
+   ]
+  },
+  "Equipar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1246",
+    "085-meta.js:1250",
+    "085-meta.js:1437"
+   ]
+  },
+  "Inventario": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1253"
+   ]
+  },
+  "Toca un aspecto para equiparlo. Se ve en tus tropas y tu Núcleo en la próxima partida.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1254"
+   ]
+  },
+  "faro-de-ambar-progreso-{0}.txt": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1262"
+   ]
+  },
+  "Aquí no se puede descargar el archivo: usa «Copiar» y guarda el texto.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1268",
+    "085-meta.js:1278"
+   ]
+  },
+  "Archivo guardado. En el otro iPad, usa «Elegir archivo».": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1273"
+   ]
+  },
+  "Espera un momento y vuelve a tocar «Descargar archivo».": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1277"
+   ]
+  },
+  "¿Reemplazar? Nivel {0} · toca otra vez": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1299"
+   ]
+  },
+  "Listo: cargaste tu progreso (nivel {0}, {1} cristales).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1304"
+   ]
+  },
+  "Acerca de Faro de Ámbar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1327"
+   ]
+  },
+  "· prototipo web de un juego de estrategia sobre islas de hexágonos, hecho para jugar en el iPad.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1327"
+   ]
+  },
+  "Novedades de esta versión": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1328"
+   ]
+  },
+  "Créditos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1330"
+   ]
+  },
+  "Modelos 3D hechos con Blender para este juego.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1331"
+   ]
+  },
+  "Cielo de ambiente: Poly Haven (CC0).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1332"
+   ]
+  },
+  "Caminar y correr: CMU Graphics Lab Motion Capture Database.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1333"
+   ]
+  },
+  "Motor 3D: three.js r128.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1334"
+   ]
+  },
+  "Elige un modo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1338"
+   ]
+  },
+  "Desde nivel {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1341"
+   ]
+  },
+  "Elige un mapa": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1344"
+   ]
+  },
+  "Reclamado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1354"
+   ]
+  },
+  "Reclamar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1354"
+   ]
+  },
+  "Pase del Faro · Temporada {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1357"
+   ]
+  },
+  "Pista gratis de {0} niveles. Cada {1} XP subes un nivel del pase. Esta temporada llevas {2} XP (nivel {3}). Termina el {4}: entonces el pase vuelve a empezar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1357"
+   ]
+  },
+  "Reclamar todo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1358"
+   ]
+  },
+  "Entra cada día para avanzar. Si faltas un día, la racha baja 1.{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1376"
+   ]
+  },
+  "Día {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1378"
+   ]
+  },
+  "Cofre": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1378"
+   ]
+  },
+  "del Faro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1378"
+   ]
+  },
+  "cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1378"
+   ]
+  },
+  "Reclamar día {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1379"
+   ]
+  },
+  "Ya reclamaste hoy": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1379"
+   ]
+  },
+  "Escribe un código": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1381"
+   ]
+  },
+  "Canjear": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1383"
+   ]
+  },
+  "Cada código se usa una vez. Los códigos nuevos se anuncian en las actualizaciones.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1385"
+   ]
+  },
+  "(en Roblox se guardarán en tu cuenta)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1388"
+   ]
+  },
+  "Tu nivel, cristales, aspectos y rango se guardan solo en este navegador. Con esta copia los llevas a otro iPad o navegador{0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1388"
+   ]
+  },
+  "1 · Guardar: copia este texto o descárgalo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1389"
+   ]
+  },
+  "Copiar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1391"
+   ]
+  },
+  "Descargar archivo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1392"
+   ]
+  },
+  "2 · Cargar: pega aquí una copia (reemplaza tu progreso de este navegador)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1393"
+   ]
+  },
+  "Cargar copia": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1395"
+   ]
+  },
+  "Elegir archivo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1396"
+   ]
+  },
+  "Zona de creadores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1400",
+    "085-meta.js:1412"
+   ]
+  },
+  "Solo lo ves tú: la plataforma confirma que eres el dueño de este juego.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1400"
+   ]
+  },
+  "Entraste con la contraseña de creadores. Se vuelve a pedir cada vez que abres el juego.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1400"
+   ]
+  },
+  "{0} Los demás jugadores no pueden abrirla.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1400"
+   ]
+  },
+  "Monedas y energía infinitas · todo desbloqueado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1401"
+   ]
+  },
+  "Construcción rápida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1404"
+   ]
+  },
+  "Sí": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1405"
+   ]
+  },
+  "Las partidas en modo creador no dan XP ni cristales. En Roblox se hará igual, con tu UserId comprobado en el servidor.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1407"
+   ]
+  },
+  "Cerrar la zona de creadores": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1408"
+   ]
+  },
+  "Solo para los creadores del juego. Escribe la contraseña para entrar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1412"
+   ]
+  },
+  "Contraseña": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1413"
+   ]
+  },
+  "Entrar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1415"
+   ]
+  },
+  "Se vuelve a pedir cada vez que abres el juego. Después de {0} intentos fallidos hay que esperar {1} s.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1417"
+   ]
+  },
+  "{0} fragmentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1422"
+   ]
+  },
+  "Ahora tienes {0}. Úsalos en el Taller con un plano.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1422"
+   ]
+  },
+  "Genial": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1423",
+    "085-meta.js:1429",
+    "085-meta.js:1436"
+   ]
+  },
+  "Plano: {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1427"
+   ]
+  },
+  "Fabrícalo en el Taller con {0} fragmentos (tienes {1}).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1428"
+   ]
+  },
+  "Ir al Taller": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1430"
+   ]
+  },
+  "Repetido: se convierte en {0} fragmentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1435"
+   ]
+  },
+  "¡Nuevo! Ya está en tu Inventario": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1435"
+   ]
+  },
+  "Aceptar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1440"
+   ]
+  },
+  "Zona de creadores cerrada": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1469"
+   ]
+  },
+  "Liga 3 vs 3": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1482",
+    "085-meta.js:1761"
+   ]
+  },
+  "La Liga 3 vs 3 se abre en el nivel {0}. Ahora estás en el nivel {1}: juega otras partidas para subir.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1482"
+   ]
+  },
+  "Copiado. Pégalo en «Cargar» en el otro iPad o navegador.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1518"
+   ]
+  },
+  "¡Fabricaste {0}! Ya está en tu Inventario.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1561"
+   ]
+  },
+  "+{0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1610",
+    "085-meta.js:2004",
+    "085-meta.js:2099"
+   ]
+  },
+  "Escribe un código.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1620"
+   ]
+  },
+  "Ese código no existe.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1621"
+   ]
+  },
+  "Ya usaste este código.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1622"
+   ]
+  },
+  "¡Listo! {0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1625"
+   ]
+  },
+  "Compraste {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1648"
+   ]
+  },
+  "No tienes el plano de ese aspecto": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1656"
+   ]
+  },
+  "Ya tienes ese aspecto": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1657"
+   ]
+  },
+  "Te faltan {0} fragmentos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1659"
+   ]
+  },
+  "Logros · {0} de {1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1744"
+   ]
+  },
+  "Logrado el {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1750"
+   ]
+  },
+  "Rango": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1763"
+   ]
+  },
+  "% victorias": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1763"
+   ]
+  },
+  "Oro": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1766"
+   ]
+  },
+  "Plata": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1766"
+   ]
+  },
+  "Bronce": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1766"
+   ]
+  },
+  "(tú)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1767"
+   ]
+  },
+  "Top jugadores · Temporada {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1770"
+   ]
+  },
+  "Los mejores de la Liga 3 vs 3 en esta temporada.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "Más victorias (todos los modos).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "Más islas tomadas (todos los modos).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "Los demás son comandantes bot. Tu fila siempre se ve.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "Sin servidores, los demás son comandantes bot; en Roblox serán jugadores reales. Tu fila siempre se ve.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "{0} {1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1771"
+   ]
+  },
+  "Jugador": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1773"
+   ]
+  },
+  "Desafío semanal: {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1781"
+   ]
+  },
+  "día": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1784"
+   ]
+  },
+  "días": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1784"
+   ]
+  },
+  "{0} · {1} · bots en {2}. Es el mismo mapa toda la semana; cambia en {3} {4} (el lunes).": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1784"
+   ]
+  },
+  "Ganado.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1785"
+   ]
+  },
+  "Tu mejor tiempo:": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1785"
+   ]
+  },
+  ". Intenta bajarlo.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1785"
+   ]
+  },
+  "Premio la primera vez que lo ganas:": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1785"
+   ]
+  },
+  "{0} Intentos: {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1785"
+   ]
+  },
+  "Jugar desafío": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1786"
+   ]
+  },
+  "· protección de rango: no bajaste": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1813"
+   ]
+  },
+  "Liga 3 vs 3{0}: {1}{2} puntos · {3}{4}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1813"
+   ]
+  },
+  "Campo de pruebas: sin XP, cristales ni misiones": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1833"
+   ]
+  },
+  "Ganar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1842"
+   ]
+  },
+  "Islas tomadas ({0})": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1843"
+   ]
+  },
+  "Núcleos destruidos ({0})": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1844"
+   ]
+  },
+  "Personalizado: mitad de XP": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1853"
+   ]
+  },
+  "Fragmentos: +{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1858"
+   ]
+  },
+  "Desafío semanal ganado: +{0} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1873"
+   ]
+  },
+  "Insignia «Primer Faro», 150 cristales y el aspecto Soldado Dorado": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1902"
+   ]
+  },
+  "(+{0} cristales)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1930"
+   ]
+  },
+  "Logro: {0}{1}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1930"
+   ]
+  },
+  "Ganador": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1953"
+   ]
+  },
+  "Seguía en pie": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1953"
+   ]
+  },
+  "Cayó a los {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1957"
+   ]
+  },
+  "Las torretas y defensas enemigas te hicieron mucho daño. Atácalas desde lejos con Tanques o Lanzamisiles.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1972"
+   ]
+  },
+  "La infantería enemiga te desgastó. Prueba Escopeteros, Jeeps o Torretas mejoradas con miniguns.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1973"
+   ]
+  },
+  "Los vehículos enemigos te superaron. Los Cazadores y Coheteros hacen más daño a tanques.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1974"
+   ]
+  },
+  "Te atacaron desde el aire. Construye AIR DEFENSE y Camiones antiaéreos cerca del Núcleo.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1975"
+   ]
+  },
+  "Los barcos atacaron tu costa. Pon Torretas en la costa, ten Destructores y mejora el Núcleo para la Cúpula.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1976"
+   ]
+  },
+  "Los Lanzamisiles te atacaron de lejos. Sube el Núcleo a nivel 3 y compra la Cúpula.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1977"
+   ]
+  },
+  "Entrena Constructores pronto y construye más Granjas y energía: con más monedas tendrás un ejército más grande.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1980"
+   ]
+  },
+  "Tu Núcleo cayó": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1990"
+   ]
+  },
+  "Tu Núcleo cayó. Puedes repetir la misión cuando quieras.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1996"
+   ]
+  },
+  "Se abrió la misión {0}: {1}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1997"
+   ]
+  },
+  "Misión cumplida.{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1997"
+   ]
+  },
+  "¡Terminaste la campaña! El Faro de Ámbar vuelve a brillar.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1998"
+   ]
+  },
+  "Primera vez: {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1999"
+   ]
+  },
+  "1 estrella nueva": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1999"
+   ]
+  },
+  "{0} estrellas nuevas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:1999"
+   ]
+  },
+  "Sin XP ni cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2002",
+    "085-meta.js:2097"
+   ]
+  },
+  "Por jugar": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2004",
+    "085-meta.js:2099"
+   ]
+  },
+  "¡Subiste de nivel!": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2005",
+    "085-meta.js:2100"
+   ]
+  },
+  "¡Misión cumplida!": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2009"
+   ]
+  },
+  "Misión fallida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2009"
+   ]
+  },
+  "Conseguida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2011"
+   ]
+  },
+  "Tropas perdidas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2014"
+   ]
+  },
+  "Edificios perdidos": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2015"
+   ]
+  },
+  "Vida del Núcleo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2016"
+   ]
+  },
+  "Premios": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2018"
+   ]
+  },
+  "Misiones completadas: {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2020",
+    "085-meta.js:2120"
+   ]
+  },
+  "Mirar el final": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2023"
+   ]
+  },
+  "Siguiente misión": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2024"
+   ]
+  },
+  "Cómo fue la partida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2037"
+   ]
+  },
+  "Tropas de combate": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2038"
+   ]
+  },
+  "Ver como tabla": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2040"
+   ]
+  },
+  "Monedas/min (final)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2040"
+   ]
+  },
+  "Monedas/min (máx.)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2040"
+   ]
+  },
+  "Tropas (máx.)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2040"
+   ]
+  },
+  "{0} de cada imperio a lo largo de la partida": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2079"
+   ]
+  },
+  "Tu equipo mantuvo el Faro {0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2094"
+   ]
+  },
+  "Otro imperio mantuvo el Faro el tiempo necesario.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2094"
+   ]
+  },
+  "Todos los Núcleos rivales cayeron. El archipiélago es tuyo.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2095"
+   ]
+  },
+  "Tu Núcleo fue destruido. Seguiste mirando: ganó {0}.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2095"
+   ]
+  },
+  "Tu Núcleo fue destruido.": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2095"
+   ]
+  },
+  "Incluye misiones": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2099"
+   ]
+  },
+  "Partida finalizada": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2104"
+   ]
+  },
+  "¡Victoria!": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2104"
+   ]
+  },
+  "Duración": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2106"
+   ]
+  },
+  "Territorio máximo (casillas)": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2107"
+   ]
+  },
+  "Experiencia": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2108"
+   ]
+  },
+  "Tropas entrenadas": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2112"
+   ]
+  },
+  "Posiciones": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2115"
+   ]
+  },
+  "Premios{0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2118"
+   ]
+  },
+  "Premio del Tutorial: {0}": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2121"
+   ]
+  },
+  "Seguir mirando": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2125"
+   ]
+  },
+  "Mirar el mapa": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2126"
+   ]
+  },
+  "Revancha": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2127"
+   ]
+  },
+  "Volver al vestíbulo": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2128"
+   ]
+  },
+  "🎬 Doble premio": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2129"
+   ]
+  },
+  "Premio doble: +{0} XP y +{1} cristales más": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2155"
+   ]
+  },
+  "¡Premio doble! +{0} XP y +{1} cristales": {
+   "src": "código",
+   "where": [
+    "085-meta.js:2156"
+   ]
+  },
+  "No llegó el motor 3D (three.js). Revisa la conexión a internet y toca «Reintentar».": {
+   "src": "código",
+   "where": [
+    "09-main.js:43"
+   ]
+  },
+  "Preparando el 3D…": {
+   "src": "código",
+   "where": [
+    "09-main.js:46"
+   ]
+  },
+  "Tu navegador no pudo iniciar el 3D (WebGL). Prueba con Safari o Chrome actualizados.": {
+   "src": "código",
+   "where": [
+    "09-main.js:84"
+   ]
+  },
+  "Sin el cargador de modelos: se usan los modelos simples": {
+   "src": "código",
+   "where": [
+    "09-main.js:95"
+   ]
+  },
+  "Se usan los modelos simples": {
+   "src": "código",
+   "where": [
+    "09-main.js:101"
+   ]
+  },
+  "Tu perfil…": {
+   "src": "código",
+   "where": [
+    "09-main.js:102",
+    "09-main.js:112"
+   ]
+  },
+  "No pudimos cargar tu perfil. Tu progreso no se ha reemplazado.": {
+   "src": "código",
+   "where": [
+    "09-main.js:106"
+   ]
+  },
+  "Empezar de nuevo": {
+   "src": "código",
+   "where": [
+    "09-main.js:106"
+   ]
+  },
+  "reparó 1 dato": {
+   "src": "código",
+   "where": [
+    "09-main.js:112"
+   ]
+  },
+  "repararon {0} datos": {
+   "src": "código",
+   "where": [
+    "09-main.js:112"
+   ]
+  },
+  "Se {0}; el resto está igual": {
+   "src": "código",
+   "where": [
+    "09-main.js:112"
+   ]
+  },
+  "La partida…": {
+   "src": "código",
+   "where": [
+    "09-main.js:113",
+    "09-main.js:120"
+   ]
+  },
+  "{0} en el desfile": {
+   "src": "código",
+   "where": [
+    "09-main.js:270"
+   ]
+  },
+  "Termina primero la misión {0}": {
+   "src": "código",
+   "where": [
+    "09-main.js:308"
+   ]
+  },
+  "Desafío semanal: {0}. {1}": {
+   "src": "código",
+   "where": [
+    "09-main.js:347"
+   ]
+  },
+  "Modo espectador: ves el resto de la partida": {
+   "src": "código",
+   "where": [
+    "09-main.js:385"
+   ]
+  },
+  "No se pudo abrir la partida guardada": {
+   "src": "código",
+   "where": [
+    "09-main.js:442"
+   ]
+  },
+  "alta calidad": {
+   "src": "código",
+   "where": [
+    "09-main.js:499"
+   ]
+  },
+  "más fluido": {
+   "src": "código",
+   "where": [
+    "09-main.js:499"
+   ]
+  },
+  "· {0} cuadros por segundo": {
+   "src": "código",
+   "where": [
+    "09-main.js:499"
+   ]
+  },
+  "Ahora: {0}{1}": {
+   "src": "código",
+   "where": [
+    "09-main.js:499"
+   ]
+  },
+  "Contador de cuadros: {0}": {
+   "src": "código",
+   "where": [
+    "09-main.js:518"
+   ]
+  },
+  "Gráficos: más fluido (automático, {0} cuadros por segundo)": {
+   "src": "código",
+   "where": [
+    "09-main.js:534"
+   ]
+  },
+  "Elige tropas y luego guárdalas en un grupo": {
+   "src": "código",
+   "where": [
+    "09-main.js:556"
+   ]
+  },
+  "Grupo {0} vacío: elige tropas y toca «Guardar en {1}»": {
+   "src": "código",
+   "where": [
+    "09-main.js:579"
+   ]
+  },
+  "No tienes Constructores: entrénalos en el Núcleo o el Cuartel": {
+   "src": "código",
+   "where": [
+    "09-main.js:598"
+   ]
+  },
+  "constructor libre": {
+   "src": "código",
+   "where": [
+    "09-main.js:606"
+   ]
+  },
+  "constructores libres": {
+   "src": "código",
+   "where": [
+    "09-main.js:606"
+   ]
+  },
+  "{0} {1} ({2} sin trabajo)": {
+   "src": "código",
+   "where": [
+    "09-main.js:607"
+   ]
+  },
+  "Formación: línea (de frente al destino)": {
+   "src": "código",
+   "where": [
+    "09-main.js:613"
+   ]
+  },
+  "Formación: bloque": {
+   "src": "código",
+   "where": [
+    "09-main.js:613"
+   ]
+  },
+  "No tienes tropas de combate": {
+   "src": "código",
+   "where": [
+    "09-main.js:623"
+   ]
+  },
+  "No tienes tropas de tierra": {
+   "src": "código",
+   "where": [
+    "09-main.js:623"
+   ]
+  },
+  "No tienes barcos de combate": {
+   "src": "código",
+   "where": [
+    "09-main.js:623"
+   ]
+  },
+  "No tienes unidades aéreas": {
+   "src": "código",
+   "where": [
+    "09-main.js:623"
+   ]
+  },
+  "Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "+50 % de ingresos para quien lo controle.": {
+   "src": "datos",
+   "where": []
+  },
+  "Bandera": {
+   "src": "datos",
+   "where": []
+  },
+  "+200 monedas/min y territorio en la isla.": {
+   "src": "datos",
+   "where": []
+  },
+  "Blindaje": {
+   "src": "datos",
+   "where": []
+  },
+  "+10 % de vida a tus vehículos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Puntería": {
+   "src": "datos",
+   "where": []
+  },
+  "+10 % de daño a tu infantería.": {
+   "src": "datos",
+   "where": []
+  },
+  "Motores": {
+   "src": "datos",
+   "where": []
+  },
+  "+15 % de velocidad a tus aeronaves.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mar profundo": {
+   "src": "datos",
+   "where": []
+  },
+  "Agua poco profunda": {
+   "src": "datos",
+   "where": []
+  },
+  "Mancha de petróleo": {
+   "src": "datos",
+   "where": []
+  },
+  "Arena": {
+   "src": "datos",
+   "where": []
+  },
+  "Pasto": {
+   "src": "datos",
+   "where": []
+  },
+  "Bosque": {
+   "src": "datos",
+   "where": []
+  },
+  "Veta de oro": {
+   "src": "datos",
+   "where": []
+  },
+  "Tierra fértil": {
+   "src": "datos",
+   "where": []
+  },
+  "Petróleo en tierra": {
+   "src": "datos",
+   "where": []
+  },
+  "Montaña": {
+   "src": "datos",
+   "where": []
+  },
+  "Meseta": {
+   "src": "datos",
+   "where": []
+  },
+  "Duna": {
+   "src": "datos",
+   "where": []
+  },
+  "Tu base. Genera monedas, entrena Constructores, dispara un láser y cura a las tropas cercanas. Si cae, pierdes.": {
+   "src": "datos",
+   "where": []
+  },
+  "+240 monedas/min. Solo en tierra fértil (parcelas marcadas).": {
+   "src": "datos",
+   "where": []
+  },
+  "Bomba de petróleo": {
+   "src": "datos",
+   "where": []
+  },
+  "+650 monedas/min. Solo en petróleo en tierra (manchas oscuras).": {
+   "src": "datos",
+   "where": []
+  },
+  "Mina de oro": {
+   "src": "datos",
+   "where": []
+  },
+  "+600 monedas/min. Solo en vetas de oro.": {
+   "src": "datos",
+   "where": []
+  },
+  "Plataforma petrolera": {
+   "src": "datos",
+   "where": []
+  },
+  "+1100 monedas/min. En el petróleo del mar. La construye el Barco constructor.": {
+   "src": "datos",
+   "where": []
+  },
+  "Casa": {
+   "src": "datos",
+   "where": []
+  },
+  "Apartamento": {
+   "src": "datos",
+   "where": []
+  },
+  "+10 de comunidad. Se mejora una vez a Apartamento: +20 más (+30 en total).": {
+   "src": "datos",
+   "where": []
+  },
+  "+3 de energía cada 10 s. En cualquier tierra.": {
+   "src": "datos",
+   "where": []
+  },
+  "Molino eólico": {
+   "src": "datos",
+   "where": []
+  },
+  "+5 de energía cada 10 s. En cualquier tierra.": {
+   "src": "datos",
+   "where": []
+  },
+  "Hidráulica": {
+   "src": "datos",
+   "where": []
+  },
+  "+8 de energía cada 10 s. En tierra junto al agua.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mareomotriz": {
+   "src": "datos",
+   "where": []
+  },
+  "+11 de energía cada 10 s. En agua poco profunda junto a la costa. La construye el Barco constructor.": {
+   "src": "datos",
+   "where": []
+  },
+  "Undimotriz": {
+   "src": "datos",
+   "where": []
+  },
+  "+15 de energía cada 10 s. En mar profundo. La construye el Barco constructor.": {
+   "src": "datos",
+   "where": []
+  },
+  "Entrena los 21 soldados: del Constructor al Paracaidista.": {
+   "src": "datos",
+   "where": []
+  },
+  "Fábrica": {
+   "src": "datos",
+   "where": []
+  },
+  "Fabrica tanques, artillería, transportes y vehículos de apoyo.": {
+   "src": "datos",
+   "where": []
+  },
+  "En agua junto a la orilla. Construye los barcos y repara los cercanos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Helipuerto": {
+   "src": "datos",
+   "where": []
+  },
+  "Produce helicópteros y drones, y repara a las aeronaves cercanas. Hasta 6.": {
+   "src": "datos",
+   "where": []
+  },
+  "Torreta": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón contra tropas, barcos y helicópteros. Nivel 2: 1 minigun · nivel 3: 2 · nivel 4: 3 miniguns, más daño y antiaéreo. Hasta 20.": {
+   "src": "datos",
+   "where": []
+  },
+  "Torreta chica": {
+   "src": "datos",
+   "where": []
+  },
+  "Torreta pequeña y barata. Solo la puede construir un Ingeniero.": {
+   "src": "datos",
+   "where": []
+  },
+  "AIR DEFENSE": {
+   "src": "datos",
+   "where": []
+  },
+  "Misiles de largo alcance contra aeronaves. Nivel 4 (solo 3 de tus 6): lanza el misil nuclear.": {
+   "src": "datos",
+   "where": []
+  },
+  "Muro": {
+   "src": "datos",
+   "where": []
+  },
+  "Muralla que bloquea a las tropas enemigas y se une con los muros vecinos. Las tuyas pasan.": {
+   "src": "datos",
+   "where": []
+  },
+  "Hospital de campaña": {
+   "src": "datos",
+   "where": []
+  },
+  "Clínica": {
+   "src": "datos",
+   "where": []
+  },
+  "Mini hospital": {
+   "src": "datos",
+   "where": []
+  },
+  "Hospital grande": {
+   "src": "datos",
+   "where": []
+  },
+  "Cura infantería y vehículos cercanos. Nivel 1 clínica (3 %/s), nivel 2 mini hospital (5 %/s), nivel 3 hospital grande (8 %/s).": {
+   "src": "datos",
+   "where": []
+  },
+  "Aeropuerto militar": {
+   "src": "datos",
+   "where": []
+  },
+  "Pista y hangares: fabrica los aviones y repara a los cercanos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Escudo antimisiles": {
+   "src": "datos",
+   "where": []
+  },
+  "Derriba el misil nuclear enemigo si cae a 7 casillas o menos (una carga cada 2 minutos), y misiles y cohetes enemigos a 3 casillas (uno cada 1,5 s).": {
+   "src": "datos",
+   "where": []
+  },
+  "Amplía tu territorio. Lo fundan los ingenieros y los barcos constructores.": {
+   "src": "datos",
+   "where": []
+  },
+  "Corral de ganadería": {
+   "src": "datos",
+   "where": []
+  },
+  "+280 monedas/min. En cualquier tierra.": {
+   "src": "datos",
+   "where": []
+  },
+  "Central de energía": {
+   "src": "datos",
+   "where": []
+  },
+  "+25 de energía cada 10 s: la energía más fuerte.": {
+   "src": "datos",
+   "where": []
+  },
+  "Centro de drones": {
+   "src": "datos",
+   "where": []
+  },
+  "Produce drones y repara a los drones cercanos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Astillero mayor": {
+   "src": "datos",
+   "where": []
+  },
+  "En agua junto a la orilla. Construye los buques grandes y los repara.": {
+   "src": "datos",
+   "where": []
+  },
+  "Taller de mantenimiento": {
+   "src": "datos",
+   "where": []
+  },
+  "Repara los vehículos cercanos (30 de vida por segundo).": {
+   "src": "datos",
+   "where": []
+  },
+  "Centro de investigación": {
+   "src": "datos",
+   "where": []
+  },
+  "Investiga mejoras para todo tu ejército: Blindaje, Puntería y Motores.": {
+   "src": "datos",
+   "where": []
+  },
+  "Estación de radar": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 12 casillas y descubre aviones furtivos, submarinos y minas a 8.": {
+   "src": "datos",
+   "where": []
+  },
+  "Depósito logístico": {
+   "src": "datos",
+   "where": []
+  },
+  "Suministros: tus tropas a 3 casillas recargan un 20 % más rápido. +5 de energía cada 10 s.": {
+   "src": "datos",
+   "where": []
+  },
+  "Centro de mando avanzado": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana territorio (3 casillas) y da +10 % de daño a tus tropas a 3 casillas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Búnker de guarnición": {
+   "src": "datos",
+   "where": []
+  },
+  "Dispara solo. Caben 4 soldados: cada uno suma un 25 % de daño. Si cae, salen.": {
+   "src": "datos",
+   "where": []
+  },
+  "Puerta reforzada": {
+   "src": "datos",
+   "where": []
+  },
+  "Muro con puerta: abierta deja pasar a tus tropas y aliados; cerrada no pasa nadie.": {
+   "src": "datos",
+   "where": []
+  },
+  "Batería de defensa costera": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón de 7 casillas contra barcos (×1,8). En tierra junto al agua.": {
+   "src": "datos",
+   "where": []
+  },
+  "Defensa de punto": {
+   "src": "datos",
+   "where": []
+  },
+  "Derriba misiles y cohetes a 3 casillas (uno por segundo) y dispara a drones y aeronaves.": {
+   "src": "datos",
+   "where": []
+  },
+  "Torre láser": {
+   "src": "datos",
+   "where": []
+  },
+  "Rayo contra aeronaves a 5 casillas; el doble contra drones.": {
+   "src": "datos",
+   "where": []
+  },
+  "Torre de observación": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 9 casillas y descubre lo oculto a 4.": {
+   "src": "datos",
+   "where": []
+  },
+  "Complejo estratégico": {
+   "src": "datos",
+   "where": []
+  },
+  "Solo con «Arsenal estratégico»: lanza el DF-5C (misil nuclear). Comparte tu único uso estratégico.": {
+   "src": "datos",
+   "where": []
+  },
+  "Puente modular": {
+   "src": "datos",
+   "where": []
+  },
+  "En agua poco profunda junto a tierra: las tropas de tierra cruzan por encima. Los barcos ya no pasan.": {
+   "src": "datos",
+   "where": []
+  },
+  "Muelle logístico": {
+   "src": "datos",
+   "where": []
+  },
+  "En agua junto a la orilla: repara los barcos cercanos (20 por segundo).": {
+   "src": "datos",
+   "where": []
+  },
+  "Mina naval": {
+   "src": "datos",
+   "where": []
+  },
+  "Oculta bajo el agua: explota con el primer barco enemigo que pasa cerca.": {
+   "src": "datos",
+   "where": []
+  },
+  "Defensa": {
+   "src": "datos",
+   "where": []
+  },
+  "Apoyo": {
+   "src": "datos",
+   "where": []
+  },
+  "Constructor": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye y repara edificios. Casi no pelea.": {
+   "src": "datos",
+   "where": []
+  },
+  "Ingeniero": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye el doble de rápido, repara, funda puestos avanzados y pone la Torreta chica.": {
+   "src": "datos",
+   "where": []
+  },
+  "Artillero": {
+   "src": "datos",
+   "where": []
+  },
+  "Ametralladora. Barato, bueno en grupo y para tomar islas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Escopetero": {
+   "src": "datos",
+   "where": []
+  },
+  "Mucho daño de cerca, poco alcance.": {
+   "src": "datos",
+   "where": []
+  },
+  "Ranger": {
+   "src": "datos",
+   "where": []
+  },
+  "Artillero de élite: casco, chaleco y rifle.": {
+   "src": "datos",
+   "where": []
+  },
+  "Francotirador": {
+   "src": "datos",
+   "where": []
+  },
+  "Rifle de largo alcance. Muy fuerte contra infantería, poca vida.": {
+   "src": "datos",
+   "where": []
+  },
+  "Rompedor": {
+   "src": "datos",
+   "where": []
+  },
+  "Escopeta automática. Dispara muy rápido de cerca.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cazador": {
+   "src": "datos",
+   "where": []
+  },
+  "Rifle pesado: dispara más lejos y pega más fuerte que el Francotirador.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cohetero": {
+   "src": "datos",
+   "where": []
+  },
+  "Cohetes que rompen tanques, barcos y edificios.": {
+   "src": "datos",
+   "where": []
+  },
+  "Jeep": {
+   "src": "datos",
+   "where": []
+  },
+  "Rápido. Ideal para cazar infantería.": {
+   "src": "datos",
+   "where": []
+  },
+  "Tanque": {
+   "src": "datos",
+   "where": []
+  },
+  "Blindado y potente contra soldados y edificios. No dispara al aire.": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión antiaéreo": {
+   "src": "datos",
+   "where": []
+  },
+  "Protege a tus tropas desde el cielo: solo dispara a unidades aéreas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanzamisiles": {
+   "src": "datos",
+   "where": []
+  },
+  "Artillería de muy largo alcance. Solo ataca edificios.": {
+   "src": "datos",
+   "where": []
+  },
+  "Tanque ligero": {
+   "src": "datos",
+   "where": []
+  },
+  "Rápido y barato: bueno para flanquear y apoyar a la infantería.": {
+   "src": "datos",
+   "where": []
+  },
+  "Tanque pesado": {
+   "src": "datos",
+   "where": []
+  },
+  "Lento y muy blindado: rompe tanques y defensas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión de misiles": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanza misiles de largo alcance solo contra edificios. Necesita escolta.": {
+   "src": "datos",
+   "where": []
+  },
+  "Transporte blindado de personal": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 6 soldados protegidos y tiene una ametralladora.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanzador DF-17": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión con un misil a la vista, de muy largo alcance contra bases. Lento y caro.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanzador nuclear móvil": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión largo con un solo misil nuclear: un uso por partida. No pelea; necesita escolta.": {
+   "src": "datos",
+   "where": []
+  },
+  "Médico de campaña": {
+   "src": "datos",
+   "where": []
+  },
+  "Cura a los soldados cercanos (5 % de su vida por segundo). No pelea.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lancha rápida": {
+   "src": "datos",
+   "where": []
+  },
+  "La más rápida. Explora y ataca la costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Barco constructor": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye Plataformas, Mareomotrices y Undimotrices, y funda puestos en otras islas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Barcaza": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 6 tropas de tierra a otras islas (un vehículo ocupa 2).": {
+   "src": "datos",
+   "where": []
+  },
+  "Lancha de desembarco": {
+   "src": "datos",
+   "where": []
+  },
+  "Más rápida y resistente que la Barcaza: lleva 10 lugares (un vehículo ocupa 2) y desembarca en la playa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Fragata de escolta": {
+   "src": "datos",
+   "where": []
+  },
+  "Barco con misiles antiaéreos de largo alcance. Protege a la flota de aviones y helicópteros.": {
+   "src": "datos",
+   "where": []
+  },
+  "Portaaviones": {
+   "src": "datos",
+   "where": []
+  },
+  "El buque más grande: lleva hasta 4 Cazas en su hangar, repara aviones cercanos y tiene defensas de corto alcance.": {
+   "src": "datos",
+   "where": []
+  },
+  "Destructor": {
+   "src": "datos",
+   "where": []
+  },
+  "Mucha vida. Dispara lejos a barcos, submarinos y la costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Va escondido bajo el agua y rompe barcos. Solo lo ven Destructores, Helicópteros y Puertos cercanos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cohetes, cañón y minigun de puerta. Vuela sobre todo; montañas y bosques le reducen el alcance a 2.": {
+   "src": "datos",
+   "where": []
+  },
+  "Apache Guardián": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón de 30 mm, cohetes y misiles guiados de largo alcance contra tanques. Bengalas: esquiva un misil antiaéreo cada 20 s.": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de combate furtivo": {
+   "src": "datos",
+   "where": []
+  },
+  "Caza de quinta generación: muy rápido, misiles aire-aire. Limpia el cielo de aviones y helicópteros.": {
+   "src": "datos",
+   "where": []
+  },
+  "Bombardero furtivo": {
+   "src": "datos",
+   "where": []
+  },
+  "Ala volante invisible al radar: las defensas solo lo ven de muy cerca. Suelta bombas pesadas sobre edificios.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron de ataque": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión sin piloto: barato, ve lejos y dispara un misil guiado. Poca vida: cuídalo de los antiaéreos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron kamikaze": {
+   "src": "datos",
+   "where": []
+  },
+  "Se estrella contra su blanco y explota: sirve una sola vez. Muy frágil; fuerte contra vehículos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanzacohetes múltiple": {
+   "src": "datos",
+   "where": []
+  },
+  "Suelta una salva de 6 cohetes que daña todo alrededor del blanco. Tarda en recargar y tiene poca vida.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lancha misilera": {
+   "src": "datos",
+   "where": []
+  },
+  "Rápida y frágil: misiles antibuque de largo alcance. Ataca por sorpresa a los barcos grandes.": {
+   "src": "datos",
+   "where": []
+  },
+  "Explorador": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 6 casillas y captura Banderas y el Faro un 50 % más rápido. Pelea poco.": {
+   "src": "datos",
+   "where": []
+  },
+  "Soldado": {
+   "src": "datos",
+   "where": []
+  },
+  "Combatiente básico y barato. Bueno en número.": {
+   "src": "datos",
+   "where": []
+  },
+  "Oficial de campo": {
+   "src": "datos",
+   "where": []
+  },
+  "Mando: tus tropas a 2 casillas hacen un 15 % más de daño (no se suma con otro mando).": {
+   "src": "datos",
+   "where": []
+  },
+  "Operador de comunicaciones": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 8 casillas y descubre submarinos, minas y furtivos a 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Zapador": {
+   "src": "datos",
+   "where": []
+  },
+  "Cargas explosivas: ×3 a edificios y ×4 a muros. Desactiva minas cercanas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Equipo de mortero": {
+   "src": "datos",
+   "where": []
+  },
+  "Tiro curvo de 6 casillas con daño en área.": {
+   "src": "datos",
+   "where": []
+  },
+  "Paracaidista": {
+   "src": "datos",
+   "where": []
+  },
+  "Si tienes Aeropuerto militar, cae en paracaídas en el punto de reunión. Los aviones de transporte lo llevan.": {
+   "src": "datos",
+   "where": []
+  },
+  "Infante de marina": {
+   "src": "datos",
+   "where": []
+  },
+  "Anfibio: camina por el agua poco profunda de la costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Equipo antitanque": {
+   "src": "datos",
+   "where": []
+  },
+  "Misil guiado de 6 casillas que cae sobre el techo de los tanques (×2 a vehículos).": {
+   "src": "datos",
+   "where": []
+  },
+  "Ametrallador pesado": {
+   "src": "datos",
+   "where": []
+  },
+  "Ametralladora rotativa: lluvia de balas contra infantería.": {
+   "src": "datos",
+   "where": []
+  },
+  "Soldado antidrones": {
+   "src": "datos",
+   "where": []
+  },
+  "Fusil inhibidor: corta la señal de los drones (×6). Poco daño a lo demás.": {
+   "src": "datos",
+   "where": []
+  },
+  "Perro robot": {
+   "src": "datos",
+   "where": []
+  },
+  "Patrulla con cámaras: ve 7 casillas y descubre lo oculto a 3. No pelea.": {
+   "src": "datos",
+   "where": []
+  },
+  "Blindado ligero": {
+   "src": "datos",
+   "where": []
+  },
+  "Rápido, con ruedas y cañón automático.": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículo de combate de infantería": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 4 soldados y pelea con su cañón.": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión de tropas": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 8 soldados. Poca protección.": {
+   "src": "datos",
+   "where": []
+  },
+  "Ambulancia militar": {
+   "src": "datos",
+   "where": []
+  },
+  "Cura a los soldados a 2 casillas (6 % de su vida por segundo).": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículo de recuperación": {
+   "src": "datos",
+   "where": []
+  },
+  "Repara los vehículos de al lado (4 % de su vida por segundo).": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión de suministros": {
+   "src": "datos",
+   "where": []
+  },
+  "Suministros: tus tropas a 2 casillas recargan un 20 % más rápido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Camión cisterna militar": {
+   "src": "datos",
+   "where": []
+  },
+  "Combustible: tus vehículos a 2 casillas van un 20 % más rápido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículo de mando": {
+   "src": "datos",
+   "where": []
+  },
+  "Mando: +15 % de daño a tus tropas a 3 casillas (no se suma con el Oficial).": {
+   "src": "datos",
+   "where": []
+  },
+  "Radar móvil": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 10 casillas y descubre aviones furtivos, submarinos y minas a 8.": {
+   "src": "datos",
+   "where": []
+  },
+  "Obús autopropulsado": {
+   "src": "datos",
+   "where": []
+  },
+  "Artillería de 8 casillas con daño en área.": {
+   "src": "datos",
+   "where": []
+  },
+  "Artillería remolcada": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón de 7 casillas barato y lento.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cazacarros": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón largo de 5 casillas, especialista contra tanques (×1,8).": {
+   "src": "datos",
+   "where": []
+  },
+  "Transporte anfibio": {
+   "src": "datos",
+   "where": []
+  },
+  "Anfibio: va por tierra y por agua poco profunda. Lleva 6 soldados.": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículo lanzapuentes": {
+   "src": "datos",
+   "where": []
+  },
+  "«Tender puente»: pone un Puente modular en el agua poco profunda de al lado (paga el puente).": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículo de despeje": {
+   "src": "datos",
+   "where": []
+  },
+  "Abre paso: rompe muros y obras (×2,5) y desactiva minas cercanas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Topadora blindada": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye y repara como un Ingeniero, con blindaje.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lanzacohetes termobárico": {
+   "src": "datos",
+   "where": []
+  },
+  "Salva de 8 cohetes: nube de fuego muy fuerte contra infantería.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron explorador": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 8 casillas desde el aire. No pelea.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron de carga": {
+   "src": "datos",
+   "where": []
+  },
+  "Suministros desde el aire: tus tropas a 2 casillas recargan un 20 % más rápido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron interceptor": {
+   "src": "datos",
+   "where": []
+  },
+  "Caza drones y helicópteros (×2 a drones).": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron naval de superficie": {
+   "src": "datos",
+   "where": []
+  },
+  "Explora el mar: ve 7 casillas y descubre submarinos y minas a 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dron submarino": {
+   "src": "datos",
+   "where": []
+  },
+  "Va oculto bajo el agua y descubre submarinos y minas a 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Helicóptero de transporte": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 8 soldados y los baja en cualquier tierra.": {
+   "src": "datos",
+   "where": []
+  },
+  "Helicóptero de rescate": {
+   "src": "datos",
+   "where": []
+  },
+  "Cura a los soldados y repara las aeronaves a 2 casillas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Helicóptero de patrulla naval": {
+   "src": "datos",
+   "where": []
+  },
+  "Descubre submarinos a 4 casillas y los ataca con torpedos (×2).": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de apoyo terrestre": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón de 30 mm: vuela bajo y destruye tanques (×1,8).": {
+   "src": "datos",
+   "where": []
+  },
+  "Bombardero convencional": {
+   "src": "datos",
+   "where": []
+  },
+  "Bombardero pesado con bombas guiadas: destruye bases. Se ve en el radar.": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de transporte militar": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 10 soldados y los lanza en paracaídas en cualquier tierra.": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de vigilancia aérea": {
+   "src": "datos",
+   "where": []
+  },
+  "Ve 14 casillas y descubre aviones furtivos y submarinos a 8.": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de reabastecimiento": {
+   "src": "datos",
+   "where": []
+  },
+  "Repara tus aeronaves a 3 casillas (3 % de su vida por segundo).": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión de apoyo electrónico": {
+   "src": "datos",
+   "where": []
+  },
+  "Interferencia: las defensas enemigas a 4 casillas disparan un 40 % más lento. Misil antirradar (×2 a defensas).": {
+   "src": "datos",
+   "where": []
+  },
+  "Avión artillado": {
+   "src": "datos",
+   "where": []
+  },
+  "Da vueltas sobre el blanco y dispara de costado con daño en área.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañonera": {
+   "src": "datos",
+   "where": []
+  },
+  "Apoyo naval barato contra la costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Acorazado": {
+   "src": "datos",
+   "where": []
+  },
+  "El buque más fuerte: salvas de 2 obuses a 7 casillas contra bases y barcos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Patrullera costera": {
+   "src": "datos",
+   "where": []
+  },
+  "Vigila la costa: ve 7 casillas y descubre submarinos a 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Corbeta": {
+   "src": "datos",
+   "where": []
+  },
+  "Cañón de proa y defensa de punto: derriba misiles y cohetes cerca.": {
+   "src": "datos",
+   "where": []
+  },
+  "Crucero de mando": {
+   "src": "datos",
+   "where": []
+  },
+  "Misiles de 7 casillas, mando naval (+15 % de daño a tus barcos cerca) y defensa de punto.": {
+   "src": "datos",
+   "where": []
+  },
+  "Buque de desembarco": {
+   "src": "datos",
+   "where": []
+  },
+  "Lleva 12 lugares (un vehículo ocupa 2) y los baja en la costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Buque logístico": {
+   "src": "datos",
+   "where": []
+  },
+  "Repara tus barcos a 3 casillas y los hace recargar un 20 % más rápido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Buque hospital": {
+   "src": "datos",
+   "where": []
+  },
+  "Repara tus barcos y cura a tus soldados a 3 casillas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Aerodeslizador militar": {
+   "src": "datos",
+   "where": []
+  },
+  "Anfibio: va por el agua y sube a la costa. Lleva 6 lugares (también vehículos).": {
+   "src": "datos",
+   "where": []
+  },
+  "Dragaminas": {
+   "src": "datos",
+   "where": []
+  },
+  "Descubre y destruye minas a 3 casillas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Buque minador": {
+   "src": "datos",
+   "where": []
+  },
+  "«Sembrar mina»: deja una mina oculta donde está (hasta 8). Explota con barcos enemigos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Submarino de reconocimiento": {
+   "src": "datos",
+   "where": []
+  },
+  "Oculto: ve 8 casillas y descubre submarinos y minas a 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Submarino estratégico": {
+   "src": "datos",
+   "where": []
+  },
+  "Oculto, con un solo misil nuclear: un uso por partida. No pelea.": {
+   "src": "datos",
+   "where": []
+  },
+  "Conquista de islas": {
+   "src": "datos",
+   "where": []
+  },
+  "6 imperios. Gana el último Núcleo en pie. Puedes aliarte desde el marcador.": {
+   "src": "datos",
+   "where": []
+  },
+  "Islas en la niebla": {
+   "src": "datos",
+   "where": []
+  },
+  "Solo ves lo que está cerca de tus tropas y edificios.": {
+   "src": "datos",
+   "where": []
+  },
+  "Turbo ×2": {
+   "src": "datos",
+   "where": []
+  },
+  "Monedas y tropas salen el doble de rápido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dúos": {
+   "src": "datos",
+   "where": []
+  },
+  "3 parejas: tú y un aliado bot aparecen juntos. Gana la última pareja en pie.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dos equipos de 3 con aliados bots. Da puntos de rango.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dos equipos de 3 con aliados bots. Da puntos de rango: ganar +25, perder −15.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mantén el Faro 3 min en total.": {
+   "src": "datos",
+   "where": []
+  },
+  "Choque exprés": {
+   "src": "datos",
+   "where": []
+  },
+  "6.000 monedas y ritmo ×2.": {
+   "src": "datos",
+   "where": []
+  },
+  "Duelo 1 vs 1": {
+   "src": "datos",
+   "where": []
+  },
+  "Tú contra 1 rival": {
+   "src": "datos",
+   "where": []
+  },
+  "4 imperios, gana el último": {
+   "src": "datos",
+   "where": []
+  },
+  "Equipos 2 vs 2": {
+   "src": "datos",
+   "where": []
+  },
+  "Con Rojo como aliado": {
+   "src": "datos",
+   "where": []
+  },
+  "Gran batalla": {
+   "src": "datos",
+   "where": []
+  },
+  "6 imperios, mapa lleno": {
+   "src": "datos",
+   "where": []
+  },
+  "Aprende a jugar contra un bot lento en otra isla.": {
+   "src": "datos",
+   "where": []
+  },
+  "Campo de pruebas": {
+   "src": "datos",
+   "where": []
+  },
+  "Todos los productores ya hechos, 500.000 monedas y energía de sobra. El rival no ataca. Con el Laboratorio (botón del matraz) creas cualquier tropa al instante, pones dianas y cambias la velocidad. No da XP.": {
+   "src": "datos",
+   "where": []
+  },
+  "Archipiélago Ámbar": {
+   "src": "datos",
+   "where": []
+  },
+  "Islas en círculo unidas por puentes de arena.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mar abierto": {
+   "src": "datos",
+   "where": []
+  },
+  "Sin puentes: necesitas barcos o helicópteros.": {
+   "src": "datos",
+   "where": []
+  },
+  "Continente": {
+   "src": "datos",
+   "where": []
+  },
+  "Una gran isla con lagos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Bahía Gris": {
+   "src": "datos",
+   "where": []
+  },
+  "Islas irregulares; solo algunas tienen puente.": {
+   "src": "datos",
+   "where": []
+  },
+  "Arrecife Doble": {
+   "src": "datos",
+   "where": []
+  },
+  "Dos grupos de islas separados por agua navegable.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mesetas de Cobre": {
+   "src": "datos",
+   "where": []
+  },
+  "Un continente con mesetas altas: desde lo alto se dispara y se ve 1 casilla más lejos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Dunas Rojas": {
+   "src": "datos",
+   "where": []
+  },
+  "Desierto de islas con puentes y oasis fértiles.": {
+   "src": "datos",
+   "where": []
+  },
+  "Fácil": {
+   "src": "datos",
+   "where": []
+  },
+  "Difícil": {
+   "src": "datos",
+   "where": []
+  },
+  "Agresivo": {
+   "src": "datos",
+   "where": []
+  },
+  "¡Prepárate, voy por ti!": {
+   "src": "datos",
+   "where": []
+  },
+  "Tu base será mía.": {
+   "src": "datos",
+   "where": []
+  },
+  "¡A la carga!": {
+   "src": "datos",
+   "where": []
+  },
+  "El Faro es mío. ¡Ven a quitármelo!": {
+   "src": "datos",
+   "where": []
+  },
+  "Esto no ha terminado…": {
+   "src": "datos",
+   "where": []
+  },
+  "¿Me atacas? Te arrepentirás.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mi ejército está listo. Allá voy.": {
+   "src": "datos",
+   "where": []
+  },
+  "He preparado algo grande para ti.": {
+   "src": "datos",
+   "where": []
+  },
+  "El Faro alimentará mi imperio.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mis murallas no bastaron.": {
+   "src": "datos",
+   "where": []
+  },
+  "Reforzaré mis defensas… y luego iré por ti.": {
+   "src": "datos",
+   "where": []
+  },
+  "Almirante": {
+   "src": "datos",
+   "where": []
+  },
+  "Mi flota zarpa hacia tu costa.": {
+   "src": "datos",
+   "where": []
+  },
+  "Rumbo a tu isla. ¡Zafarrancho!": {
+   "src": "datos",
+   "where": []
+  },
+  "Ese Faro guiará a mi flota.": {
+   "src": "datos",
+   "where": []
+  },
+  "Abandonen el barco…": {
+   "src": "datos",
+   "where": []
+  },
+  "¿Disparas a mis barcos? Error.": {
+   "src": "datos",
+   "where": []
+  },
+  "Guardián del Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "Despejaré el camino al Faro, empezando por ti.": {
+   "src": "datos",
+   "where": []
+  },
+  "Nadie amenaza el Faro.": {
+   "src": "datos",
+   "where": []
+  },
+  "La luz del Faro es mía.": {
+   "src": "datos",
+   "where": []
+  },
+  "Que otro cuide el Faro…": {
+   "src": "datos",
+   "where": []
+  },
+  "Aléjate de mis Banderas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Primera luz": {
+   "src": "datos",
+   "where": []
+  },
+  "Tu colonia acaba de llegar a una isla tranquila. El Faro de Ámbar lleva años apagado y nadie vigila la costa. Antes de pensar en batallas, pon en marcha la economía y arma una pequeña guardia.": {
+   "src": "datos",
+   "where": []
+  },
+  "Las Granjas van en la tierra fértil. El Cuartel entrena Artilleros y Escopeteros. Tu vecino de esta isla no atacará.": {
+   "src": "datos",
+   "where": []
+  },
+  "Defender la costa": {
+   "src": "datos",
+   "where": []
+  },
+  "Un Almirante quiere tu isla para su flota y sus barcos ya zarparon. Levanta defensas en la costa y aguanta hasta que llegue la ayuda.": {
+   "src": "datos",
+   "where": []
+  },
+  "Las Torretas disparan a barcos. Pon algunas entre el agua y tu Núcleo, y repara con Constructores.": {
+   "src": "datos",
+   "where": []
+  },
+  "El Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "El Faro está en la isla del centro y un Guardián del Faro ya lo tomó con 4 guardias. Tienes 3 Artilleros: junta más tropas, quítale el Faro y mantenlo encendido.": {
+   "src": "datos",
+   "where": []
+  },
+  "Solo la infantería captura: quédate junto al Faro sin enemigos cerca. El tiempo se suma aunque lo pierdas un rato. Usa «Avanzar atacando».": {
+   "src": "datos",
+   "where": []
+  },
+  "Cruzar el mar": {
+   "src": "datos",
+   "where": []
+  },
+  "Más allá del mar hay islas con Banderas. Tu Puerto y una Barcaza ya están listos, pero un Guardián del Faro puso guardias en las Banderas más cercanas. Entrena infantería, cruza el mar y quítaselas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye un Cuartel y entrena Artilleros o Escopeteros. Selecciónalos y toca la Barcaza para subirlos; muévela junto a otra isla y toca «Desembarcar».": {
+   "src": "datos",
+   "where": []
+  },
+  "Asedio": {
+   "src": "datos",
+   "where": []
+  },
+  "Un imperio se encerró tras murallas, Torretas de nivel 2 y 3 y AIR DEFENSE. Tienes 8.000 monedas para preparar el asedio. Rompe sus defensas y destruye su Núcleo.": {
+   "src": "datos",
+   "where": []
+  },
+  "Los Tanques y los Lanzamisiles pegan fuerte a los edificios. La AIR DEFENSE derriba helicópteros: déjalos para el final.": {
+   "src": "datos",
+   "where": []
+  },
+  "La gran batalla": {
+   "src": "datos",
+   "where": []
+  },
+  "Tres imperios quieren la luz del Faro de Ámbar. Solo uno quedará en pie. Que sea el tuyo.": {
+   "src": "datos",
+   "where": []
+  },
+  "Empiezas con 4.000 monedas. Los rivales también pelean entre ellos: defiende tu Núcleo (la estrella pide que nunca baje del 50 %) y ataca al más débil. Ahora tienen aviones y misiles: ten AIR DEFENSE.": {
+   "src": "datos",
+   "where": []
+  },
+  "Entrena un Constructor más en el Núcleo": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye una energía (Solar o Eólica)": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye un Cuartel": {
+   "src": "datos",
+   "where": []
+  },
+  "Ten 5 tropas de combate": {
+   "src": "datos",
+   "where": []
+  },
+  "Captura una Bandera o el Faro con infantería": {
+   "src": "datos",
+   "where": []
+  },
+  "Destruye un Núcleo enemigo": {
+   "src": "datos",
+   "where": []
+  },
+  "Selva": {
+   "src": "datos",
+   "where": []
+  },
+  "Ártico": {
+   "src": "datos",
+   "where": []
+  },
+  "Castillo": {
+   "src": "datos",
+   "where": []
+  },
+  "Neón": {
+   "src": "datos",
+   "where": []
+  },
+  "Dorado": {
+   "src": "datos",
+   "where": []
+  },
+  "Frente 1940": {
+   "src": "datos",
+   "where": []
+  },
+  "Marea": {
+   "src": "datos",
+   "where": []
+  },
+  "Tóxico": {
+   "src": "datos",
+   "where": []
+  },
+  "+100 cristales": {
+   "src": "datos",
+   "where": []
+  },
+  "Un Cofre de Isla gratis": {
+   "src": "datos",
+   "where": []
+  },
+  "+300 XP": {
+   "src": "datos",
+   "where": []
+  },
+  "Común": {
+   "src": "datos",
+   "where": []
+  },
+  "Raro": {
+   "src": "datos",
+   "where": []
+  },
+  "Épico": {
+   "src": "datos",
+   "where": []
+  },
+  "Legendario": {
+   "src": "datos",
+   "where": []
+  },
+  "Soldados": {
+   "src": "datos",
+   "where": []
+  },
+  "Vehículos": {
+   "src": "datos",
+   "where": []
+  },
+  "Barcos": {
+   "src": "datos",
+   "where": []
+  },
+  "Bolsa de cristales": {
+   "src": "datos",
+   "where": []
+  },
+  "Caja de cristales": {
+   "src": "datos",
+   "where": []
+  },
+  "Cofre de cristales": {
+   "src": "datos",
+   "where": []
+  },
+  "Tesoro del Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "Juega 2 partidas": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana 1 partida": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye 12 edificios": {
+   "src": "datos",
+   "where": []
+  },
+  "Entrena 15 tropas": {
+   "src": "datos",
+   "where": []
+  },
+  "Captura 2 Banderas o el Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "Destruye 25 enemigos": {
+   "src": "datos",
+   "where": []
+  },
+  "Mejora 3 edificios": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana 5 partidas": {
+   "src": "datos",
+   "where": []
+  },
+  "Juega 10 partidas": {
+   "src": "datos",
+   "where": []
+  },
+  "Destruye 5 Núcleos": {
+   "src": "datos",
+   "where": []
+  },
+  "Construye 60 edificios": {
+   "src": "datos",
+   "where": []
+  },
+  "Destruye 150 enemigos": {
+   "src": "datos",
+   "where": []
+  },
+  "Captura 12 Banderas o el Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "1 · Construí: pon otra Granja y una energía (Solar o Eólica)": {
+   "src": "datos",
+   "where": []
+  },
+  "2 · Producí: construye un Cuartel y entrena 3 soldados": {
+   "src": "datos",
+   "where": []
+  },
+  "3 · Atacá: cruza el mar en una Barcaza y toma la isla del bot": {
+   "src": "datos",
+   "where": []
+  },
+  "Termina el Tutorial.": {
+   "src": "datos",
+   "where": []
+  },
+  "Sin un rasguño": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana una partida sin perder ningún edificio.": {
+   "src": "datos",
+   "where": []
+  },
+  "Captura el Faro 3 veces.": {
+   "src": "datos",
+   "where": []
+  },
+  "Lobo de mar": {
+   "src": "datos",
+   "where": []
+  },
+  "Desembarca tropas en otra isla con una Barcaza.": {
+   "src": "datos",
+   "where": []
+  },
+  "Veterano": {
+   "src": "datos",
+   "where": []
+  },
+  "Consigue una tropa con 3 estrellas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Constructor incansable": {
+   "src": "datos",
+   "where": []
+  },
+  "Termina 25 edificios en una partida.": {
+   "src": "datos",
+   "where": []
+  },
+  "Ejército de cien": {
+   "src": "datos",
+   "where": []
+  },
+  "Entrena 100 tropas (en total).": {
+   "src": "datos",
+   "where": []
+  },
+  "Diez victorias": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana 10 partidas.": {
+   "src": "datos",
+   "where": []
+  },
+  "Victoria exprés": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana una partida en menos de 10 minutos.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cielo despejado": {
+   "src": "datos",
+   "where": []
+  },
+  "Derriba 10 aeronaves en una partida.": {
+   "src": "datos",
+   "where": []
+  },
+  "Sargento de la Liga": {
+   "src": "datos",
+   "where": []
+  },
+  "Llega a Sargento (700 puntos) en la Liga 3 vs 3.": {
+   "src": "datos",
+   "where": []
+  },
+  "Desafío de la semana": {
+   "src": "datos",
+   "where": []
+  },
+  "Gana un desafío semanal.": {
+   "src": "datos",
+   "where": []
+  },
+  "Sin fábricas": {
+   "src": "datos",
+   "where": []
+  },
+  "No puedes construir la Fábrica: gana con soldados, barcos y aeronaves.": {
+   "src": "datos",
+   "where": []
+  },
+  "Cielo cerrado": {
+   "src": "datos",
+   "where": []
+  },
+  "Sin Helipuerto ni Aeropuerto: todo se decide en tierra y mar.": {
+   "src": "datos",
+   "where": []
+  },
+  "Bolsillos vacíos": {
+   "src": "datos",
+   "where": []
+  },
+  "Empiezas con 800 monedas en vez de 2.000.": {
+   "src": "datos",
+   "where": []
+  },
+  "Niebla de guerra": {
+   "src": "datos",
+   "where": []
+  },
+  "Niebla y bots en Difícil.": {
+   "src": "datos",
+   "where": []
+  },
+  "Todo por mar": {
+   "src": "datos",
+   "where": []
+  },
+  "Mar abierto: sin puentes, cada isla se toma por mar o por aire.": {
+   "src": "datos",
+   "where": []
+  },
+  "Duelo en las dunas": {
+   "src": "datos",
+   "where": []
+  },
+  "Uno contra uno en Dunas Rojas, contra un bot en Difícil.": {
+   "src": "datos",
+   "where": []
+  },
+  "Rojo": {
+   "src": "datos",
+   "where": []
+  },
+  "Naranja": {
+   "src": "datos",
+   "where": []
+  },
+  "Violeta": {
+   "src": "datos",
+   "where": []
+  },
+  "Rosa": {
+   "src": "datos",
+   "where": []
+  },
+  "Turquesa": {
+   "src": "datos",
+   "where": []
+  },
+  "Amarillo": {
+   "src": "datos",
+   "where": []
+  },
+  "Lavanda": {
+   "src": "datos",
+   "where": []
+  },
+  "Aguamarina": {
+   "src": "datos",
+   "where": []
+  },
+  "El juego ahora está en español y en inglés: elige el idioma en Ajustes · Interfaz (si no, usa el de tu navegador).": {
+   "src": "datos",
+   "where": []
+  },
+  "Todo viene dentro del juego: el motor 3D y las letras ya no se descargan de otros sitios.": {
+   "src": "datos",
+   "where": []
+  },
+  "Funciona aunque el navegador no deje guardar (por ejemplo, en modo incógnito) y te avisa que el progreso no se guardará.": {
+   "src": "datos",
+   "where": []
+  },
+  "Se ve bien también en pantallas apaisadas chicas, desde 640 × 360.": {
+   "src": "datos",
+   "where": []
+  },
+  "Mientras juegas, espacio, flechas y rueda ya no mueven la página.": {
+   "src": "datos",
+   "where": []
+  },
+  "Versión preparada para Poki: anuncios de Poki entre partidas y «🎬 Doble premio» opcional al terminar.": {
+   "src": "datos",
+   "where": []
+  },
+  "Laboratorio en el Campo de pruebas (botón del matraz): crea cualquier tropa al instante, pon dianas que cuentan el daño, cambia la velocidad y mueve tropas al instante.": {
+   "src": "datos",
+   "where": []
+  },
+  "Recluta": {
+   "src": "datos",
+   "where": []
+  },
+  "Cabo": {
+   "src": "datos",
+   "where": []
+  },
+  "Sargento": {
+   "src": "datos",
+   "where": []
+  },
+  "Capitán": {
+   "src": "datos",
+   "where": []
+  },
+  "Comandante": {
+   "src": "datos",
+   "where": []
+  },
+  "Almirante del Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "Capitana Brisa": {
+   "src": "datos",
+   "where": []
+  },
+  "Coronel Basalto": {
+   "src": "datos",
+   "where": []
+  },
+  "Almirante Coral": {
+   "src": "datos",
+   "where": []
+  },
+  "Sargento Pino": {
+   "src": "datos",
+   "where": []
+  },
+  "Mariscal Ceniza": {
+   "src": "datos",
+   "where": []
+  },
+  "Teniente Ámbar": {
+   "src": "datos",
+   "where": []
+  },
+  "Comandante Niebla": {
+   "src": "datos",
+   "where": []
+  },
+  "Capitán Granito": {
+   "src": "datos",
+   "where": []
+  },
+  "General Duna": {
+   "src": "datos",
+   "where": []
+  },
+  "Cabo Relámpago": {
+   "src": "datos",
+   "where": []
+  },
+  "Comodoro Marea": {
+   "src": "datos",
+   "where": []
+  },
+  "Brigadier Roble": {
+   "src": "datos",
+   "where": []
+  },
+  "Capitana Aurora": {
+   "src": "datos",
+   "where": []
+  },
+  "Coronela Cobre": {
+   "src": "datos",
+   "where": []
+  },
+  "Mayor Tormenta": {
+   "src": "datos",
+   "where": []
+  },
+  "Teniente Alba": {
+   "src": "datos",
+   "where": []
+  },
+  "Almirante Faro": {
+   "src": "datos",
+   "where": []
+  },
+  "Sargenta Lava": {
+   "src": "datos",
+   "where": []
+  },
+  "General Escarcha": {
+   "src": "datos",
+   "where": []
+  },
+  "Capitán Bruma": {
+   "src": "datos",
+   "where": []
+  },
+  "Brisa": {
+   "src": "datos",
+   "where": []
+  },
+  "Coral": {
+   "src": "datos",
+   "where": []
+  },
+  "Roca": {
+   "src": "datos",
+   "where": []
+  },
+  "Ancla": {
+   "src": "datos",
+   "where": []
+  },
+  "Bruma": {
+   "src": "datos",
+   "where": []
+  },
+  "Lince": {
+   "src": "datos",
+   "where": []
+  },
+  "Ola": {
+   "src": "datos",
+   "where": []
+  },
+  "Norte": {
+   "src": "datos",
+   "where": []
+  },
+  "Sur": {
+   "src": "datos",
+   "where": []
+  },
+  "Veloz": {
+   "src": "datos",
+   "where": []
+  },
+  "Real": {
+   "src": "datos",
+   "where": []
+  },
+  "Azul": {
+   "src": "datos",
+   "where": []
+  },
+  "Roja": {
+   "src": "datos",
+   "where": []
+  },
+  "Gris": {
+   "src": "datos",
+   "where": []
+  },
+  "Dorada": {
+   "src": "datos",
+   "where": []
+  },
+  "Firme": {
+   "src": "datos",
+   "where": []
+  },
+  "Alta": {
+   "src": "datos",
+   "where": []
+  },
+  "ene": {
+   "src": "datos",
+   "where": []
+  },
+  "feb": {
+   "src": "datos",
+   "where": []
+  },
+  "mar": {
+   "src": "datos",
+   "where": []
+  },
+  "abr": {
+   "src": "datos",
+   "where": []
+  },
+  "may": {
+   "src": "datos",
+   "where": []
+  },
+  "jun": {
+   "src": "datos",
+   "where": []
+  },
+  "jul": {
+   "src": "datos",
+   "where": []
+  },
+  "ago": {
+   "src": "datos",
+   "where": []
+  },
+  "sep": {
+   "src": "datos",
+   "where": []
+  },
+  "oct": {
+   "src": "datos",
+   "where": []
+  },
+  "nov": {
+   "src": "datos",
+   "where": []
+  },
+  "dic": {
+   "src": "datos",
+   "where": []
+  },
+  "Voy a atacar a {t}. ¡Cúbreme!": {
+   "src": "datos",
+   "where": []
+  },
+  "Tomé el Faro para el equipo.": {
+   "src": "datos",
+   "where": []
+  },
+  "Tomé una Bandera para el equipo.": {
+   "src": "datos",
+   "where": []
+  },
+  "vehículos": {
+   "src": "datos",
+   "where": []
+  },
+  "buques": {
+   "src": "datos",
+   "where": []
+  },
+  "submarinos": {
+   "src": "datos",
+   "where": []
+  },
+  "aeronaves": {
+   "src": "datos",
+   "where": []
+  },
+  "en tierra": {
+   "src": "datos",
+   "where": []
+  },
+  "en tierra junto al agua": {
+   "src": "datos",
+   "where": []
+  },
+  "en el agua junto a la orilla": {
+   "src": "datos",
+   "where": []
+  },
+  "en agua baja junto a la costa": {
+   "src": "datos",
+   "where": []
+  },
+  "en mar profundo": {
+   "src": "datos",
+   "where": []
+  },
+  "Drones": {
+   "src": "datos",
+   "where": []
+  },
+  "Helicópteros": {
+   "src": "datos",
+   "where": []
+  },
+  "Aviación": {
+   "src": "datos",
+   "where": []
+  },
+  "Brigada Tóxica": {
+   "src": "datos",
+   "where": []
+  },
+  "Premio del Tutorial": {
+   "src": "datos",
+   "where": []
+  },
+  "Faro de Ámbar": {
+   "src": "html",
+   "where": []
+  },
+  "Recursos esenciales": {
+   "src": "html",
+   "where": []
+  },
+  "Cargando…": {
+   "src": "html",
+   "where": []
+  },
+  "Tu perfil": {
+   "src": "html",
+   "where": []
+  },
+  "En espera": {
+   "src": "html",
+   "where": []
+  },
+  "La partida": {
+   "src": "html",
+   "where": []
+  },
+  "Abriendo el juego…": {
+   "src": "html",
+   "where": []
+  },
+  "Reintentar": {
+   "src": "html",
+   "where": []
+  },
+  "+0/min": {
+   "src": "html",
+   "where": []
+  },
+  "Ingresos": {
+   "src": "html",
+   "where": []
+  },
+  "+0/10 s": {
+   "src": "html",
+   "where": []
+  },
+  "Partida": {
+   "src": "html",
+   "where": []
+  },
+  "-- fps": {
+   "src": "html",
+   "where": []
+  },
+  "Construir": {
+   "src": "html",
+   "where": []
+  },
+  "Aéreos": {
+   "src": "html",
+   "where": []
+  },
+  "Recuadro": {
+   "src": "html",
+   "where": []
+  },
+  "Girar": {
+   "src": "html",
+   "where": []
+  },
+  "Modo espectador": {
+   "src": "html",
+   "where": []
+  },
+  "· ves el resto de la partida hasta que haya ganador": {
+   "src": "html",
+   "where": []
+  },
+  "Salir al vestíbulo": {
+   "src": "html",
+   "where": []
+  },
+  "v1.9": {
+   "src": "html",
+   "where": []
+  },
+  "Arsenal": {
+   "src": "html",
+   "where": []
+  },
+  "Creador": {
+   "src": "html",
+   "where": []
+  },
+  "Nivel 1": {
+   "src": "html",
+   "where": []
+  },
+  "Tu ejército": {
+   "src": "html",
+   "where": []
+  },
+  "Continuar": {
+   "src": "html",
+   "where": []
+  },
+  "Reiniciar": {
+   "src": "html",
+   "where": []
+  },
+  "Idioma · Language": {
+   "src": "html",
+   "where": []
+  },
+  "Español": {
+   "src": "html",
+   "where": []
+  },
+  "English": {
+   "src": "html",
+   "where": []
+  },
+  "Gráficos": {
+   "src": "html",
+   "where": []
+  },
+  "Automática": {
+   "src": "html",
+   "where": []
+  },
+  "Alta calidad": {
+   "src": "html",
+   "where": []
+  },
+  "Más fluido": {
+   "src": "html",
+   "where": []
+  },
+  "Iluminación": {
+   "src": "html",
+   "where": []
+  },
+  "Nueva": {
+   "src": "html",
+   "where": []
+  },
+  "Clásica": {
+   "src": "html",
+   "where": []
+  },
+  "Nueva: colores más vivos, mar con reflejos y, en Alta calidad, sombras que se ven. Clásica: la luz de las versiones anteriores.": {
+   "src": "html",
+   "where": []
+  },
+  "Para tu iPad": {
+   "src": "html",
+   "where": []
+  },
+  "Ahorro de batería: no": {
+   "src": "html",
+   "where": []
+  },
+  "Colores para daltonismo: no": {
+   "src": "html",
+   "where": []
+  },
+  "Letra grande: no": {
+   "src": "html",
+   "where": []
+  },
+  "Reducir destellos: no": {
+   "src": "html",
+   "where": []
+  },
+  "Ahorro de batería: unos 30 cuadros por segundo y menos efectos. Daltonismo: colores que se distinguen y una forma por jugador en el minimapa. Reducir destellos: sin fogonazos de disparo y con el destello del misil muy suave.": {
+   "src": "html",
+   "where": []
+  },
+  "Tamaño de la interfaz:": {
+   "src": "html",
+   "where": []
+  },
+  "Música": {
+   "src": "html",
+   "where": []
+  },
+  "Apagada": {
+   "src": "html",
+   "where": []
+  },
+  "Baja": {
+   "src": "html",
+   "where": []
+  },
+  "Media": {
+   "src": "html",
+   "where": []
+  },
+  "Mover el mapa:": {
+   "src": "html",
+   "where": []
+  },
+  "arrastra con un dedo. Zoom y giro con dos dedos (o rueda, Q y E).": {
+   "src": "html",
+   "where": []
+  },
+  "Ordenar:": {
+   "src": "html",
+   "where": []
+  },
+  "toca una tropa y luego un destino o un enemigo. Doble toque elige todas las del mismo tipo.": {
+   "src": "html",
+   "where": []
+  },
+  "Varias tropas:": {
+   "src": "html",
+   "where": []
+  },
+  "botón Recuadro y arrastra (o Mayús + arrastrar).": {
+   "src": "html",
+   "where": []
+  },
+  "Grupos 1, 2 y 3:": {
+   "src": "html",
+   "where": []
+  },
+  "con tropas elegidas, «Guardar en 1/2/3». Toca 1, 2 o 3 junto al minimapa para elegirlas; dos toques llevan la cámara. Teclado: número elige; Ctrl o Mayús + número guarda.": {
+   "src": "html",
+   "where": []
+  },
+  "Avanzar atacando:": {
+   "src": "html",
+   "where": []
+  },
+  "en el panel de tropas, y luego toca el destino: pelean con lo que encuentren en el camino (tecla F).": {
+   "src": "html",
+   "where": []
+  },
+  "Formación:": {
+   "src": "html",
+   "where": []
+  },
+  "«bloque» las junta; «línea» las pone una al lado de otra, de frente al destino.": {
+   "src": "html",
+   "where": []
+  },
+  "Repetir tropa:": {
+   "src": "html",
+   "where": []
+  },
+  "en el Cuartel, la Fábrica, el Puerto o el Helipuerto, «Repetir» y «×5» ponen otra vez la última tropa.": {
+   "src": "html",
+   "where": []
+  },
+  "Botón Constructores": {
+   "src": "html",
+   "where": []
+  },
+  "(junto al minimapa o tecla C): elige primero a los que no trabajan.": {
+   "src": "html",
+   "where": []
+  },
+  "Campaña:": {
+   "src": "html",
+   "where": []
+  },
+  "6 misiones en el vestíbulo. Cada una da hasta 3 estrellas.": {
+   "src": "html",
+   "where": []
+  },
+  "Constructores:": {
+   "src": "html",
+   "where": []
+  },
+  "empiezas con uno; entrena más en el Núcleo. Levantan y mejoran los edificios; el Ingeniero va el doble de rápido y el Barco constructor hace las obras de mar.": {
+   "src": "html",
+   "where": []
+  },
+  "Gráficos:": {
+   "src": "html",
+   "where": []
+  },
+  "«Automática» baja la calidad sola si el juego va lento. «Contador de cuadros» muestra cuántos cuadros por segundo da tu iPad.": {
+   "src": "html",
+   "where": []
+  },
+  "Construir:": {
+   "src": "html",
+   "where": []
+  },
+  "elige un edificio, toca una casilla dorada, revisa la vista previa y «Construir». El constructor libre más cercano va solo; también puedes tocar la obra con él seleccionado.": {
+   "src": "html",
+   "where": []
+  },
+  "Lugares:": {
+   "src": "html",
+   "where": []
+  },
+  "Granjas en tierra fértil, Minas en vetas de oro, Bombas en petróleo de tierra y Plataformas en petróleo del mar.": {
+   "src": "html",
+   "where": []
+  },
+  "Energía:": {
+   "src": "html",
+   "where": []
+  },
+  "Solar, Eólica, Hidráulica, Mareomotriz y Undimotriz. La gastan vehículos, aeronaves, buques, la Fábrica y el Helipuerto.": {
+   "src": "html",
+   "where": []
+  },
+  "Mejorar:": {
+   "src": "html",
+   "where": []
+  },
+  "toca un edificio terminado y «Mejorar»: niveles 1 a 3 (la Casa llega a nivel 2: Apartamento). Con el Núcleo en nivel 3 se compra la Cúpula.": {
+   "src": "html",
+   "where": []
+  },
+  "Capturar:": {
+   "src": "html",
+   "where": []
+  },
+  "lleva infantería junto a una Bandera o al Faro y despeja la zona de enemigos durante 12 s.": {
+   "src": "html",
+   "where": []
+  },
+  "Reparar:": {
+   "src": "html",
+   "where": []
+  },
+  "selecciona un Constructor o Ingeniero y toca un edificio tuyo dañado.": {
+   "src": "html",
+   "where": []
+  },
+  "Demoler:": {
+   "src": "html",
+   "where": []
+  },
+  "devuelve el 75 % si la obra no estaba terminada y el 40 % si ya lo estaba, más las tropas en cola y la mejora en curso.": {
+   "src": "html",
+   "where": []
+  },
+  "Cruzar el mar:": {
+   "src": "html",
+   "where": []
+  },
+  "selecciona tropas, toca tu Barcaza y luego «Desembarcar» junto a otra isla.": {
+   "src": "html",
+   "where": []
+  },
+  "Salir:": {
+   "src": "html",
+   "where": []
+  },
+  "«Salir al menú» deja la partida en pausa; vuelves con «Volver a la partida». También se guarda sola cada minuto y al pausar o cambiar de app.": {
+   "src": "html",
+   "where": []
+  },
+  "Ganar:": {
+   "src": "html",
+   "where": []
+  },
+  "destruye todos los Núcleos enemigos.": {
+   "src": "html",
+   "where": []
+  },
+  "Contador de cuadros: no": {
+   "src": "html",
+   "where": []
+  },
+  "Salir al menú": {
+   "src": "html",
+   "where": []
+  },
+  "Interfaz": {
+   "src": "html",
+   "where": []
+  },
+  "Sonido": {
+   "src": "html",
+   "where": []
+  },
+  "Cámara": {
+   "src": "html",
+   "where": []
+  },
+  "Accesibilidad": {
+   "src": "html",
+   "where": []
+  },
+  "Controles": {
+   "src": "html",
+   "where": []
+  },
+  "Volver": {
+   "src": "html",
+   "where": []
+  },
+  "Interfaz y lectura": {
+   "src": "html",
+   "where": []
+  },
+  "Cámara e imagen": {
+   "src": "html",
+   "where": []
+  },
+  "Giro de la cámara en el vestíbulo: sí": {
+   "src": "html",
+   "where": []
+  },
+  "La escena «Tu ejército» del vestíbulo gira despacio. En la partida, gira la cámara con dos dedos (o Q y E).": {
+   "src": "html",
+   "where": []
+  },
+  "Controles táctiles": {
+   "src": "html",
+   "where": []
+  },
+  "Toque: seleccionar · Arrastre: mover la cámara · Pellizco: acercar · Cancelar: salir de la orden.": {
+   "src": "html",
+   "where": []
+  },
+  "Se guardan solos en este iPad.": {
+   "src": "html",
+   "where": []
+  },
+  "Restablecer": {
+   "src": "html",
+   "where": []
+  },
+  "Monedas: toca para ver de dónde salen": {
+   "src": "html",
+   "where": []
+  },
+  "Ingresos por minuto: toca para ver de dónde salen": {
+   "src": "html",
+   "where": []
+  },
+  "Población: tropas que tienes (y en cola) de las que caben": {
+   "src": "html",
+   "where": []
+  },
+  "Energía: toca para ver de dónde sale": {
+   "src": "html",
+   "where": []
+  },
+  "Tiempo de la partida": {
+   "src": "html",
+   "where": []
+  },
+  "Toca para ver el marcador": {
+   "src": "html",
+   "where": []
+  },
+  "Plegar panel": {
+   "src": "html",
+   "where": []
+  },
+  "Grupos y constructores": {
+   "src": "html",
+   "where": []
+  },
+  "Grupo 1 (tecla 1 · dos toques: ir)": {
+   "src": "html",
+   "where": []
+  },
+  "Grupo 2 (tecla 2 · dos toques: ir)": {
+   "src": "html",
+   "where": []
+  },
+  "Grupo 3 (tecla 3 · dos toques: ir)": {
+   "src": "html",
+   "where": []
+  },
+  "Constructores: primero los que no trabajan (C)": {
+   "src": "html",
+   "where": []
+  },
+  "Minimapa: toca para mover la cámara": {
+   "src": "html",
+   "where": []
+  },
+  "Seleccionar ejército (T)": {
+   "src": "html",
+   "where": []
+  },
+  "Seleccionar barcos": {
+   "src": "html",
+   "where": []
+  },
+  "Seleccionar aéreos": {
+   "src": "html",
+   "where": []
+  },
+  "Selección por recuadro (Mayús + arrastrar)": {
+   "src": "html",
+   "where": []
+  },
+  "Centrar en el Núcleo (Espacio)": {
+   "src": "html",
+   "where": []
+  },
+  "Girar (R)": {
+   "src": "html",
+   "where": []
+  },
+  "Construir aquí (Enter)": {
+   "src": "html",
+   "where": []
+  },
+  "Cristales: se ganan jugando": {
+   "src": "html",
+   "where": []
+  },
+  "Secciones de ajustes": {
+   "src": "html",
+   "where": []
+  },
+  "Confirmar el uso estratégico": {
+   "src": "html",
+   "where": []
+  }
+ }
+}

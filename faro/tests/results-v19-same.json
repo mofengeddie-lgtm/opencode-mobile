@@ -1,0 +1,16 @@
+{
+ "ok": true,
+ "ev": "4 partidas de 15 min con azar fijo (Todos contra todos en Archipiélago y Continente, Dúos, Conquista en la Bahía): con el código de antes de juntar el Laboratorio, dos veces la misma huella (sí); antes y después de juntarlo, la misma huella en las 4 (sí)",
+ "pre": {
+  "ffa/archipelago/normal/1": "074674ed160f5b8e (28 tropas, 20 edificios, 900 s)",
+  "ffa/continent/hard/2": "169be00d429cd189 (38 tropas, 51 edificios, 555 s, defeat)",
+  "duos/archipelago/normal/3": "d2dd0b6e2f4ddaf0 (36 tropas, 51 edificios, 900 s)",
+  "conquest/bay/easy/4": "4d297cf1226c39ca (39 tropas, 46 edificios, 900 s)"
+ },
+ "post": {
+  "ffa/archipelago/normal/1": "074674ed160f5b8e (28 tropas, 20 edificios, 900 s)",
+  "ffa/continent/hard/2": "169be00d429cd189 (38 tropas, 51 edificios, 555 s, defeat)",
+  "duos/archipelago/normal/3": "d2dd0b6e2f4ddaf0 (36 tropas, 51 edificios, 900 s)",
+  "conquest/bay/easy/4": "4d297cf1226c39ca (39 tropas, 46 edificios, 900 s)"
+ }
+}
