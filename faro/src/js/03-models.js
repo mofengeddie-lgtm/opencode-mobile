@@ -483,10 +483,13 @@ function _readGLB(name, gltf) {
 function loadGLBModels(onProgress) {
   if (typeof FARO_GLB === 'undefined' || !THREE.GLTFLoader) return Promise.resolve(0);
   const loader = new THREE.GLTFLoader();
+  // v1.9: los modelos van comprimidos con meshopt (un tercio menos); el decodificador viene dentro del archivo.
+  const dec = typeof MeshoptDecoder !== 'undefined' ? MeshoptDecoder : null;
+  if (dec) loader.setMeshoptDecoder(dec);
   const names = Object.keys(FARO_GLB);
   let done = 0;
   const tick = () => { done++; if (onProgress) onProgress(done, names.length); };
-  return Promise.all(names.map((name) => new Promise((resolve0) => {
+  return Promise.resolve(dec ? dec.ready : null).catch(() => null).then(() => Promise.all(names.map((name) => new Promise((resolve0) => {
     const resolve = () => { tick(); resolve0(); };
     try {
       loader.parse(_b64ToBuffer(FARO_GLB[name]), '', (gltf) => {
@@ -500,7 +503,7 @@ function loadGLBModels(onProgress) {
       console.warn('[Modelos] Error en', name, err);
       resolve();
     }
-  }))).then(() => Object.keys(GLB).length);
+  })))).then(() => Object.keys(GLB).length);
 }
 
 // Luz de ambiente (IBL) a partir del cielo de Poly Haven. Se calcula una vez por WebGLRenderer.

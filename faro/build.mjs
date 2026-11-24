@@ -1,6 +1,7 @@
 // Une la plantilla HTML y los scripts de src/js en un único archivo jugable.
 // Uso: node faro/build.mjs [--poki] [ruta-extra-sin-envoltorio.html]
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -10,10 +11,22 @@ const JS_DIR = join(ROOT, 'src', 'js');
 const files = readdirSync(JS_DIR).filter((f) => f.endsWith('.js')).sort();
 // Modelos 3D hechos con Blender (faro/blender/generate_models.py), incrustados en base64.
 const MODEL_DIR = join(ROOT, 'assets', 'models');
+// v1.9: si hay versión comprimida (assets/models-min, hecha con tools/modelos/comprimir.cjs) del mismo modelo
+// (misma huella sha256 en models-min/fuentes.json), se usa esa (meshopt: un tercio menos de peso; se ve igual).
+const MIN_DIR = process.env.FARO_MIN_DIR || join(ROOT, 'assets', 'models-min');
 let models = {};
+let minCount = 0;
+// Huella (sha256) de cada modelo original en el momento de comprimirlo.
+let minSources = {};
+try { minSources = JSON.parse(readFileSync(join(MIN_DIR, 'fuentes.json'), 'utf8')); } catch (err) { minSources = {}; }
 try {
   for (const f of readdirSync(MODEL_DIR).filter((x) => x.endsWith('.glb')).sort()) {
-    models[f.replace(/\.glb$/, '')] = readFileSync(join(MODEL_DIR, f)).toString('base64');
+    let src = join(MODEL_DIR, f);
+    const m = join(MIN_DIR, f);
+    const same = !process.env.FARO_NO_MIN && existsSync(m) && minSources[f] === createHash('sha256').update(readFileSync(src)).digest('hex');
+    if (same) { src = m; minCount++; }
+    else if (existsSync(m)) console.warn(`[Faro] ${f}: el modelo cambió después de comprimirlo; se usa el original (vuelve a correr tools/modelos/comprimir.cjs)`);
+    models[f.replace(/\.glb$/, '')] = readFileSync(src).toString('base64');
   }
 } catch (err) {
   console.warn('[Faro] Sin modelos GLB:', err.message);
@@ -42,7 +55,7 @@ const modelJs = `// ---- modelos GLB (Blender) ----\nconst FARO_GLB = ${JSON.str
   `const FARO_ANIM = ${JSON.stringify(anim)};\n`;
 // v1.9: librerías y fuentes dentro del archivo (Poki no deja pedir nada a otros sitios).
 const VENDOR = join(ROOT, 'vendor');
-const vendorJs = ['three.r128.min.js', 'GLTFLoader.r128.js'].map((f) => `// ---- vendor/${f} ----\n${readFileSync(join(VENDOR, f), 'utf8')}`).join('\n');
+const vendorJs = ['three.r128.min.js', 'GLTFLoader.r128.js', 'meshopt_decoder.r128.js'].map((f) => `// ---- vendor/${f} ----\n${readFileSync(join(VENDOR, f), 'utf8')}`).join('\n');
 const FONTS = [['Barlow', 400, 'barlow-latin-400-normal'], ['Barlow', 500, 'barlow-latin-500-normal'], ['Barlow', 600, 'barlow-latin-600-normal'],
   ['Chakra Petch', 500, 'chakra-petch-latin-500-normal'], ['Chakra Petch', 600, 'chakra-petch-latin-600-normal'], ['Chakra Petch', 700, 'chakra-petch-latin-700-normal']];
 const fontCss = FONTS.map(([fam, w, f]) => `@font-face{font-family:'${fam}';font-style:normal;font-weight:${w};font-display:swap;` +
@@ -72,7 +85,7 @@ const full = [
 const OUT = process.env.FARO_OUT || (POKI ? join(ROOT, 'poki', 'index.html') : join(ROOT, 'faro.html'));
 if (POKI) mkdirSync(join(ROOT, 'poki'), { recursive: true });
 writeFileSync(OUT, full);
-console.log(`[Faro] ${OUT.split('/').pop()} listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos)`);
+console.log(`[Faro] ${OUT.split('/').pop()} listo (${(full.length / 1024).toFixed(0)} KB, ${files.length} scripts, ${Object.keys(models).length} modelos, ${minCount} comprimidos)`);
 
 const extra = process.argv.slice(2).find((a) => !a.startsWith('--'));
 if (extra) {
