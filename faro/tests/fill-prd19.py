@@ -158,8 +158,13 @@ for name, pat, ver in SUITES:
             take(x, ver)
 v18 = os.path.join(SP, 'out19-run-v18.txt')
 if os.path.exists(v18):
-    for m in re.finditer(r'^(OK|FAIL) +(O\d\d)', open(v18, encoding='utf-8').read(), re.M):
-        take({'id': m.group(2), 'ok': m.group(1) == 'OK'}, 'v1.8')
+    o18 = {m.group(2): m.group(1) == 'OK' for m in re.finditer(r'^(OK|FAIL) +(O\d\d)', open(v18, encoding='utf-8').read(), re.M)}
+    # O21 necesita la contraseña de creadores en CREATOR_PW (nunca guardada en el proyecto): se corrió aparte con ella.
+    redo = os.path.join(SP, 'out19-redo-o21.txt')
+    if os.path.exists(redo):
+        o18.update({m.group(2): m.group(1) == 'OK' for m in re.finditer(r'^(OK|FAIL) +(O\d\d)', open(redo, encoding='utf-8').read(), re.M)})
+    for k, v in o18.items():
+        take({'id': k, 'ok': v}, 'v1.8')
 else:
     not_run.append('v18')
 for t, ver in SIMS:
