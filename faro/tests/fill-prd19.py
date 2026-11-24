@@ -1,9 +1,9 @@
-"""Junta los resultados reales de las pruebas de la v1.9 y arma el PRD final (P01-P18).
+"""Junta los resultados reales de las pruebas de la v1.9 y arma el PRD final (P01-P19).
 
 Uso: python3 faro/tests/fill-prd19.py [carpeta del scratchpad con las salidas de la tanda]
 Lee: tests/results-v19.json y <sp>/results-v19-final-run.json (P01-P07, P11, P14, P16), tamaños (P08), revisor de idioma
 (P10), comparación en español (P12), tamaño y carga (P13), miniaturas (P15), la tanda de pruebas anteriores (P17) y
-tests/results-v19-docs.json (P18). Escribe tests/results-v19-final.json y vuelve a armar docs/prd/PRD_web_v1.9.html.
+tests/results-v19-docs.json (P18) y el Laboratorio juntado de la v1.8.1 (P19: tests/results-v19-lab.json y results-v19-same.json). Escribe tests/results-v19-final.json y vuelve a armar docs/prd/PRD_web_v1.9.html.
 Una prueba que no corrió queda «No probada»: nunca «Aprobada».
 """
 import glob
@@ -80,6 +80,7 @@ if p12:
         t = re.sub(r'v1\.[89]\b|1\.[89]\b', 'vX', t)
         t = t.replace('Todo tu catálogo: 93 tropas Tu ejército en la portada Campo de pruebas Ajustes a tu manera Programa revisor', '[novedades]')
         t = t.replace('93 tropas y 42 edificios Tu ejército en la portada Campo de pruebas Español e inglés Ajustes a tu manera', '[novedades]')
+        t = t.replace('93 tropas y 42 edificios Tu ejército en la portada Laboratorio de pruebas Español e inglés Ajustes a tu manera', '[novedades]')
         t = re.sub(r'IDIOMA · LANGUAGE Español English (Automático: el idioma de tu navegador o de Poki\.|Elegido por ti\.) ?', '', t)
         return re.sub(r'\s+', ' ', t).strip()
     a, c = p12['a'], p12['c']
@@ -174,6 +175,10 @@ if os.path.exists(v18):
     redo = os.path.join(SP, 'out19-redo-o21.txt')
     if os.path.exists(redo):
         o18.update({m.group(2): m.group(1) == 'OK' for m in re.finditer(r'^(OK|FAIL) +(O\d\d)', open(redo, encoding='utf-8').read(), re.M)})
+    # O15 y O16 (Campo de pruebas y Ajustes) otra vez sobre el archivo final, con el Laboratorio juntado.
+    fin = os.path.join(SP, 'out19f-run-v18.txt')
+    if os.path.exists(fin):
+        o18.update({m.group(2): m.group(1) == 'OK' for m in re.finditer(r'^(OK|FAIL) +(O\d\d)', open(fin, encoding='utf-8').read(), re.M)})
     for k, v in o18.items():
         take({'id': k, 'ok': v}, 'v1.8')
 else:
@@ -229,6 +234,9 @@ for x in soak:
     for k, v in x['issues'].items():
         issues[k] = issues.get(k, 0) + v['n']
 mk = sp('results-v19-monkey.json')
+if isinstance(mk, list):
+    # La prueba de toques al azar (L07 de la v1.5) guarda una lista; vale si todas sus entradas están bien.
+    mk = {'ok': bool(mk) and all(x.get('ok') for x in mk)}
 rev_out = open(os.path.join(SP, 'out19-revisor.txt'), encoding='utf-8').read() if os.path.exists(os.path.join(SP, 'out19-revisor.txt')) else ''
 rev = load(os.path.join(FARO, 'tools', 'revisar', 'salida', 'informe.json'))
 rev_ok = bool(rev) and rev['summary']['catalog_ok'] == rev['summary']['catalog_total']
@@ -251,6 +259,30 @@ put('P17', ('ok' if not fails and camp_ok and num['ok'] and not issues and rev_o
 # P18: documento, sitio y PDF.
 docs = load(os.path.join(HERE, 'results-v19-docs.json'))
 put('P18', ('ok' if docs['ok'] else 'fail') if docs else 'np', docs['ev'] if docs else 'no corrió')
+
+# P19: el Laboratorio de la v1.8.1 (publicada aparte) juntado en la v1.9.
+lab = load(os.path.join(HERE, 'results-v19-lab.json'))
+lab_en = sp('results-v19-lab-en.json')
+lab181 = sp('results-v19-lab-v181.json')
+same = load(os.path.join(HERE, 'results-v19-same.json'))
+if lab:
+    short = lambda r: f"{sum(1 for x in r['results'] if x['ok'])} de {len(r['results'])}" + (f" (fallan: {', '.join(r['failed'])})" if r['failed'] else '')
+    ev = ' · '.join(f"{x['id']}: {x['ev']}" for x in lab['results'] if x['id'] != 'errores')
+    ev += f" · consola: {next((x['ev'] for x in lab['results'] if x['id'] == 'errores'), '?')}"
+    ev += f" · en español: {short(lab)}"
+    if lab_en:
+        ev += f" · en inglés: {short(lab_en)} (panel: «{lab_en['panelText'][:90].replace(chr(10), ' / ')}…»)"
+    same_text = None
+    if lab181:
+        same_text = lab181.get('panelText') == lab.get('panelText')
+        ev += f" · la misma prueba en la v1.8.1 publicada: {short(lab181)}; texto del panel en español idéntico al de la v1.8.1: {'sí' if same_text else 'NO'}"
+    if same:
+        ev += f" · {same['ev']}"
+    ok19 = lab['ok'] and (lab_en is None or lab_en['ok']) and (same_text is not False) and (same is None or same['ok'])
+    complete = lab_en is not None and lab181 is not None and same is not None
+    put('P19', ('ok' if ok19 else 'fail') if complete or not ok19 else 'np', ev + ('' if complete else ' · faltan corridas (inglés, v1.8.1 o comparación de partidas)'))
+else:
+    put('P19', 'np', 'no corrió')
 
 json.dump(R, open(os.path.join(HERE, 'results-v19-final.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 for i in sorted(R):

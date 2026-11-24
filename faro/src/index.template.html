@@ -1036,6 +1036,37 @@ body.battery #selpanel, body.battery #placebar, body.battery #buildpanel .blist,
 /* «Ver» y «Reclamar»: el botón se ve igual, pero el área que responde al toque mide 44 px de alto. */
 .mini-btn { position: relative; }
 .mini-btn::after { content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+/* ---------- v1.8.1: Laboratorio (juntado en la v1.9) ---------- */
+#btn-lab { position: relative; width: 44px; min-height: 44px; }
+#btn-lab[aria-expanded="true"] { background: var(--gold); color: var(--gold-ink); border-color: transparent; }
+#lab-speedtag { position: absolute; right: -4px; bottom: -6px; min-width: 22px; padding: 1px 4px; border-radius: 6px; background: var(--gold); color: var(--gold-ink); font: 700 10.5px/1.2 var(--font-display); text-align: center; pointer-events: none; }
+#labpop { top: calc(var(--top) + 64px); left: var(--left); width: min(372px, calc(100% - 20px)); max-height: calc(100% - var(--top) - var(--bottom) - 70px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.labnote { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.labsec { display: grid; gap: 7px; padding-top: 9px; border-top: 1px solid var(--line); min-width: 0; }
+.labseg, .labrow { display: flex; flex-wrap: wrap; gap: 6px; }
+.labseg .btn, .labrow .btn, .labtoggles .btn { min-height: 44px; padding: 0 12px; font-size: 13px; }
+.labseg .btn { min-width: 44px; }
+.labtoggles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.labtoggles .btn { justify-content: flex-start; white-space: normal; text-align: left; line-height: 1.2; }
+#labpop .btn[aria-pressed="true"], .labchips button[aria-pressed="true"] { background: var(--gold); color: var(--gold-ink); border-color: transparent; }
+.labchips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; touch-action: pan-x; padding-bottom: 2px; }
+.labchips button { flex: none; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--raise); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+#lab-search { width: 100%; min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--raise); color: var(--text); font: inherit; font-size: 16px; -webkit-user-select: text; user-select: text; touch-action: manipulation; }
+#lab-search:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.labunits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; max-height: 236px; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.labunits button { min-height: 48px; display: grid; gap: 1px; align-content: center; text-align: left; padding: 4px 10px; border-radius: 8px; border: 1px solid transparent; background: var(--raise); color: var(--text); font: inherit; cursor: pointer; min-width: 0; }
+.labunits button:hover { border-color: var(--line); }
+.labunits button b { font-size: 13px; line-height: 1.15; overflow-wrap: anywhere; }
+.labunits button small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.labunits .empty { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 13px; }
+.labtable { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.labtable td, .labtable th { padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--line); }
+.labtable th { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.labtable .n { text-align: right; font-family: var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.labtable small { color: var(--muted); }
+#lab-log { margin: 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 12.5px; color: var(--muted); }
+#lab-log li b { display: inline-block; min-width: 46px; color: var(--text); font-family: var(--font-display); font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) { .labtoggles { grid-template-columns: minmax(0, 1fr); } }
 </style>
 
 <!-- v1.6: pantalla de carga con las fases reales (se ve antes de que llegue el motor 3D). -->
@@ -1187,6 +1218,9 @@ window.FaroBoot = (function () {
     <div id="players" class="players panel" role="button" tabindex="0" title="Toca para ver el marcador"></div>
     <div class="sys panel">
       <span class="fpschip num" id="fps" hidden>-- fps</span>
+      <button class="btn icon" id="btn-lab" type="button" aria-label="Laboratorio" aria-expanded="false" aria-controls="labpop" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6L4.6 18.4A2 2 0 0 0 6.3 21.5h11.4a2 2 0 0 0 1.7-3.1L14 9V3"/><path d="M7.4 15h9.2"/></svg>
+        <small id="lab-speedtag" hidden>2×</small></button>
       <button class="btn icon" id="btn-sound" type="button" aria-label="Sonido"></button>
       <button class="btn icon" id="btn-pause" type="button" aria-label="Pausa">
         <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
@@ -1204,6 +1238,7 @@ window.FaroBoot = (function () {
   <section id="econ" class="pop panel" hidden></section>
   <section id="score" class="pop panel" hidden></section>
   <section id="chatpop" class="pop panel" hidden aria-label="Mensajes"></section>
+  <section id="labpop" class="pop panel" hidden aria-label="Laboratorio"></section>
 
   <div id="toasts" aria-live="polite"></div>
   <div id="prodbar" class="panel" hidden aria-label="Producción"></div>

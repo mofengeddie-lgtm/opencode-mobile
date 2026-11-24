@@ -74,6 +74,7 @@ TESTS = [
     ('P16', 'La versión web sigue bien', 'La versión publicada en su enlace funciona igual que la v1.8 y ya no depende de CDN ni de Google Fonts.'),
     ('P17', 'Sin regresiones', 'Las pruebas de las versiones anteriores (en español) siguen pasando; campaña ganable; números de tropas y edificios iguales; revisor 110 de 110.'),
     ('P18', 'Documento, sitio y PDF', 'Documento completo, registro y sitio con la v1.9; PRD final con resultados reales; guía paso a paso para subir el juego a Poki.'),
+    ('P19', 'Laboratorio de la v1.8.1 dentro de la v1.9 (agregada después del plan)', 'El Laboratorio que estaba publicado en el juego (v1.8.1) sigue en la v1.9: botón del matraz solo en el Campo de pruebas; crear cualquier tropa tocando el mapa (tuya o del rival, ×1 o ×5, solo donde puede estar); dianas que no se mueven ni se rompen y cuentan el daño; velocidad pausa a 4× y paso a paso; recursos, obras al instante, sin perder vida y bots del rival; mover al instante; quitar; registro; se guarda con la partida; en inglés también; y las partidas normales quedan idénticas.'),
 ]
 
 
@@ -84,6 +85,7 @@ DECISIONS = [
     ('Cambiar idioma', 'Al elegir otro idioma, el juego se vuelve a abrir (unos segundos) con la partida guardada, en vez de cambiar al instante: así todo el texto, también el de los datos, sale en el idioma nuevo sin riesgo.'),
     ('Poki sin compras ni otras plataformas', 'En Poki no está la pestaña de paquetes de cristales («Solo en Roblox») ni los botones y frases que nombran a Roblox; tampoco la zona de creadores (herramienta de desarrollo). La versión web los conserva.'),
     ('Dos errores encontrados por las pruebas', 'Al envolver los textos, el juego tenía 18 variables locales llamadas L o T que tapaban las funciones de traducción: pasaron a llamarse T$ y L$. Y la clave «sub» (subtítulo) también es la del Submarino: traducía sus códigos; las propiedades de texto quedaron en una lista corta.'),
+    ('Laboratorio encontrado en el juego publicado', 'Al publicar la v1.9 apareció que el enlace del juego tenía una v1.8.1 (publicada el 21 nov fuera de esta conversación) con un Laboratorio en el Campo de pruebas, basado en tu «PRD v1.9, sección 12». No estaba en el proyecto. Publicar la v1.9 encima lo hubiera borrado, así que se juntó con la v1.9: mismo comportamiento, textos en español iguales, todo traducido al inglés, y se agregó la prueba P19. Las dianas guardan su clave (inf, veh…) en vez del nombre, para mostrarlo en el idioma del jugador.'),
     ('Mensaje de la consola', 'El decodificador de meshopt de three.js r128 escribe un aviso al arrancar; se calla solo mientras arranca (versión limpia para Poki) sin tocar la librería.'),
 ]
 
@@ -213,7 +215,7 @@ def main():
 <li>Incógnito, página que no se mueve, medidas de Poki y píldora.</li>
 <li>Sistema de idiomas y traducción completa al inglés; revisor de idioma.</li>
 <li>Modelos comprimidos (si pasan la comparación).</li>
-<li>Miniaturas, pruebas P01–P18, PRD final, documento, sitio, publicar y guardar.</li>
+<li>Miniaturas, pruebas P01–P18 (y P19, el Laboratorio que se juntó al final), PRD final, documento, sitio, publicar y guardar.</li>
 </ol>
 <h2>8. Para subirlo a Poki (lo haces tú)</h2>
 <ol>

@@ -112,9 +112,183 @@ class Game {
     });
     // v1.8: en el Campo de pruebas el rival no juega.
     if (mode.sandbox) this.bots = [];
+    // v1.8.1: el Laboratorio (sus reglas, velocidad y registro).
+    if (mode.sandbox) this.ensureLab();
     // Campaña (v0.7): preparación de la misión y seguimiento de su meta.
     this.camp = null;
     if (opts.mission) Campaign.setup(this);
+  }
+
+  // ---------- v1.8.1: Laboratorio (Campo de pruebas) ----------
+  // res = recursos de sobra · instant = obras al instante · inv = [tú, rival] no pierden vida · ai = bots del rival.
+  ensureLab() {
+    if (!this.lab) this.lab = { res: true, instant: false, inv: [false, false], ai: false, speed: 1, log: [], dealt: {}, ver: 0 };
+    if (!this.lab.dealt) this.lab.dealt = {};
+    return this.lab;
+  }
+
+  labLog(text) {
+    const lab = this.lab;
+    if (!lab) return;
+    lab.log.push({ t: this.time, text });
+    if (lab.log.length > LAB.logMax) lab.log.shift();
+    lab.ver = (lab.ver || 0) + 1;
+  }
+
+  // ¿Puede esa tropa estar en esa casilla? Devuelve el motivo si no.
+  labCellOk(ci, type, owner) {
+    const c = this.cells[ci];
+    const d = UNITS[type];
+    if (!c || !d) return T$('Esa tropa no existe');
+    if (d.mover === 'air' || this.passable(c, d.mover, owner)) return null;
+    if (d.mover === 'sea') return L$`${d.name}: solo va en el agua`;
+    if (d.mover === 'amphib') return L$`${d.name}: va en tierra o en agua poco profunda, sin edificios`;
+    return L$`${d.name}: va en tierra, sin edificios encima`;
+  }
+
+  // Crea n tropas de un tipo para el dueño, en la casilla elegida y las de alrededor que pueda pisar.
+  labSpawn(type, owner, ci, n = 1) {
+    const d = UNITS[type];
+    if (!this.lab || !d) return { err: T$('Esa tropa no existe') };
+    const why = this.labCellOk(ci, type, owner);
+    if (why) return { err: why };
+    const c0 = this.cells[ci];
+    const out = [];
+    for (const off of SPIRAL) {
+      if (out.length >= n) break;
+      const c = this.map.get(c0.q + off.q, c0.r + off.r);
+      if (!c || (d.mover !== 'air' && !this.passable(c, d.mover, owner))) continue;
+      out.push(this.addUnit(owner, type, c.i));
+    }
+    while (out.length < n) out.push(this.addUnit(owner, type, ci));
+    for (const u of out) u.labMade = true;
+    this.labLog(owner === 0 ? L$`Creaste ${n} × ${d.name}` : L$`Creaste ${n} × ${d.name} del rival`);
+    this.refreshEconomy();
+    this.territoryDirty = true;
+    return { units: out };
+  }
+
+  // Diana de práctica: del rival, a 6-10 casillas de tu Núcleo (fuera del alcance de su láser).
+  labDummy(kind) {
+    const spec = LAB.dummies.find((x) => x[0] === kind);
+    if (!this.lab || !spec || !UNITS[spec[2]]) return T$('No hay esa diana');
+    const d = UNITS[spec[2]];
+    const home = this.cells[this.players[0].core.cell];
+    let best = null;
+    let bs = Infinity;
+    for (const c of this.cells) {
+      const dist = this.map.dist(c, home);
+      if (dist < 6 || dist > 10) continue;
+      if (d.mover !== 'air' && !this.passable(c, d.mover, 1)) continue;
+      if (this.units.some((u) => u.alive && u.dummy && u.cell === c.i)) continue;
+      const s = Math.abs(dist - 7) + (c.owner === 0 ? 0 : 0.6) + this.map.dist(c, home) * 0.01 + ((c.i * 7919) % 97) / 400;
+      if (s < bs) { bs = s; best = c; }
+    }
+    const name = labDummyName(spec[0]).toLowerCase();
+    if (!best) return L$`No hay lugar para la diana de ${name} cerca de tu base`;
+    const u = this.addUnit(1, spec[2], best.i);
+    // Se guarda la clave de la diana (inf, veh…); el nombre se muestra en el idioma del jugador.
+    u.dummy = spec[0];
+    u.labDmg = 0;
+    u.labWin = [];
+    u.labSince = this.time;
+    this.labLog(L$`Diana de ${name} (${d.name})`);
+    return u;
+  }
+
+  // Mueve al instante tropas a una casilla (y las de alrededor) que cada una pueda pisar.
+  labTeleport(units, ci) {
+    const c0 = this.cells[ci];
+    const res = { moved: 0, rejected: 0, why: '' };
+    if (!c0) return res;
+    const used = new Set();
+    for (const u of units) {
+      if (!u.alive || u.inside) continue;
+      let dest = null;
+      for (const off of SPIRAL) {
+        if (off.d > 3) break;
+        const c = this.map.get(c0.q + off.q, c0.r + off.r);
+        if (!c || used.has(c.i) || (u.mover !== 'air' && !this.passable(c, u.mover, u.owner))) continue;
+        dest = c;
+        break;
+      }
+      if (!dest) {
+        res.rejected++;
+        res.why = this.labCellOk(ci, u.type, u.owner) || T$('No hay lugar libre cerca');
+        continue;
+      }
+      if (units.length > 1) used.add(dest.i);
+      u.cell = dest.i;
+      u.x = dest.x + u.offX;
+      u.z = dest.z + u.offZ;
+      u.y = this.groundY(u, dest);
+      u.state = 'idle';
+      u.path = [];
+      u.pathI = 0;
+      u.target = null;
+      u.buildTarget = null;
+      res.moved++;
+    }
+    if (res.moved) this.labLog(res.moved === 1 ? T$('Moviste 1 tropa al instante') : L$`Moviste ${res.moved} tropas al instante`);
+    return res;
+  }
+
+  // Quita tropas sin explosiones ni estadísticas: 'dummies' (las dianas) o 'all' (todas menos tus constructores).
+  labClear(which) {
+    let n = 0;
+    const keep = [];
+    for (const u of this.units) {
+      const go = u.alive && (which === 'dummies' ? !!u.dummy : !(u.owner === 0 && u.def.builds && !u.inside));
+      if (!go) { keep.push(u); continue; }
+      u.alive = false;
+      if (u.cargo) for (const c of u.cargo) { c.alive = false; this.removed.push(c); }
+      this.removed.push(u);
+      n++;
+    }
+    this.units = keep.filter((u) => u.alive);
+    if (which === 'all') {
+      this.projectiles = [];
+      this.radZones = [];
+    }
+    this.refreshEconomy();
+    if (which === 'dummies') this.labLog(n === 1 ? T$('Quitaste 1 diana') : L$`Quitaste ${n} dianas`);
+    else this.labLog(n === 1 ? T$('Quitaste 1 tropa (quedan tus constructores)') : L$`Quitaste ${n} tropas (quedan tus constructores)`);
+    return n;
+  }
+
+  labResetStats() {
+    const lab = this.lab;
+    if (!lab) return;
+    lab.dealt = {};
+    for (const u of this.units) if (u.dummy) { u.labDmg = 0; u.labWin = []; u.labSince = this.time; }
+    this.labLog(T$('Contadores de daño a cero'));
+  }
+
+  // Bots del rival: encendidos juega con su dinero; apagados no da órdenes nuevas.
+  labSetAI(on) {
+    const lab = this.lab;
+    if (!lab) return;
+    lab.ai = !!on;
+    if (on) {
+      const p = this.players[1];
+      if (!p.persona) p.persona = 'builder';
+      if (!this.bots.some((b) => b.pid === 1)) this.bots.push(new Bot(this, 1));
+    } else this.bots = this.bots.filter((b) => b.pid !== 1);
+    this.labLog(on ? T$('Bots del rival: encendidos') : T$('Bots del rival: apagados'));
+  }
+
+  // Un paso de la simulación (0,1 s), aunque el Laboratorio esté en pausa.
+  labStep() {
+    this._labSub = true;
+    try { this.update(0.1); } finally { this._labSub = false; }
+  }
+
+  // Daño por segundo de una diana en los últimos LAB.window segundos.
+  labDps(u) {
+    const from = this.time - LAB.window;
+    let s = 0;
+    for (const [t, d] of u.labWin || []) if (t >= from) s += d;
+    return s / Math.max(1, Math.min(LAB.window, this.time - (u.labSince || 0)));
   }
 
   setupSandbox() {
@@ -1500,6 +1674,25 @@ class Game {
 
   damage(t, dmg, src, srcEnt, nuke = false) {
     if (!t.alive || dmg <= 0) return;
+    // v1.8.1: Laboratorio: daño hecho por tus tropas, dianas que cuentan y equipos invulnerables.
+    const lab = this.lab;
+    if (lab) {
+      if (srcEnt && srcEnt.owner === 0 && srcEnt.kind === 'unit') lab.dealt[srcEnt.type] = (lab.dealt[srcEnt.type] || 0) + dmg;
+      if (t.dummy) {
+        t.labDmg = (t.labDmg || 0) + dmg;
+        const win = t.labWin || (t.labWin = []);
+        win.push([this.time, dmg]);
+        while (win.length && win[0][0] < this.time - LAB.window) win.shift();
+        t.lastHit = this.time;
+        if (srcEnt) this.noteFight(t);
+        return;
+      }
+      if (lab.inv[t.owner === 0 ? 0 : 1]) {
+        t.lastHit = this.time;
+        if (srcEnt) this.noteFight(t);
+        return;
+      }
+    }
     if (srcEnt) this.noteFight(t);
     // v1.1: quién atacó a quién (para las alianzas).
     if (src >= 0 && src !== t.owner && this.players[t.owner]) {
@@ -1635,6 +1828,7 @@ class Game {
   kill(e, killer) {
     if (!e.alive) return;
     e.alive = false;
+    if (this.lab && e.kind === 'unit') this.labLog(e.owner === 0 ? L$`Cayó ${e.def.name} (tuya)` : L$`Cayó ${e.def.name} (rival)`);
     const big = e.kind === 'bld' ? 1.5 : e.cls === 'inf' ? 0.45 : 0.95;
     this.fx.push({ k: 'boom', x: e.x, y: e.y + 0.3, z: e.z, s: big, death: true, bld: e.kind === 'bld' });
     this.emit('sound', { name: e.kind === 'bld' ? 'bigboom' : e.cls !== 'inf' ? 'boom' : 'hit', x: e.x, z: e.z });
@@ -1745,6 +1939,17 @@ class Game {
 
   // ---------- simulación ----------
   update(rawDt) {
+    // v1.8.1: velocidad del Laboratorio. 2× y 4× dan varios pasos normales seguidos (nada se salta).
+    if (this.lab && !this._labSub) {
+      const k = this.lab.speed;
+      if (!(k > 0)) return;
+      if (k > 1) {
+        this._labSub = true;
+        try { for (let i = 0; i < k; i++) this.update(rawDt); } finally { this._labSub = false; }
+        return;
+      }
+      rawDt *= k;
+    }
     const dt = Math.min(rawDt, 0.1) * this.speed;
     if (dt <= 0) return;
     this.time += dt;
@@ -1782,6 +1987,11 @@ class Game {
         p.dome.hp = p.dome.maxHp;
         if (p.id === 0) this.emit('toast', { text: T$('La Cúpula volvió a levantarse'), kind: 'good' });
       }
+    }
+    if (this.lab && this.lab.res) {
+      // v1.8.1: Laboratorio con recursos de sobra (después de sumar el ingreso, para que quede el número redondo).
+      this.players[0].coins = LAB.coins;
+      this.players[0].energy = LAB.energy;
     }
     this.updatePoints(dt);
     this.updateAuras(dt);
@@ -2043,7 +2253,9 @@ class Game {
   updateBuilding(b, dt) {
     const def = b.def;
     // El trabajo de los constructores llega en workAcc; el Puesto avanzado se levanta solo.
-    const work = b.type === 'outpost' || b.selfBuild || this.creator && b.owner === 0 && this.opts.instantBuild ? dt * 3 : b.workAcc;
+    // v1.8.1: en el Laboratorio con «Obras al instante», tus obras y mejoras terminan en el acto.
+    const labNow = this.lab && this.lab.instant && b.owner === 0 && (!b.built || b.upgrading);
+    const work = labNow ? def.build * 2 : b.type === 'outpost' || b.selfBuild || this.creator && b.owner === 0 && this.opts.instantBuild ? dt * 3 : b.workAcc;
     b.workAcc = 0;
     b.helped = work > 0;
     if (b.upgrading) {
@@ -2256,6 +2468,8 @@ class Game {
       return;
     }
     u.moving = false;
+    // v1.8.1: las dianas del Laboratorio no se mueven ni disparan.
+    if (u.dummy) return;
     if (u.mover === 'air' && u.owner === 0) this.airAutoRepair(u, dt);
     const w = u.def.weapon;
     let ft = null;

@@ -506,7 +506,7 @@ class Input {
       const comp = g.cells[u.cell].comp;
       cells = g.cells.filter((c) => !g.foundInvalid(0, c.i, u.def.founds) &&
         (u.mover !== 'land' || c.comp === comp)).map((c) => c.i);
-    } else if (p.kind === 'rally' || p.kind === 'bombzone' || p.kind === 'allyattack') {
+    } else if (p.kind === 'rally' || p.kind === 'bombzone' || p.kind === 'allyattack' || p.kind === 'labspawn' || p.kind === 'labtp') {
       cells = [];
     } else if (p.kind === 'nuke') {
       cells = g.cells.filter((c) => !g.nukeInvalid(p.building, c.i) && g.map.dist(c, g.cells[p.building.cell]) <= NUKE.range).map((c) => c.i);
@@ -620,6 +620,30 @@ class Input {
       }
       this.r.addMoveMarker(cell.i, 0xff4040);
       this.app.ui.toast(L$`¡${res} misiles nucleares lanzados a la vez!`, 'info');
+      this.cancelPlacement();
+    } else if (p.kind === 'labspawn') {
+      // v1.8.1: Laboratorio: aparece la tropa donde tocas; sigues poniendo hasta «Terminar».
+      const res = g.labSpawn(p.type, p.owner, cell.i, p.n);
+      if (res.err) {
+        this.app.ui.toast(res.err, 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      p.placed = (p.placed || 0) + 1;
+      this.r.addMoveMarker(cell.i, p.owner === 0 ? 0x7dffa8 : 0xff6060);
+      this.app.sound.play('place');
+      this.app.ui.showPlaceBar(p);
+    } else if (p.kind === 'labtp') {
+      const res = g.labTeleport(p.units, cell.i);
+      if (!res.moved) {
+        this.app.ui.toast(res.why || T$('No se pudo mover'), 'bad');
+        this.app.sound.play('error');
+        return;
+      }
+      this.r.addMoveMarker(cell.i, 0x7dd3ff);
+      const moved = res.moved === 1 ? T$('1 tropa movida') : L$`${res.moved} tropas movidas`;
+      this.app.ui.toast(moved + (res.rejected ? L$` · ${res.rejected} no pueden estar ahí` : ''), res.rejected ? 'info' : 'good');
+      this.app.sound.play('order');
       this.cancelPlacement();
     } else if (p.kind === 'rally') {
       p.building.rally = cell.i;

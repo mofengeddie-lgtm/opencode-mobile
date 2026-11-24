@@ -11,6 +11,29 @@ function terrainColor(mapKind, t) {
 }
 const GAME_NAME = 'Faro de Ámbar';
 const GAME_VERSION = '1.9';
+// v1.8.1 (publicada aparte el 21 nov, juntada en la v1.9): Laboratorio dentro del Campo de pruebas (PRD v1.9 del usuario,
+// sección 12). Las dianas son tropas del rival que no se mueven, no disparan y no se rompen: cuentan el daño que reciben.
+// Los nombres de velocidades y dianas se traducen al mostrarlos (T$).
+const LAB = {
+  speeds: [[0, 'Pausa'], [0.5, '0,5×'], [1, '1×'], [2, '2×'], [4, '4×']],
+  coins: 500000, energy: 9999,
+  dummies: [['inf', 'Infantería', 'rifle'], ['veh', 'Blindado', 'tank'], ['air', 'Aire', 'heli'],
+    ['ship', 'Superficie', 'destroyer'], ['sub', 'Submarino', 'sub']],
+  window: 10, logMax: 40,
+};
+// Nombre de una diana por su clave (inf, veh…); acepta también el nombre que guardaba la v1.8.1.
+function labDummyName(v) {
+  const s = LAB.dummies.find((x) => x[0] === v || x[1] === v);
+  if (!s) return String(v || '');
+  const names = { inf: T$('Infantería'), veh: T$('Blindado'), air: T$('Aire'), ship: T$('Superficie'), sub: T$('Submarino') };
+  return names[s[0]] || s[1];
+}
+// Nombre de una velocidad del Laboratorio («Pausa», «0,5×», «1×»…).
+function labSpeedName(v) {
+  const s = LAB.speeds.find((x) => x[0] === v);
+  if (!s) return '';
+  return v === 0 ? T$('Pausa') : v === 0.5 ? T$('0,5×') : s[1];
+}
 const START_COINS = 2000;
 const START_ENERGY = 60;
 // Tropas iniciales de cada imperio (v0.6: ritmo más rápido).
@@ -880,7 +903,7 @@ const MODES = {
   big: { name: 'Gran batalla', desc: '6 imperios, mapa lleno', players: 6, teams: [0, 1, 2, 3, 4, 5], alliances: true },
   tutorial: { name: 'Tutorial', desc: 'Aprende a jugar contra un bot lento en otra isla.', players: 2, teams: [0, 1], tutorial: true, coins: 6000 },
   // v1.8: para mirar y probar todo el catálogo. El rival no ataca, hay Arsenal estratégico y no da XP ni misiones.
-  sandbox: { name: 'Campo de pruebas', desc: 'Todos los productores ya hechos, 500.000 monedas y energía de sobra. El rival no ataca: prueba cada tropa y edificio. No da XP.',
+  sandbox: { name: 'Campo de pruebas', desc: 'Todos los productores ya hechos, 500.000 monedas y energía de sobra. El rival no ataca. Con el Laboratorio (botón del matraz) creas cualquier tropa al instante, pones dianas y cambias la velocidad. No da XP.',
     players: 2, teams: [0, 1], coins: 500000, energy: 9999, lobby: true, sandbox: true, strategic: true },
 };
 // v1.8: lo que ya está construido al empezar el Campo de pruebas (lo que no cabe en tu isla, lo construyes tú).

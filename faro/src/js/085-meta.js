@@ -96,6 +96,8 @@ const ABOUT_NEWS = [
   'Se ve bien también en pantallas apaisadas chicas, desde 640 × 360.',
   'Mientras juegas, espacio, flechas y rueda ya no mueven la página.',
   'Versión preparada para Poki: anuncios de Poki entre partidas y «🎬 Doble premio» opcional al terminar.',
+  // v1.8.1 (publicada aparte el 21 nov), juntada en esta versión.
+  'Laboratorio en el Campo de pruebas (botón del matraz): crea cualquier tropa al instante, pon dianas que cuentan el daño, cambia la velocidad y mueve tropas al instante.',
 ];
 
 // v1.7: Arsenal. Familias para los filtros y lo que se estrena en esta versión.
@@ -929,7 +931,7 @@ class Lobby {
             <small>${L$`Versión ${GAME_VERSION}`}</small></div>
           <h2>${L$`Faro de`} <span>${L$`Ámbar`}</span></h2>
           <p>${L$`Construye tu isla, arma tu ejército de tierra, mar y aire y toma el Faro.`}</p>
-          <ul class="cover-news" aria-label="${L$`Novedades`}">${[T$('93 tropas y 42 edificios'), T$('Tu ejército en la portada'), T$('Campo de pruebas'), T$('Español e inglés'), T$('Ajustes a tu manera')].map((t) => `<li>${t}</li>`).join('')}</ul>
+          <ul class="cover-news" aria-label="${L$`Novedades`}">${[T$('93 tropas y 42 edificios'), T$('Tu ejército en la portada'), T$('Laboratorio de pruebas'), T$('Español e inglés'), T$('Ajustes a tu manera')].map((t) => `<li>${t}</li>`).join('')}</ul>
         </div>
         <div class="hero-play">
           <button class="btn gold hero-btn" type="button" data-act="play" id="btn-play">${LOBBY_ICONS.play}<span>${L$`Jugar`}</span></button>

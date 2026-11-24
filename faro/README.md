@@ -42,6 +42,7 @@ Abre `faro.html` en Safari o Chrome. En el iPad lo más cómodo es el enlace pub
 - **Todo adentro**: el motor 3D, los modelos (comprimidos) y las letras van dentro del archivo; no se descarga nada de otros sitios.
 - **Incógnito**: se juega igual aunque el navegador no deje guardar, y el vestíbulo lo avisa.
 - Espacio, flechas y rueda ya no mueven la página cuando el juego está dentro de otra.
+- **Laboratorio** en el Campo de pruebas (botón del matraz, de la v1.8.1): crea cualquier tropa al instante donde toques, pon dianas que cuentan el daño, cambia la velocidad (pausa a 4× y paso a paso), mueve tropas al instante y elige las reglas (recursos, obras al instante, sin perder vida, bots del rival).
 
 ## Novedades de la v1.8
 

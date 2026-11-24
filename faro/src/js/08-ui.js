@@ -292,6 +292,14 @@ class UI {
     });
     $('players').addEventListener('click', () => this.togglePop('score'));
     $('players').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.togglePop('score'); } });
+    // v1.8.1: Laboratorio.
+    $('btn-lab').addEventListener('click', () => { app.sound.play('click'); this.togglePop('lab'); });
+    $('labpop').addEventListener('click', (e) => this.onLabClick(e));
+    $('labpop').addEventListener('input', (e) => {
+      if (e.target.id !== 'lab-search') return;
+      this.labSearch = e.target.value;
+      this.renderLabUnits();
+    });
     for (const id of ['econ', 'score', 'chatpop']) {
       $(id).addEventListener('click', (e) => {
         if (e.target.closest('[data-close]')) this.togglePop(null);
@@ -454,6 +462,15 @@ class UI {
     this.edgeAlerts = [];
     $('king').hidden = !this.app.game.mode.king;
     $('feed').innerHTML = '';
+    // v1.8.1: el botón del Laboratorio solo está en el Campo de pruebas.
+    const sandbox = !!this.app.game.mode.sandbox;
+    if (sandbox) this.app.game.ensureLab();
+    $('btn-lab').hidden = !sandbox;
+    this.labSpeedTag();
+    if (sandbox && !this.labHinted) {
+      this.labHinted = true;
+      setTimeout(() => this.toast(T$('Laboratorio: toca el matraz de arriba para crear tropas, poner dianas y cambiar la velocidad')), 700);
+    }
     this.togglePop(null);
     this.cardInfoType = null;
     this.renderBuildList();
@@ -872,6 +889,9 @@ class UI {
     $('econ').hidden = this.pop !== 'econ';
     $('score').hidden = this.pop !== 'score';
     $('chatpop').hidden = this.pop !== 'chat';
+    $('labpop').hidden = this.pop !== 'lab';
+    $('btn-lab').setAttribute('aria-expanded', String(this.pop === 'lab'));
+    if (this.pop === 'lab') this.renderLab(true);
     this.renderPop();
   }
 
@@ -883,7 +903,194 @@ class UI {
       // Solo se vuelve a dibujar si llegó un mensaje nuevo (para no cortar el desplazamiento).
       const key = `${g.chat.length}:${g.chat.length ? g.chat[g.chat.length - 1].time : 0}:${this.chatTab}`;
       if (key !== this.chatKey) { this.chatKey = key; $('chatpop').innerHTML = this.chatHtml(g); }
-    } else $('score').innerHTML = this.scoreHtml(g);
+    } else if (this.pop === 'lab') this.renderLab();
+    else $('score').innerHTML = this.scoreHtml(g);
+  }
+
+  // ---------- v1.8.1: Laboratorio (PRD v1.9 del usuario, sección 12) ----------
+  labSpeedTag() {
+    const g = this.app.game;
+    const tag = $('lab-speedtag');
+    if (!tag) return;
+    const k = g && g.lab ? g.lab.speed : 1;
+    tag.hidden = !g || !g.lab || k === 1;
+    tag.textContent = k === 0 ? 'II' : labSpeedName(k);
+  }
+
+  labHtml(g) {
+    const lab = g.lab;
+    const fam = this.labFam || 'all';
+    const team = this.labTeam || 0;
+    const n = this.labN || 1;
+    const on = (v) => `aria-pressed="${!!v}"`;
+    const tog = (k, label, v) => `<button class="btn" type="button" data-lab="toggle" data-k="${k}" ${on(v)}>${label}</button>`;
+    return `<header><h4>${T$('Laboratorio')}</h4><button class="btn icon" type="button" data-close aria-label="${T$('Cerrar')}">${ICON.close}</button></header>
+      <p class="labnote">${T$('Para probar cada tropa en menos de un minuto. Solo en el Campo de pruebas: no da XP, cristales ni misiones.')}</p>
+      <section class="labsec" aria-label="${T$('Velocidad')}">
+        <span class="lbl">${T$('Velocidad')}</span>
+        <div class="labseg" id="lab-speed">${LAB.speeds.map(([v]) => `<button class="btn" type="button" data-lab="speed" data-v="${v}" ${on(lab.speed === v)}>${labSpeedName(v)}</button>`).join('')}
+          <button class="btn" type="button" data-lab="step" title="${T$('Avanza 0,1 s')}">${T$('+1 paso')}</button></div>
+      </section>
+      <section class="labsec" aria-label="${T$('Reglas')}">
+        <span class="lbl">${T$('Reglas')}</span>
+        <div class="labtoggles" id="lab-toggles">${tog('res', T$('Recursos de sobra'), lab.res)}${tog('instant', T$('Obras al instante'), lab.instant)}${tog('inv0', T$('Tú no pierdes vida'), lab.inv[0])}${tog('inv1', T$('El rival no pierde vida'), lab.inv[1])}${tog('ai', T$('Bots del rival'), lab.ai)}</div>
+      </section>
+      <section class="labsec" aria-label="${T$('Crear tropa')}">
+        <span class="lbl">${L$`Crear tropa · ${Object.keys(UNITS).length} tipos`}</span>
+        <input id="lab-search" type="search" placeholder="${T$('Buscar por nombre')}" autocomplete="off" spellcheck="false" aria-label="${T$('Buscar tropa por nombre')}" value="${esc(this.labSearch || '')}">
+        <div class="labchips" id="lab-fam">${ARSENAL_FILTERS.filter(([k]) => k !== 'bld').map(([k, t]) => `<button type="button" data-lab="fam" data-v="${k}" ${on(fam === k)}>${t}</button>`).join('')}</div>
+        <div class="labseg"><button class="btn" type="button" data-lab="team" data-v="0" ${on(team === 0)}>${T$('Tuya')}</button><button class="btn" type="button" data-lab="team" data-v="1" ${on(team === 1)}>${T$('Del rival')}</button>
+          <button class="btn" type="button" data-lab="n" data-v="1" ${on(n === 1)}>×1</button><button class="btn" type="button" data-lab="n" data-v="5" ${on(n === 5)}>×5</button></div>
+        <div class="labunits" id="lab-units"></div>
+        <p class="small-note">${T$('Toca una tropa y después el mapa. Se crea gratis, sin esperar.')}</p>
+      </section>
+      <section class="labsec" aria-label="${T$('Dianas')}">
+        <span class="lbl">${T$('Dianas de práctica')}</span>
+        <div class="labseg">${LAB.dummies.map(([k]) => `<button class="btn" type="button" data-lab="dummy" data-v="${k}">${labDummyName(k)}</button>`).join('')}</div>
+        <div id="lab-stats"></div>
+      </section>
+      <section class="labsec" aria-label="${T$('Daño hecho')}">
+        <span class="lbl">${T$('Daño hecho por tus tropas')}</span>
+        <div id="lab-dealt"></div>
+      </section>
+      <section class="labsec" aria-label="${T$('Escenario')}">
+        <span class="lbl">${T$('Escenario')}</span>
+        <div class="labrow"><button class="btn" type="button" data-lab="tp">${T$('Mover al instante')}</button><button class="btn" type="button" data-lab="resetstats">${T$('Contadores a cero')}</button>
+          <button class="btn" type="button" data-lab="cleardummies">${T$('Quitar dianas')}</button><button class="btn danger" type="button" data-lab="clearall">${this.labClearArm ? T$('¿Seguro? Toca otra vez') : T$('Quitar todas las tropas')}</button></div>
+      </section>
+      <section class="labsec" aria-label="${T$('Registro')}">
+        <span class="lbl">${T$('Registro')}</span>
+        <ol id="lab-log"></ol>
+      </section>`;
+  }
+
+  renderLabUnits() {
+    const box = $('lab-units');
+    if (!box) return;
+    const fam = this.labFam || 'all';
+    const plain = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const q = plain((this.labSearch || '').trim());
+    const items = arsenalItems().filter((it) => it.kind === 'unit' && (fam === 'all' || it.fam === fam || it.also.includes(fam)) &&
+      (!q || plain(it.def.name).includes(q)));
+    box.innerHTML = items.length ? items.map((it) => {
+      const d = it.def;
+      // El texto entero va al diccionario: «mar» suelto ya es el mes de marzo («Mar») en inglés.
+      const c = fmt(d.cost);
+      const where = d.mover === 'sea' ? L$`mar · ${c}` : d.mover === 'air' ? L$`aire · ${c}` : d.mover === 'amphib' ? L$`anfibio · ${c}` : L$`tierra · ${c}`;
+      return `<button type="button" data-lab="unit" data-v="${it.key}"><b>${esc(d.name)}</b><small>${where}</small></button>`;
+    }).join('') : `<p class="empty">${L$`Ninguna tropa se llama «${esc(this.labSearch)}».`}</p>`;
+  }
+
+  renderLab(force) {
+    const g = this.app.game;
+    if (!g || !g.lab) return;
+    const el = $('labpop');
+    if (force || !el.querySelector('#lab-units')) {
+      el.innerHTML = this.labHtml(g);
+      this.renderLabUnits();
+      this.labLogVer = -1;
+    }
+    const lab = g.lab;
+    // Estado de los botones (sin volver a dibujar el buscador).
+    el.querySelectorAll('[data-lab="speed"]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.v) === lab.speed)));
+    const tv = { res: lab.res, instant: lab.instant, inv0: lab.inv[0], inv1: lab.inv[1], ai: lab.ai };
+    el.querySelectorAll('[data-lab="toggle"]').forEach((b) => b.setAttribute('aria-pressed', String(!!tv[b.dataset.k])));
+    // Dianas: daño total y por segundo.
+    const dummies = g.units.filter((u) => u.alive && u.dummy);
+    $('lab-stats').innerHTML = dummies.length
+      ? `<table class="labtable"><thead><tr><th>${T$('Diana')}</th><th class="n">${T$('Daño total')}</th><th class="n">${T$('Daño/s')}</th></tr></thead><tbody>${dummies.map((u) =>
+        `<tr><td>${esc(labDummyName(u.dummy))} <small>${esc(u.def.name)}</small></td><td class="n">${fmt(u.labDmg || 0)}</td><td class="n">${fmt(g.labDps(u))}</td></tr>`).join('')}</tbody></table>`
+      : `<p class="small-note">${T$('Pon una diana: aparece a 6-10 casillas de tu Núcleo. No se mueve, no dispara y no se rompe. Daño/s cuenta los últimos 10 s.')}</p>`;
+    const dealt = Object.entries(lab.dealt || {}).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    $('lab-dealt').innerHTML = dealt.length
+      ? `<table class="labtable"><tbody>${dealt.map(([k, v]) => `<tr><td>${esc(UNITS[k] ? UNITS[k].name : k)}</td><td class="n">${fmt(v)}</td></tr>`).join('')}</tbody></table>`
+      : `<p class="small-note">${T$('Todavía nada. Cuenta el daño de tus tropas contra cualquier blanco.')}</p>`;
+    if (this.labLogVer !== lab.ver) {
+      this.labLogVer = lab.ver;
+      $('lab-log').innerHTML = lab.log.length ? lab.log.slice(-8).reverse().map((e) => `<li><b>${fmtTime(e.t)}</b>${esc(e.text)}</li>`).join('')
+        : `<li>${T$('Aquí aparece lo que haces en el Laboratorio y las tropas que caen.')}</li>`;
+    }
+  }
+
+  onLabClick(e) {
+    const app = this.app;
+    const g = app.game;
+    if (e.target.closest('[data-close]')) { this.togglePop(null); return; }
+    const b = e.target.closest('[data-lab]');
+    if (!b || !g || !g.lab) return;
+    const lab = g.lab;
+    const act = b.dataset.lab;
+    const v = b.dataset.v;
+    app.sound.play('click');
+    if (act !== 'clearall') this.labClearArm = false;
+    if (act === 'speed') {
+      lab.speed = Number(v);
+      g.labLog(L$`Velocidad: ${labSpeedName(lab.speed)}`);
+      this.labSpeedTag();
+    } else if (act === 'step') {
+      if (lab.speed !== 0) { lab.speed = 0; this.labSpeedTag(); }
+      g.labStep();
+    } else if (act === 'toggle') {
+      const k = b.dataset.k;
+      if (k === 'ai') g.labSetAI(!lab.ai);
+      else if (k === 'inv0' || k === 'inv1') {
+        const i = k === 'inv0' ? 0 : 1;
+        lab.inv[i] = !lab.inv[i];
+        if (i === 0) g.labLog(lab.inv[0] ? T$('Tú: no pierde vida') : T$('Tú: pierde vida normal'));
+        else g.labLog(lab.inv[1] ? T$('El rival: no pierde vida') : T$('El rival: pierde vida normal'));
+      } else {
+        lab[k] = !lab[k];
+        if (k === 'res') g.labLog(lab.res ? T$('Recursos de sobra: sí') : T$('Recursos de sobra: no'));
+        else g.labLog(lab.instant ? T$('Obras al instante: sí') : T$('Obras al instante: no'));
+      }
+    } else if (act === 'fam') {
+      this.labFam = v;
+      this.renderLab(true);
+      return;
+    } else if (act === 'team') {
+      this.labTeam = Number(v);
+      this.renderLab(true);
+      return;
+    } else if (act === 'n') {
+      this.labN = Number(v);
+      this.renderLab(true);
+      return;
+    } else if (act === 'unit') {
+      // Se cierra el panel para ver el mapa; la barra de abajo dice qué tocar.
+      this.togglePop(null);
+      app.setSelection([]);
+      app.input.startPlacement({ kind: 'labspawn', type: v, owner: this.labTeam || 0, n: this.labN || 1, placed: 0 });
+      return;
+    } else if (act === 'dummy') {
+      const u = g.labDummy(v);
+      if (typeof u === 'string') this.toast(u, 'bad');
+      else {
+        app.focusAt(u.x, u.z);
+        this.toast(L$`Diana de ${labDummyName(u.dummy).toLowerCase()} puesta. Manda tus tropas a atacarla.`, 'good');
+      }
+    } else if (act === 'tp') {
+      const sel = app.selection.filter((x) => x.kind === 'unit' && x.alive && !x.inside);
+      if (!sel.length) { this.toast(T$('Elige primero las tropas que quieres mover'), 'bad'); return; }
+      this.togglePop(null);
+      app.input.startPlacement({ kind: 'labtp', units: sel });
+      return;
+    } else if (act === 'resetstats') {
+      g.labResetStats();
+    } else if (act === 'cleardummies') {
+      g.labClear('dummies');
+    } else if (act === 'clearall') {
+      if (!this.labClearArm) {
+        this.labClearArm = true;
+        this.renderLab(true);
+        return;
+      }
+      this.labClearArm = false;
+      app.setSelection([]);
+      g.labClear('all');
+      this.renderLab(true);
+      return;
+    }
+    this.renderLab();
   }
 
   econHtml(g) {
@@ -1139,6 +1346,7 @@ class UI {
     $('btn-place-ok').hidden = !isBuild;
     $('btn-place-cancel').hidden = false;
     $('btn-place-cancel').textContent = isBuild && p.placed ? T$('Terminar') : T$('Cancelar');
+    if (p.kind === 'labspawn') $('btn-place-cancel').textContent = p.placed ? T$('Terminar') : T$('Cancelar');
     if (isBuild) {
       // v1.0: tocar una casilla muestra la obra; «Construir» la pone; «Terminar» sale.
       const d = BUILDINGS[p.btype];
@@ -1150,6 +1358,14 @@ class UI {
       else text = L$`No quedan casillas para ${esc(d.name)} en tu territorio${placed}. ${esc(d.desc)}`;
       $('btn-place-ok').disabled = p.cell < 0 || !!p.err;
       $('btn-place-rot').disabled = false;
+    } else if (p.kind === 'labspawn') {
+      const d = UNITS[p.type];
+      const who = p.owner === 0 ? T$('tuya') : T$('del rival');
+      const times = !p.placed ? '' : p.placed === 1 ? T$(' · puesta 1 vez') : L$` · puesta ${p.placed} veces`;
+      text = `<b>${esc(d.name)}</b> ×${p.n} · ${who} · ${T$('Toca el mapa donde aparece')}${times}`;
+    } else if (p.kind === 'labtp') {
+      text = p.units.length === 1 ? T$('Toca adónde mover al instante la tropa elegida')
+        : L$`Toca adónde mover al instante las <b>${p.units.length}</b> tropas elegidas`;
     } else if (p.kind === 'found') {
       text = p.valid && p.valid.size
         ? `${L$`Toca dónde fundar el`} <b>${L$`Puesto avanzado`}</b> · <span class="cost">800</span> ${L$`al llegar`}`

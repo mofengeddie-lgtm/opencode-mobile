@@ -1,5 +1,11 @@
-// Capturas reales de la v1.8 para el sitio del juego (antes v1.7) (escenas armadas a mano, sin HUD donde conviene).
-const H = require('../helpers.cjs');
+// Capturas reales de la v1.9 para el sitio del juego (antes v1.7 y v1.8) (escenas armadas a mano, sin HUD donde conviene).
+// Corre desde faro/site (usa faro/tests/helpers.cjs) o desde una copia junto a helpers.cjs.
+const H = (() => {
+  for (const p of ['../tests/helpers.cjs', '../helpers.cjs']) {
+    try { return require(p); } catch (err) { if (err.code !== 'MODULE_NOT_FOUND') throw err; }
+  }
+  throw new Error('[Sitio] No encuentro helpers.cjs');
+})();
 const { chromium } = require('playwright');
 const fs = require('fs');
 const SP = '/tmp/claude-0/-home-user-opencode-mobile/0f78d3e3-e6a8-58dd-9fa1-10429825d51c/scratchpad';

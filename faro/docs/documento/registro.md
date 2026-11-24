@@ -16,6 +16,7 @@ Una entrada por versión, de la más nueva a la más vieja. **Cada versión nuev
 - Pantallas de Poki 640×360, 836×470 y 1031×580; la lista de primeros pasos se compacta en pantallas bajas y anchas.
 - Modelos 3D comprimidos con meshopt sin cuantizar (2,44 → 2,00 MB, sin pérdida). La versión cuantizada pesaba menos pero hacía la carga 12 veces más lenta en Chromium sin tarjeta gráfica: se descartó.
 - Dos miniaturas para Poki (`docs/poki/`), sacadas del juego, sin texto ni bordes.
+- Laboratorio en el Campo de pruebas (v1.8.1): al publicar apareció que el enlace del juego tenía una v1.8.1 publicada el 21 nov fuera de esta conversación (según tu «PRD v1.9, sección 12»), que no estaba en el proyecto. Se juntó con la v1.9 en vez de borrarla: botón del matraz; crear cualquiera de las 93 tropas tocando el mapa (tuya o del rival, ×1 o ×5); dianas de infantería, blindado, aire, superficie y submarino que no se mueven ni se rompen y cuentan el daño (total y por segundo); daño hecho por cada tipo de tus tropas; velocidad (pausa, 0,5×, 1×, 2×, 4× y paso a paso); recursos de sobra, obras al instante, equipos que no pierden vida y bots del rival; mover tropas al instante; quitar dianas o todas las tropas; registro. Ahora también en inglés. Las partidas normales quedan idénticas (misma huella con azar fijo).
 - Pruebas: __PRUEBAS19__
 
 ## v1.8 · 18 nov 2026
