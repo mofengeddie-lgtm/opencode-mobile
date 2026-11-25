@@ -7,7 +7,7 @@
 /* Layout (estilo Claude + Codex): materias a la izquierda, una sola acción al centro, entrada única abajo.
    Paleta estricta de 3 colores: crema / carbón suave, tinta y un acento ámbar. Serifa en títulos, mono en números. */
 :root {
-  --bg: #FAF8F5; --surface: #FFFFFF; --soft: #F2EEE7; --line: #E6E0D6;
+  --bg: #FAF9F5; --surface: #FFFFFF; --soft: #F2EFE8; --line: #E6E1D7;
   --ink: #1E1D1A; --muted: #6A665E;
   --accent: #A65A16; --accent-ink: #FFFFFF; --accent-soft: #F5E6D5;
   --good: #2E6A4F; --good-soft: #E3EFE8;
@@ -16,20 +16,23 @@
   --font-body: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --composer-h: 92px;
+  --g1: #3B6FE0; --g2: #8E5BC4; --g3: #C9506A;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+    --bg: #1A1A1A; --surface: #222222; --soft: #262626; --line: #363532;
     --ink: #ECE7DF; --muted: #A39E95;
-    --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+    --accent: #E3A25B; --accent-ink: #1A1A1A; --accent-soft: #3A2A1B;
     --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+    --g1: #8AB4F8; --g2: #C58AF9; --g3: #F28B82;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+  --bg: #1A1A1A; --surface: #222222; --soft: #262626; --line: #363532;
   --ink: #ECE7DF; --muted: #A39E95;
-  --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+  --accent: #E3A25B; --accent-ink: #1A1A1A; --accent-soft: #3A2A1B;
   --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+    --g1: #8AB4F8; --g2: #C58AF9; --g3: #F28B82;
 }
 
 * { box-sizing: border-box; }
@@ -216,7 +219,106 @@ body.focus .menu-btn { display: none; }
 .partial { font-size: .82rem; color: var(--muted); font-style: italic; }
 .attach { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; border: 1px solid var(--line); border-radius: 8px; padding: .1rem .45rem; }
 
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+/* Gemini: solo el destello cuando la IA piensa y los chips de sugerencia */
+.glimmer { background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g1)); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glim 2.4s linear infinite; font-weight: 600; }
+@keyframes glim { to { background-position: -300% 0; } }
+.sugg { display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: none; padding: 1px; }
+.sugg::-webkit-scrollbar { display: none; }
+.sugg button { flex: none; border: 1.5px solid transparent; border-radius: 999px; padding: .3rem .8rem; font-size: .82rem; font-weight: 600; color: var(--ink); background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--g1), var(--g2), var(--g3)) border-box; min-height: 34px; }
+.sugg button:hover { background: linear-gradient(var(--soft), var(--soft)) padding-box, linear-gradient(90deg, var(--g1), var(--g2), var(--g3)) border-box; }
+.top-actions { display: flex; gap: .4rem; align-items: center; flex: none; }
+
+/* Tema: pantalla dividida (pasos a la izquierda, imagen tocable a la derecha) */
+.view.wide { max-width: 1260px; }
+.topic-grid { display: grid; gap: 1.1rem; grid-template-columns: minmax(0, 1fr); }
+.topic-grid > * { min-width: 0; }
+.tg-head { display: grid; gap: .8rem; }
+@media (min-width: 1280px) {
+  .topic-grid { grid-template-columns: minmax(0, 1fr) minmax(480px, 54%); grid-template-areas: "head panel" "steps panel"; grid-template-rows: auto 1fr; gap: 1.1rem 1.6rem; align-items: start; }
+  .tg-head { grid-area: head; } .topic-grid > .steps { grid-area: steps; }
+  .imgpanel { grid-area: panel; position: sticky; top: 68px; max-height: calc(100vh - 68px - var(--composer-h) - 12px); overflow-y: auto; }
+}
+.how { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.how summary { cursor: pointer; padding: .7rem .9rem; font-weight: 600; list-style: none; display: flex; gap: .5rem; align-items: baseline; }
+.how summary::-webkit-details-marker { display: none; }
+.how summary .kicker { flex: none; }
+.how[open] summary { border-bottom: 1px solid var(--line); }
+.how .how-body { padding: .7rem .9rem .9rem; display: grid; gap: .55rem; }
+.how ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .2rem; }
+
+/* Imagen tocable */
+.imgpanel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: .85rem; display: grid; gap: .65rem; align-content: start; scroll-margin-top: 64px; }
+.imgpanel.full { position: fixed; inset: 0; z-index: 60; border-radius: 0; max-height: none; overflow-y: auto; padding: calc(.9rem + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(1rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.imgpanel.full .plate svg { min-width: 860px; }
+.imgpanel-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.imgpanel-head .kicker { color: var(--accent); }
+.imgtabs { display: flex; gap: .3rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.imgtabs::-webkit-scrollbar { display: none; }
+.imgtabs button { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: .3rem .75rem; font-size: .8rem; font-weight: 600; color: var(--muted); min-height: 34px; }
+.imgtabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.imgbody { display: grid; gap: .6rem; min-width: 0; }
+.callout { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 12px 12px 0; padding: .6rem .8rem; font-size: .93rem; display: grid; gap: .25rem; }
+.callout b { font-weight: 700; }
+.plate .hit { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.plate .hit:hover, .plate .hit.on { fill: #A65A16; }
+.plate .hit:focus-visible { outline: 2px solid #A65A16; }
+.plate .node { cursor: pointer; outline: none; }
+.plate .node:focus-visible rect { stroke: #1c2130; stroke-width: 3; }
+.plate .node:hover rect, .plate .node.on rect { stroke-width: 3; fill: #FBE6CF; }
+.flow { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.flow li:not(:last-child)::after { content: "↓"; display: block; text-align: center; color: var(--muted); font-size: .9rem; line-height: 1.4; }
+.flow button { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: .55rem .7rem; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .45rem; font-size: .92rem; line-height: 1.4; }
+.flow button > span:first-child { font: 600 .8rem var(--font-mono); color: var(--muted); padding-top: .1rem; }
+.flow button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+.tl { list-style: none; margin: 0; padding: 0 0 0 .9rem; border-left: 2px solid var(--line); display: grid; gap: .55rem; }
+.tl button { width: 100%; text-align: left; border: 0; background: none; padding: .15rem 0 .15rem .5rem; display: grid; gap: .1rem; position: relative; border-radius: 8px; }
+.tl button::before { content: ""; position: absolute; left: -1.33rem; top: .45rem; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+.tl button[aria-pressed="true"]::before { background: var(--accent); }
+.tl .yr { font: 600 1rem var(--font-mono); color: var(--accent); }
+.cmp-pick { display: flex; flex-wrap: wrap; gap: .35rem; }
+.cmp-pick button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: .25rem .7rem; font-size: .8rem; font-weight: 600; min-height: 32px; }
+.cmp-pick button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.cmp > div { border: 1px solid var(--line); border-radius: 12px; padding: .6rem .7rem; display: grid; gap: .45rem; align-content: start; background: var(--bg); }
+.cmp h3 { margin: 0; font: 700 1rem/1.25 var(--font-title); }
+.cmp dl { margin: 0; display: grid; gap: .35rem; font-size: .88rem; }
+.cmp dt { font: 600 .7rem var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.cmp dd { margin: 0; }
+.example { display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: start; border: 1px solid var(--line); border-radius: 14px; padding: .9rem; background: var(--bg); }
+.example .ex-emoji { font-size: 2rem; line-height: 1; }
+
+/* Sesión: gestos, atajos, retos y modo TDAH */
+.qcard { touch-action: pan-y; transition: transform .2s ease; user-select: none; -webkit-user-select: none; }
+.qcard.drag { transition: none; }
+.swipe-hint { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); }
+.kbd-hint { font-size: .78rem; color: var(--muted); text-align: center; }
+.kbd-hint kbd { font: 600 .72rem var(--font-mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 .3rem; background: var(--surface); }
+@media (hover: none) { .kbd-hint { display: none; } }
+@media (hover: hover) { .swipe-hint { display: none; } }
+.opts button.ok { border-color: var(--good); background: var(--good-soft); }
+.opts button.bad { border-color: var(--accent); background: var(--accent-soft); }
+.opt-row { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: .4rem; }
+.opt-row .x { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; color: var(--muted); font-size: .95rem; padding: 0; grid-template-columns: 1fr; place-items: center; min-height: 52px; }
+.opt-row.crossed > button:first-child span:last-child { text-decoration: line-through; opacity: .45; }
+.opt-row.crossed .x { color: var(--accent); border-color: var(--accent); }
+body.calm .chip, body.calm .progress-top, body.calm .notice.extra, body.calm .kbd-hint { display: none !important; }
+body.calm .qcard .q { font-size: clamp(1.4rem, 5vw, 1.85rem); }
+.toggles { display: grid; gap: .5rem; }
+.toggle { display: grid; grid-template-columns: 1fr auto; gap: .2rem 1rem; align-items: center; }
+.toggle .btn { min-height: 38px; padding: .4rem .8rem; font-size: .88rem; }
+.toggle .btn[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.field { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: .65rem .8rem; line-height: 1.45; resize: vertical; }
+select.field, input.field { min-height: 44px; width: auto; }
+.focus-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+.focus-pick button { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .5rem .45rem; font-size: .85rem; font-weight: 600; display: grid; gap: .05rem; min-height: 54px; }
+.focus-pick button small { font: 500 .74rem var(--font-mono); color: var(--muted); }
+.focus-pick button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.mine-list { display: grid; gap: .4rem; }
+
+/* Letra fácil de leer (dislexia) */
+body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; --font-title: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; letter-spacing: .012em; word-spacing: .06em; line-height: 1.7; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } .glimmer { animation: none; } }
 </style>
 
 <div class="app">
@@ -227,6 +329,7 @@ body.focus .menu-btn { display: none; }
       <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Abrir tus materias">≡</button>
       <div class="crumb" id="crumb"></div>
       <span class="timer mono" id="timer" hidden></span>
+      <div class="top-actions"><button type="button" class="icon-btn" id="theme-btn" aria-label="Cambiar a modo oscuro" title="Claro / Oscuro">🌙</button></div>
       <div class="progress-top"><span id="ptop" style="width:0"></span></div>
     </header>
     <main class="view" id="view" tabindex="-1"></main>
@@ -245,9 +348,15 @@ body.focus .menu-btn { display: none; }
     </section>
     <form class="composer" id="composer" autocomplete="off">
       <div class="composer-inner">
+        <div class="sugg" id="sugg" role="group" aria-label="Sugerencias rápidas" hidden>
+          <button type="button" data-sugg="resume">Resúmeme</button>
+          <button type="button" data-sugg="ejemplo">Otro ejemplo</button>
+          <button type="button" data-sugg="quiz">Hazme quiz</button>
+          <button type="button" data-sugg="imagen">No entendí la imagen</button>
+        </div>
         <div class="ctx" id="ctx"></div>
         <div class="inbox">
-          <textarea id="ask" rows="1" placeholder="Explica el tema con tus palabras, pregunta sin pena o sube una foto…" aria-label="Escribe al tutor"></textarea>
+          <textarea id="ask" rows="1" placeholder="Texto, voz o foto: explica el tema, pregunta sin pena…" aria-label="Escribe al tutor"></textarea>
           <input type="file" id="photo" accept="image/*" hidden>
           <button type="button" class="icon-btn" id="photo-btn" aria-label="Subir foto" hidden>📷</button>
           <button type="button" class="icon-btn" id="mic-btn" aria-label="Dictar" hidden>🎙</button>
@@ -862,6 +971,42 @@ const CONTENT = {
     "2026-12-02": ["virus", "microbios", "comparacion", "reproduccion", "sexual", "papel"],
     "2026-12-03": [],
   },
+  // Explicaciones compartidas al tocar un dibujo (los temas las citan con hot: "nombre").
+  hot: {
+    cells: {
+      "celula vegetal": ["Célula vegetal: tiene todo lo de la animal y además pared celular, cloroplastos y una vacuola central grande.", "Plant cell: has everything an animal cell has, plus a cell wall, chloroplasts and a large central vacuole."],
+      "celula animal": ["Célula animal: membrana, núcleo, citoplasma, mitocondrias, lisosomas y vacuolas pequeñas; NO tiene pared celular ni cloroplastos.", "Animal cell: membrane, nucleus, cytoplasm, mitochondria, lysosomes and small vacuoles; NO cell wall and NO chloroplasts."],
+      "pared celular": ["Pared celular: capa rígida por fuera de la membrana que da soporte y forma. Solo en plantas (y hongos y bacterias).", "Cell wall: rigid layer outside the membrane that gives support and shape. Only in plants (and fungi and bacteria)."],
+      "membrana celular": ["Membrana celular: barrera selectiva; decide qué entra y qué sale de la célula.", "Cell membrane: selective barrier; it controls what enters and leaves the cell."],
+      "nucleo": ["Núcleo: guarda el ADN y controla la célula, como el cerebro.", "Nucleus: stores the DNA and controls the cell, like a brain."],
+      "vacuola central grande": ["Vacuola central grande: guarda agua y mantiene firme a la planta. Solo en células vegetales.", "Large central vacuole: stores water and keeps the plant firm. Only in plant cells."],
+      "vacuola pequena": ["Vacuolas pequeñas: guardan agua y sustancias en la célula animal.", "Small vacuoles: store water and substances in the animal cell."],
+      "cloroplasto": ["Cloroplasto: hace la fotosíntesis (convierte luz en alimento). Solo en plantas.", "Chloroplast: carries out photosynthesis (turns light into food). Only in plants."],
+      "mitocondria": ["Mitocondria: produce la energía (ATP) de la célula, como una planta eléctrica.", "Mitochondria: produce the cell's energy (ATP), like a power plant."],
+      "citoplasma": ["Citoplasma: el líquido gelatinoso donde flotan los organelos.", "Cytoplasm: the jelly-like fluid where the organelles float."],
+      "lisosoma": ["Lisosoma: digiere y recicla desechos dentro de la célula animal.", "Lysosome: digests and recycles waste inside the animal cell."],
+      "sin pared": ["La célula animal no tiene pared celular ni cloroplastos: por eso no hace fotosíntesis.", "The animal cell has no cell wall and no chloroplasts: that is why it cannot do photosynthesis."],
+      "solo en plantas": ["★ = organelo que solo tienen las plantas: pared celular, cloroplastos y vacuola central grande.", "★ = organelle only plants have: cell wall, chloroplasts and large central vacuole."],
+    },
+    bacteria: {
+      "capsula": ["Cápsula: capa pegajosa por fuera de la pared que protege a la bacteria.", "Capsule: sticky outer layer that protects the bacterium."],
+      "capsule": ["Cápsula: capa pegajosa por fuera de la pared que protege a la bacteria.", "Capsule: sticky outer layer that protects the bacterium."],
+      "pili": ["Pili: pelitos cortos para pegarse a superficies y pasar ADN a otra bacteria (conjugación).", "Pili: short hairs used to stick to surfaces and pass DNA to another bacterium (conjugation)."],
+      "pared celular": ["Pared celular de la bacteria: rígida, hecha de peptidoglicano; le da forma.", "Bacterial cell wall: rigid, made of peptidoglycan; it gives the cell its shape."],
+      "cell wall": ["Pared celular de la bacteria: rígida, hecha de peptidoglicano; le da forma.", "Bacterial cell wall: rigid, made of peptidoglycan; it gives the cell its shape."],
+      "membrana": ["Membrana celular: controla qué entra y qué sale, igual que en nuestras células.", "Cell membrane: controls what enters and leaves, just like in our cells."],
+      "cell membrane": ["Membrana celular: controla qué entra y qué sale, igual que en nuestras células.", "Cell membrane: controls what enters and leaves, just like in our cells."],
+      "ribosomas": ["Ribosomas: fabrican proteínas. Las bacterias sí tienen ribosomas, aunque no tienen núcleo.", "Ribosomes: make proteins. Bacteria do have ribosomes even though they have no nucleus."],
+      "ribosomes": ["Ribosomas: fabrican proteínas. Las bacterias sí tienen ribosomas, aunque no tienen núcleo.", "Ribosomes: make proteins. Bacteria do have ribosomes even though they have no nucleus."],
+      "adn circular": ["ADN circular (nucleoide): el ADN de la bacteria está suelto en el citoplasma, no dentro de un núcleo.", "Circular DNA (nucleoid): the bacterium's DNA floats in the cytoplasm, not inside a nucleus."],
+      "circular dna": ["ADN circular (nucleoide): el ADN de la bacteria está suelto en el citoplasma, no dentro de un núcleo.", "Circular DNA (nucleoid): the bacterium's DNA floats in the cytoplasm, not inside a nucleus."],
+      "plasmido": ["Plásmido: anillo pequeño de ADN extra que la bacteria puede compartir con otras.", "Plasmid: small extra ring of DNA that the bacterium can share with others."],
+      "plasmid": ["Plásmido: anillo pequeño de ADN extra que la bacteria puede compartir con otras.", "Plasmid: small extra ring of DNA that the bacterium can share with others."],
+      "flagelo": ["Flagelo: cola larga que gira como hélice para que la bacteria se mueva.", "Flagellum: long tail that spins like a propeller so the bacterium can move."],
+      "flagellum": ["Flagelo: cola larga que gira como hélice para que la bacteria se mueva.", "Flagellum: long tail that spins like a propeller so the bacterium can move."],
+      "sin nucleo": ["SIN núcleo: la bacteria es procariota; su ADN no está encerrado en un núcleo.", "NO nucleus: the bacterium is a prokaryote; its DNA is not enclosed in a nucleus."],
+    },
+  },
   // Preguntas extra para el Simulacro (se suman a las 40 de la práctica).
   mcq: [
     { mod: "geo", q: "Which of Earth's systems includes rocks, minerals, soil and landforms?", help: "¿Qué sistema incluye rocas, minerales, suelo y relieve?", opts: ["Hydrosphere", "Geosphere", "Biosphere"], ans: 1, why: ["Geosfera = la parte sólida de la Tierra.", "Geosphere = the solid part of Earth."] },
@@ -1281,6 +1426,14 @@ const CONTENT = {
     {
       id: "suelo", mod: "geo", svg: "soil-horizons",
       es: "El suelo y su conservación", en: "Soil and its conservation",
+      // Explicaciones al tocar el dibujo (imagen tocable).
+      hot: {
+        "capa organica": ["Horizonte O · capa orgánica: hojas, ramas y restos frescos o descomponiéndose encima del suelo.", "Horizon O · organic layer: fresh and decaying leaves, twigs and remains on top of the soil."],
+        "suelo superficial": ["Horizonte A · suelo superficial (topsoil): oscuro y fértil por el humus; aquí crecen las raíces.", "Horizon A · topsoil: dark and fertile because of humus; roots grow here."],
+        "subsuelo": ["Horizonte B · subsuelo (subsoil): arcilla y minerales que el agua lavó desde arriba.", "Horizon B · subsoil: clay and minerals washed down from above."],
+        "material parental": ["Horizonte C · material parental: pedazos de la roca madre que se está meteorizando.", "Horizon C · parent material: pieces of the bedrock being weathered."],
+        "roca madre": ["Horizonte R · roca madre (bedrock): roca sólida que todavía no se ha meteorizado.", "Horizon R · bedrock: solid rock that has not been weathered yet."],
+      },
       map: {
         easy: ["El orden O-A-B-C-R de arriba hacia abajo.", "The order O-A-B-C-R from top to bottom."],
         hard: ["Qué hay en cada horizonte (pareo del examen).", "What is in each horizon (test matching)."],
@@ -1447,6 +1600,13 @@ const CONTENT = {
         ["Los tres postulados: todo ser vivo está hecho de células; la célula es la unidad básica; toda célula viene de otra.", "The three postulates: all living things are made of cells; the cell is the basic unit; all cells come from cells."],
       ],
       life: ["Como los ladrillos de tu casa: toda la casa está hecha de ladrillos (postulado 1) y el ladrillo es la pieza básica (postulado 2). Pero una célula nueva solo sale de otra célula (postulado 3).", "Like the bricks of your house: the whole house is made of bricks (postulate 1) and the brick is the basic piece (postulate 2). But a new cell only comes from another cell (postulate 3)."],
+      timeline: [
+        ["1665", "Robert Hooke", "Mira corcho al microscopio, ve cuartitos vacíos y los llama «células».", "Looks at cork under a microscope, sees little empty rooms and calls them “cells”."],
+        ["1674", "Anton van Leeuwenhoek", "Con lentes que él mismo fabricó ve las primeras células vivas moviéndose en el agua.", "With lenses he made himself, he sees the first living cells moving in water."],
+        ["1838", "Matthias Schleiden", "Dice que todas las plantas están hechas de células.", "States that all plants are made of cells."],
+        ["1839", "Theodor Schwann", "Agrega que los animales también: todo ser vivo está hecho de células.", "Adds that animals are too: all living things are made of cells."],
+        ["1855", "Rudolf Virchow", "Completa la teoría: toda célula viene de otra célula.", "Completes the theory: every cell comes from another cell."],
+      ],
       items: [
         ["te-1", "Escribe los 3 postulados de la teoría celular.", "Write the 3 postulates of the cell theory.", "1) Todos los seres vivos están hechos de células. 2) La célula es la unidad básica de estructura y función. 3) Toda célula viene de otra célula.", "1) All living things are made of cells. 2) The cell is the basic unit of structure and function. 3) All cells come from pre-existing cells.", true],
         ["te-2", "¿Quién usó por primera vez la palabra célula y qué observó?", "Who first used the word cell and what did they observe?", "Robert Hooke, en 1665, al observar corcho.", "Robert Hooke, in 1665, observing cork.", true],
@@ -1486,7 +1646,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "organelos", mod: "cell", svg: "cells",
+      id: "organelos", mod: "cell", svg: "cells", hot: "cells",
       es: "Los organelos", en: "Cell organelles",
       map: {
         easy: ["Cada organelo tiene una palabra clave.", "Each organelle has a keyword."],
@@ -1564,7 +1724,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "tipos", mod: "cell", svg: "cells",
+      id: "tipos", mod: "cell", svg: "cells", hot: "cells",
       es: "Tipos de células", en: "Cell types",
       map: {
         easy: ["Procariota = sin núcleo; eucariota = con núcleo.", "Prokaryotic = no nucleus; eukaryotic = nucleus."],
@@ -1627,7 +1787,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "microbios", mod: "cell", svg: "bacteria",
+      id: "microbios", mod: "cell", svg: "bacteria", hot: "bacteria",
       es: "Bacterias, protistas y hongos", en: "Bacteria, protists and fungi",
       map: {
         easy: ["Bacteria = procariota; protistas y hongos = eucariotas.", "Bacteria = prokaryotic; protists and fungi = eukaryotic."],
@@ -1824,12 +1984,21 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
   const TOPICS = CONTENT.topics;
   const TOPIC = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
   const MOD = Object.fromEntries(CONTENT.modules.map((m) => [m.id, m]));
+  MOD.mine = { id: "mine", es: "Mis temas", en: "My topics", objectives: "Subido por ti" };
   const ITEMS = [];
   const ITEM = {};
-  TOPICS.forEach((t) => t.items.forEach(([id, qes, qen, aes, aen, hot]) => {
+  const addItems = (t) => t.items.forEach(([id, qes, qen, aes, aen, hot]) => {
     const it = { id, topic: t.id, mod: t.mod, q: [qes, qen], a: [aes, aen], hot: !!hot };
     ITEMS.push(it); ITEM[id] = it;
-  }));
+  });
+  TOPICS.forEach(addItems);
+  // Temas propios («Subir y Entender»): viven en S.custom y se registran junto al temario.
+  function syncCustom() {
+    for (let i = TOPICS.length - 1; i >= 0; i--) if (TOPICS[i].mod === "mine") { delete TOPIC[TOPICS[i].id]; TOPICS.splice(i, 1); }
+    for (let i = ITEMS.length - 1; i >= 0; i--) if (ITEMS[i].mod === "mine") { delete ITEM[ITEMS[i].id]; ITEMS.splice(i, 1); }
+    (S.custom || []).forEach((t) => { if (t && t.id && Array.isArray(t.items)) { TOPICS.push(t); TOPIC[t.id] = t; addItems(t); } });
+  }
+  const figsOf = (t) => (t.figs || (t.svg ? [[t.svg, "", ""]] : [])).filter((f) => document.getElementById("svg-" + f[0]));
   const DAY = 864e5;
   const EXAM = new Date(2026, 11, 4, 7, 0, 0).getTime();
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1859,12 +2028,28 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
 
   /* ================= Estado y guardado ================= */
   const KEY = "entender7:v1";
-  const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0 });
+  const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0,
+    custom: [], cal: {}, calTime: "16:00", calm: false, voice: false, focus: "plan", imgMiss: {} });
   const loadLocal = () => { try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch { /* sin almacenamiento */ } return blank(); };
   let S = loadLocal();
+  syncCustom();
   let lang = "both";
   try { lang = localStorage.getItem("entender7:lang") || "both"; } catch { /* nada */ }
   document.body.dataset.lang = lang;
+  // Preferencias de este dispositivo: tema (Claro / Oscuro) y letra fácil de leer.
+  const pref = (k, v) => { try { if (v === undefined) return localStorage.getItem("entender7:" + k); if (v === null) localStorage.removeItem("entender7:" + k); else localStorage.setItem("entender7:" + k, v); } catch { /* nada */ } return null; };
+  function applyTheme(th) { if (th === "light" || th === "dark") document.documentElement.dataset.theme = th; else delete document.documentElement.dataset.theme; }
+  const isDark = () => document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+  applyTheme(pref("theme"));
+  function applyFont(on) {
+    document.body.classList.toggle("readable", on);
+    if (on && !document.getElementById("font-readable")) {
+      const l = document.createElement("link"); l.id = "font-readable"; l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+      document.head.append(l);
+    }
+  }
+  applyFont(pref("font") === "readable");
 
   let remote = null, writing = false, again = false, remoteTimer = 0, sync = "local";
   const persistLocal = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* nada */ } };
@@ -1902,7 +2087,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
       remote = ref;
       if (snap.exists) {
         const r = snap.data();
-        if ((r.updatedAt || 0) > (S.updatedAt || 0)) { S = Object.assign(blank(), JSON.parse(JSON.stringify(r))); persistLocal(); render(); }
+        if ((r.updatedAt || 0) > (S.updatedAt || 0)) { S = Object.assign(blank(), JSON.parse(JSON.stringify(r))); syncCustom(); persistLocal(); render(); }
         else if ((S.updatedAt || 0) > (r.updatedAt || 0)) flushRemote();
       } else if (S.updatedAt) flushRemote();
       setSync("cloud");
@@ -1931,11 +2116,18 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     const prev = Object.keys(S.hist).filter((k) => k < today).sort().pop();
     return prev ? S.hist[prev][m] : 0;
   }
-  function streak() {
-    let n = 0; let d = new Date(); if (!S.days[dayKey(d.getTime())]) d = new Date(d.getTime() - DAY);
-    while (S.days[dayKey(d.getTime())]) { n++; d = new Date(d.getTime() - DAY); }
-    return n;
+  // Racha con protector: 1 día de gracia (si faltaste un solo día, la racha no se rompe).
+  function streakInfo() {
+    let n = 0, grace = 0, d = Date.now();
+    if (!S.days[dayKey(d)]) d -= DAY;
+    for (;;) {
+      if (S.days[dayKey(d)]) { n++; d -= DAY; continue; }
+      if (!grace && n > 0 && S.days[dayKey(d - DAY)]) { grace = 1; d -= DAY; continue; }
+      break;
+    }
+    return { n, grace };
   }
+  const streak = () => streakInfo().n;
   function capDue(due) {
     const now = Date.now();
     if (S.life && now >= EXAM) return Math.max(due, now + 30 * DAY);
@@ -1971,7 +2163,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     return CONTENT.plan[k] || [];
   }
   function mood() { return S.checkin && S.checkin.date === dayKey() ? S.checkin.mood : "normal"; }
-  const isNight = () => new Date().getHours() >= 22;
+  const isNight = () => new Date().getHours() >= 23;
   function interleave(list) {
     const groups = {};
     list.forEach((id) => (groups[ITEM[id].topic] ||= []).push(id));
@@ -2002,6 +2194,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     const due = pool.filter((i) => status(i.id) === "due").sort((a, b) => S.cards[a.id].due - S.cards[b.id].due).map((i) => i.id);
     const fresh = pool.filter((i) => status(i.id) === "new").map((i) => i.id);
     if (kind === "panic") return interleave(pool.slice().sort((a, b) => mastery(a.id) - mastery(b.id)).slice(0, PANIC_N).map((i) => i.id));
+    if (kind === "hard" || kind === "fails") return interleave(focusPool(kind).slice(0, target).map((i) => i.id));
     if (kind === "topic") {
       const rest = pool.map((i) => i.id).filter((id) => !due.includes(id) && !fresh.includes(id));
       return [...due, ...fresh, ...rest];
@@ -2014,11 +2207,21 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     return interleave([...reviews, ...order.slice(0, nNew)]);
   }
 
+  // «Solo lo difícil»: alta dificultad FSRS, olvidos o «fija en examen» sin dominar. «Solo mis fallos»: lo que fallaste.
+  function focusPool(kind) {
+    const failed = new Set(S.log.filter((l) => l[2] === 1).map((l) => l[1]));
+    return ITEMS.filter((i) => {
+      const c = S.cards[i.id];
+      if (kind === "fails") return failed.has(i.id) || (c && c.lapses > 0);
+      return !!(c && c.reps && (c.d >= 6.5 || c.lapses > 0 || (i.hot && mastery(i.id) < 0.5)));
+    }).sort((a, b) => mastery(a.id) - mastery(b.id));
+  }
+
   /* ================= Navegación ================= */
   function route() {
     const h = location.hash.slice(1);
     if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
-    if (["hoy", "sesion", "simulacro", "panico"].includes(h)) return { name: h };
+    if (["hoy", "sesion", "simulacro", "panico", "subir"].includes(h)) return { name: h };
     return { name: "hoy" };
   }
   let ctxTopic = null;
@@ -2031,7 +2234,10 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     ctxTopic = r.name === "topic" ? r.id : r.name === "sesion" && SES ? ITEM[SES.current()]?.topic || ctxTopic : null;
     renderSide(r); renderCtx();
     const v = $("#view");
+    v.classList.toggle("wide", r.name === "topic");
+    document.body.classList.toggle("calm", !!S.calm && r.name === "sesion");
     if (r.name === "topic") renderTopic(v, TOPIC[r.id]);
+    else if (r.name === "subir") renderUpload(v);
     else if (r.name === "sesion") renderSession(v);
     else if (r.name === "simulacro") renderSim(v);
     else if (r.name === "panico") renderPanic(v);
@@ -2039,7 +2245,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     $("#timer").hidden = !(r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
     if (r.name !== "sesion" && r.name !== "simulacro") $("#ptop").style.width = "0";
   }
-  window.addEventListener("hashchange", () => { closeSide(); stopSpeech(); render(); window.scrollTo(0, 0); });
+  window.addEventListener("hashchange", () => { closeSide(); stopSpeech(); document.body.style.overflow = ""; render(); window.scrollTo(0, 0); });
 
   /* ================= Barra lateral ================= */
   function renderSide(r) {
@@ -2053,20 +2259,29 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
       return `<div class="mod"><div class="mod-row"><span>${esc(m.es)}</span><span class="mono">${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div><ul class="topic-list">${list}</ul></div>`;
     }).join("");
     const days = daysToExam();
+    const mine = TOPICS.filter((t) => t.mod === "mine");
+    const mineHtml = mine.length ? `<div class="mod"><div class="mod-row"><span>Mis temas</span><span class="mono">${mine.length}</span></div><ul class="topic-list">${mine.map((t) => { const p = topicPct(t.id); return `<li><a class="topic-link" href="#t-${t.id}" ${cur === "t-" + t.id ? 'aria-current="page"' : ""}><span class="ring" style="--p:${p}"></span><span>${esc(t.es)}</span><span class="pct">${p}%</span></a></li>`; }).join("")}</ul></div>` : "";
+    const sk = streakInfo();
+    const th = pref("theme") || "auto";
     $("#side").innerHTML = `
       <div><div class="brand">Entender</div><div class="brand-sub">Ciencias 7.º · convocatoria</div></div>
       <nav aria-label="Secciones">
         <div><a class="side-link" href="#hoy" ${cur === "hoy" ? 'aria-current="page"' : ""}>Hoy<span class="kicker">${days > 0 ? days + " días" : "examen"}</span></a>
         <a class="side-link" href="#simulacro" ${cur === "simulacro" ? 'aria-current="page"' : ""}>Simulacro real</a>
-        <a class="side-link" href="#panico" ${cur === "panico" ? 'aria-current="page"' : ""}>Modo Pánico</a></div>
+        <a class="side-link" href="#panico" ${cur === "panico" ? 'aria-current="page"' : ""}>Modo Pánico</a>
+        <a class="side-link" href="#subir" ${cur === "subir" ? 'aria-current="page"' : ""}>Subir y Entender<span class="kicker">＋</span></a></div>
         <div class="kicker" style="padding:0 .6rem">Tus materias</div>
-        ${mods}
+        ${mods}${mineHtml}
       </nav>
       <div class="side-foot">
         <div class="row"><span class="muted">Modo</span><b>${MODES[S.mode].es} ${MODES[S.mode].min < 60 ? MODES[S.mode].min + "m" : ""}</b></div>
-        <div class="row"><span class="muted">Racha</span><b class="mono">${streak()} ${streak() === 1 ? "día" : "días"}</b></div>
+        <div class="row"><span class="muted">Racha</span><b class="mono" title="${sk.grace ? "Ya usaste tu día de gracia" : "Si faltas un día, la racha no se rompe"}">${sk.n} ${sk.n === 1 ? "día" : "días"} ${sk.grace ? "· 🛡 usado" : "🛡"}</b></div>
         <div class="row"><span class="muted">Idioma</span>
           <div class="seg" role="group" aria-label="Idioma">${[["both", "ES+EN"], ["es", "ES"], ["en", "EN"]].map(([k, l]) => `<button type="button" data-lang="${k}" aria-pressed="${lang === k}">${l}</button>`).join("")}</div></div>
+        <div class="row"><span class="muted">Pantalla</span>
+          <div class="seg" role="group" aria-label="Tema de color">${[["auto", "Auto"], ["light", "Claro"], ["dark", "Oscuro"]].map(([k, l]) => `<button type="button" data-theme-set="${k}" aria-pressed="${th === k}">${l}</button>`).join("")}</div></div>
+        <div class="row"><span class="muted">Letra</span>
+          <div class="seg" role="group" aria-label="Tipo de letra">${[["normal", "Normal"], ["readable", "Fácil de leer"]].map(([k, l]) => `<button type="button" data-font="${k}" aria-pressed="${(pref("font") || "normal") === k}">${l}</button>`).join("")}</div></div>
         <div class="sync" id="sync">${SYNC_COPY[sync]}</div>
       </div>`;
     $$("#side [data-lang]").forEach((b) => b.addEventListener("click", () => {
@@ -2074,7 +2289,17 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
       try { localStorage.setItem("entender7:lang", lang); } catch { /* nada */ }
       render();
     }));
+    $$("#side [data-theme-set]").forEach((b) => b.addEventListener("click", () => {
+      const k = b.dataset.themeSet; pref("theme", k === "auto" ? null : k); applyTheme(k); renderSide(route()); syncThemeBtn();
+    }));
+    $$("#side [data-font]").forEach((b) => b.addEventListener("click", () => {
+      const on = b.dataset.font === "readable"; pref("font", on ? "readable" : null); applyFont(on); renderSide(route());
+    }));
   }
+  function syncThemeBtn() { const b = $("#theme-btn"); const d = isDark(); b.textContent = d ? "☀️" : "🌙"; b.setAttribute("aria-label", d ? "Cambiar a modo claro" : "Cambiar a modo oscuro"); }
+  $("#theme-btn").addEventListener("click", () => { const next = isDark() ? "light" : "dark"; pref("theme", next); applyTheme(next); syncThemeBtn(); renderSide(route()); });
+  syncThemeBtn();
+  try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncThemeBtn); } catch { /* navegador viejo */ }
   const openSide = () => { $("#side").classList.add("open"); $("#scrim").hidden = false; };
   const closeSide = () => { $("#side").classList.remove("open"); $("#scrim").hidden = true; };
   $("#menu-btn").addEventListener("click", openSide);
@@ -2100,11 +2325,15 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         <div class="states" style="grid-column:1/-1"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso pendiente ${c.due}</span></div></div>`;
     }).join("");
     const lastSim = S.sims[S.sims.length - 1];
+    const ident = identityLine();
+    const nHard = focusPool("hard").length, nFails = focusPool("fails").length;
+    const focusCount = { plan: due + quota, hard: nHard, fails: nFails }[S.focus] || 0;
     v.innerHTML = `
       <div><div class="kicker">${after ? "Después del examen" : days === 0 ? "Hoy es el examen" : `${days} ${days === 1 ? "día" : "días"} para el examen · 4 de diciembre`}</div>
       <h1 class="title">${greeting()}.</h1></div>
       ${away ? `<div class="notice">Te extrañé. ¿Todo bien? Retomemos con 5 minutos, sin presión.</div>` : ""}
-      ${isNight() ? `<div class="notice">Son más de las 10 p. m.: hoy toca <b>repaso suave nocturno</b>, solo lo que ya viste y nada nuevo.</div>` : ""}
+      ${isNight() ? `<div class="notice">Son más de las 11 p. m.: hoy toca <b>repaso suave nocturno</b>, solo lo que ya viste y nada nuevo.</div>` : ""}
+      ${ident ? `<p class="muted">${ident}</p>` : ""}
       ${checked ? "" : `<section class="card" aria-labelledby="mood-h"><h2 class="h" id="mood-h">¿Cómo andas hoy?</h2>
         <div class="mood">${[["energia", "⚡", "Con energía"], ["normal", "🙂", "Normal"], ["cansado", "😴", "Cansado"]].map(([k, e, l]) => `<button type="button" data-mood="${k}"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div>
         <p class="small muted">Ajusto la sesión a cómo te sientes. Un toque y listo.</p></section>`}
@@ -2114,13 +2343,24 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         ${today.length ? `<div class="plan-topics">${today.map((t) => `<a href="#t-${t}"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${topicPct(t)}%</span></a>`).join("")}</div>` : ""}
         <div><div class="kicker" style="margin-bottom:.4rem">¿Cuánto tiempo tienes?</div>
         <div class="modes" role="group" aria-label="Tiempo">${Object.entries(MODES).map(([k, m]) => `<button type="button" data-mode="${k}" aria-pressed="${S.mode === k}"><b>${m.es}</b><small>${m.note}</small></button>`).join("")}</div></div>
-        <button type="button" class="btn primary block" id="start">${due + quota ? `Empezar · ~${Math.max(2, Math.min(MODES[S.mode].min, est))} min` : "Todo al día · practicar libre"}</button>
+        <div><div class="kicker" style="margin-bottom:.4rem">¿Qué quieres estudiar?</div>
+        <div class="focus-pick" role="group" aria-label="Qué estudiar">${[["plan", "Plan del día", due + quota], ["hard", "Solo lo difícil", nHard], ["fails", "Solo mis fallos", nFails]].map(([k, l, n]) => `<button type="button" data-focus="${k}" aria-pressed="${S.focus === k}">${l}<small>${n}</small></button>`).join("")}</div></div>
+        ${S.focus !== "plan" && !focusCount ? `<p class="small muted">${S.focus === "fails" ? "Todavía no tienes fallos guardados. Empieza con el plan del día." : "Aún no hay preguntas difíciles para ti. Empieza con el plan del día."}</p>` : ""}
+        <button type="button" class="btn primary block" id="start">${S.focus === "plan" ? (due + quota ? `Empezar · ~${Math.max(2, Math.min(MODES[S.mode].min, est))} min` : "Todo al día · practicar libre") : focusCount ? `Empezar · ${S.focus === "hard" ? "lo difícil" : "mis fallos"}` : "Practicar libre"}${S.calm ? " · 5 preguntas" : ""}</button>
       </section>
+      <section class="card" aria-labelledby="way-h"><div class="kicker">A tu manera</div><h2 class="h" id="way-h" hidden>A tu manera</h2>
+        <div class="toggles">
+          <div class="toggle"><div><b>Modo TDAH</b><p class="small muted">5 preguntas por ronda, letra grande y sin distracciones.</p></div><button type="button" class="btn" data-tg="calm" aria-pressed="${!!S.calm}">${S.calm ? "Activado" : "Activar"}</button></div>
+          ${TTS ? `<div class="toggle"><div><b>Voz primero</b><p class="small muted">Te leo cada pregunta, la respuesta y lo que dice el tutor. Ideal en el bus.</p></div><button type="button" class="btn" data-tg="voice" aria-pressed="${!!S.voice}">${S.voice ? "Activado" : "Activar"}</button></div>` : ""}
+        </div>
+        <p class="small muted">Letra fácil de leer y modo Claro / Oscuro: en el menú de tus materias.</p></section>
       <section class="card" aria-labelledby="prog-h"><div class="kicker">Tu avance real · ayer → hoy</div><h2 class="h" id="prog-h" hidden>Avance</h2>${modRows}</section>
       <div class="grid2">
         <a class="card" href="#panico" style="text-decoration:none"><div class="kicker" style="color:var(--accent)">Modo Pánico</div><b>Solo lo que más sale en el examen</b><span class="small muted">30 minutos con las preguntas más probables.</span></a>
-        <a class="card" href="#simulacro" style="text-decoration:none"><div class="kicker">Simulacro real</div><b>20 preguntas · 20 minutos · nota cruda</b><span class="small muted">${lastSim ? `Último: ${lastSim.score}/${lastSim.total} (${Math.round((100 * lastSim.score) / lastSim.total)} %)` : "Como el examen, con preguntas tramposas."}</span></a>
+        <a class="card" href="#simulacro" style="text-decoration:none"><div class="kicker">Simulacro real</div><b>20 preguntas · 20 minutos · nota cruda</b><span class="small muted">${lastSim ? `Último: hoy sacarías <b class="mono">${Math.round((100 * lastSim.score) / lastSim.total)}</b> (${lastSim.score}/${lastSim.total})` : "Como el examen, con preguntas tramposas."}</span></a>
+        <a class="card" href="#subir" style="text-decoration:none"><div class="kicker">Subir y Entender</div><b>Tus apuntes → un tema nuevo</b><span class="small muted">Pega texto, una transcripción de YouTube o una foto, y lo convierto en los 5 pasos con preguntas.</span></a>
       </div>
+      ${MCP ? calCardHtml() : ""}
       <section class="card quiet"><div class="row-wrap" style="justify-content:space-between"><div><b>Guardar para la vida</b><p class="small muted">Después del examen: 1 micro-repaso de 5 minutos al mes con lo más importante.</p></div>
         <button type="button" class="btn" id="life" aria-pressed="${S.life}">${S.life ? "Activado" : "Activar"}</button></div></section>
       <section class="only-mobile" style="gap:.6rem">${CONTENT.modules.map((m) => `<div class="kicker">${esc(m.es)}</div><div class="plan-topics">${TOPICS.filter((t) => t.mod === m.id).map((t) => `<a href="#t-${t.id}"><span>${esc(t.es)}</span><span class="mono muted">${topicPct(t.id)}%</span></a>`).join("")}</div>`).join("")}</section>`;
@@ -2130,10 +2370,10 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
       save(); render();
     }));
     $$("[data-mode]", v).forEach((b) => b.addEventListener("click", () => { S.mode = b.dataset.mode; save(); render(); }));
-    $("#start", v).addEventListener("click", () => {
-      const q = buildQueue("plan", MODES[S.mode].min);
-      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
-    });
+    $$("[data-focus]", v).forEach((b) => b.addEventListener("click", () => { S.focus = b.dataset.focus; save(); render(); }));
+    $$("[data-tg]", v).forEach((b) => b.addEventListener("click", () => { const k = b.dataset.tg; S[k] = !S[k]; save(); render(); }));
+    $("#start", v).addEventListener("click", startPlanned);
+    if (MCP) bindCalCard(v);
     $("#life", v).addEventListener("click", () => { S.life = !S.life; save(); render(); });
     S.lastVisit = Date.now(); persistLocal();
   }
@@ -2142,14 +2382,16 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
   function renderTopic(v, t) {
     const idx = TOPICS.filter((x) => x.mod === t.mod).indexOf(t) + 1;
     const total = TOPICS.filter((x) => x.mod === t.mod).length;
-    $("#crumb").innerHTML = `<b>${esc(MOD[t.mod].es)}</b> · Bloque ${idx}/${total} · <span class="mono">${topicPct(t.id)}%</span>`;
+    $("#crumb").innerHTML = `Ya entendiste el <b class="mono">${topicPct(t.id)}%</b> de <b>${esc(t.es)}</b> · <span class="muted">Modo: ${esc(modeLabel())}</span>`;
     const c = counts(ITEMS.filter((i) => i.topic === t.id));
     const feyn = S.feyn[t.id];
-    const figs = (t.figs || (t.svg ? [[t.svg, "", ""]] : [])).filter((f) => document.getElementById("svg-" + f[0]));
-    v.innerHTML = `
-      <div><div class="kicker">${esc(MOD[t.mod].es)} · ${esc(MOD[t.mod].objectives)}</div>
+    document.body.style.overflow = "";
+    v.innerHTML = `<div class="topic-grid">
+      <div class="tg-head"><div><div class="kicker">${esc(MOD[t.mod].es)} · Bloque ${idx}/${total} · ${esc(MOD[t.mod].objectives)}</div>
       <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
       <div class="states" style="margin-top:.6rem"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso ${c.due}</span></div></div>
+      ${howHtml(t)}</div>
+      <aside class="imgpanel" id="imgpanel" aria-label="Imagen tocable"></aside>
       <div class="steps">
         <section class="step"><div class="step-n">1</div><div class="step-body"><h2 class="h">Guía · el mapa</h2>
           <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div></div></section>
@@ -2157,7 +2399,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
           <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul>
           ${t.table ? `<div class="kicker">Tabla para repasar</div>${tableHtml(t.table)}` : ""}</div></section>
         <section class="step"><div class="step-n">3</div><div class="step-body"><h2 class="h">Explicador de 2 minutos</h2>
-          ${figs.map((f, i) => `<figure class="fig-wrap"><div class="plate" data-fig="${i}"></div>${f[1] ? `<figcaption>${bl([f[1], f[2]])}</figcaption>` : ""}</figure>`).join("")}
+          <p class="small muted">Mira la imagen tocable mientras escuchas: en «Proceso», cada paso se ilumina.</p>
           <ol class="beats" id="beats">${t.beats.map((p, i) => `<li data-b="${i}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>
           <div class="row-wrap">
             <button type="button" class="btn dark" id="play" hidden>▶ Escuchar · 2 min</button>
@@ -2172,11 +2414,21 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
           ${feyn ? `<span class="chip ${feyn === "entendido" ? "ok" : ""}">${{ entendido: "✓ Lo explicaste con tus palabras", casi: "◐ Casi: te falta un detalle", todavia: "Todavía no: vuelve a intentarlo" }[feyn]}</span>` : ""}
           <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
           <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
-      </div>`;
-    figs.forEach((f, i) => {
-      const box = $(`[data-fig="${i}"]`, v);
-      box.append(document.getElementById("svg-" + f[0]).content.cloneNode(true));
-      $("svg", box).setAttribute("aria-label", f[1] || `${t.es}: diagrama`);
+      </div></div>
+      ${t.mod === "mine" ? `<div class="row-wrap"><button type="button" class="link-btn" id="del-topic">Borrar este tema</button></div>` : ""}`;
+    renderPanel(t);
+    $("#how-go", v).addEventListener("click", () => {
+      const act = METHODS[methodOf(t)].act;
+      if (act.startsWith("img:")) { renderPanel(t, act.slice(4)); $("#imgpanel").scrollIntoView({ behavior: "smooth", block: "start" }); }
+      else $("#" + act, v).click();
+    });
+    const del = $("#del-topic", v);
+    if (del) del.addEventListener("click", () => {
+      if (!del.dataset.sure) { del.dataset.sure = "1"; del.textContent = "¿Seguro? Toca otra vez para borrarlo"; return; }
+      S.custom = S.custom.filter((x) => x.id !== t.id);
+      t.items.forEach((i) => delete S.cards[i[0]]);
+      delete S.seen[t.id]; delete S.feyn[t.id]; delete S.imgMiss[t.id];
+      syncCustom(); save(); location.hash = "subir";
     });
     S.seen[t.id] = true; persistLocal();
     $("#practice", v).addEventListener("click", () => startSession("topic", buildQueue("topic", 30, t.id), 0));
@@ -2184,22 +2436,221 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     setupExplainer(v, t);
   }
 
+  const modeLabel = () => ({ ratitos: "Ratitos 5 min", pomodoro: "Pomodoro 25 min", maraton: "Maratón 1–2 h" }[S.mode] || MODES[S.mode].es);
+
+  /* Enseña CÓMO estudiar: el método ideal según el tipo de tema */
+  const HOW = { teoria: "linea", niveles: "feynman", sistemas: "casos" };
+  const METHODS = {
+    diagrama: { es: "Dibújalo de memoria", why: "Este tema es un dibujo: si lo puedes dibujar y nombrar sus partes, ya lo entiendes.", steps: ["Mira la imagen tocable 1 minuto y toca cada parte.", "Ciérrala y dibújala en un papel con sus nombres en español e inglés.", "Compárala y corrige lo que faltó. Mañana, otra vez."], btn: "Ver la imagen", act: "img:diagrama" },
+    tabla: { es: "Compara y juega «¿Quién soy?»", why: "Aquí el examen te pide diferenciar cosas parecidas, no solo definirlas.", steps: ["Abre «Comparación» y elige las dos que más confundes.", "Di en voz alta una diferencia por cada fila.", "En la práctica te saldrán retos «¿Quién soy?» con esta tabla."], btn: "Comparar", act: "img:compara" },
+    casos: { es: "Aprende con casos reales", why: "El examen te da un ejemplo y tú dices qué proceso es.", steps: ["Lee el ejemplo de tu vida (paso 4).", "Busca un ejemplo nuevo en tu casa, tu barrio o en Costa Rica.", "Practica: te saldrán casos reales mezclados."], btn: "Practicar con casos", act: "practice" },
+    feynman: { es: "Explícalo en voz alta", why: "Son ideas en orden: si se lo explicas a alguien de 10 años, ya lo sabes.", steps: ["Lee el resumen (paso 2).", "Explícalo con tus palabras, en voz alta o escrito abajo.", "El tutor te dice qué entendiste y qué te faltó."], btn: "Explicar ahora", act: "explain" },
+    linea: { es: "Ordénalo como una historia", why: "Son personas y fechas en orden: una historia se recuerda mejor que una lista.", steps: ["Abre la línea de tiempo y di qué hizo cada uno antes de tocarlo.", "Cuenta la historia completa sin mirar.", "Termina con los 3 postulados."], btn: "Ver la línea de tiempo", act: "img:linea" },
+  };
+  function methodOf(t) {
+    const h = HOW[t.id];
+    if (h && (h !== "linea" || t.timeline)) return h;
+    if (t.mod === "mine") return "feynman";
+    return t.table ? "tabla" : figsOf(t).length ? "diagrama" : "casos";
+  }
+  function howHtml(t) {
+    const m = METHODS[methodOf(t)];
+    return `<details class="how"><summary><span class="kicker">🧭 Cómo estudiar este tema</span><span>${m.es}</span></summary>
+      <div class="how-body"><p class="small">${m.why}</p><ol class="small">${m.steps.map((x) => `<li>${x}</li>`).join("")}</ol><div><button type="button" class="btn" id="how-go">${m.btn}</button></div></div></details>`;
+  }
+
+  /* ================= Imagen tocable: cada explicación = 1 imagen ================= */
+  const IMG_TYPES = { diagrama: "Diagrama", linea: "Línea de tiempo", compara: "Comparación", proceso: "Proceso", mapa: "Mapa mental", ejemplo: "Ejemplo cotidiano" };
+  const imgTypes = (t) => [figsOf(t).length && "diagrama", t.timeline && "linea", t.table && entities(t.table).length > 1 && "compara", "proceso", "mapa", "ejemplo"].filter(Boolean);
+  const EMOJI = { geo: "🌋", cell: "🔬", mine: "📒" };
+  const short = (s) => String(s).split("·")[0].trim();
+  let IMGV = { topic: null, type: null, cmp: [0, 1] };
+  function bestType(t) {
+    const miss = S.imgMiss[t.id] || {};
+    const types = imgTypes(t);
+    return types.slice().sort((a, b) => (miss[a] || 0) - (miss[b] || 0) || types.indexOf(a) - types.indexOf(b))[0];
+  }
+  function renderPanel(t, type) {
+    const p = $("#imgpanel"); if (!p) return;
+    if (IMGV.topic !== t.id) IMGV = { topic: t.id, type: bestType(t), cmp: [0, 1] };
+    if (type) IMGV.type = type;
+    const types = imgTypes(t);
+    if (!types.includes(IMGV.type)) IMGV.type = types[0];
+    const full = p.classList.contains("full");
+    p.innerHTML = `<div class="imgpanel-head"><div class="kicker">Imagen tocable</div><button type="button" class="link-btn" id="zoom">${full ? "✕ Cerrar" : "⤢ Ver grande"}</button></div>
+      <div class="imgtabs" role="tablist" aria-label="Tipo de imagen">${types.map((k) => `<button type="button" role="tab" data-type="${k}" aria-selected="${k === IMGV.type}">${IMG_TYPES[k]}</button>`).join("")}</div>
+      <div class="imgbody" id="imgbody" role="tabpanel" aria-label="${IMG_TYPES[IMGV.type]}"></div>
+      <div class="callout" id="callout" hidden aria-live="polite"></div>
+      <button type="button" class="btn block" id="another">🔄 Hazme otra imagen (no entendí esta)</button>`;
+    const body = $("#imgbody", p);
+    ({ diagrama: drawDiagram, linea: drawTimeline, compara: drawCompare, proceso: drawProcess, mapa: drawMindMap, ejemplo: drawExample })[IMGV.type](body, t);
+    $$("[data-type]", p).forEach((b) => b.addEventListener("click", () => renderPanel(t, b.dataset.type)));
+    $("#zoom", p).addEventListener("click", () => toggleZoom(t));
+    $("#another", p).addEventListener("click", () => {
+      const miss = (S.imgMiss[t.id] ||= {});
+      miss[IMGV.type] = (miss[IMGV.type] || 0) + 1; save();
+      renderPanel(t, types[(types.indexOf(IMGV.type) + 1) % types.length]);
+      if (Object.values(miss).reduce((a, b) => a + b, 0) >= 3) showCallout("¿Te ayudo de otra forma?", ["Ya probaste varias imágenes. Toca «No entendí la imagen» abajo o escríbele al tutor qué parte no entiendes.", "You've tried several pictures. Tap the hint below or tell the tutor which part you don't get."]);
+    });
+  }
+  function toggleZoom(t) {
+    const p = $("#imgpanel"); if (!p) return;
+    p.classList.toggle("full");
+    document.body.style.overflow = p.classList.contains("full") ? "hidden" : "";
+    renderPanel(t);
+    if (p.classList.contains("full")) $("#zoom", p).focus();
+  }
+  function showCallout(label, pair) {
+    const c = $("#callout"); if (!c) return;
+    c.hidden = false;
+    c.innerHTML = `<b>${esc(label)}</b>${bl(pair, "div")}`;
+    c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  // Busca qué dice el temario sobre una palabra del dibujo.
+  const STOP = new Set("esta este estos estas para como cada pero todo toda solo with from each that this into have their more muy".split(" "));
+  const norm = (s) => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9ñ+ ]/g, " ").replace(/\s+/g, " ").trim();
+  const hasWord = (text, n) => { const s = " " + norm(text) + " "; return n.length < 5 ? s.includes(" " + n + " ") : s.includes(" " + n); };
+  // La clave de una etiqueta: el primer trozo con sentido («1 Pared celular · Cell wall ★» → «pared celular»).
+  const keyOf = (label) => label.split("·").map((x) => norm(x).replace(/^[\d\s]+/, "").trim()).find((x) => x.length >= 3 && !/^\d/.test(x)) || "";
+  function explainLabel(label, t) {
+    const key = keyOf(label);
+    if (!key) return null;
+    const hot = typeof t.hot === "string" ? (CONTENT.hot || {})[t.hot] : t.hot;
+    if (hot) for (const [k, pr] of Object.entries(hot)) if (key === norm(k) || key.startsWith(norm(k) + " ")) return pr;
+    const own = [t.sum, t.items.map((i) => [i[3], i[4]]), t.beats, [t.life]];
+    const others = TOPICS.filter((x) => x !== t && x.mod === t.mod).map((x) => x.sum);
+    const has = (pr, n) => hasWord(pr[0], n) || hasWord(pr[1], n);
+    for (const pool of [...own, ...others]) for (const pr of pool) if (has(pr, key)) return pr;
+    const w = key.split(" ").find((x) => x.length >= 5 && !STOP.has(x));
+    if (w) for (const pool of own) for (const pr of pool) if (has(pr, w)) return pr;
+    return null;
+  }
+  function makeTappable(svg, t) {
+    let n = 0;
+    $$("text", svg).forEach((el) => {
+      if (el.closest('[fill="#4b5563"]') || el.closest('[font-family*="Mono"]')) return;
+      const label = el.textContent.replace(/\s+/g, " ").trim();
+      const pr = explainLabel(label, t);
+      if (!pr) return;
+      n++;
+      el.classList.add("hit"); el.setAttribute("tabindex", "0"); el.setAttribute("role", "button");
+      const go = () => { $$(".hit.on", svg).forEach((x) => x.classList.remove("on")); el.classList.add("on"); showCallout(label.replace(/^\d+\s+/, "").replace(/★/g, "").trim(), pr); };
+      el.addEventListener("click", go);
+      el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+    if (n) svg.setAttribute("role", "group");
+    return n;
+  }
+  function drawDiagram(body, t) {
+    const figs = figsOf(t);
+    body.innerHTML = figs.map((f, i) => `<figure class="fig-wrap"><div class="plate" data-fig="${i}"></div>${f[1] ? `<figcaption>${bl([f[1], f[2]])}</figcaption>` : ""}</figure>`).join("") + `<p class="small muted" id="tap-hint">Toca las palabras subrayadas del dibujo.</p>`;
+    let n = 0;
+    figs.forEach((f, i) => {
+      const box = $(`[data-fig="${i}"]`, body);
+      box.append(document.getElementById("svg-" + f[0]).content.cloneNode(true));
+      const svg = $("svg", box); svg.setAttribute("aria-label", f[1] || `${t.es}: diagrama`);
+      n += makeTappable(svg, t);
+    });
+    const hint = $("#tap-hint", body);
+    const wide = $$(".plate", body).some((b) => b.scrollWidth > b.clientWidth + 4);
+    if (!n && !wide) hint.remove();
+    else hint.textContent = [n ? "Toca las palabras subrayadas del dibujo." : "", wide ? "↔ Desliza el dibujo para verlo completo, o toca «Ver grande»." : ""].filter(Boolean).join(" ");
+  }
+  function drawProcess(body, t) {
+    body.innerHTML = `<ol class="flow">${t.beats.map((pr, i) => `<li><button type="button" data-b="${i}" aria-pressed="false"><span>${i + 1}</span><span>${bl(pr)}</span></button></li>`).join("")}</ol>
+      <p class="small muted">Toca un paso${TTS ? " y te lo leo" : ""}. Con ▶ Escuchar, cada paso se ilumina solo.</p>`;
+    $$("[data-b]", body).forEach((b) => b.addEventListener("click", () => {
+      $$("[data-b]", body).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      const pr = t.beats[Number(b.dataset.b)];
+      say(langLines(pr));
+    }));
+  }
+  function wrapText(s, n, max) {
+    const lines = []; let cur = "";
+    String(s).split(/\s+/).forEach((w) => { if (cur && (cur + " " + w).length > n) { lines.push(cur); cur = w; } else cur = cur ? cur + " " + w : w; });
+    if (cur) lines.push(cur);
+    if (lines.length > max) { lines.length = max; lines[max - 1] = lines[max - 1].replace(/\s*\S*$/, "") + " …"; }
+    return lines;
+  }
+  function svgText(lines, x, y, size, color, weight) {
+    const lh = size * 1.24;
+    const y0 = y - ((lines.length - 1) * lh) / 2 + size * 0.36;
+    return `<text x="${x}" y="${y0.toFixed(1)}" text-anchor="middle" font-size="${size}" font-weight="${weight}" fill="${color}">${lines.map((l, k) => `<tspan x="${x}" dy="${k ? lh.toFixed(1) : 0}">${esc(l)}</tspan>`).join("")}</text>`;
+  }
+  function drawMindMap(body, t) {
+    const L = lang === "en" ? 1 : 0;
+    const cx = 380, cy = 235, n = t.sum.length;
+    const nodes = t.sum.map((pr, i) => {
+      const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
+      const lines = wrapText(pr[L], 25, 3);
+      return { i, x: Math.round(cx + Math.cos(a) * 262), y: Math.round(cy + Math.sin(a) * 168), lines, h: lines.length * 16.7 + 22 };
+    });
+    const svg = `<svg viewBox="0 0 760 470" font-family="Inter, sans-serif" role="group" aria-label="Mapa mental: ${esc(L ? t.en : t.es)}">
+      <g stroke="#c9bfae" stroke-width="2">${nodes.map((nd) => `<path d="M${cx} ${cy} L${nd.x} ${nd.y}"/>`).join("")}</g>
+      <circle cx="${cx}" cy="${cy}" r="80" fill="#1c2130"/>
+      ${svgText(wrapText(L ? t.en : t.es, 15, 3), cx, cy, 16, "#FFFDF9", 700)}
+      ${nodes.map((nd) => `<g class="node" data-n="${nd.i}" tabindex="0" role="button" aria-label="${esc(t.sum[nd.i][L])}"><rect x="${nd.x - 108}" y="${(nd.y - nd.h / 2).toFixed(1)}" width="216" height="${nd.h.toFixed(1)}" rx="14" fill="#FFFFFF" stroke="#A65A16" stroke-width="1.6"/>${svgText(nd.lines, nd.x, nd.y, 13.5, "#1c2130", 500)}</g>`).join("")}
+    </svg>`;
+    body.innerHTML = `<div class="plate">${svg}</div><p class="small muted">Toca una idea para verla completa en español e inglés.</p>`;
+    $$(".node", body).forEach((g) => {
+      const go = () => { $$(".node.on", body).forEach((x) => x.classList.remove("on")); g.classList.add("on"); showCallout(`Idea ${Number(g.dataset.n) + 1} de ${n}`, t.sum[Number(g.dataset.n)]); };
+      g.addEventListener("click", go);
+      g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  }
+  function drawTimeline(body, t) {
+    body.innerHTML = `<ol class="tl">${t.timeline.map((e, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="yr">${esc(e[0])}</span><b>${esc(e[1])}</b></button></li>`).join("")}</ol>
+      <p class="small muted">Antes de tocar, di tú qué descubrió cada uno. Luego toca para comprobar.</p>`;
+    $$("[data-i]", body).forEach((b) => b.addEventListener("click", () => {
+      $$("[data-i]", body).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      const e = t.timeline[Number(b.dataset.i)];
+      showCallout(`${e[0]} · ${e[1]}`, [e[2], e[3]]);
+    }));
+  }
+  function entities(tb) {
+    if (!tb.head[0]) return tb.head.slice(1).map((name, j) => ({ name, attrs: tb.rows.map((r) => [r[0], r[j + 1]]) }));
+    return tb.rows.map((r) => ({ name: r[0], attrs: tb.head.slice(1).map((h, j) => [h, r[j + 1]]) }));
+  }
+  function drawCompare(body, t) {
+    const ents = entities(t.table);
+    const [a, b] = IMGV.cmp.map((k) => Math.min(k, ents.length - 1));
+    body.innerHTML = `<p class="small muted">Elige las dos que confundes:</p>
+      <div class="cmp-pick" role="group" aria-label="Elegir qué comparar">${ents.map((e, k) => `<button type="button" data-e="${k}" aria-pressed="${k === a || k === b}">${esc(short(e.name))}</button>`).join("")}</div>
+      <div class="cmp">${[a, b].map((k) => `<div><h3>${esc(ents[k].name)}</h3><dl>${ents[k].attrs.map(([h, x]) => `<div><dt>${esc(short(h))}</dt><dd>${esc(x)}</dd></div>`).join("")}</dl></div>`).join("")}</div>`;
+    $$("[data-e]", body).forEach((btn) => btn.addEventListener("click", () => {
+      const k = Number(btn.dataset.e);
+      if (IMGV.cmp.includes(k)) return;
+      IMGV.cmp = [IMGV.cmp[1], k]; drawCompare(body, t);
+    }));
+  }
+  function drawExample(body, t) {
+    body.innerHTML = `<div class="example"><div class="ex-emoji" aria-hidden="true">${EMOJI[t.mod] || "💡"}</div>${bl(t.life, "p")}</div>
+      ${SAMPLE ? `<div class="sugg" role="group" aria-label="Pedir al tutor"><button type="button" data-s="ejemplo">Otro ejemplo</button><button type="button" data-s="resume">Resúmeme</button><button type="button" data-s="quiz">Hazme quiz</button></div>` : `<p class="small muted">Busca tú un ejemplo parecido en tu casa o en tu barrio y cuéntaselo a alguien.</p>`}`;
+    $$("[data-s]", body).forEach((b) => b.addEventListener("click", () => suggest(b.dataset.s, t)));
+  }
+
   /* Explicador: voz (tts) o paso a paso */
   let TTS = null, beatIdx = -1, speaking = false;
+  const langLines = (pr, id) => {
+    const out = [];
+    if (lang !== "en") out.push({ text: pr[0], language: "es", ...(id ? { id } : {}) });
+    if (lang !== "es") out.push({ text: pr[1], language: "en", ...(id ? { id } : {}) });
+    return out;
+  };
+  function say(lines) {
+    if (!TTS || !lines.length) return;
+    speaking = true;
+    TTS.speak(lines).catch(() => {}).finally(() => { speaking = false; });
+  }
   function stopSpeech() { if (TTS && speaking) TTS.stop().catch(() => {}); speaking = false; const o = $(".audio-only"); if (o) o.remove(); }
-  function markBeat(v, i) { beatIdx = i; $$("#beats li", v).forEach((li) => li.classList.toggle("now", Number(li.dataset.b) === i)); const o = $(".audio-only .now-line"); if (o) o.textContent = i >= 0 ? (lang === "en" ? currentBeats[i][1] : currentBeats[i][0]) : ""; }
+  function markBeat(v, i) { beatIdx = i; $$("#beats li", v).forEach((li) => li.classList.toggle("now", Number(li.dataset.b) === i)); $$(".flow [data-b]", v).forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.b) === i))); const o = $(".audio-only .now-line"); if (o) o.textContent = i >= 0 ? (lang === "en" ? currentBeats[i][1] : currentBeats[i][0]) : ""; }
   let currentBeats = [];
   function setupExplainer(v, t) {
     currentBeats = t.beats; beatIdx = -1;
     $("#stepbtn", v).addEventListener("click", () => { markBeat(v, (beatIdx + 1) % t.beats.length); const li = $(`#beats li[data-b="${beatIdx}"]`, v); if (li) li.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
     if (!TTS) return;
     $("#play", v).hidden = false; $("#audio", v).hidden = false;
-    const lines = () => t.beats.flatMap((p, i) => {
-      const out = [];
-      if (lang !== "en") out.push({ text: p[0], language: "es", id: `b${i}` });
-      if (lang !== "es") out.push({ text: p[1], language: "en", id: `b${i}` });
-      return out;
-    });
+    const lines = () => t.beats.flatMap((p, i) => langLines(p, `b${i}`));
     const play = (audioOnly) => {
       if (audioOnly) {
         const o = document.createElement("div"); o.className = "audio-only";
@@ -2221,7 +2672,8 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
   function startSession(kind, queue, minutes) {
     stopSpeech();
     const before = { geo: modPct("geo"), cell: modPct("cell") };
-    SES = { kind, queue: queue.slice(), i: 0, minutes, start: Date.now(), shownAt: 0, phase: "q", pend: null, anti: null, hint: false, results: [], repeats: {}, before, banner: null, breakUntil: 0, nextBreak: Date.now() + 25 * 60e3,
+    if (S.calm) queue = queue.slice(0, 5); // Modo TDAH: 5 ítems sin ruido
+    SES = { kind, queue: queue.slice(), i: 0, inter: null, interN: 0, usedMc: [], spoken: "", minutes, start: Date.now(), shownAt: 0, phase: "q", pend: null, anti: null, hint: false, results: [], repeats: {}, before, banner: null, breakUntil: 0, nextBreak: Date.now() + 25 * 60e3,
       current() { return this.anti ? this.anti.alt : this.queue[this.i]; } };
     location.hash = "sesion";
     if (location.hash === "#sesion") render();
@@ -2250,8 +2702,9 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     const s = SES;
     tickTimer();
     $("#ptop").style.width = `${Math.round((100 * Math.min(s.i, s.queue.length)) / Math.max(1, s.queue.length))}%`;
-    const label = { plan: "Sesión de hoy", free: "Práctica libre", topic: "Práctica del tema", panic: "Modo Pánico" }[s.kind];
+    const label = { plan: "Sesión de hoy", free: "Práctica libre", topic: "Práctica del tema", panic: "Modo Pánico", hard: "Solo lo difícil", fails: "Solo mis fallos" }[s.kind];
     if (s.phase === "done") return renderDone(v);
+    if (s.inter) return renderInter(v, label);
     if (s.phase === "break") {
       $("#crumb").innerHTML = `<b>${label}</b> · pausa`;
       v.innerHTML = `<div class="card" style="text-align:center;justify-items:center;padding:2rem 1rem"><div class="kicker">Pausa guiada</div><h1 class="title">Descansa 5 minutos.</h1>
@@ -2278,7 +2731,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     s.introShown = false;
     const showAns = s.phase === "a";
     v.innerHTML = `
-      ${s.banner ? `<div class="notice">${s.banner}</div>` : ""}
+      ${s.banner ? `<div class="notice extra">${s.banner}</div>` : ""}
       ${s.anti && !showAns ? `<div class="notice">Respondiste muy rápido. ¿De verdad la entendiste? Prueba este otro caso del mismo tema.</div>` : ""}
       <div class="row-wrap"><span class="chip">${esc(t.es)}</span>${it.hot ? '<span class="chip hot">Fija en examen</span>' : ""}<span class="chip">${{ new: "Nuevo", learning: "En curso", mastered: "Dominado", due: "Repaso pendiente" }[st]}</span></div>
       <article class="qcard" aria-live="polite">
@@ -2292,13 +2745,18 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         ${showAns
           ? `<button type="button" class="btn primary block" id="next">Siguiente →</button>
              ${s.pend.g === 1 ? `<button type="button" class="link-btn" id="ask-tutor">No entiendo: explícamelo de otra forma</button>` : ""}`
-          : `<div class="two"><button type="button" class="btn" id="no">No me la sé</button><button type="button" class="btn dark" id="yes">Sí me la sé</button></div>
+          : `<div class="swipe-hint" aria-hidden="true"><span>← desliza: no me la sé</span><span>sí me la sé: desliza →</span></div>
+             <div class="two"><button type="button" class="btn" id="no">No me la sé</button><button type="button" class="btn dark" id="yes">Sí me la sé</button></div>
              <div class="row-wrap" style="justify-content:space-between">${s.hint ? "<span></span>" : `<button type="button" class="link-btn" id="hint">Pista</button>`}<button type="button" class="link-btn" id="quit">Terminar sesión</button></div>`}
+        <p class="kbd-hint">${showAns ? `<kbd>Enter</kbd> siguiente` : `<kbd>1</kbd> no me la sé · <kbd>2</kbd> sí me la sé · <kbd>H</kbd> pista`}</p>
       </div>`;
+    const spokenKey = `${id}:${showAns ? "a" : "q"}`;
+    if (S.voice && s.spoken !== spokenKey) { s.spoken = spokenKey; say(langLines(showAns ? it.a : it.q)); }
     if (!showAns) {
       s.shownAt = Date.now();
       $("#no", v).addEventListener("click", () => answer(false));
       $("#yes", v).addEventListener("click", () => answer(true));
+      swipe($(".qcard", v), () => answer(false), () => answer(true));
       const h = $("#hint", v); if (h) h.addEventListener("click", () => { s.hint = true; render(); });
       $("#quit", v).addEventListener("click", () => endSession(true));
     } else {
@@ -2329,6 +2787,8 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     s.results.push({ id: p.id, g: p.g, ms: p.ms });
     if (p.g === 1 && (s.repeats[p.id] || 0) < 2) { s.repeats[p.id] = (s.repeats[p.id] || 0) + 1; s.queue.splice(Math.min(s.queue.length, s.i + 4), 0, p.id); }
     s.i++; s.phase = "q"; s.hint = false; s.pend = null;
+    // Contra el aburrimiento: cada 6 preguntas cambia el formato (opción múltiple, caso real, ¿Quién soy?).
+    if (!S.calm && s.kind !== "panic" && s.results.length % 6 === 0 && s.i < s.queue.length) s.inter = makeInter(s);
     // Detección silenciosa de cansancio o confusión.
     const last = s.results.slice(-6);
     s.banner = null;
@@ -2354,13 +2814,107 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         ${CONTENT.modules.map((m) => `<div class="stat-row"><b>${esc(m.es)}</b><span class="delta">${s.before[m.id]}% → ${modPct(m.id)}%</span></div>`).join("")}
         <p class="small muted">El dominio sube cuando respondes bien en días distintos: así se queda en la memoria.</p></section>
       ${worst.length ? `<section class="card"><div class="kicker">Lo que más te costó hoy</div>${worst.map(([t, k]) => `<a class="btn" href="#t-${t}" style="justify-content:space-between"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${k} ✗</span></a>`).join("")}</section>` : ""}
-      <div class="row-wrap"><button type="button" class="btn primary" id="more">Otra ronda</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
-    $("#more", v).addEventListener("click", () => {
-      const q = buildQueue("plan", MODES[S.mode].min);
-      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
-    });
+      ${s.interOk || s.interBad ? `<p class="small muted">Retos de formato: ${s.interOk} bien de ${s.interOk + s.interBad}.</p>` : ""}
+      <div class="row-wrap"><button type="button" class="btn primary" id="more">${S.calm ? "Otros 5" : "Otra ronda"}</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
+    $("#more", v).addEventListener("click", startPlanned);
     SES = null;
   }
+  function startPlanned() {
+    const min = MODES[S.mode].min;
+    let kind = S.focus === "hard" || S.focus === "fails" ? S.focus : "plan";
+    let q = buildQueue(kind, min);
+    if (!q.length) { kind = "free"; q = interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12); }
+    startSession(kind, q, min);
+  }
+
+  /* Retos que rompen la monotonía (no cambian la memoria FSRS) */
+  const shuffle = (a) => a.map((x) => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
+  function makeInter(s) {
+    const cur = ITEM[s.queue[s.i]] || ITEM[s.queue[s.i - 1]];
+    const mod = cur && cur.mod !== "mine" ? cur.mod : "geo";
+    const kinds = ["mc", "caso", "quien"];
+    for (let k = 0; k < kinds.length; k++) {
+      const kind = kinds[(s.interN + k) % kinds.length];
+      const r = kind === "mc" ? interMc(s, mod) : kind === "caso" ? interCaso(mod) : interQuien(mod);
+      if (r) { s.interN++; return r; }
+    }
+    return null;
+  }
+  function interMc(s, mod) {
+    const pool = BANK.map((q, i) => i).filter((i) => BANK[i].mod === mod && !s.usedMc.includes(i));
+    if (!pool.length) return null;
+    const i = pool[Math.floor(Math.random() * pool.length)]; s.usedMc.push(i);
+    const q = BANK[i];
+    // q, help, opts y why vienen ya escapados del banco del simulacro.
+    return { kicker: "Reto · opción múltiple como en el examen", body: `<p class="q" style="font-size:1.15rem">${q.q}${q.help ? `<span class="es small" style="display:block;font-family:var(--font-body);font-weight:400;color:var(--muted);margin-top:.4rem">${q.help}</span>` : ""}</p>`, opts: q.opts, ans: q.ans, why: `<span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span>`, pick: null };
+  }
+  function interCaso(mod) {
+    const pool = TOPICS.filter((t) => t.mod === mod && t.life);
+    if (pool.length < 3) return null;
+    const [target, ...rest] = shuffle(pool);
+    const opts = shuffle([target, rest[0], rest[1]]);
+    return { kicker: "Reto · caso real", body: `<p class="small muted">¿De qué tema es este caso?</p><p class="q" style="font-size:1.1rem">${bl(target.life, "span")}</p>`, opts: opts.map((t) => esc(t.es)), ans: opts.indexOf(target), why: `Es de <b>${esc(target.es)}</b>. ${bl(target.map.exam)}`, pick: null };
+  }
+  function interQuien(mod) {
+    const tabs = shuffle(TOPICS.filter((t) => t.mod === mod && t.table && entities(t.table).length >= 3));
+    if (!tabs.length) return null;
+    const ents = shuffle(entities(tabs[0].table));
+    const target = ents[0];
+    const opts = shuffle(ents.slice(0, 3));
+    return { kicker: `Reto · ¿Quién soy? (estudio inverso) · ${tabs[0].es}`, body: `<div class="cmp" style="grid-template-columns:1fr"><div><dl>${target.attrs.map(([h, x]) => `<div><dt>${esc(short(h) || "Dato")}</dt><dd>${esc(x)}</dd></div>`).join("")}</dl></div></div><p class="q" style="font-size:1.1rem">¿Quién soy? <span class="en">Who am I?</span></p>`, opts: opts.map((e) => esc(e.name)), ans: opts.indexOf(target), why: `<span class="es">Lo reconoces por: ${esc(target.attrs.map((a) => a[1]).join(" · "))}</span>`, pick: null };
+  }
+  function renderInter(v, label) {
+    const s = SES, x = s.inter, done = x.pick !== null;
+    $("#crumb").innerHTML = `<b>${label}</b> · reto`;
+    v.innerHTML = `<div class="kicker">${esc(x.kicker)}</div>
+      <article class="qcard" aria-live="polite">${x.body}
+        <div class="opts" role="group" aria-label="Opciones">${x.opts.map((o, k) => `<button type="button" data-k="${k}" ${done ? "disabled" : ""} class="${done && k === x.ans ? "ok" : done && k === x.pick ? "bad" : ""}"><span>${k + 1}.</span><span>${o}</span></button>`).join("")}</div>
+        ${done ? `<div class="answer"><div class="kicker">${x.pick === x.ans ? "¡Bien! Así se entiende" : "Casi. Mira por qué"}</div><p class="small">${x.why}</p></div>` : ""}
+      </article>
+      <div class="actions">${done ? `<button type="button" class="btn primary block" id="inter-next">Seguir →</button>` : `<button type="button" class="link-btn" id="inter-skip">Saltar este reto</button>`}
+        <p class="kbd-hint">${done ? "<kbd>Enter</kbd> seguir" : "<kbd>1</kbd>–<kbd>4</kbd> elegir"}</p></div>`;
+    $$("[data-k]", v).forEach((b) => b.addEventListener("click", () => pickInter(Number(b.dataset.k))));
+    const nx = $("#inter-next", v); if (nx) { nx.addEventListener("click", closeInter); nx.focus(); }
+    const sk = $("#inter-skip", v); if (sk) sk.addEventListener("click", closeInter);
+  }
+  function pickInter(k) {
+    const s = SES; if (!s || !s.inter || s.inter.pick !== null || k >= s.inter.opts.length) return;
+    s.inter.pick = k;
+    if (k === s.inter.ans) s.interOk = (s.interOk || 0) + 1; else s.interBad = (s.interBad || 0) + 1;
+    render();
+  }
+  function closeInter() { if (SES) { SES.inter = null; render(); window.scrollTo(0, 0); } }
+
+  // Repaso rápido con gestos: desliza a la derecha = sí, a la izquierda = no.
+  function swipe(el, onLeft, onRight) {
+    if (!el) return;
+    let x0 = null, pid = null;
+    const reset = () => { x0 = null; el.classList.remove("drag"); el.style.transform = ""; };
+    el.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") return; x0 = e.clientX; pid = e.pointerId; el.classList.add("drag"); });
+    el.addEventListener("pointermove", (e) => { if (x0 === null || e.pointerId !== pid) return; const dx = e.clientX - x0; el.style.transform = `translateX(${dx}px) rotate(${dx / 40}deg)`; });
+    el.addEventListener("pointerup", (e) => { if (x0 === null) return; const dx = e.clientX - x0; reset(); if (dx > 90) onRight(); else if (dx < -90) onLeft(); });
+    el.addEventListener("pointercancel", reset);
+  }
+
+  // Atajos de teclado (estilo Quizlet): 1/2 o ←/→ responden, H pista, Enter sigue, 1–4 eligen opción.
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.isComposing) return;
+    const tgt = e.target;
+    if (tgt && tgt.closest && tgt.closest("textarea, input, select, [contenteditable]")) return;
+    if (tgt && tgt.closest && tgt.closest("button, a, summary") && (e.key === "Enter" || e.key === " ")) return;
+    if (e.key === "Escape") { const p = $("#imgpanel.full"); if (p && IMGV.topic) { toggleZoom(TOPIC[IMGV.topic]); e.preventDefault(); } return; }
+    const r = route().name;
+    const click = (sel) => { const b = $(sel); if (b && !b.disabled) { b.click(); e.preventDefault(); } };
+    if (r === "sesion" && SES) {
+      if (SES.inter) { if (/^[1-4]$/.test(e.key)) { pickInter(Number(e.key) - 1); e.preventDefault(); } else if (e.key === "Enter" && SES.inter.pick !== null) { closeInter(); e.preventDefault(); } return; }
+      if ($("#ready")) { if (e.key === "Enter" || e.key === " ") click("#ready"); return; }
+      if (SES.phase === "q") { if (e.key === "1" || e.key === "ArrowLeft") click("#no"); else if (e.key === "2" || e.key === "ArrowRight") click("#yes"); else if (e.key === "h" || e.key === "H") click("#hint"); }
+      else if (SES.phase === "a" && (e.key === "Enter" || e.key === " ")) click("#next");
+    } else if (r === "simulacro" && SIM && SIM.phase === "run") {
+      if (/^[1-4]$/.test(e.key)) click(`.opts [data-k="${Number(e.key) - 1}"]`);
+      else if (e.key === "Enter") click("#next");
+    }
+  });
 
   /* ================= Modo Pánico ================= */
   function renderPanic(v) {
@@ -2386,7 +2940,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         ${S.sims.length ? `<section class="card quiet"><div class="kicker">Tus simulacros</div>${S.sims.slice(-5).reverse().map((x) => `<div class="stat-row"><span>${esc(x.date)}</span><span class="delta">${x.score}/${x.total} · ${Math.round((100 * x.score) / x.total)} %</span></div>`).join("")}</section>` : ""}`;
       $("#go", v).addEventListener("click", () => {
         const pick = (m) => BANK.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
-        SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, end: Date.now() + 20 * 60e3 };
+        SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, cross: [], end: Date.now() + 20 * 60e3 };
         clearInterval(simTick); simTick = setInterval(() => { if (!SIM || SIM.phase !== "run") return clearInterval(simTick); const left = SIM.end - Date.now(); $("#timer").textContent = fmtMs(Math.max(0, left)); if (left <= 0) finishSim(); }, 1000);
         render();
       });
@@ -2398,11 +2952,19 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     $("#ptop").style.width = `${Math.round((100 * SIM.i) / SIM.qs.length)}%`;
     $("#crumb").innerHTML = `<b>Simulacro</b> · <span class="mono">${SIM.i + 1}/${SIM.qs.length}</span> · ${q.mod === "geo" ? "Geología" : "La Célula"}`;
     v.innerHTML = `<article class="qcard"><p class="q" style="font-size:1.2rem">${q.q}${q.help ? `<span class="es small" style="display:block;font-family:var(--font-body);font-weight:400;color:var(--muted);margin-top:.4rem">${q.help}</span>` : ""}</p>
-      <div class="opts" role="group" aria-label="Opciones">${q.opts.map((o, k) => `<button type="button" data-k="${k}" aria-pressed="${SIM.sel === k}"><span>${"abcd"[k]}.</span><span>${o}</span></button>`).join("")}</div></article>
-      <div class="actions"><button type="button" class="btn primary block" id="next" ${SIM.sel === null ? "disabled" : ""}>${SIM.i + 1 < SIM.qs.length ? "Siguiente →" : "Terminar y ver mi nota"}</button></div>`;
-    $$("[data-k]", v).forEach((b) => b.addEventListener("click", () => { SIM.sel = Number(b.dataset.k); render(); }));
+      <div class="opts" role="group" aria-label="Opciones">${q.opts.map((o, k) => `<div class="opt-row ${SIM.cross.includes(k) ? "crossed" : ""}"><button type="button" data-k="${k}" aria-pressed="${SIM.sel === k}"><span>${"abcd"[k]}.</span><span>${o}</span></button><button type="button" class="x" data-x="${k}" aria-pressed="${SIM.cross.includes(k)}" aria-label="Tachar la opción ${"abcd"[k]}" title="Tachar">✕</button></div>`).join("")}</div>
+      <p class="small muted">Tacha (✕) las que sabes que no son: así descartas distractores como en el examen real.</p></article>
+      <div class="actions"><button type="button" class="btn primary block" id="next" ${SIM.sel === null ? "disabled" : ""}>${SIM.i + 1 < SIM.qs.length ? "Siguiente →" : "Terminar y ver mi nota"}</button>
+        <p class="kbd-hint"><kbd>1</kbd>–<kbd>4</kbd> elegir · <kbd>Enter</kbd> siguiente</p></div>`;
+    $$("[data-k]", v).forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.k); SIM.sel = k; SIM.cross = SIM.cross.filter((x) => x !== k); render(); }));
+    $$("[data-x]", v).forEach((b) => b.addEventListener("click", () => {
+      const k = Number(b.dataset.x);
+      SIM.cross = SIM.cross.includes(k) ? SIM.cross.filter((x) => x !== k) : [...SIM.cross, k];
+      if (SIM.sel === k) SIM.sel = null;
+      render();
+    }));
     $("#next", v).addEventListener("click", () => {
-      SIM.picks.push(SIM.sel); SIM.sel = null; SIM.i++;
+      SIM.picks.push(SIM.sel); SIM.sel = null; SIM.cross = []; SIM.i++;
       if (SIM.i >= SIM.qs.length) finishSim(); else { render(); window.scrollTo(0, 0); }
     });
   }
@@ -2423,8 +2985,10 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     const need = Math.max(0, Math.ceil(0.7 * n) - SIM.score);
     const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => BANK[qi].mod === m); return `${ks.filter(([qi, k]) => BANK[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
     const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => BANK[qi].ans !== SIM.picks[k]);
-    v.innerHTML = `<div><div class="kicker">Nota cruda</div><h1 class="title"><span class="mono">${SIM.score}/${n}</span> · ${pct} %</h1>
-      <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70 %.` : "Llegas al 70 %: vas aprobando."}</p></div>
+    const prev = S.sims.length > 1 ? S.sims[S.sims.length - 2] : null;
+    const prevPct = prev ? Math.round((100 * prev.score) / prev.total) : null;
+    v.innerHTML = `<div><div class="kicker">Veredicto real · nota cruda <span class="mono">${SIM.score}/${n}</span></div><h1 class="title">Hoy sacarías <span class="mono">${pct}</span></h1>
+      <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70.` : "Llegas al 70: vas aprobando."}${prevPct !== null ? ` ${pct > prevPct ? `Subiste desde ${prevPct}. ¡Se nota lo que estudiaste!` : pct === prevPct ? `Igual que la vez pasada (${prevPct}).` : `La vez pasada sacaste ${prevPct}: repasa las de abajo y vuelve a intentarlo.`}` : ""}</p></div>
       <section class="card"><div class="stat-row"><b>Geología</b><span class="delta">${by("geo")}</span></div><div class="stat-row"><b>La Célula</b><span class="delta">${by("cell")}</span></div></section>
       ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = BANK[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
       <div class="row-wrap"><button type="button" class="btn primary" id="again">Otro simulacro</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
@@ -2441,7 +3005,22 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     const c = $("#ctx-clear"); if (c) c.addEventListener("click", () => { ctxTopic = null; renderCtx(); });
     if (photo) $("#ctx").insertAdjacentHTML("beforeend", ` <span class="attach">📷 foto lista <button type="button" class="link-btn" id="photo-x" aria-label="Quitar foto">×</button></span>`);
     const x = $("#photo-x"); if (x) x.addEventListener("click", () => { photo = null; renderCtx(); });
+    const im = $('#sugg [data-sugg="imagen"]'); if (im) im.hidden = route().name !== "topic";
   }
+  // Chips de sugerencia rápida (el único lugar con el destello de Gemini, junto a «Pensando…»).
+  function suggest(kind, t = ctxTopic ? TOPIC[ctxTopic] : null) {
+    const name = t ? `«${t.es}»` : "todo el temario";
+    const msg = {
+      resume: `Resúmeme ${name} en 3 frases muy cortas, con los términos clave en inglés entre paréntesis.`,
+      ejemplo: `Dame otro ejemplo de la vida diaria para ${name}${t ? `, distinto a este: «${t.life[0]}»` : ""}.`,
+      quiz: `Hazme un quiz de 3 preguntas cortas sobre ${name}. Hazlas de una en una y espera mi respuesta antes de seguir.`,
+      imagen: `No entendí la imagen de ${name}. Descríbemela con palabras sencillas, parte por parte, como si la estuviéramos viendo juntos.`,
+    }[kind];
+    if (!msg) return;
+    if (t) { ctxTopic = t.id; renderCtx(); }
+    sendTutor(msg);
+  }
+  $$("#sugg [data-sugg]").forEach((b) => b.addEventListener("click", () => suggest(b.dataset.sugg)));
   function temario(t) {
     if (!t) return TOPICS.map((x) => `## ${MOD[x.mod].es} · ${x.es}\n` + x.sum.map((p) => "- " + p[0]).join("\n")).join("\n\n");
     return [`${MOD[t.mod].es} · ${t.es} (${t.en})`,
@@ -2482,16 +3061,19 @@ ${temario(t)}`;
     addMsg("me", text || "📷 Te envío una foto.");
     chat.push({ role: "user", content: (text || "Te envío una foto de mis apuntes o de una pregunta. Ayúdame con ella.") + (img ? "\n(Adjunto una foto.)" : "") });
     const out = addMsg("tu", "Pensando…");
+    out.classList.add("glimmer");
     ctl = new AbortController();
     $("#tutor-stop").hidden = false; $("#send-btn").disabled = true;
     try {
       const turns = [{ role: "user", content: rules(t) }, ...chat.slice(-8)];
-      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { out.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); } };
+      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { out.classList.remove("glimmer"); out.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); } };
       if (img) opts.images = [img];
       const res = await SAMPLE(turns, opts);
       const m = res.text.match(TAG);
       const clean = res.text.replace(TAG, "");
+      out.classList.remove("glimmer");
       out.textContent = clean;
+      if (S.voice) say([{ text: clean.slice(0, 1900), language: "es" }]);
       chat.push({ role: "assistant", content: clean });
       if (m && t) {
         S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[m[1]]; save();
@@ -2506,6 +3088,7 @@ ${temario(t)}`;
       }
     } catch (e) {
       chat.pop();
+      out.classList.remove("glimmer");
       if (e && e.code === "cancelled") out.textContent = e.text || "Detenido.";
       else out.textContent = (e && e.text ? e.text + "\n\n" : "") + (ERR_COPY[e && e.code] || "Se cortó la conexión. Vuelve a enviar tu mensaje.");
       if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) SAMPLE = null;
@@ -2547,21 +3130,209 @@ ${temario(t)}`;
   function measure() { const h = $("#composer").offsetHeight; document.documentElement.style.setProperty("--composer-h", h + "px"); }
   window.addEventListener("resize", measure);
 
+  /* ================= Identidad sobre notas ================= */
+  function identityLine() {
+    const today = dayKey();
+    const keys = Object.keys(S.hist).filter((k) => k < today).sort();
+    if (!keys.length) return "";
+    const first = keys[0];
+    const days = Math.max(1, Math.round((new Date(today + "T12:00").getTime() - new Date(first + "T12:00").getTime()) / DAY));
+    const parts = CONTENT.modules.map((m) => [m.es, S.hist[first][m.id] || 0, modPct(m.id)]).filter(([, a, b]) => b > a);
+    if (!parts.length) return "";
+    return `Hace ${days} ${days === 1 ? "día" : "días"} tenías ${parts.map(([n, a]) => `${a}% en ${esc(n)}`).join(" y ")}. Hoy ya dominas ${parts.map(([n, , b]) => `<b class="mono">${b}%</b>`).join(" y ")}. Sí puedes aprender esto.`;
+  }
+
+  /* ================= Subir y Entender: tus apuntes → tema con 5 pasos ================= */
+  let upPhoto = null, upCtl = null, upMsg = "";
+  function renderUpload(v) {
+    $("#crumb").innerHTML = `<b>Subir y Entender</b>`;
+    const mine = TOPICS.filter((t) => t.mod === "mine");
+    v.innerHTML = `<div><div class="kicker">Subir y Entender</div><h1 class="title">Tus apuntes, convertidos en un tema</h1>
+      <p class="muted" style="margin-top:.4rem">Pega lo que te dio tu docente, tus apuntes o la transcripción de un video. En unos segundos lo convierto en los 5 pasos del Sistema de Entender, con preguntas que se repasan solas.</p></div>
+      ${SAMPLE ? "" : `<div class="notice">Esta función usa a Claude. Abre la app dentro de Claude para usarla; lo demás funciona igual.</div>`}
+      <section class="card" aria-labelledby="up-h"><h2 class="h" id="up-h">¿Qué quieres entender?</h2>
+        <label for="up-text" class="small"><b>Texto</b> (apuntes, resumen o transcripción)</label>
+        <textarea id="up-text" class="field" rows="8" maxlength="30000" placeholder="Pega aquí el texto…"></textarea>
+        <p class="small muted">¿Un video de YouTube? Debajo del video toca «…más» → «Mostrar transcripción», copia el texto y pégalo aquí.</p>
+        <div class="row-wrap">${IMG ? `<button type="button" class="btn" id="up-photo-btn">📷 ${upPhoto ? "Cambiar foto" : "Subir foto de tus apuntes"}</button>${upPhoto ? `<span class="attach">📷 ${esc(upPhoto.name || "foto")} <button type="button" class="link-btn" id="up-photo-x" aria-label="Quitar foto">×</button></span>` : ""}` : ""}
+          <label class="small" for="up-mod">Materia</label><select id="up-mod" class="field"><option value="Geología">Geología</option><option value="La Célula">La Célula</option><option value="Ciencias">Otra de Ciencias</option></select></div>
+        <button type="button" class="btn primary block" id="up-go" ${SAMPLE ? "" : "disabled"}>Entender esto</button>
+        <p class="small" id="up-msg" aria-live="polite">${esc(upMsg)}</p>
+        <button type="button" class="btn" id="up-stop" hidden>Detener</button>
+      </section>
+      ${mine.length ? `<section class="card quiet"><div class="kicker">Mis temas · ${mine.length} de 8</div><div class="mine-list">${mine.map((t) => `<a class="btn" href="#t-${t.id}" style="justify-content:space-between"><span>${esc(t.es)}</span><span class="mono muted">${topicPct(t.id)}%</span></a>`).join("")}</div></section>` : ""}`;
+    const pb = $("#up-photo-btn", v); if (pb) pb.addEventListener("click", () => $("#up-photo-in").click());
+    const px = $("#up-photo-x", v); if (px) px.addEventListener("click", () => { upPhoto = null; render(); });
+    $("#up-go", v).addEventListener("click", runUpload);
+    $("#up-stop", v).addEventListener("click", () => { if (upCtl) upCtl.abort(); });
+  }
+  const upIn = Object.assign(document.createElement("input"), { type: "file", id: "up-photo-in", hidden: true, accept: "image/*" });
+  document.body.append(upIn);
+  upIn.addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!f || !IMG) return;
+    if (f.size > IMG.maxInputBytes) { upMsg = "Esa foto es muy pesada. Prueba con una más liviana o recórtala."; render(); return; }
+    upPhoto = f; upMsg = ""; render();
+  });
+  const str = (x, n) => (typeof x === "string" ? x.replace(/\s+/g, " ").trim().slice(0, n) : "");
+  const okPair = (p, n) => { if (!Array.isArray(p)) return null; const es = str(p[0], n), en = str(p[1], n); return es ? [es, en || es] : null; };
+  function cleanTopic(raw, subject) {
+    if (!raw || typeof raw !== "object") return null;
+    const id = "u" + Date.now().toString(36);
+    const pairs = (a, n, max) => (Array.isArray(a) ? a.map((p) => okPair(p, n)).filter(Boolean) : []).slice(0, max);
+    const sum = pairs(raw.sum, 260, 6), beats = pairs(raw.beats, 320, 6);
+    const items = (Array.isArray(raw.items) ? raw.items : []).filter(Array.isArray)
+      .map((i) => [str(i[0], 300), str(i[1], 300), str(i[2], 300), str(i[3], 300)]).filter((i) => i[0] && i[2]).slice(0, 10)
+      .map((i, k) => [`${id}-${k + 1}`, i[0], i[1] || i[0], i[2], i[3] || i[2], false]);
+    if (sum.length < 2 || items.length < 2) return null;
+    const m = raw.map && typeof raw.map === "object" ? raw.map : {};
+    return { id, mod: "mine", svg: null, subject, es: str(raw.es, 80) || "Mi tema", en: str(raw.en, 80) || "My topic",
+      map: { easy: okPair(m.easy, 220) || sum[0], hard: okPair(m.hard, 220) || sum[1], exam: okPair(m.exam, 220) || sum[0] },
+      sum, beats: beats.length >= 2 ? beats : sum, life: okPair(raw.life, 420) || sum[0], items, createdAt: Date.now() };
+  }
+  async function runUpload() {
+    const text = $("#up-text").value.trim();
+    const subject = $("#up-mod").value;
+    if (!SAMPLE) return;
+    if (!text && !upPhoto) { upMsg = "Pega un texto o sube una foto primero."; $("#up-msg").textContent = upMsg; return; }
+    const go = $("#up-go"), stop = $("#up-stop"), msg = $("#up-msg");
+    go.disabled = true; stop.hidden = false;
+    msg.textContent = "Leyendo y entendiendo tus apuntes…"; msg.classList.add("glimmer");
+    const prompt = `Eres el motor de "Entender", una app de estudio para un estudiante de 7.º grado de Costa Rica. Su examen de Ciencias (${subject}) es en inglés y su idioma fuerte es el español.
+Convierte el MATERIAL en un tema con el "Sistema de Entender". Responde SOLO con un objeto JSON con esta forma exacta:
+{"es":"título corto en español","en":"short English title","map":{"easy":["lo fácil","the easy part"],"hard":["lo difícil","the hard part"],"exam":["lo que siempre sale en el examen","what always appears on the test"]},"sum":[["frase","sentence"]],"beats":[["paso de la explicación","explanation step"]],"life":["ejemplo de la vida diaria en Costa Rica","everyday example"],"items":[["pregunta","question","respuesta corta","short answer"]]}
+Reglas: "sum" tiene 5 frases y "beats" 5 pasos en orden; "items" tiene de 6 a 8 preguntas que comprueban comprensión (no solo memoria), con respuestas de máximo 25 palabras. Cada par va [español, inglés]. Frases cortas y sencillas. Usa SOLO lo que dice el material: no inventes datos. Si el material no es de estudio, devuelve {"error":"no es material de estudio"}.
+MATERIAL:
+${text ? text.slice(0, 30000) : "(está en la foto adjunta)"}`;
+    upCtl = new AbortController();
+    try {
+      const opts = { signal: upCtl.signal, cache: false };
+      if (upPhoto) opts.images = [upPhoto];
+      const raw = await SAMPLE.json(prompt, opts);
+      if (raw && raw.error) throw { code: "not_study" };
+      const t = cleanTopic(raw, subject);
+      if (!t) throw { code: "invalid_json" };
+      S.custom = (S.custom || []).concat(t);
+      while (S.custom.length > 8) { const old = S.custom.shift(); old.items.forEach((i) => delete S.cards[i[0]]); }
+      syncCustom(); save();
+      upPhoto = null; upMsg = "";
+      location.hash = "t-" + t.id;
+    } catch (e) {
+      const code = e && e.code;
+      upMsg = code === "cancelled" ? "Detenido. Tu texto sigue ahí." : code === "not_study" ? "Eso no parece material de estudio. Prueba con tus apuntes o un resumen del tema." : code === "invalid_json" ? "No me salió bien el tema. Toca «Entender esto» otra vez o pega menos texto." : ERR_COPY[code] || "Se cortó la conexión. Vuelve a intentarlo.";
+      if (code === "not_granted" || code === "sampling_disabled") SAMPLE = null;
+      const m2 = $("#up-msg"); if (m2) { m2.classList.remove("glimmer"); m2.textContent = upMsg; }
+    } finally {
+      upCtl = null;
+      const g2 = $("#up-go"), s2 = $("#up-stop");
+      if (g2) g2.disabled = !SAMPLE; if (s2) s2.hidden = true;
+    }
+  }
+
+  /* ================= Recordatorios en Google Calendar (conector mcp) ================= */
+  let MCP = null, calBusy = false, calMsg = "", calNote = "";
+  const CAL = "Google Calendar";
+  const APP_URL = "https://claude.ai/artifact/DWHg9mvRsX87YFjpJPUUwF";
+  const fmtDay = (d) => new Date(d + "T12:00").toLocaleDateString("es-CR", { weekday: "long", day: "numeric", month: "short" });
+  function calEvents() {
+    const time = /^\d\d:\d\d$/.test(S.calTime || "") ? S.calTime : "16:00";
+    const [hh, mm] = time.split(":").map(Number);
+    const endMin = Math.min(23 * 60 + 59, hh * 60 + mm + 30);
+    const endT = `${pad(Math.floor(endMin / 60))}:${pad(endMin % 60)}`;
+    const today = dayKey();
+    const out = Object.keys(CONTENT.plan).sort().filter((d) => d >= today && !S.cal[d]).map((d) => {
+      const names = CONTENT.plan[d].map((id) => TOPIC[id].es);
+      return { key: d, label: fmtDay(d), input: {
+        summary: names.length ? `📚 Ciencias: ${names.join(", ")}` : "📚 Ciencias: repaso mezclado",
+        startTime: `${d}T${time}:00`, endTime: `${d}T${endT}:00`,
+        description: `${names.length ? "Temas de hoy: " + names.join(" · ") : "Día de repaso: la app mezcla lo que estás por olvidar."}\n\nAbre Entender y toca «Empezar»: ${APP_URL}`,
+        overrideReminders: [{ method: "popup", minutes: 10 }] } };
+    });
+    if (!S.cal.exam && today <= "2026-12-04") out.push({ key: "exam", label: "el día del examen", input: {
+      summary: "📝 Examen de Ciencias · convocatoria", allDay: true, startTime: "2026-12-04T00:00:00", endTime: "2026-12-05T00:00:00",
+      description: `Geología + La Célula. La noche antes: solo un repaso suave o el Modo Pánico, nada nuevo. Duerme bien.\n\n${APP_URL}`,
+      overrideReminders: [{ method: "popup", minutes: 300 }] } });
+    return out;
+  }
+  function calCardHtml() {
+    const evs = calEvents(), made = Object.keys(S.cal).length;
+    let inner;
+    if (calNote) inner = `<p class="small">${esc(calNote)}</p><div><button type="button" class="link-btn" id="cal-recheck">Ya lo hice: revisar otra vez</button></div>`;
+    else if (!evs.length) inner = `<p class="small">✅ Tu plan ya está en tu calendario${made ? ` (${made} eventos)` : ""}.</p>`;
+    else inner = `<div class="row-wrap"><label class="small" for="cal-time">Hora de estudio</label><input type="time" class="field" id="cal-time" value="${esc(S.calTime || "16:00")}">
+      <button type="button" class="btn" id="cal-go" ${calBusy ? "disabled" : ""}>Agregar ${evs.length} ${evs.length === 1 ? "evento" : "eventos"}</button></div>`;
+    return `<section class="card quiet" id="cal-card" aria-labelledby="cal-h"><div><b id="cal-h">📅 Recordatorios en tu Google Calendar</b>
+      <p class="small muted">Pongo cada día de estudio con sus temas (30 min, aviso 10 min antes) y el día del examen. Solo se crean cuando tocas el botón.</p></div>
+      ${inner}<p class="small" id="cal-msg" aria-live="polite">${esc(calMsg)}</p></section>`;
+  }
+  function bindCalCard(v) {
+    const ti = $("#cal-time", v); if (ti) ti.addEventListener("change", () => { if (/^\d\d:\d\d$/.test(ti.value)) { S.calTime = ti.value; save(); } });
+    const go = $("#cal-go", v); if (go) go.addEventListener("click", addToCalendar);
+    const rc = $("#cal-recheck", v); if (rc) rc.addEventListener("click", checkCal);
+  }
+  function refreshCal() { const c = $("#cal-card"); if (c && route().name === "hoy") { c.outerHTML = calCardHtml(); bindCalCard($("#view")); } }
+  const setCalMsg = (m) => { calMsg = m; const el = $("#cal-msg"); if (el) el.textContent = m; };
+  function calError(err, ev, made) {
+    const pre = made ? `Se crearon ${made}. ` : "";
+    switch (err && err.code) {
+      case "needs_reauth": return pre + "Reconecta Google Calendar en claude.ai → Configuración → Conectores y vuelve a tocar el botón.";
+      case "server_not_connected": case "server_not_found": return pre + "Agrega Google Calendar en claude.ai → Configuración → Conectores y vuelve a tocar el botón.";
+      case "selection_required": return pre + "Tienes más de un Google Calendar conectado: elige uno cuando Claude te lo pregunte y vuelve a intentar.";
+      case "approval_required": case "consent_required": return pre + "Necesito tu permiso para usar tu Google Calendar. Claude te lo pide cuando abres la app ahí: acepta y vuelve a tocar el botón.";
+      case "not_in_manifest": return pre + "No diste permiso a esta app para usar tu Google Calendar. Puedes cambiarlo en el menú Permisos de esta página.";
+      case "blocked_by_policy": return pre + "Tu organización no permite usar Google Calendar desde aquí.";
+      case "tool_error": return pre + `Google Calendar no aceptó el evento de ${ev.label}: ${String(err.message || "error desconocido").slice(0, 160)}`;
+      case "not_granted": case "capability_disabled": case "capability_removed": MCP = null; return pre + "Esta vista no puede usar tus conectores. Abre la app dentro de Claude.";
+      default: return pre + `Se cortó la conexión con Google Calendar. Puede que el evento de ${ev.label} sí se haya creado: revisa tu calendario antes de volver a intentar.`;
+    }
+  }
+  async function addToCalendar() {
+    if (!MCP || calBusy) return;
+    const ti = $("#cal-time"); if (ti && /^\d\d:\d\d$/.test(ti.value)) S.calTime = ti.value;
+    const evs = calEvents(); if (!evs.length) return;
+    calBusy = true; const go = $("#cal-go"); if (go) go.disabled = true;
+    let made = 0;
+    for (const ev of evs) {
+      setCalMsg(`Creando ${made + 1} de ${evs.length}…`);
+      try { await MCP.callTool(CAL, "create_event", ev.input); S.cal[ev.key] = true; made++; save(); }
+      catch (err) { calBusy = false; calMsg = calError(err, ev, made); refreshCal(); return; }
+    }
+    calBusy = false; calMsg = `✅ Listo: ${made} ${made === 1 ? "evento nuevo" : "eventos nuevos"} en tu Google Calendar.`; refreshCal();
+  }
+  async function checkCal() {
+    if (!MCP) return;
+    calNote = "";
+    try {
+      const r = await MCP.listTools(CAL);
+      const sv = (r.servers || []).find((x) => x.server === CAL);
+      if (!sv || !sv.tools.length) calNote = "Para usar esto, agrega (o elige) Google Calendar en claude.ai → Configuración → Conectores.";
+      else if (sv.authStatus === "needs_reauth") calNote = "Reconecta Google Calendar en claude.ai → Configuración → Conectores.";
+      else if (!sv.tools.some((x) => x.name === "create_event")) calNote = "Tu Google Calendar no permite crear eventos desde aquí.";
+    } catch (e) {
+      if (e && (e.code === "not_granted" || e.code === "capability_disabled" || e.code === "capability_removed")) MCP = null;
+    }
+    if (route().name === "hoy") render();
+  }
+
   /* ================= Capacidades de la plataforma ================= */
   async function initCaps() {
     if (!window.claude || !window.claude.use) return;
     claude.use("sample").then(async (s) => {
       SAMPLE = s;
       if (!s) return;
+      $("#sugg").hidden = false; measure();
+      if (["subir", "topic"].includes(route().name)) render();
       const lim = await s.limits().catch(() => null);
-      if (lim && lim.images) { IMG = lim.images; $("#photo").accept = lim.images.mediaTypes.join(","); $("#photo-btn").hidden = false; }
+      if (lim && lim.images) { IMG = lim.images; $("#photo").accept = upIn.accept = lim.images.mediaTypes.join(","); $("#photo-btn").hidden = false; if (route().name === "subir") render(); }
     });
     claude.use("tts").then((t) => {
       TTS = t; if (!t) return;
       t.onLine(({ id }) => { if (id && id[0] === "b") markBeat($("#view"), Number(id.slice(1))); });
       t.onState(({ state }) => { if (state === "idle") speaking = false; });
-      if (route().name === "topic") render();
+      if (route().name === "topic" || route().name === "hoy") render();
     });
+    claude.use("mcp").then((m) => { MCP = m; if (m) checkCal(); });
     claude.use("dictation").then((d) => {
       DICT = d; if (!d) return;
       $("#mic-btn").hidden = false;

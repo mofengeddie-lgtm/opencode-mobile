@@ -19,6 +19,42 @@ const CONTENT = {
     "2026-12-02": ["virus", "microbios", "comparacion", "reproduccion", "sexual", "papel"],
     "2026-12-03": [],
   },
+  // Explicaciones compartidas al tocar un dibujo (los temas las citan con hot: "nombre").
+  hot: {
+    cells: {
+      "celula vegetal": ["Célula vegetal: tiene todo lo de la animal y además pared celular, cloroplastos y una vacuola central grande.", "Plant cell: has everything an animal cell has, plus a cell wall, chloroplasts and a large central vacuole."],
+      "celula animal": ["Célula animal: membrana, núcleo, citoplasma, mitocondrias, lisosomas y vacuolas pequeñas; NO tiene pared celular ni cloroplastos.", "Animal cell: membrane, nucleus, cytoplasm, mitochondria, lysosomes and small vacuoles; NO cell wall and NO chloroplasts."],
+      "pared celular": ["Pared celular: capa rígida por fuera de la membrana que da soporte y forma. Solo en plantas (y hongos y bacterias).", "Cell wall: rigid layer outside the membrane that gives support and shape. Only in plants (and fungi and bacteria)."],
+      "membrana celular": ["Membrana celular: barrera selectiva; decide qué entra y qué sale de la célula.", "Cell membrane: selective barrier; it controls what enters and leaves the cell."],
+      "nucleo": ["Núcleo: guarda el ADN y controla la célula, como el cerebro.", "Nucleus: stores the DNA and controls the cell, like a brain."],
+      "vacuola central grande": ["Vacuola central grande: guarda agua y mantiene firme a la planta. Solo en células vegetales.", "Large central vacuole: stores water and keeps the plant firm. Only in plant cells."],
+      "vacuola pequena": ["Vacuolas pequeñas: guardan agua y sustancias en la célula animal.", "Small vacuoles: store water and substances in the animal cell."],
+      "cloroplasto": ["Cloroplasto: hace la fotosíntesis (convierte luz en alimento). Solo en plantas.", "Chloroplast: carries out photosynthesis (turns light into food). Only in plants."],
+      "mitocondria": ["Mitocondria: produce la energía (ATP) de la célula, como una planta eléctrica.", "Mitochondria: produce the cell's energy (ATP), like a power plant."],
+      "citoplasma": ["Citoplasma: el líquido gelatinoso donde flotan los organelos.", "Cytoplasm: the jelly-like fluid where the organelles float."],
+      "lisosoma": ["Lisosoma: digiere y recicla desechos dentro de la célula animal.", "Lysosome: digests and recycles waste inside the animal cell."],
+      "sin pared": ["La célula animal no tiene pared celular ni cloroplastos: por eso no hace fotosíntesis.", "The animal cell has no cell wall and no chloroplasts: that is why it cannot do photosynthesis."],
+      "solo en plantas": ["★ = organelo que solo tienen las plantas: pared celular, cloroplastos y vacuola central grande.", "★ = organelle only plants have: cell wall, chloroplasts and large central vacuole."],
+    },
+    bacteria: {
+      "capsula": ["Cápsula: capa pegajosa por fuera de la pared que protege a la bacteria.", "Capsule: sticky outer layer that protects the bacterium."],
+      "capsule": ["Cápsula: capa pegajosa por fuera de la pared que protege a la bacteria.", "Capsule: sticky outer layer that protects the bacterium."],
+      "pili": ["Pili: pelitos cortos para pegarse a superficies y pasar ADN a otra bacteria (conjugación).", "Pili: short hairs used to stick to surfaces and pass DNA to another bacterium (conjugation)."],
+      "pared celular": ["Pared celular de la bacteria: rígida, hecha de peptidoglicano; le da forma.", "Bacterial cell wall: rigid, made of peptidoglycan; it gives the cell its shape."],
+      "cell wall": ["Pared celular de la bacteria: rígida, hecha de peptidoglicano; le da forma.", "Bacterial cell wall: rigid, made of peptidoglycan; it gives the cell its shape."],
+      "membrana": ["Membrana celular: controla qué entra y qué sale, igual que en nuestras células.", "Cell membrane: controls what enters and leaves, just like in our cells."],
+      "cell membrane": ["Membrana celular: controla qué entra y qué sale, igual que en nuestras células.", "Cell membrane: controls what enters and leaves, just like in our cells."],
+      "ribosomas": ["Ribosomas: fabrican proteínas. Las bacterias sí tienen ribosomas, aunque no tienen núcleo.", "Ribosomes: make proteins. Bacteria do have ribosomes even though they have no nucleus."],
+      "ribosomes": ["Ribosomas: fabrican proteínas. Las bacterias sí tienen ribosomas, aunque no tienen núcleo.", "Ribosomes: make proteins. Bacteria do have ribosomes even though they have no nucleus."],
+      "adn circular": ["ADN circular (nucleoide): el ADN de la bacteria está suelto en el citoplasma, no dentro de un núcleo.", "Circular DNA (nucleoid): the bacterium's DNA floats in the cytoplasm, not inside a nucleus."],
+      "circular dna": ["ADN circular (nucleoide): el ADN de la bacteria está suelto en el citoplasma, no dentro de un núcleo.", "Circular DNA (nucleoid): the bacterium's DNA floats in the cytoplasm, not inside a nucleus."],
+      "plasmido": ["Plásmido: anillo pequeño de ADN extra que la bacteria puede compartir con otras.", "Plasmid: small extra ring of DNA that the bacterium can share with others."],
+      "plasmid": ["Plásmido: anillo pequeño de ADN extra que la bacteria puede compartir con otras.", "Plasmid: small extra ring of DNA that the bacterium can share with others."],
+      "flagelo": ["Flagelo: cola larga que gira como hélice para que la bacteria se mueva.", "Flagellum: long tail that spins like a propeller so the bacterium can move."],
+      "flagellum": ["Flagelo: cola larga que gira como hélice para que la bacteria se mueva.", "Flagellum: long tail that spins like a propeller so the bacterium can move."],
+      "sin nucleo": ["SIN núcleo: la bacteria es procariota; su ADN no está encerrado en un núcleo.", "NO nucleus: the bacterium is a prokaryote; its DNA is not enclosed in a nucleus."],
+    },
+  },
   // Preguntas extra para el Simulacro (se suman a las 40 de la práctica).
   mcq: [
     { mod: "geo", q: "Which of Earth's systems includes rocks, minerals, soil and landforms?", help: "¿Qué sistema incluye rocas, minerales, suelo y relieve?", opts: ["Hydrosphere", "Geosphere", "Biosphere"], ans: 1, why: ["Geosfera = la parte sólida de la Tierra.", "Geosphere = the solid part of Earth."] },
@@ -438,6 +474,14 @@ const CONTENT = {
     {
       id: "suelo", mod: "geo", svg: "soil-horizons",
       es: "El suelo y su conservación", en: "Soil and its conservation",
+      // Explicaciones al tocar el dibujo (imagen tocable).
+      hot: {
+        "capa organica": ["Horizonte O · capa orgánica: hojas, ramas y restos frescos o descomponiéndose encima del suelo.", "Horizon O · organic layer: fresh and decaying leaves, twigs and remains on top of the soil."],
+        "suelo superficial": ["Horizonte A · suelo superficial (topsoil): oscuro y fértil por el humus; aquí crecen las raíces.", "Horizon A · topsoil: dark and fertile because of humus; roots grow here."],
+        "subsuelo": ["Horizonte B · subsuelo (subsoil): arcilla y minerales que el agua lavó desde arriba.", "Horizon B · subsoil: clay and minerals washed down from above."],
+        "material parental": ["Horizonte C · material parental: pedazos de la roca madre que se está meteorizando.", "Horizon C · parent material: pieces of the bedrock being weathered."],
+        "roca madre": ["Horizonte R · roca madre (bedrock): roca sólida que todavía no se ha meteorizado.", "Horizon R · bedrock: solid rock that has not been weathered yet."],
+      },
       map: {
         easy: ["El orden O-A-B-C-R de arriba hacia abajo.", "The order O-A-B-C-R from top to bottom."],
         hard: ["Qué hay en cada horizonte (pareo del examen).", "What is in each horizon (test matching)."],
@@ -604,6 +648,13 @@ const CONTENT = {
         ["Los tres postulados: todo ser vivo está hecho de células; la célula es la unidad básica; toda célula viene de otra.", "The three postulates: all living things are made of cells; the cell is the basic unit; all cells come from cells."],
       ],
       life: ["Como los ladrillos de tu casa: toda la casa está hecha de ladrillos (postulado 1) y el ladrillo es la pieza básica (postulado 2). Pero una célula nueva solo sale de otra célula (postulado 3).", "Like the bricks of your house: the whole house is made of bricks (postulate 1) and the brick is the basic piece (postulate 2). But a new cell only comes from another cell (postulate 3)."],
+      timeline: [
+        ["1665", "Robert Hooke", "Mira corcho al microscopio, ve cuartitos vacíos y los llama «células».", "Looks at cork under a microscope, sees little empty rooms and calls them “cells”."],
+        ["1674", "Anton van Leeuwenhoek", "Con lentes que él mismo fabricó ve las primeras células vivas moviéndose en el agua.", "With lenses he made himself, he sees the first living cells moving in water."],
+        ["1838", "Matthias Schleiden", "Dice que todas las plantas están hechas de células.", "States that all plants are made of cells."],
+        ["1839", "Theodor Schwann", "Agrega que los animales también: todo ser vivo está hecho de células.", "Adds that animals are too: all living things are made of cells."],
+        ["1855", "Rudolf Virchow", "Completa la teoría: toda célula viene de otra célula.", "Completes the theory: every cell comes from another cell."],
+      ],
       items: [
         ["te-1", "Escribe los 3 postulados de la teoría celular.", "Write the 3 postulates of the cell theory.", "1) Todos los seres vivos están hechos de células. 2) La célula es la unidad básica de estructura y función. 3) Toda célula viene de otra célula.", "1) All living things are made of cells. 2) The cell is the basic unit of structure and function. 3) All cells come from pre-existing cells.", true],
         ["te-2", "¿Quién usó por primera vez la palabra célula y qué observó?", "Who first used the word cell and what did they observe?", "Robert Hooke, en 1665, al observar corcho.", "Robert Hooke, in 1665, observing cork.", true],
@@ -643,7 +694,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "organelos", mod: "cell", svg: "cells",
+      id: "organelos", mod: "cell", svg: "cells", hot: "cells",
       es: "Los organelos", en: "Cell organelles",
       map: {
         easy: ["Cada organelo tiene una palabra clave.", "Each organelle has a keyword."],
@@ -721,7 +772,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "tipos", mod: "cell", svg: "cells",
+      id: "tipos", mod: "cell", svg: "cells", hot: "cells",
       es: "Tipos de células", en: "Cell types",
       map: {
         easy: ["Procariota = sin núcleo; eucariota = con núcleo.", "Prokaryotic = no nucleus; eukaryotic = nucleus."],
@@ -784,7 +835,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "microbios", mod: "cell", svg: "bacteria",
+      id: "microbios", mod: "cell", svg: "bacteria", hot: "bacteria",
       es: "Bacterias, protistas y hongos", en: "Bacteria, protists and fungi",
       map: {
         easy: ["Bacteria = procariota; protistas y hongos = eucariotas.", "Bacteria = prokaryotic; protists and fungi = eukaryotic."],
