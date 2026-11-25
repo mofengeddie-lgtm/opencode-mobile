@@ -15,6 +15,7 @@ node render.cjs \
 
 python3 slides.py
 python3 web/build_web.py
+python3 app/build_app.py
 node video.cjs pdf
 
 if [[ "${1:-}" == "video" ]]; then

@@ -1,0 +1,1010 @@
+<title>Entender Ciencias</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout (estilo Claude + Codex): materias a la izquierda, una sola acción al centro, entrada única abajo.
+   Paleta estricta de 3 colores: crema / carbón suave, tinta y un acento ámbar. Serifa en títulos, mono en números. */
+:root {
+  --bg: #FAF8F5; --surface: #FFFFFF; --soft: #F2EEE7; --line: #E6E0D6;
+  --ink: #1E1D1A; --muted: #6A665E;
+  --accent: #A65A16; --accent-ink: #FFFFFF; --accent-soft: #F5E6D5;
+  --good: #2E6A4F; --good-soft: #E3EFE8;
+  --plate: #FFFDF9;
+  --font-title: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --composer-h: 92px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+    --ink: #ECE7DF; --muted: #A39E95;
+    --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+    --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+  --ink: #ECE7DF; --muted: #A39E95;
+  --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+  --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.kicker { font: 600 .74rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.title { font-family: var(--font-title); font-weight: 700; font-size: clamp(1.75rem, 5vw, 2.35rem); line-height: 1.12; margin: .2rem 0 0; text-wrap: balance; letter-spacing: -.01em; }
+.title-en { color: var(--muted); font-size: 1.05rem; margin: .25rem 0 0; }
+h2.h { font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: .86rem; }
+[hidden] { display: none !important; }
+
+/* Bilingüe */
+.en { display: block; color: var(--muted); font-size: .94em; }
+.bi-inline .en { display: inline; }
+body[data-lang="es"] .en { display: none !important; }
+body[data-lang="en"] .es { display: none !important; }
+body[data-lang="en"] .en { color: inherit; font-size: 1em; }
+
+/* ---------- Estructura ---------- */
+.app { display: grid; grid-template-columns: 1fr; min-height: 100vh; }
+@media (min-width: 960px) { .app { grid-template-columns: 284px minmax(0, 1fr); } body.focus .app { grid-template-columns: minmax(0, 1fr); } }
+.side { background: var(--soft); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 1rem; padding: 1.1rem 1rem 1rem max(16px, env(safe-area-inset-left, 0px)); min-width: 0; }
+@media (min-width: 960px) { .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; } body.focus .side { display: none; } }
+@media (max-width: 959px) {
+  .side { position: fixed; z-index: 40; inset: 0 auto 0 0; width: min(86vw, 330px); overflow-y: auto; transform: translateX(-105%); transition: transform .25s ease; padding-top: calc(1.1rem + env(safe-area-inset-top, 0px)); padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  .side.open { transform: none; box-shadow: 0 0 40px rgb(0 0 0 / .25); }
+}
+.scrim { position: fixed; inset: 0; z-index: 35; background: rgb(0 0 0 / .35); }
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: .65rem; padding: .6rem max(16px, env(safe-area-inset-right, 0px)) .6rem max(16px, env(safe-area-inset-left, 0px)); min-height: 52px; }
+.icon-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 38px; height: 38px; display: inline-grid; place-items: center; font-size: 1.1rem; flex: none; }
+@media (min-width: 960px) { .menu-btn { display: none; } body.focus .menu-btn { display: none; } }
+.crumb { flex: 1; min-width: 0; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb b { font-weight: 600; }
+.timer { font-size: .95rem; font-weight: 600; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: .2rem .55rem; }
+.progress-top { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: transparent; }
+.progress-top span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.view { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 1.4rem max(16px, env(safe-area-inset-right, 0px)) calc(var(--composer-h) + 2rem) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 1.1rem; align-content: start; }
+
+/* ---------- Barra lateral ---------- */
+.brand { font-family: var(--font-title); font-size: 1.45rem; font-weight: 700; letter-spacing: -.01em; }
+.brand-sub { font-size: .82rem; color: var(--muted); }
+.side nav { display: grid; gap: .9rem; }
+.side-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; padding: .45rem .6rem; border-radius: 10px; font-weight: 600; }
+.side-link[aria-current="page"], .topic-link[aria-current="page"] { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.mod { display: grid; gap: .35rem; }
+.mod-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0 .6rem; font-weight: 700; }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin: 0 .6rem; }
+.bar span { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; }
+.topic-list { list-style: none; margin: .2rem 0 0; padding: 0; display: grid; gap: 1px; }
+.topic-link { display: grid; grid-template-columns: auto 1fr auto; gap: .55rem; align-items: center; text-decoration: none; font-size: .9rem; padding: .35rem .6rem; border-radius: 8px; }
+.topic-link:hover { background: var(--surface); }
+.topic-link .pct { font: 500 .78rem var(--font-mono); color: var(--muted); }
+.ring { width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); flex: none; }
+.side-foot { margin-top: auto; display: grid; gap: .55rem; font-size: .86rem; padding: 0 .6rem; }
+.side-foot .row { display: flex; justify-content: space-between; gap: .5rem; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: .3rem .7rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.sync { font-size: .78rem; color: var(--muted); }
+
+/* ---------- Tarjetas y botones ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.15rem; display: grid; gap: .75rem; min-width: 0; }
+.card.quiet { background: transparent; }
+.card.accent { border-color: var(--accent); }
+.row-wrap { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: .65rem 1rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 44px; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.dark { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn.block { width: 100%; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.link-btn { border: 0; background: none; padding: .25rem; color: var(--muted); font-size: .88rem; text-decoration: underline; text-underline-offset: 3px; }
+.chip { display: inline-flex; align-items: center; gap: .35rem; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .6rem; font-size: .78rem; font-weight: 600; color: var(--muted); background: var(--surface); }
+.chip.hot { color: var(--accent); border-color: var(--accent); }
+.chip.ok { color: var(--good); border-color: var(--good); }
+.grid2 { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+
+/* Hoy */
+.big-num { font: 600 clamp(2.4rem, 9vw, 3.4rem)/1 var(--font-mono); }
+.mood { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.mood button { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .8rem .4rem; font-weight: 600; display: grid; gap: .2rem; justify-items: center; min-height: 72px; }
+.mood button span { font-size: 1.35rem; }
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.modes button { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .65rem .5rem; text-align: left; display: grid; gap: .1rem; min-height: 64px; }
+.modes button b { font-size: .95rem; }
+.modes button small { color: var(--muted); font-size: .76rem; }
+.modes button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.stat-row { display: grid; grid-template-columns: 1fr auto; gap: .35rem .75rem; align-items: baseline; }
+.stat-row .delta { font: 600 .95rem var(--font-mono); }
+.states { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .82rem; color: var(--muted); }
+.states i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: .3rem; vertical-align: 0; }
+.st-new { background: var(--line); } .st-learning { background: var(--muted); } .st-mastered { background: var(--good); } .st-due { background: var(--accent); }
+.plan-topics { display: grid; gap: .4rem; }
+.plan-topics a { display: flex; justify-content: space-between; gap: .5rem; text-decoration: none; border: 1px solid var(--line); border-radius: 10px; padding: .55rem .75rem; background: var(--bg); }
+.only-mobile { display: grid; }
+@media (min-width: 960px) { .only-mobile { display: none; } }
+
+/* Tema: Sistema de Entender */
+.steps { display: grid; gap: .9rem; }
+.step { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; }
+.step-n { width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font: 600 .85rem var(--font-mono); }
+.step-body { display: grid; gap: .7rem; min-width: 0; padding-bottom: .4rem; }
+.map3 { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; }
+.map3 > div.exam { border-color: var(--accent); background: var(--accent-soft); }
+.map3 .kicker { color: var(--ink); display: block; }
+body.focus .menu-btn { display: none; }
+.map3 .exam .kicker { color: var(--accent); }
+.sum { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.sum li { padding-left: .9rem; border-left: 2px solid var(--line); }
+.plate { margin: 0; overflow-x: auto; background: var(--plate); border: 1px solid var(--line); border-radius: 14px; padding: .7rem; }
+.plate svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.beats { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; counter-reset: b; }
+.beats li { counter-increment: b; display: grid; grid-template-columns: 1.6rem 1fr; gap: .5rem; padding: .5rem .6rem; border-radius: 10px; transition: background .2s; }
+.beats li::before { content: counter(b); font: 600 .8rem var(--font-mono); color: var(--muted); padding-top: .15rem; }
+.beats li.now { background: var(--accent-soft); }
+.beats li.now::before { color: var(--accent); }
+.audio-only { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 2rem max(16px, env(safe-area-inset-right, 0px)) 2rem max(16px, env(safe-area-inset-left, 0px)); text-align: center; }
+.audio-only .now-line { font-family: var(--font-title); font-size: clamp(1.4rem, 5vw, 2rem); max-width: 30ch; line-height: 1.3; }
+.life { font-size: 1.05rem; }
+
+/* Sesión (modo enfoque) */
+.qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.3rem 1.2rem; display: grid; gap: .9rem; min-height: 12rem; align-content: start; }
+.qcard .q { font-family: var(--font-title); font-size: clamp(1.25rem, 4.2vw, 1.6rem); line-height: 1.3; font-weight: 600; }
+.qcard .q .en { font-family: var(--font-body); font-size: .62em; font-weight: 400; margin-top: .45rem; }
+.answer { border-top: 1px dashed var(--line); padding-top: .85rem; display: grid; gap: .6rem; }
+.answer .a { font-size: 1.08rem; font-weight: 600; }
+.answer .a .en { font-weight: 400; }
+.actions { position: sticky; bottom: calc(var(--composer-h) + .5rem); display: grid; gap: .5rem; padding-top: .5rem; background: linear-gradient(to bottom, transparent, var(--bg) 35%); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.two .btn { min-height: 56px; font-size: 1.02rem; }
+.err-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.err-chips button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: .3rem .7rem; font-size: .82rem; }
+.err-chips button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.notice { border-radius: 12px; padding: .7rem .9rem; background: var(--accent-soft); font-size: .92rem; }
+.done-num { font: 600 2.6rem/1 var(--font-mono); }
+
+/* Simulacro */
+.opts { display: grid; gap: .5rem; }
+.opts button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .75rem .9rem; display: grid; grid-template-columns: 1.6rem 1fr; gap: .4rem; min-height: 52px; }
+.opts button span:first-child { font: 600 .9rem var(--font-mono); color: var(--muted); }
+.opts button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.review-list { display: grid; gap: .6rem; }
+.review-list .card { gap: .4rem; }
+
+/* Tutor + entrada única */
+.tutor { position: sticky; bottom: var(--composer-h); z-index: 9; margin: 0 auto; width: 100%; max-width: 760px; padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.tutor-box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgb(0 0 0 / .08); max-height: min(58vh, 520px); display: grid; grid-template-rows: auto 1fr auto; }
+.tutor-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .65rem .9rem; border-bottom: 1px solid var(--line); }
+.tutor-head .kicker { color: var(--accent); }
+.msgs { overflow-y: auto; padding: .8rem .9rem; display: grid; gap: .65rem; align-content: start; }
+.msg { max-width: 92%; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; font-size: .96rem; }
+.msg.me { justify-self: end; background: var(--soft); border-radius: 14px 14px 4px 14px; padding: .55rem .8rem; }
+.msg.tu { justify-self: start; }
+.msg .meta { display: flex; gap: .4rem; align-items: center; margin-top: .35rem; }
+.tutor-foot { display: flex; gap: .4rem; flex-wrap: wrap; padding: .55rem .9rem; border-top: 1px solid var(--line); }
+.composer { position: sticky; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: .6rem max(16px, env(safe-area-inset-right, 0px)) calc(.6rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.composer-inner { max-width: 760px; margin: 0 auto; display: grid; gap: .35rem; }
+.ctx { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: var(--muted); }
+.ctx b { color: var(--ink); font-weight: 600; }
+.inbox { display: flex; align-items: flex-end; gap: .4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: .4rem .4rem .4rem .8rem; }
+.inbox textarea { flex: 1; border: 0; outline: none; background: transparent; resize: none; min-height: 26px; max-height: 140px; padding: .35rem 0; line-height: 1.4; }
+.inbox .icon-btn { border: 0; width: 38px; height: 38px; background: transparent; }
+.inbox .icon-btn.on { background: var(--accent-soft); color: var(--accent); }
+.send { background: var(--ink); color: var(--bg); border: 0; border-radius: 12px; height: 38px; padding: 0 .9rem; font-weight: 600; }
+.partial { font-size: .82rem; color: var(--muted); font-style: italic; }
+.attach { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; border: 1px solid var(--line); border-radius: 8px; padding: .1rem .45rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Tus materias"></aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Abrir tus materias">≡</button>
+      <div class="crumb" id="crumb"></div>
+      <span class="timer mono" id="timer" hidden></span>
+      <div class="progress-top"><span id="ptop" style="width:0"></span></div>
+    </header>
+    <main class="view" id="view" tabindex="-1"></main>
+    <section class="tutor" id="tutor" hidden aria-live="polite">
+      <div class="tutor-box">
+        <div class="tutor-head">
+          <div><div class="kicker">Tutor · comprensión real</div><div class="small muted" id="tutor-topic"></div></div>
+          <button type="button" class="icon-btn" id="tutor-close" aria-label="Cerrar tutor">×</button>
+        </div>
+        <div class="msgs" id="msgs"></div>
+        <div class="tutor-foot">
+          <button type="button" class="btn" id="tutor-again">Explícamelo de otra forma</button>
+          <button type="button" class="btn" id="tutor-stop" hidden>Detener</button>
+        </div>
+      </div>
+    </section>
+    <form class="composer" id="composer" autocomplete="off">
+      <div class="composer-inner">
+        <div class="ctx" id="ctx"></div>
+        <div class="inbox">
+          <textarea id="ask" rows="1" placeholder="Explica el tema con tus palabras, pregunta sin pena o sube una foto…" aria-label="Escribe al tutor"></textarea>
+          <input type="file" id="photo" accept="image/*" hidden>
+          <button type="button" class="icon-btn" id="photo-btn" aria-label="Subir foto" hidden>📷</button>
+          <button type="button" class="icon-btn" id="mic-btn" aria-label="Dictar" hidden>🎙</button>
+          <button type="submit" class="send" id="send-btn">Enviar</button>
+        </div>
+        <div class="partial" id="partial" hidden></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{TEMPLATES}}
+
+<script>
+{{CONTENT}}
+{{MCQ}}
+</script>
+<script>
+(() => {
+  "use strict";
+
+  /* ================= Datos ================= */
+  const TOPICS = CONTENT.topics;
+  const TOPIC = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
+  const MOD = Object.fromEntries(CONTENT.modules.map((m) => [m.id, m]));
+  const ITEMS = [];
+  const ITEM = {};
+  TOPICS.forEach((t) => t.items.forEach(([id, qes, qen, aes, aen, hot]) => {
+    const it = { id, topic: t.id, mod: t.mod, q: [qes, qen], a: [aes, aen], hot: !!hot };
+    ITEMS.push(it); ITEM[id] = it;
+  }));
+  const DAY = 864e5;
+  const EXAM = new Date(2026, 11, 4, 7, 0, 0).getTime();
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const bl = (p, tag = "span") => `<${tag} class="es">${esc(p[0])}</${tag}><${tag} class="en">${esc(p[1])}</${tag}>`;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const pad = (n) => String(n).padStart(2, "0");
+  const dayKey = (ts = Date.now()) => { const d = new Date(ts); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const daysToExam = () => Math.max(0, Math.ceil((new Date(2026, 11, 4).getTime() - new Date(new Date().toDateString()).getTime()) / DAY));
+  const PANIC_N = Math.ceil(ITEMS.length * 0.2); // el 20 % más probable
+  const MODES = { ratitos: { es: "Ratitos", min: 5, note: "3–5 min · bus" }, pomodoro: { es: "Pomodoro", min: 25, note: "25 min + 5 de pausa" }, maraton: { es: "Maratón", min: 90, note: "1–2 h con pausas" } };
+
+  /* ================= FSRS-6 (21 pesos por defecto) ================= */
+  const W = [0.212, 1.2931, 2.3065, 8.2956, 6.4133, 0.8334, 3.0194, 0.001, 1.8722, 0.1666, 0.796, 1.4835, 0.0614, 0.2629, 1.6483, 0.6014, 1.8729, 0.5425, 0.0912, 0.0658, 0.1542];
+  const DECAY = -W[20];
+  const FACTOR = Math.pow(0.9, 1 / DECAY) - 1;
+  const retr = (t, s) => Math.pow(1 + (FACTOR * t) / s, DECAY);
+  const ivl = (s, r = 0.9) => (s / FACTOR) * (Math.pow(r, 1 / DECAY) - 1);
+  const clampD = (d) => Math.min(10, Math.max(1, d));
+  const d0 = (g) => clampD(W[4] - Math.exp(W[5] * (g - 1)) + 1);
+  const nextD = (d, g) => { const dp = d + (-W[6] * (g - 3) * (10 - d)) / 9; return clampD(W[7] * d0(4) + (1 - W[7]) * dp); };
+  const sRecall = (d, s, r, g) => s * (Math.exp(W[8]) * (11 - d) * Math.pow(s, -W[9]) * (Math.exp(W[10] * (1 - r)) - 1) * (g === 2 ? W[15] : 1) * (g === 4 ? W[16] : 1) + 1);
+  const sForget = (d, s, r) => Math.min(s, W[11] * Math.pow(d, -W[12]) * (Math.pow(s + 1, W[13]) - 1) * Math.exp(W[14] * (1 - r)));
+  const sShort = (s, g) => { let inc = Math.exp(W[17] * (g - 3 + W[18])) * Math.pow(s, -W[19]); if (g >= 3) inc = Math.max(inc, 1); return s * inc; };
+
+  /* ================= Estado y guardado ================= */
+  const KEY = "entender7:v1";
+  const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0 });
+  const loadLocal = () => { try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch { /* sin almacenamiento */ } return blank(); };
+  let S = loadLocal();
+  let lang = "both";
+  try { lang = localStorage.getItem("entender7:lang") || "both"; } catch { /* nada */ }
+  document.body.dataset.lang = lang;
+
+  let remote = null, writing = false, again = false, remoteTimer = 0, sync = "local";
+  const persistLocal = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* nada */ } };
+  function save() {
+    S.updatedAt = Date.now();
+    const k = dayKey();
+    S.hist[k] = { geo: modPct("geo"), cell: modPct("cell") };
+    const keys = Object.keys(S.hist).sort();
+    while (keys.length > 40) delete S.hist[keys.shift()];
+    persistLocal();
+    if (remote) { clearTimeout(remoteTimer); remoteTimer = setTimeout(flushRemote, 1500); }
+  }
+  async function flushRemote() {
+    if (!remote) return;
+    if (writing) { again = true; return; }
+    writing = true;
+    try { await remote.set(JSON.parse(JSON.stringify(S))); setSync("cloud"); }
+    catch (e) { if (e && e.code === "invalid_argument") { remote = null; setSync("local"); } else setSync("retry"); }
+    finally { writing = false; if (again) { again = false; flushRemote(); } }
+  }
+  function setSync(s) { sync = s; const el = $("#sync"); if (el) el.textContent = SYNC_COPY[s]; }
+  const SYNC_COPY = { cloud: "☁ Progreso guardado en tu cuenta", local: "Guardado en este dispositivo", loading: "Sincronizando…", slow: "Sin conexión: se guarda en este dispositivo", retry: "No se pudo sincronizar; se guarda aquí y se reintenta" };
+  async function initRemote() {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if (!db || !user) return;
+      const uid = await user.id();
+      if (!uid) return;
+      const ref = db.doc(`data/users/${uid}/progreso`);
+      setSync("loading");
+      const timer = setTimeout(() => setSync("slow"), 10000);
+      const snap = await ref.get();
+      clearTimeout(timer);
+      remote = ref;
+      if (snap.exists) {
+        const r = snap.data();
+        if ((r.updatedAt || 0) > (S.updatedAt || 0)) { S = Object.assign(blank(), JSON.parse(JSON.stringify(r))); persistLocal(); render(); }
+        else if ((S.updatedAt || 0) > (r.updatedAt || 0)) flushRemote();
+      } else if (S.updatedAt) flushRemote();
+      setSync("cloud");
+    } catch { remote = null; setSync("local"); }
+  }
+
+  /* ================= Memoria: estados y dominio ================= */
+  function status(id, now = Date.now()) {
+    const c = S.cards[id];
+    if (!c || !c.reps) return "new";
+    if (c.due <= now) return "due";
+    if (c.st === "review" && c.s >= 5 && retr((now - c.last) / DAY, c.s) >= 0.85) return "mastered";
+    return "learning";
+  }
+  function mastery(id, now = Date.now()) {
+    const c = S.cards[id];
+    if (!c || !c.reps || c.st !== "review") return c && c.reps ? 0.05 : 0;
+    return Math.max(0, Math.min(1, retr((now - c.last) / DAY, c.s) * Math.min(1, c.s / 5)));
+  }
+  const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0);
+  const modPct = (m) => Math.round(100 * avg(ITEMS.filter((i) => i.mod === m).map((i) => mastery(i.id))));
+  const topicPct = (t) => Math.round(100 * avg(ITEMS.filter((i) => i.topic === t).map((i) => mastery(i.id))));
+  const counts = (pool) => pool.reduce((a, i) => { a[status(i.id)]++; return a; }, { new: 0, learning: 0, mastered: 0, due: 0 });
+  function yesterdayPct(m) {
+    const today = dayKey();
+    const prev = Object.keys(S.hist).filter((k) => k < today).sort().pop();
+    return prev ? S.hist[prev][m] : 0;
+  }
+  function streak() {
+    let n = 0; let d = new Date(); if (!S.days[dayKey(d.getTime())]) d = new Date(d.getTime() - DAY);
+    while (S.days[dayKey(d.getTime())]) { n++; d = new Date(d.getTime() - DAY); }
+    return n;
+  }
+  function capDue(due) {
+    const now = Date.now();
+    if (S.life && now >= EXAM) return Math.max(due, now + 30 * DAY);
+    if (now >= EXAM) return due;
+    const lim = EXAM - 20 * 3600e3; // el día antes del examen
+    return Math.min(due, Math.max(now + 6 * 3600e3, lim));
+  }
+  function rate(id, g, ms, err) {
+    const now = Date.now();
+    const c = Object.assign({ st: "new", reps: 0, lapses: 0 }, S.cards[id]);
+    if (!c.reps) { c.s = W[g - 1]; c.d = d0(g); }
+    else {
+      const t = Math.max(0, (now - c.last) / DAY);
+      c.s = t < 1 ? sShort(c.s, g) : g === 1 ? sForget(c.d, c.s, retr(t, c.s)) : sRecall(c.d, c.s, retr(t, c.s), g);
+      c.d = nextD(c.d, g);
+    }
+    if (g === 1 && c.st === "review") c.lapses++;
+    c.reps++; c.last = now;
+    if (g === 1) { c.st = "learn"; c.due = now + 5 * 60e3; }
+    else { c.st = "review"; c.due = capDue(now + Math.max(1, Math.round(ivl(c.s) * (g === 2 ? 0.8 : 1))) * DAY); }
+    S.cards[id] = c;
+    S.log.push([now, id, g, Math.round(ms), err || 0]);
+    if (S.log.length > 300) S.log.splice(0, S.log.length - 300);
+    S.days[dayKey(now)] = (S.days[dayKey(now)] || 0) + 1;
+    save();
+  }
+
+  /* ================= Planificador por fecha (Deadline Scheduler) ================= */
+  function todayTopics() {
+    const k = dayKey();
+    const keys = Object.keys(CONTENT.plan).sort();
+    if (k < keys[0]) return CONTENT.plan[keys[0]];
+    return CONTENT.plan[k] || [];
+  }
+  function mood() { return S.checkin && S.checkin.date === dayKey() ? S.checkin.mood : "normal"; }
+  const isNight = () => new Date().getHours() >= 22;
+  function interleave(list) {
+    const groups = {};
+    list.forEach((id) => (groups[ITEM[id].topic] ||= []).push(id));
+    const out = []; let last = null;
+    while (out.length < list.length) {
+      const keys = Object.keys(groups).filter((k) => groups[k].length).sort((a, b) => groups[b].length - groups[a].length);
+      const k = keys.find((x) => x !== last) || keys[0];
+      out.push(groups[k].shift()); last = k;
+    }
+    return out;
+  }
+  function planCounts() {
+    const due = ITEMS.filter((i) => status(i.id) === "due").length;
+    const fresh = ITEMS.filter((i) => status(i.id) === "new").length;
+    const days = Math.max(1, daysToExam());
+    let quota = Math.min(fresh, Math.ceil(fresh / days) + 2);
+    if (mood() === "cansado") quota = Math.min(quota, 3);
+    if (mood() === "energia") quota = Math.min(fresh, quota + 4);
+    if (isNight() || Date.now() >= EXAM) quota = 0;
+    return { due, quota };
+  }
+  function buildQueue(kind, minutes, topic) {
+    let target = minutes <= 5 ? 8 : minutes <= 30 ? 32 : 80;
+    if (mood() === "cansado") target = Math.round(target * 0.6);
+    let pool = ITEMS;
+    if (kind === "topic") pool = ITEMS.filter((i) => i.topic === topic);
+    if (kind === "panic") pool = ITEMS.filter((i) => i.hot);
+    const due = pool.filter((i) => status(i.id) === "due").sort((a, b) => S.cards[a.id].due - S.cards[b.id].due).map((i) => i.id);
+    const fresh = pool.filter((i) => status(i.id) === "new").map((i) => i.id);
+    if (kind === "panic") return interleave(pool.slice().sort((a, b) => mastery(a.id) - mastery(b.id)).slice(0, PANIC_N).map((i) => i.id));
+    if (kind === "topic") {
+      const rest = pool.map((i) => i.id).filter((id) => !due.includes(id) && !fresh.includes(id));
+      return [...due, ...fresh, ...rest];
+    }
+    const today = todayTopics();
+    const order = [...fresh.filter((id) => today.includes(ITEM[id].topic)), ...fresh.filter((id) => !today.includes(ITEM[id].topic))];
+    const { quota } = planCounts();
+    const reviews = due.slice(0, target);
+    const nNew = Math.max(0, Math.min(quota, target - reviews.length));
+    return interleave([...reviews, ...order.slice(0, nNew)]);
+  }
+
+  /* ================= Navegación ================= */
+  function route() {
+    const h = location.hash.slice(1);
+    if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
+    if (["hoy", "sesion", "simulacro", "panico"].includes(h)) return { name: h };
+    return { name: "hoy" };
+  }
+  let ctxTopic = null;
+  function render() {
+    const r = route();
+    if (r.name !== "sesion" && SES && SES.phase !== "done") endSession(false);
+    if (r.name !== "simulacro" && SIM) { clearInterval(simTick); SIM = null; }
+    if (r.name === "sesion" && !SES) { location.hash = "hoy"; return; }
+    document.body.classList.toggle("focus", r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
+    ctxTopic = r.name === "topic" ? r.id : r.name === "sesion" && SES ? ITEM[SES.current()]?.topic || ctxTopic : null;
+    renderSide(r); renderCtx();
+    const v = $("#view");
+    if (r.name === "topic") renderTopic(v, TOPIC[r.id]);
+    else if (r.name === "sesion") renderSession(v);
+    else if (r.name === "simulacro") renderSim(v);
+    else if (r.name === "panico") renderPanic(v);
+    else renderHoy(v);
+    $("#timer").hidden = !(r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
+    if (r.name !== "sesion" && r.name !== "simulacro") $("#ptop").style.width = "0";
+  }
+  window.addEventListener("hashchange", () => { closeSide(); stopSpeech(); render(); window.scrollTo(0, 0); });
+
+  /* ================= Barra lateral ================= */
+  function renderSide(r) {
+    const cur = r.name === "topic" ? `t-${r.id}` : r.name;
+    const mods = CONTENT.modules.map((m) => {
+      const pct = modPct(m.id);
+      const list = TOPICS.filter((t) => t.mod === m.id).map((t) => {
+        const p = topicPct(t.id);
+        return `<li><a class="topic-link" href="#t-${t.id}" ${cur === "t-" + t.id ? 'aria-current="page"' : ""}><span class="ring" style="--p:${p}"></span><span>${esc(t.es)}</span><span class="pct">${p}%</span></a></li>`;
+      }).join("");
+      return `<div class="mod"><div class="mod-row"><span>${esc(m.es)}</span><span class="mono">${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div><ul class="topic-list">${list}</ul></div>`;
+    }).join("");
+    const days = daysToExam();
+    $("#side").innerHTML = `
+      <div><div class="brand">Entender</div><div class="brand-sub">Ciencias 7.º · convocatoria</div></div>
+      <nav aria-label="Secciones">
+        <div><a class="side-link" href="#hoy" ${cur === "hoy" ? 'aria-current="page"' : ""}>Hoy<span class="kicker">${days > 0 ? days + " días" : "examen"}</span></a>
+        <a class="side-link" href="#simulacro" ${cur === "simulacro" ? 'aria-current="page"' : ""}>Simulacro real</a>
+        <a class="side-link" href="#panico" ${cur === "panico" ? 'aria-current="page"' : ""}>Modo Pánico</a></div>
+        <div class="kicker" style="padding:0 .6rem">Tus materias</div>
+        ${mods}
+      </nav>
+      <div class="side-foot">
+        <div class="row"><span class="muted">Modo</span><b>${MODES[S.mode].es} ${MODES[S.mode].min < 60 ? MODES[S.mode].min + "m" : ""}</b></div>
+        <div class="row"><span class="muted">Racha</span><b class="mono">${streak()} ${streak() === 1 ? "día" : "días"}</b></div>
+        <div class="row"><span class="muted">Idioma</span>
+          <div class="seg" role="group" aria-label="Idioma">${[["both", "ES+EN"], ["es", "ES"], ["en", "EN"]].map(([k, l]) => `<button type="button" data-lang="${k}" aria-pressed="${lang === k}">${l}</button>`).join("")}</div></div>
+        <div class="sync" id="sync">${SYNC_COPY[sync]}</div>
+      </div>`;
+    $$("#side [data-lang]").forEach((b) => b.addEventListener("click", () => {
+      lang = b.dataset.lang; document.body.dataset.lang = lang;
+      try { localStorage.setItem("entender7:lang", lang); } catch { /* nada */ }
+      render();
+    }));
+  }
+  const openSide = () => { $("#side").classList.add("open"); $("#scrim").hidden = false; };
+  const closeSide = () => { $("#side").classList.remove("open"); $("#scrim").hidden = true; };
+  $("#menu-btn").addEventListener("click", openSide);
+  $("#scrim").addEventListener("click", closeSide);
+
+  /* ================= Hoy ================= */
+  const fmtDate = () => new Date().toLocaleDateString("es-CR", { weekday: "long", day: "numeric", month: "long" });
+  function greeting() { const h = new Date().getHours(); return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches"; }
+  function renderHoy(v) {
+    $("#crumb").innerHTML = `<b>Hoy</b> · <span class="muted">${esc(fmtDate())}</span>`;
+    const days = daysToExam();
+    const after = Date.now() >= EXAM;
+    const away = S.lastVisit && Date.now() - S.lastVisit > 3 * DAY;
+    const { due, quota } = planCounts();
+    const today = todayTopics();
+    const est = Math.round(due * 0.4 + quota * 1.2);
+    const checked = S.checkin && S.checkin.date === dayKey();
+    const modRows = CONTENT.modules.map((m) => {
+      const pool = ITEMS.filter((i) => i.mod === m.id);
+      const c = counts(pool);
+      return `<div class="stat-row"><b>${esc(m.es)}</b><span class="delta">${yesterdayPct(m.id)}% → ${modPct(m.id)}%</span>
+        <div class="bar" style="grid-column:1/-1;margin:0"><span style="width:${modPct(m.id)}%"></span></div>
+        <div class="states" style="grid-column:1/-1"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso pendiente ${c.due}</span></div></div>`;
+    }).join("");
+    const lastSim = S.sims[S.sims.length - 1];
+    v.innerHTML = `
+      <div><div class="kicker">${after ? "Después del examen" : days === 0 ? "Hoy es el examen" : `${days} ${days === 1 ? "día" : "días"} para el examen · 4 de diciembre`}</div>
+      <h1 class="title">${greeting()}.</h1></div>
+      ${away ? `<div class="notice">Te extrañé. ¿Todo bien? Retomemos con 5 minutos, sin presión.</div>` : ""}
+      ${isNight() ? `<div class="notice">Son más de las 10 p. m.: hoy toca <b>repaso suave nocturno</b>, solo lo que ya viste y nada nuevo.</div>` : ""}
+      ${checked ? "" : `<section class="card" aria-labelledby="mood-h"><h2 class="h" id="mood-h">¿Cómo andas hoy?</h2>
+        <div class="mood">${[["energia", "⚡", "Con energía"], ["normal", "🙂", "Normal"], ["cansado", "😴", "Cansado"]].map(([k, e, l]) => `<button type="button" data-mood="${k}"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div>
+        <p class="small muted">Ajusto la sesión a cómo te sientes. Un toque y listo.</p></section>`}
+      <section class="card accent" aria-labelledby="plan-h">
+        <div><div class="kicker">${after ? "Para la vida" : "Hoy solo estudia esto"}</div><h2 class="h" id="plan-h">${due} repasos + ${quota} preguntas nuevas</h2>
+        <p class="small muted">${today.length ? "Tema del día: " + today.map((t) => esc(TOPIC[t].es)).join(" · ") : after ? "Repasos suaves para no olvidar." : "Día de repaso: mezclo todo lo que estás por olvidar."}</p></div>
+        ${today.length ? `<div class="plan-topics">${today.map((t) => `<a href="#t-${t}"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${topicPct(t)}%</span></a>`).join("")}</div>` : ""}
+        <div><div class="kicker" style="margin-bottom:.4rem">¿Cuánto tiempo tienes?</div>
+        <div class="modes" role="group" aria-label="Tiempo">${Object.entries(MODES).map(([k, m]) => `<button type="button" data-mode="${k}" aria-pressed="${S.mode === k}"><b>${m.es}</b><small>${m.note}</small></button>`).join("")}</div></div>
+        <button type="button" class="btn primary block" id="start">${due + quota ? `Empezar · ~${Math.max(2, Math.min(MODES[S.mode].min, est))} min` : "Todo al día · practicar libre"}</button>
+      </section>
+      <section class="card" aria-labelledby="prog-h"><div class="kicker">Tu avance real · ayer → hoy</div><h2 class="h" id="prog-h" hidden>Avance</h2>${modRows}</section>
+      <div class="grid2">
+        <a class="card" href="#panico" style="text-decoration:none"><div class="kicker" style="color:var(--accent)">Modo Pánico</div><b>Solo lo que más sale en el examen</b><span class="small muted">30 minutos con las preguntas más probables.</span></a>
+        <a class="card" href="#simulacro" style="text-decoration:none"><div class="kicker">Simulacro real</div><b>20 preguntas · 20 minutos · nota cruda</b><span class="small muted">${lastSim ? `Último: ${lastSim.score}/${lastSim.total} (${Math.round((100 * lastSim.score) / lastSim.total)} %)` : "Como el examen, con preguntas tramposas."}</span></a>
+      </div>
+      <section class="card quiet"><div class="row-wrap" style="justify-content:space-between"><div><b>Guardar para la vida</b><p class="small muted">Después del examen: 1 micro-repaso de 5 minutos al mes con lo más importante.</p></div>
+        <button type="button" class="btn" id="life" aria-pressed="${S.life}">${S.life ? "Activado" : "Activar"}</button></div></section>
+      <section class="only-mobile" style="gap:.6rem">${CONTENT.modules.map((m) => `<div class="kicker">${esc(m.es)}</div><div class="plan-topics">${TOPICS.filter((t) => t.mod === m.id).map((t) => `<a href="#t-${t.id}"><span>${esc(t.es)}</span><span class="mono muted">${topicPct(t.id)}%</span></a>`).join("")}</div>`).join("")}</section>`;
+    $$("[data-mood]", v).forEach((b) => b.addEventListener("click", () => {
+      S.checkin = { date: dayKey(), mood: b.dataset.mood };
+      if (b.dataset.mood === "cansado") S.mode = "ratitos";
+      save(); render();
+    }));
+    $$("[data-mode]", v).forEach((b) => b.addEventListener("click", () => { S.mode = b.dataset.mode; save(); render(); }));
+    $("#start", v).addEventListener("click", () => {
+      const q = buildQueue("plan", MODES[S.mode].min);
+      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
+    });
+    $("#life", v).addEventListener("click", () => { S.life = !S.life; save(); render(); });
+    S.lastVisit = Date.now(); persistLocal();
+  }
+
+  /* ================= Tema: Sistema de Entender en 5 pasos ================= */
+  function renderTopic(v, t) {
+    const idx = TOPICS.filter((x) => x.mod === t.mod).indexOf(t) + 1;
+    const total = TOPICS.filter((x) => x.mod === t.mod).length;
+    $("#crumb").innerHTML = `<b>${esc(MOD[t.mod].es)}</b> · Bloque ${idx}/${total} · <span class="mono">${topicPct(t.id)}%</span>`;
+    const c = counts(ITEMS.filter((i) => i.topic === t.id));
+    const feyn = S.feyn[t.id];
+    const svg = t.svg ? document.getElementById("svg-" + t.svg) : null;
+    v.innerHTML = `
+      <div><div class="kicker">${esc(MOD[t.mod].es)} · ${esc(MOD[t.mod].objectives)}</div>
+      <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
+      <div class="states" style="margin-top:.6rem"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso ${c.due}</span></div></div>
+      <div class="steps">
+        <section class="step"><div class="step-n">1</div><div class="step-body"><h2 class="h">Guía · el mapa</h2>
+          <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div></div></section>
+        <section class="step"><div class="step-n">2</div><div class="step-body"><h2 class="h">Resumen que sí se entiende</h2>
+          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div></section>
+        <section class="step"><div class="step-n">3</div><div class="step-body"><h2 class="h">Explicador de 2 minutos</h2>
+          ${svg ? `<figure class="plate" id="plate"></figure>` : ""}
+          <ol class="beats" id="beats">${t.beats.map((p, i) => `<li data-b="${i}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>
+          <div class="row-wrap">
+            <button type="button" class="btn dark" id="play" hidden>▶ Escuchar · 2 min</button>
+            <button type="button" class="btn" id="audio" hidden>🎧 Solo audio (bus)</button>
+            <button type="button" class="btn" id="stepbtn">Paso a paso →</button>
+            <button type="button" class="btn" id="stop" hidden>■ Parar</button>
+          </div></div></section>
+        <section class="step"><div class="step-n">4</div><div class="step-body"><h2 class="h">Ejemplo de tu vida</h2>
+          <div class="card life">${bl(t.life, "p")}</div></div></section>
+        <section class="step"><div class="step-n">5</div><div class="step-body"><h2 class="h">¿De verdad entendiste?</h2>
+          <p>Explícamelo con tus palabras en el cuadro de abajo, como si se lo enseñaras a alguien de 10 años. El tutor te dice qué entendiste y qué falta, sin juzgarte.</p>
+          ${feyn ? `<span class="chip ${feyn === "entendido" ? "ok" : ""}">${{ entendido: "✓ Lo explicaste con tus palabras", casi: "◐ Casi: te falta un detalle", todavia: "Todavía no: vuelve a intentarlo" }[feyn]}</span>` : ""}
+          <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
+          <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
+      </div>`;
+    if (svg) { const fig = $("#plate", v); fig.append(svg.content.cloneNode(true)); $("svg", fig).setAttribute("aria-label", `${t.es}: diagrama`); }
+    S.seen[t.id] = true; persistLocal();
+    $("#practice", v).addEventListener("click", () => startSession("topic", buildQueue("topic", 30, t.id), 0));
+    $("#explain", v).addEventListener("click", () => { ctxTopic = t.id; renderCtx(); const a = $("#ask"); a.focus(); a.placeholder = `Explica «${t.es}» con tus palabras…`; });
+    setupExplainer(v, t);
+  }
+
+  /* Explicador: voz (tts) o paso a paso */
+  let TTS = null, beatIdx = -1, speaking = false;
+  function stopSpeech() { if (TTS && speaking) TTS.stop().catch(() => {}); speaking = false; const o = $(".audio-only"); if (o) o.remove(); }
+  function markBeat(v, i) { beatIdx = i; $$("#beats li", v).forEach((li) => li.classList.toggle("now", Number(li.dataset.b) === i)); const o = $(".audio-only .now-line"); if (o) o.textContent = i >= 0 ? (lang === "en" ? currentBeats[i][1] : currentBeats[i][0]) : ""; }
+  let currentBeats = [];
+  function setupExplainer(v, t) {
+    currentBeats = t.beats; beatIdx = -1;
+    $("#stepbtn", v).addEventListener("click", () => { markBeat(v, (beatIdx + 1) % t.beats.length); const li = $(`#beats li[data-b="${beatIdx}"]`, v); if (li) li.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+    if (!TTS) return;
+    $("#play", v).hidden = false; $("#audio", v).hidden = false;
+    const lines = () => t.beats.flatMap((p, i) => {
+      const out = [];
+      if (lang !== "en") out.push({ text: p[0], language: "es", id: `b${i}` });
+      if (lang !== "es") out.push({ text: p[1], language: "en", id: `b${i}` });
+      return out;
+    });
+    const play = (audioOnly) => {
+      if (audioOnly) {
+        const o = document.createElement("div"); o.className = "audio-only";
+        o.innerHTML = `<div style="display:grid;gap:1.4rem;justify-items:center"><div class="kicker">Solo audio · ${esc(t.es)}</div><p class="now-line">Preparando…</p><button type="button" class="btn dark">■ Parar</button></div>`;
+        $("button", o).addEventListener("click", stopSpeech);
+        document.body.append(o);
+      }
+      speaking = true; $("#stop", v).hidden = false;
+      TTS.speak(lines()).catch((e) => { if (e && (e.code === "not_granted" || e.code === "unavailable")) { $("#play", v).hidden = true; $("#audio", v).hidden = true; } })
+        .finally(() => { speaking = false; const s = $("#stop", v); if (s) s.hidden = true; const o = $(".audio-only"); if (o) o.remove(); markBeat(v, -1); });
+    };
+    $("#play", v).addEventListener("click", () => play(false));
+    $("#audio", v).addEventListener("click", () => play(true));
+    $("#stop", v).addEventListener("click", stopSpeech);
+  }
+
+  /* ================= Sesión (modo enfoque, 2 botones, antitrampa) ================= */
+  let SES = null, tick = 0;
+  function startSession(kind, queue, minutes) {
+    stopSpeech();
+    const before = { geo: modPct("geo"), cell: modPct("cell") };
+    SES = { kind, queue: queue.slice(), i: 0, minutes, start: Date.now(), shownAt: 0, phase: "q", pend: null, anti: null, hint: false, results: [], repeats: {}, before, banner: null, breakUntil: 0, nextBreak: Date.now() + 25 * 60e3,
+      current() { return this.anti ? this.anti.alt : this.queue[this.i]; } };
+    location.hash = "sesion";
+    if (location.hash === "#sesion") render();
+    clearInterval(tick); tick = setInterval(tickTimer, 1000);
+  }
+  function endSession(show) {
+    clearInterval(tick);
+    if (!SES) return;
+    if (show) { SES.phase = "done"; render(); } else SES = null;
+  }
+  function tickTimer() {
+    if (!SES) return clearInterval(tick);
+    const el = $("#timer");
+    const now = Date.now();
+    if (SES.phase === "break") {
+      const left = Math.max(0, SES.breakUntil - now);
+      el.textContent = `pausa ${fmtMs(left)}`;
+      if (!left) { SES.phase = "q"; SES.nextBreak = now + 25 * 60e3; render(); }
+      return;
+    }
+    if (SES.minutes && SES.minutes < 60) el.textContent = fmtMs(Math.max(0, SES.start + SES.minutes * 60e3 - now));
+    else el.textContent = fmtMs(now - SES.start);
+  }
+  const fmtMs = (ms) => { const s = Math.round(ms / 1000); return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`; };
+  function renderSession(v) {
+    const s = SES;
+    tickTimer();
+    $("#ptop").style.width = `${Math.round((100 * Math.min(s.i, s.queue.length)) / Math.max(1, s.queue.length))}%`;
+    const label = { plan: "Sesión de hoy", free: "Práctica libre", topic: "Práctica del tema", panic: "Modo Pánico" }[s.kind];
+    if (s.phase === "done") return renderDone(v);
+    if (s.phase === "break") {
+      $("#crumb").innerHTML = `<b>${label}</b> · pausa`;
+      v.innerHTML = `<div class="card" style="text-align:center;justify-items:center;padding:2rem 1rem"><div class="kicker">Pausa guiada</div><h1 class="title">Descansa 5 minutos.</h1>
+        <p class="muted">Toma agua, estírate y mira lejos de la pantalla. Tu avance ya está guardado.</p>
+        <button type="button" class="btn" id="skip">Seguir ahora</button></div>`;
+      $("#skip", v).addEventListener("click", () => { s.phase = "q"; s.nextBreak = Date.now() + 25 * 60e3; render(); });
+      return;
+    }
+    const id = s.current();
+    if (!id) return endSession(true);
+    const it = ITEM[id], t = TOPIC[it.topic];
+    ctxTopic = it.topic; renderCtx();
+    $("#crumb").innerHTML = `<b>${label}</b> · ${esc(t.es)} · <span class="mono">${Math.min(s.i + 1, s.queue.length)}/${s.queue.length}</span>`;
+    const st = status(id);
+    const intro = st === "new" && !S.seen[it.topic] && s.phase === "q" && !s.anti;
+    if (intro && !s.introShown) {
+      v.innerHTML = `<div class="kicker">Nuevo tema · micro-concepto (30 s)</div>
+        <div class="qcard"><h1 class="title" style="font-size:1.5rem">${esc(t.es)}</h1><ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div>
+        <div class="actions"><button type="button" class="btn primary block" id="ready">Listo, pregúntame</button>
+        <a class="link-btn" href="#t-${t.id}">Ver el tema completo (5 pasos)</a></div>`;
+      $("#ready", v).addEventListener("click", () => { S.seen[it.topic] = true; persistLocal(); s.introShown = true; render(); });
+      return;
+    }
+    s.introShown = false;
+    const showAns = s.phase === "a";
+    v.innerHTML = `
+      ${s.banner ? `<div class="notice">${s.banner}</div>` : ""}
+      ${s.anti && !showAns ? `<div class="notice">Respondiste muy rápido. ¿De verdad la entendiste? Prueba este otro caso del mismo tema.</div>` : ""}
+      <div class="row-wrap"><span class="chip">${esc(t.es)}</span>${it.hot ? '<span class="chip hot">Fija en examen</span>' : ""}<span class="chip">${{ new: "Nuevo", learning: "En curso", mastered: "Dominado", due: "Repaso pendiente" }[st]}</span></div>
+      <article class="qcard" aria-live="polite">
+        <p class="q">${bl(it.q)}</p>
+        ${s.hint && !showAns ? `<p class="small muted">Pista: ${esc(hintFor(it))}</p>` : ""}
+        ${showAns ? `<div class="answer"><div class="kicker">${s.pend.g === 1 ? "Así es la respuesta" : "Compara con la respuesta"}</div><p class="a">${bl(it.a)}</p>
+          ${s.pend.g > 1 ? `<div><button type="button" class="link-btn" id="wrong">Me equivoqué</button></div>` : `<div class="err-chips" role="group" aria-label="¿Por qué fallaste?">${[[1, "No lo sabía"], [2, "Confundí conceptos"], [3, "Leí mal la pregunta"]].map(([k, l]) => `<button type="button" data-err="${k}" aria-pressed="${s.pend.err === k}">${l}</button>`).join("")}</div>`}
+        </div>` : ""}
+      </article>
+      <div class="actions">
+        ${showAns
+          ? `<button type="button" class="btn primary block" id="next">Siguiente →</button>
+             ${s.pend.g === 1 ? `<button type="button" class="link-btn" id="ask-tutor">No entiendo: explícamelo de otra forma</button>` : ""}`
+          : `<div class="two"><button type="button" class="btn" id="no">No me la sé</button><button type="button" class="btn dark" id="yes">Sí me la sé</button></div>
+             <div class="row-wrap" style="justify-content:space-between">${s.hint ? "<span></span>" : `<button type="button" class="link-btn" id="hint">Pista</button>`}<button type="button" class="link-btn" id="quit">Terminar sesión</button></div>`}
+      </div>`;
+    if (!showAns) {
+      s.shownAt = Date.now();
+      $("#no", v).addEventListener("click", () => answer(false));
+      $("#yes", v).addEventListener("click", () => answer(true));
+      const h = $("#hint", v); if (h) h.addEventListener("click", () => { s.hint = true; render(); });
+      $("#quit", v).addEventListener("click", () => endSession(true));
+    } else {
+      $("#next", v).addEventListener("click", nextCard);
+      const w = $("#wrong", v); if (w) w.addEventListener("click", () => { s.pend.g = 1; render(); });
+      $$("[data-err]", v).forEach((b) => b.addEventListener("click", () => { s.pend.err = Number(b.dataset.err); render(); }));
+      const at = $("#ask-tutor", v); if (at) at.addEventListener("click", () => sendTutor(`No entiendo esta pregunta: «${it.q[0]}». La respuesta es «${it.a[0]}». Explícamelo de otra forma, sencillo.`));
+    }
+  }
+  function hintFor(it) { const a = it.a[0]; const words = a.split(" "); return words.slice(0, Math.max(1, Math.ceil(words.length / 4))).join(" ") + " …"; }
+  function answer(yes) {
+    const s = SES, id = s.current(), ms = Date.now() - s.shownAt;
+    // Antitrampa: "Sí" en menos de 1.2 s → otro caso del mismo tema antes de darlo por dominado.
+    if (yes && ms < 1200 && !s.anti) {
+      const same = ITEMS.filter((i) => i.topic === ITEM[id].topic && i.id !== id);
+      const alt = same.sort(() => Math.random() - 0.5)[0];
+      if (alt) { s.anti = { orig: id, alt: alt.id }; render(); return; }
+    }
+    // Inferencia silenciosa: Again(1) · Hard(2) con pista · Easy(4) si < 4 s sin ayuda · Good(3).
+    const g = !yes ? 1 : s.hint ? 2 : ms < 4000 && !s.anti ? 4 : 3;
+    s.pend = { id, g, ms, err: 0 };
+    s.phase = "a"; render();
+  }
+  function nextCard() {
+    const s = SES, p = s.pend;
+    rate(p.id, p.g, p.ms, p.err);
+    if (s.anti) { rate(s.anti.orig, p.g === 1 ? 1 : 3, p.ms, p.err); s.anti = null; }
+    s.results.push({ id: p.id, g: p.g, ms: p.ms });
+    if (p.g === 1 && (s.repeats[p.id] || 0) < 2) { s.repeats[p.id] = (s.repeats[p.id] || 0) + 1; s.queue.splice(Math.min(s.queue.length, s.i + 4), 0, p.id); }
+    s.i++; s.phase = "q"; s.hint = false; s.pend = null;
+    // Detección silenciosa de cansancio o confusión.
+    const last = s.results.slice(-6);
+    s.banner = null;
+    if (last.length >= 6 && last.filter((r) => r.ms < 1500).length >= 4 && last.filter((r) => r.g === 1).length >= 3) s.banner = "Vas muy rápido y fallando varias. ¿Una pausa de 2 minutos? Tu avance está guardado.";
+    else if (s.results.slice(-3).length === 3 && s.results.slice(-3).every((r) => r.ms > 40000)) s.banner = "Te noto pensando mucho. Si quieres, escríbele al tutor abajo y te lo explica con otro ejemplo.";
+    const now = Date.now();
+    if (s.minutes && s.minutes <= 5 && now - s.start > s.minutes * 60e3) return endSession(true);
+    if (s.kind !== "panic" && s.minutes >= 25 && now >= s.nextBreak) { s.phase = "break"; s.breakUntil = now + 5 * 60e3; if (s.minutes <= 30) { /* Pomodoro: termina tras la pausa si ya pasaron 25 min */ s.queue.length = Math.min(s.queue.length, s.i + 8); } return render(); }
+    if (s.i >= s.queue.length) return endSession(true);
+    render();
+    window.scrollTo(0, 0);
+  }
+  function renderDone(v) {
+    const s = SES;
+    clearInterval(tick); $("#timer").hidden = true; $("#ptop").style.width = "100%";
+    const n = s.results.length, ok = s.results.filter((r) => r.g > 1).length;
+    const missed = {}; s.results.filter((r) => r.g === 1).forEach((r) => { const t = ITEM[r.id].topic; missed[t] = (missed[t] || 0) + 1; });
+    const worst = Object.entries(missed).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    $("#crumb").innerHTML = `<b>Sesión terminada</b>`;
+    v.innerHTML = `
+      <div><div class="kicker">Sesión terminada · ${fmtMs(Date.now() - s.start)}</div><h1 class="title">${n ? "Buen trabajo." : "Nada que repasar por ahora."}</h1></div>
+      <section class="card"><div class="row-wrap" style="gap:1.5rem"><div><div class="done-num">${n}</div><span class="small muted">preguntas</span></div><div><div class="done-num">${n ? Math.round((100 * ok) / n) : 0}%</div><span class="small muted">"sí me la sé"</span></div></div>
+        ${CONTENT.modules.map((m) => `<div class="stat-row"><b>${esc(m.es)}</b><span class="delta">${s.before[m.id]}% → ${modPct(m.id)}%</span></div>`).join("")}
+        <p class="small muted">El dominio sube cuando respondes bien en días distintos: así se queda en la memoria.</p></section>
+      ${worst.length ? `<section class="card"><div class="kicker">Lo que más te costó hoy</div>${worst.map(([t, k]) => `<a class="btn" href="#t-${t}" style="justify-content:space-between"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${k} ✗</span></a>`).join("")}</section>` : ""}
+      <div class="row-wrap"><button type="button" class="btn primary" id="more">Otra ronda</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
+    $("#more", v).addEventListener("click", () => {
+      const q = buildQueue("plan", MODES[S.mode].min);
+      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
+    });
+    SES = null;
+  }
+
+  /* ================= Modo Pánico ================= */
+  function renderPanic(v) {
+    $("#crumb").innerHTML = `<b>Modo Pánico</b>`;
+    const hot = ITEMS.filter((i) => i.hot);
+    const weak = hot.filter((i) => mastery(i.id) < 0.6).length;
+    v.innerHTML = `<div><div class="kicker">Botón de emergencia</div><h1 class="title">Modo Pánico</h1></div>
+      <section class="card"><p>Solo el 20 % más probable: <b class="mono">${PANIC_N}</b> preguntas de las <b class="mono">${hot.length}</b> que siempre salen en el examen, empezando por las que menos dominas (ahora tienes <b class="mono">${weak}</b> débiles).</p>
+      <p class="small muted">Úsalo 2 horas antes del examen o cuando tengas poco tiempo. Dura unos 30 minutos.</p>
+      <button type="button" class="btn primary block" id="go">Empezar Modo Pánico</button></section>`;
+    $("#go", v).addEventListener("click", () => startSession("panic", buildQueue("panic", 30), 30));
+  }
+
+  /* ================= Simulacro real + nota cruda ================= */
+  let SIM = null, simTick = 0;
+  function renderSim(v) {
+    if (!SIM || SIM.phase === "intro") {
+      $("#crumb").innerHTML = `<b>Simulacro real</b>`;
+      v.innerHTML = `<div><div class="kicker">Como el examen</div><h1 class="title">Simulacro real</h1></div>
+        <section class="card"><p><b class="mono">20</b> preguntas de selección (10 de Geología y 10 de La Célula), <b class="mono">20</b> minutos y nota cruda al final. No puedes volver atrás, igual que en el examen.</p>
+        <p class="small muted">Las preguntas están en inglés, como el examen; la ayuda en español aparece según el idioma que elegiste.</p>
+        <button type="button" class="btn primary block" id="go">Empezar simulacro</button></section>
+        ${S.sims.length ? `<section class="card quiet"><div class="kicker">Tus simulacros</div>${S.sims.slice(-5).reverse().map((x) => `<div class="stat-row"><span>${esc(x.date)}</span><span class="delta">${x.score}/${x.total} · ${Math.round((100 * x.score) / x.total)} %</span></div>`).join("")}</section>` : ""}`;
+      $("#go", v).addEventListener("click", () => {
+        const pick = (m) => MCQ.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
+        SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, end: Date.now() + 20 * 60e3 };
+        clearInterval(simTick); simTick = setInterval(() => { if (!SIM || SIM.phase !== "run") return clearInterval(simTick); const left = SIM.end - Date.now(); $("#timer").textContent = fmtMs(Math.max(0, left)); if (left <= 0) finishSim(); }, 1000);
+        render();
+      });
+      return;
+    }
+    if (SIM.phase === "done") return renderSimDone(v);
+    const q = MCQ[SIM.qs[SIM.i]];
+    $("#timer").textContent = fmtMs(Math.max(0, SIM.end - Date.now()));
+    $("#ptop").style.width = `${Math.round((100 * SIM.i) / SIM.qs.length)}%`;
+    $("#crumb").innerHTML = `<b>Simulacro</b> · <span class="mono">${SIM.i + 1}/${SIM.qs.length}</span> · ${q.mod === "geo" ? "Geología" : "La Célula"}`;
+    v.innerHTML = `<article class="qcard"><p class="q" style="font-size:1.2rem">${q.q}${q.help ? `<span class="es small" style="display:block;font-family:var(--font-body);font-weight:400;color:var(--muted);margin-top:.4rem">${q.help}</span>` : ""}</p>
+      <div class="opts" role="group" aria-label="Opciones">${q.opts.map((o, k) => `<button type="button" data-k="${k}" aria-pressed="${SIM.sel === k}"><span>${"abcd"[k]}.</span><span>${o}</span></button>`).join("")}</div></article>
+      <div class="actions"><button type="button" class="btn primary block" id="next" ${SIM.sel === null ? "disabled" : ""}>${SIM.i + 1 < SIM.qs.length ? "Siguiente →" : "Terminar y ver mi nota"}</button></div>`;
+    $$("[data-k]", v).forEach((b) => b.addEventListener("click", () => { SIM.sel = Number(b.dataset.k); render(); }));
+    $("#next", v).addEventListener("click", () => {
+      SIM.picks.push(SIM.sel); SIM.sel = null; SIM.i++;
+      if (SIM.i >= SIM.qs.length) finishSim(); else { render(); window.scrollTo(0, 0); }
+    });
+  }
+  function finishSim() {
+    if (!SIM || SIM.phase !== "run") return;
+    clearInterval(simTick);
+    while (SIM.picks.length < SIM.qs.length) SIM.picks.push(-1);
+    SIM.score = SIM.qs.filter((qi, k) => MCQ[qi].ans === SIM.picks[k]).length;
+    SIM.phase = "done";
+    S.sims.push({ date: dayKey(), score: SIM.score, total: SIM.qs.length });
+    if (S.sims.length > 20) S.sims.shift();
+    save(); render();
+  }
+  function renderSimDone(v) {
+    $("#crumb").innerHTML = `<b>Simulacro</b> · nota cruda`;
+    $("#ptop").style.width = "100%";
+    const n = SIM.qs.length, pct = Math.round((100 * SIM.score) / n);
+    const need = Math.max(0, Math.ceil(0.7 * n) - SIM.score);
+    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => MCQ[qi].mod === m); return `${ks.filter(([qi, k]) => MCQ[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
+    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => MCQ[qi].ans !== SIM.picks[k]);
+    v.innerHTML = `<div><div class="kicker">Nota cruda</div><h1 class="title"><span class="mono">${SIM.score}/${n}</span> · ${pct} %</h1>
+      <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70 %.` : "Llegas al 70 %: vas aprobando."}</p></div>
+      <section class="card"><div class="stat-row"><b>Geología</b><span class="delta">${by("geo")}</span></div><div class="stat-row"><b>La Célula</b><span class="delta">${by("cell")}</span></div></section>
+      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = MCQ[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
+      <div class="row-wrap"><button type="button" class="btn primary" id="again">Otro simulacro</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
+    $("#again", v).addEventListener("click", () => { SIM = { phase: "intro" }; render(); });
+  }
+
+  /* ================= Tutor Feynman (sample) + entrada única ================= */
+  let SAMPLE = null, DICT = null, IMG = null, photo = null, ctl = null;
+  const CHATS = {};
+  const tries = {};
+  function renderCtx() {
+    const t = ctxTopic ? TOPIC[ctxTopic] : null;
+    $("#ctx").innerHTML = t ? `Tutor sobre <b>${esc(t.es)}</b> <button type="button" class="link-btn" id="ctx-clear" style="font-size:.78rem">cambiar a general</button>` : `Tutor · <b>todo el temario</b>`;
+    const c = $("#ctx-clear"); if (c) c.addEventListener("click", () => { ctxTopic = null; renderCtx(); });
+    if (photo) $("#ctx").insertAdjacentHTML("beforeend", ` <span class="attach">📷 foto lista <button type="button" class="link-btn" id="photo-x" aria-label="Quitar foto">×</button></span>`);
+    const x = $("#photo-x"); if (x) x.addEventListener("click", () => { photo = null; renderCtx(); });
+  }
+  function temario(t) {
+    if (!t) return TOPICS.map((x) => `## ${MOD[x.mod].es} · ${x.es}\n` + x.sum.map((p) => "- " + p[0]).join("\n")).join("\n\n");
+    return [`${MOD[t.mod].es} · ${t.es} (${t.en})`,
+      `Lo fácil: ${t.map.easy[0]}`, `Lo difícil: ${t.map.hard[0]}`, `Siempre sale en el examen: ${t.map.exam[0]}`,
+      "Resumen:", ...t.sum.map((p) => `- ${p[0]} / ${p[1]}`),
+      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`)].join("\n");
+  }
+  function rules(t) {
+    return `Eres el tutor de "Entender", una app de estudio. Hablas con un estudiante de 7.º grado de Costa Rica que estudia Ciencias para un examen EN INGLÉS el 4 de diciembre de 2026. Su idioma fuerte es el español.
+Reglas:
+- Cero juicios. Nunca lo hagas sentir mal; si dice que no entiende nada, está bien.
+- Responde en español sencillo, en máximo 110 palabras, con oraciones cortas, sin títulos, tablas ni markdown. Escribe los términos clave también en inglés entre paréntesis, porque el examen es en inglés.
+- Si explica un tema con sus palabras, compáralo SOLO con el temario de abajo: di primero qué entendió bien, luego qué le falta o qué confundió, y re-explica eso con una analogía de la vida diaria (Costa Rica, fútbol, la casa, el bus, el celular).
+- Si pide otra explicación, usa una analogía diferente a las que ya usaste en esta conversación.
+- Si envía una foto, léela y ayúdale según el temario.
+- No inventes datos que no estén en el temario.
+- Termina con UNA pregunta corta para comprobar que entendió.
+- Solo si el estudiante intentó explicar el tema con sus palabras, agrega al final una línea aparte con una sola etiqueta: [ENTENDIDO], [CASI] o [TODAVIA_NO].
+
+TEMARIO:
+${temario(t)}`;
+  }
+  const TAG = /\s*\[(ENTENDIDO|CASI|TODAVIA_NO)\]\s*$/;
+  const ERR_COPY = { not_granted: "El tutor necesita tu permiso para usar Claude. Puedes darlo desde el menú Permisos de esta página.", sampling_disabled: "El tutor no está disponible en esta cuenta.", rate_limited: "Muchas preguntas seguidas. Espera un momento y vuelve a intentar.", session_expired: "Tu sesión expiró. Vuelve a iniciar sesión en Claude.", refused: "No puedo responder eso. Prueba preguntarlo de otra forma.", image_rejected: "No pude leer esa foto. Prueba con otra más clara.", prompt_too_large: "El mensaje es muy largo. Escríbelo más corto." };
+  function addMsg(who, text) {
+    const d = document.createElement("div"); d.className = `msg ${who}`; d.textContent = text;
+    $("#msgs").append(d); d.scrollIntoView({ block: "end" }); return d;
+  }
+  async function sendTutor(text) {
+    $("#tutor").hidden = false; measure();
+    const t = ctxTopic ? TOPIC[ctxTopic] : null;
+    const key = t ? t.id : "_";
+    const chat = (CHATS[key] ||= []);
+    $("#tutor-topic").textContent = t ? t.es : "Todo el temario";
+    if (!SAMPLE) { addMsg("tu", "El tutor no está disponible en esta vista. Abre la app dentro de Claude para usarlo; todo lo demás funciona igual."); return; }
+    const img = photo; photo = null; renderCtx();
+    addMsg("me", text || "📷 Te envío una foto.");
+    chat.push({ role: "user", content: (text || "Te envío una foto de mis apuntes o de una pregunta. Ayúdame con ella.") + (img ? "\n(Adjunto una foto.)" : "") });
+    const out = addMsg("tu", "Pensando…");
+    ctl = new AbortController();
+    $("#tutor-stop").hidden = false; $("#send-btn").disabled = true;
+    try {
+      const turns = [{ role: "user", content: rules(t) }, ...chat.slice(-8)];
+      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { out.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); } };
+      if (img) opts.images = [img];
+      const res = await SAMPLE(turns, opts);
+      const m = res.text.match(TAG);
+      const clean = res.text.replace(TAG, "");
+      out.textContent = clean;
+      chat.push({ role: "assistant", content: clean });
+      if (m && t) {
+        S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[m[1]]; save();
+        out.insertAdjacentHTML("beforeend", `<div class="meta"><span class="chip ${m[1] === "ENTENDIDO" ? "ok" : ""}">${{ ENTENDIDO: "✓ Lo entendiste", CASI: "◐ Casi", TODAVIA_NO: "Todavía no, y está bien" }[m[1]]}</span></div>`);
+        if (route().name === "topic") renderSide(route());
+      }
+      if (TTS) {
+        const b = document.createElement("button"); b.type = "button"; b.className = "link-btn"; b.textContent = "🔊 Escuchar";
+        b.addEventListener("click", () => { TTS.speak(clean, { language: "es" }).catch(() => {}); });
+        const meta = $(".meta", out) || out.appendChild(Object.assign(document.createElement("div"), { className: "meta" }));
+        meta.append(b);
+      }
+    } catch (e) {
+      chat.pop();
+      if (e && e.code === "cancelled") out.textContent = e.text || "Detenido.";
+      else out.textContent = (e && e.text ? e.text + "\n\n" : "") + (ERR_COPY[e && e.code] || "Se cortó la conexión. Vuelve a enviar tu mensaje.");
+      if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) SAMPLE = null;
+      if (e && e.code === "images_unavailable") { IMG = null; $("#photo-btn").hidden = true; }
+    } finally {
+      $("#tutor-stop").hidden = true; $("#send-btn").disabled = false; ctl = null;
+    }
+  }
+  $("#composer").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const a = $("#ask"); const text = a.value.trim();
+    if (!text && !photo) return;
+    a.value = ""; grow();
+    sendTutor(text);
+  });
+  $("#ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#composer").requestSubmit(); } });
+  const grow = () => { const a = $("#ask"); a.style.height = "auto"; a.style.height = Math.min(140, a.scrollHeight) + "px"; measure(); };
+  $("#ask").addEventListener("input", grow);
+  $("#tutor-close").addEventListener("click", () => { $("#tutor").hidden = true; if (ctl) ctl.abort(); });
+  $("#tutor-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
+  $("#tutor-again").addEventListener("click", () => {
+    const key = ctxTopic || "_";
+    tries[key] = (tries[key] || 0) + 1;
+    if (tries[key] > 5) { addMsg("tu", "Ya van 5 explicaciones distintas. Practica el tema un rato y vuelve: a veces se entiende mejor después de intentarlo."); return; }
+    sendTutor(`Explícamelo de otra forma, con una analogía distinta (intento ${tries[key]} de 5).`);
+  });
+  $("#photo-btn").addEventListener("click", () => $("#photo").click());
+  $("#photo").addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f && IMG && f.size <= IMG.maxInputBytes) { photo = f; renderCtx(); $("#ask").focus(); }
+    e.target.value = "";
+  });
+  // Dictado: el botón llama start() directo desde el clic.
+  $("#mic-btn").addEventListener("click", () => {
+    if (!DICT) return;
+    if (DICT.active()) { DICT.stop().catch(() => {}); return; }
+    DICT.start().catch((e) => { if (e && (e.code === "not_granted" || e.code === "unavailable")) $("#mic-btn").hidden = true; });
+  });
+  function measure() { const h = $("#composer").offsetHeight; document.documentElement.style.setProperty("--composer-h", h + "px"); }
+  window.addEventListener("resize", measure);
+
+  /* ================= Capacidades de la plataforma ================= */
+  async function initCaps() {
+    if (!window.claude || !window.claude.use) return;
+    claude.use("sample").then(async (s) => {
+      SAMPLE = s;
+      if (!s) return;
+      const lim = await s.limits().catch(() => null);
+      if (lim && lim.images) { IMG = lim.images; $("#photo").accept = lim.images.mediaTypes.join(","); $("#photo-btn").hidden = false; }
+    });
+    claude.use("tts").then((t) => {
+      TTS = t; if (!t) return;
+      t.onLine(({ id }) => { if (id && id[0] === "b") markBeat($("#view"), Number(id.slice(1))); });
+      t.onState(({ state }) => { if (state === "idle") speaking = false; });
+      if (route().name === "topic") render();
+    });
+    claude.use("dictation").then((d) => {
+      DICT = d; if (!d) return;
+      $("#mic-btn").hidden = false;
+      d.onState(({ state }) => { $("#mic-btn").classList.toggle("on", state !== "idle"); $("#partial").hidden = state === "idle"; if (state === "idle") $("#partial").textContent = ""; measure(); });
+      d.onPartial(({ text }) => { $("#partial").textContent = text; });
+      d.onFinal(({ text }) => { const a = $("#ask"); a.value = a.value ? a.value + text : text.trimStart(); grow(); });
+    });
+  }
+
+  render(); measure();
+  initRemote(); initCaps();
+})();
+</script>

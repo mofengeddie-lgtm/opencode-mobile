@@ -13,6 +13,7 @@ Paquete de estudio bilingüe (español / inglés) de **Geología** y **La Célul
 | 06 | `06-practica-examen.pdf` | 2 exámenes de práctica con clave · *2 practice tests with key* |
 | 07 | `07-guia-de-estudio.pdf` | Método, tarjetas, plantillas, videos de YouTube · *study guide* |
 | 08 | `08-video-repaso.mp4` | Video de repaso de 16 min (sin voz) · *16-min review video (no voice)* |
+| ★ | `app-entender.html` | **App «Entender»** (Fase 1 web de los documentos maestros): Sistema de Entender en 5 pasos, FSRS-6 con 2 botones, tutor Feynman, Ratitos/Pomodoro/Maratón, Modo Pánico y simulacro ([abrir](https://claude.ai/artifact/DWHg9mvRsX87YFjpJPUUwF)) |
 | ★ | `resumen-interactivo.html` | Resumen interactivo para el celular: diagnóstico, temas, examen pasado con modo práctica y tarjetas · *interactive summary* ([abrir](https://claude.ai/artifact/2zbCJnWytaoMLAtBFS9KUs)) |
 
 **Orden sugerido · Suggested order**: 01 → 02 → (04 + 03) → 05 → 07 + 08 → 06.

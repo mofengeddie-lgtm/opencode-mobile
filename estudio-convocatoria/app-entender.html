@@ -1,0 +1,1859 @@
+<title>Entender Ciencias</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout (estilo Claude + Codex): materias a la izquierda, una sola acción al centro, entrada única abajo.
+   Paleta estricta de 3 colores: crema / carbón suave, tinta y un acento ámbar. Serifa en títulos, mono en números. */
+:root {
+  --bg: #FAF8F5; --surface: #FFFFFF; --soft: #F2EEE7; --line: #E6E0D6;
+  --ink: #1E1D1A; --muted: #6A665E;
+  --accent: #A65A16; --accent-ink: #FFFFFF; --accent-soft: #F5E6D5;
+  --good: #2E6A4F; --good-soft: #E3EFE8;
+  --plate: #FFFDF9;
+  --font-title: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --composer-h: 92px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+    --ink: #ECE7DF; --muted: #A39E95;
+    --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+    --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161618; --surface: #1E1E21; --soft: #242428; --line: #303035;
+  --ink: #ECE7DF; --muted: #A39E95;
+  --accent: #E3A25B; --accent-ink: #161618; --accent-soft: #3A2A1B;
+  --good: #7CC4A0; --good-soft: #1C2A23; --plate: #F4F0E8; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.kicker { font: 600 .74rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.title { font-family: var(--font-title); font-weight: 700; font-size: clamp(1.75rem, 5vw, 2.35rem); line-height: 1.12; margin: .2rem 0 0; text-wrap: balance; letter-spacing: -.01em; }
+.title-en { color: var(--muted); font-size: 1.05rem; margin: .25rem 0 0; }
+h2.h { font-family: var(--font-title); font-size: 1.3rem; font-weight: 700; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: .86rem; }
+[hidden] { display: none !important; }
+
+/* Bilingüe */
+.en { display: block; color: var(--muted); font-size: .94em; }
+.bi-inline .en { display: inline; }
+body[data-lang="es"] .en { display: none !important; }
+body[data-lang="en"] .es { display: none !important; }
+body[data-lang="en"] .en { color: inherit; font-size: 1em; }
+
+/* ---------- Estructura ---------- */
+.app { display: grid; grid-template-columns: 1fr; min-height: 100vh; }
+@media (min-width: 960px) { .app { grid-template-columns: 284px minmax(0, 1fr); } body.focus .app { grid-template-columns: minmax(0, 1fr); } }
+.side { background: var(--soft); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 1rem; padding: 1.1rem 1rem 1rem max(16px, env(safe-area-inset-left, 0px)); min-width: 0; }
+@media (min-width: 960px) { .side { position: sticky; top: 0; height: 100vh; overflow-y: auto; } body.focus .side { display: none; } }
+@media (max-width: 959px) {
+  .side { position: fixed; z-index: 40; inset: 0 auto 0 0; width: min(86vw, 330px); overflow-y: auto; transform: translateX(-105%); transition: transform .25s ease; padding-top: calc(1.1rem + env(safe-area-inset-top, 0px)); padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  .side.open { transform: none; box-shadow: 0 0 40px rgb(0 0 0 / .25); }
+}
+.scrim { position: fixed; inset: 0; z-index: 35; background: rgb(0 0 0 / .35); }
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: .65rem; padding: .6rem max(16px, env(safe-area-inset-right, 0px)) .6rem max(16px, env(safe-area-inset-left, 0px)); min-height: 52px; }
+.icon-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 38px; height: 38px; display: inline-grid; place-items: center; font-size: 1.1rem; flex: none; }
+@media (min-width: 960px) { .menu-btn { display: none; } body.focus .menu-btn { display: none; } }
+.crumb { flex: 1; min-width: 0; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb b { font-weight: 600; }
+.timer { font-size: .95rem; font-weight: 600; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: .2rem .55rem; }
+.progress-top { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: transparent; }
+.progress-top span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.view { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 1.4rem max(16px, env(safe-area-inset-right, 0px)) calc(var(--composer-h) + 2rem) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 1.1rem; align-content: start; }
+
+/* ---------- Barra lateral ---------- */
+.brand { font-family: var(--font-title); font-size: 1.45rem; font-weight: 700; letter-spacing: -.01em; }
+.brand-sub { font-size: .82rem; color: var(--muted); }
+.side nav { display: grid; gap: .9rem; }
+.side-link { display: flex; justify-content: space-between; align-items: center; text-decoration: none; padding: .45rem .6rem; border-radius: 10px; font-weight: 600; }
+.side-link[aria-current="page"], .topic-link[aria-current="page"] { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.mod { display: grid; gap: .35rem; }
+.mod-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0 .6rem; font-weight: 700; }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin: 0 .6rem; }
+.bar span { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; }
+.topic-list { list-style: none; margin: .2rem 0 0; padding: 0; display: grid; gap: 1px; }
+.topic-link { display: grid; grid-template-columns: auto 1fr auto; gap: .55rem; align-items: center; text-decoration: none; font-size: .9rem; padding: .35rem .6rem; border-radius: 8px; }
+.topic-link:hover { background: var(--surface); }
+.topic-link .pct { font: 500 .78rem var(--font-mono); color: var(--muted); }
+.ring { width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); flex: none; }
+.side-foot { margin-top: auto; display: grid; gap: .55rem; font-size: .86rem; padding: 0 .6rem; }
+.side-foot .row { display: flex; justify-content: space-between; gap: .5rem; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: .3rem .7rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.sync { font-size: .78rem; color: var(--muted); }
+
+/* ---------- Tarjetas y botones ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.1rem 1.15rem; display: grid; gap: .75rem; min-width: 0; }
+.card.quiet { background: transparent; }
+.card.accent { border-color: var(--accent); }
+.row-wrap { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: .65rem 1rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 44px; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.dark { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.btn.block { width: 100%; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.link-btn { border: 0; background: none; padding: .25rem; color: var(--muted); font-size: .88rem; text-decoration: underline; text-underline-offset: 3px; }
+.chip { display: inline-flex; align-items: center; gap: .35rem; border: 1px solid var(--line); border-radius: 999px; padding: .15rem .6rem; font-size: .78rem; font-weight: 600; color: var(--muted); background: var(--surface); }
+.chip.hot { color: var(--accent); border-color: var(--accent); }
+.chip.ok { color: var(--good); border-color: var(--good); }
+.grid2 { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+
+/* Hoy */
+.big-num { font: 600 clamp(2.4rem, 9vw, 3.4rem)/1 var(--font-mono); }
+.mood { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.mood button { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .8rem .4rem; font-weight: 600; display: grid; gap: .2rem; justify-items: center; min-height: 72px; }
+.mood button span { font-size: 1.35rem; }
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.modes button { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .65rem .5rem; text-align: left; display: grid; gap: .1rem; min-height: 64px; }
+.modes button b { font-size: .95rem; }
+.modes button small { color: var(--muted); font-size: .76rem; }
+.modes button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.stat-row { display: grid; grid-template-columns: 1fr auto; gap: .35rem .75rem; align-items: baseline; }
+.stat-row .delta { font: 600 .95rem var(--font-mono); }
+.states { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .82rem; color: var(--muted); }
+.states i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: .3rem; vertical-align: 0; }
+.st-new { background: var(--line); } .st-learning { background: var(--muted); } .st-mastered { background: var(--good); } .st-due { background: var(--accent); }
+.plan-topics { display: grid; gap: .4rem; }
+.plan-topics a { display: flex; justify-content: space-between; gap: .5rem; text-decoration: none; border: 1px solid var(--line); border-radius: 10px; padding: .55rem .75rem; background: var(--bg); }
+.only-mobile { display: grid; }
+@media (min-width: 960px) { .only-mobile { display: none; } }
+
+/* Tema: Sistema de Entender */
+.steps { display: grid; gap: .9rem; }
+.step { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; }
+.step-n { width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font: 600 .85rem var(--font-mono); }
+.step-body { display: grid; gap: .7rem; min-width: 0; padding-bottom: .4rem; }
+.map3 { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; }
+.map3 > div.exam { border-color: var(--accent); background: var(--accent-soft); }
+.map3 .kicker { color: var(--ink); display: block; }
+body.focus .menu-btn { display: none; }
+.map3 .exam .kicker { color: var(--accent); }
+.sum { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.sum li { padding-left: .9rem; border-left: 2px solid var(--line); }
+.plate { margin: 0; overflow-x: auto; background: var(--plate); border: 1px solid var(--line); border-radius: 14px; padding: .7rem; }
+.plate svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.beats { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; counter-reset: b; }
+.beats li { counter-increment: b; display: grid; grid-template-columns: 1.6rem 1fr; gap: .5rem; padding: .5rem .6rem; border-radius: 10px; transition: background .2s; }
+.beats li::before { content: counter(b); font: 600 .8rem var(--font-mono); color: var(--muted); padding-top: .15rem; }
+.beats li.now { background: var(--accent-soft); }
+.beats li.now::before { color: var(--accent); }
+.audio-only { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-items: center; padding: 2rem max(16px, env(safe-area-inset-right, 0px)) 2rem max(16px, env(safe-area-inset-left, 0px)); text-align: center; }
+.audio-only .now-line { font-family: var(--font-title); font-size: clamp(1.4rem, 5vw, 2rem); max-width: 30ch; line-height: 1.3; }
+.life { font-size: 1.05rem; }
+
+/* Sesión (modo enfoque) */
+.qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.3rem 1.2rem; display: grid; gap: .9rem; min-height: 12rem; align-content: start; }
+.qcard .q { font-family: var(--font-title); font-size: clamp(1.25rem, 4.2vw, 1.6rem); line-height: 1.3; font-weight: 600; }
+.qcard .q .en { font-family: var(--font-body); font-size: .62em; font-weight: 400; margin-top: .45rem; }
+.answer { border-top: 1px dashed var(--line); padding-top: .85rem; display: grid; gap: .6rem; }
+.answer .a { font-size: 1.08rem; font-weight: 600; }
+.answer .a .en { font-weight: 400; }
+.actions { position: sticky; bottom: calc(var(--composer-h) + .5rem); display: grid; gap: .5rem; padding-top: .5rem; background: linear-gradient(to bottom, transparent, var(--bg) 35%); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.two .btn { min-height: 56px; font-size: 1.02rem; }
+.err-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.err-chips button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: .3rem .7rem; font-size: .82rem; }
+.err-chips button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.notice { border-radius: 12px; padding: .7rem .9rem; background: var(--accent-soft); font-size: .92rem; }
+.done-num { font: 600 2.6rem/1 var(--font-mono); }
+
+/* Simulacro */
+.opts { display: grid; gap: .5rem; }
+.opts button { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: .75rem .9rem; display: grid; grid-template-columns: 1.6rem 1fr; gap: .4rem; min-height: 52px; }
+.opts button span:first-child { font: 600 .9rem var(--font-mono); color: var(--muted); }
+.opts button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.review-list { display: grid; gap: .6rem; }
+.review-list .card { gap: .4rem; }
+
+/* Tutor + entrada única */
+.tutor { position: sticky; bottom: var(--composer-h); z-index: 9; margin: 0 auto; width: 100%; max-width: 760px; padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.tutor-box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgb(0 0 0 / .08); max-height: min(58vh, 520px); display: grid; grid-template-rows: auto 1fr auto; }
+.tutor-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .65rem .9rem; border-bottom: 1px solid var(--line); }
+.tutor-head .kicker { color: var(--accent); }
+.msgs { overflow-y: auto; padding: .8rem .9rem; display: grid; gap: .65rem; align-content: start; }
+.msg { max-width: 92%; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; font-size: .96rem; }
+.msg.me { justify-self: end; background: var(--soft); border-radius: 14px 14px 4px 14px; padding: .55rem .8rem; }
+.msg.tu { justify-self: start; }
+.msg .meta { display: flex; gap: .4rem; align-items: center; margin-top: .35rem; }
+.tutor-foot { display: flex; gap: .4rem; flex-wrap: wrap; padding: .55rem .9rem; border-top: 1px solid var(--line); }
+.composer { position: sticky; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); padding: .6rem max(16px, env(safe-area-inset-right, 0px)) calc(.6rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.composer-inner { max-width: 760px; margin: 0 auto; display: grid; gap: .35rem; }
+.ctx { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: var(--muted); }
+.ctx b { color: var(--ink); font-weight: 600; }
+.inbox { display: flex; align-items: flex-end; gap: .4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: .4rem .4rem .4rem .8rem; }
+.inbox textarea { flex: 1; border: 0; outline: none; background: transparent; resize: none; min-height: 26px; max-height: 140px; padding: .35rem 0; line-height: 1.4; }
+.inbox .icon-btn { border: 0; width: 38px; height: 38px; background: transparent; }
+.inbox .icon-btn.on { background: var(--accent-soft); color: var(--accent); }
+.send { background: var(--ink); color: var(--bg); border: 0; border-radius: 12px; height: 38px; padding: 0 .9rem; font-weight: 600; }
+.partial { font-size: .82rem; color: var(--muted); font-style: italic; }
+.attach { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; border: 1px solid var(--line); border-radius: 8px; padding: .1rem .45rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Tus materias"></aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Abrir tus materias">≡</button>
+      <div class="crumb" id="crumb"></div>
+      <span class="timer mono" id="timer" hidden></span>
+      <div class="progress-top"><span id="ptop" style="width:0"></span></div>
+    </header>
+    <main class="view" id="view" tabindex="-1"></main>
+    <section class="tutor" id="tutor" hidden aria-live="polite">
+      <div class="tutor-box">
+        <div class="tutor-head">
+          <div><div class="kicker">Tutor · comprensión real</div><div class="small muted" id="tutor-topic"></div></div>
+          <button type="button" class="icon-btn" id="tutor-close" aria-label="Cerrar tutor">×</button>
+        </div>
+        <div class="msgs" id="msgs"></div>
+        <div class="tutor-foot">
+          <button type="button" class="btn" id="tutor-again">Explícamelo de otra forma</button>
+          <button type="button" class="btn" id="tutor-stop" hidden>Detener</button>
+        </div>
+      </div>
+    </section>
+    <form class="composer" id="composer" autocomplete="off">
+      <div class="composer-inner">
+        <div class="ctx" id="ctx"></div>
+        <div class="inbox">
+          <textarea id="ask" rows="1" placeholder="Explica el tema con tus palabras, pregunta sin pena o sube una foto…" aria-label="Escribe al tutor"></textarea>
+          <input type="file" id="photo" accept="image/*" hidden>
+          <button type="button" class="icon-btn" id="photo-btn" aria-label="Subir foto" hidden>📷</button>
+          <button type="button" class="icon-btn" id="mic-btn" aria-label="Dictar" hidden>🎙</button>
+          <button type="submit" class="send" id="send-btn">Enviar</button>
+        </div>
+        <div class="partial" id="partial" hidden></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<template id="svg-earth-layers"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Inter, sans-serif">
+  <circle cx="190" cy="190" r="176" fill="#7a4a22"/>
+  <circle cx="190" cy="190" r="166" fill="#e8843f"/>
+  <circle cx="190" cy="190" r="96" fill="#f5b53c"/>
+  <circle cx="190" cy="190" r="48" fill="#fff1a8" stroke="#e7c75a" stroke-width="2"/>
+  <g stroke="#1c2130" stroke-width="1.6" fill="none">
+    <path d="M300 55 L400 42"/>
+    <path d="M318 145 L400 132"/>
+    <path d="M262 205 L400 222"/>
+    <path d="M205 210 L400 312"/>
+  </g>
+  <g fill="#1c2130">
+    <circle cx="300" cy="55" r="3.5"/><circle cx="318" cy="145" r="3.5"/>
+    <circle cx="262" cy="205" r="3.5"/><circle cx="205" cy="210" r="3.5"/>
+  </g>
+  <g font-size="15">
+    <text x="408" y="38" font-weight="700">Corteza · <tspan fill="#1d4ed8">Crust</tspan></text>
+    <text x="408" y="57" font-size="12.5" fill="#444">sólida, delgada · 5–70 km</text>
+    <text x="408" y="73" font-size="12.5" fill="#1d4ed8">thin, solid · 5–70 km</text>
+    <text x="408" y="128" font-weight="700">Manto · <tspan fill="#1d4ed8">Mantle</tspan></text>
+    <text x="408" y="147" font-size="12.5" fill="#444">la más grande; roca que fluye lento</text>
+    <text x="408" y="163" font-size="12.5" fill="#1d4ed8">largest; slowly flowing rock · ~2,900 km</text>
+    <text x="408" y="218" font-weight="700">Núcleo externo · <tspan fill="#1d4ed8">Outer core</tspan></text>
+    <text x="408" y="237" font-size="12.5" fill="#444">LÍQUIDO (hierro y níquel) → campo magnético</text>
+    <text x="408" y="253" font-size="12.5" fill="#1d4ed8">LIQUID iron &amp; nickel → magnetic field</text>
+    <text x="408" y="308" font-weight="700">Núcleo interno · <tspan fill="#1d4ed8">Inner core</tspan></text>
+    <text x="408" y="327" font-size="12.5" fill="#444">SÓLIDO por la presión; el más caliente</text>
+    <text x="408" y="343" font-size="12.5" fill="#1d4ed8">SOLID due to pressure; hottest</text>
+  </g>
+</svg></template>
+<template id="svg-seismic"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/></marker>
+    <marker id="sa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+  </defs>
+  <circle cx="230" cy="210" r="180" fill="#fbd9bd" stroke="#7a4a22" stroke-width="5"/>
+  <circle cx="230" cy="210" r="100" fill="#fde7a3" stroke="#e0a526" stroke-width="2"/>
+  <circle cx="230" cy="210" r="45" fill="#fff6cf" stroke="#e7c75a" stroke-width="1.5"/>
+  <text x="230" y="214" font-size="11" text-anchor="middle" fill="#7a5a00">sólido · solid</text>
+  <text x="230" y="150" font-size="11.5" text-anchor="middle" fill="#7a5a00" font-weight="700">LÍQUIDO · LIQUID</text>
+  <path d="M403.7 281.9 A188 188 0 0 1 56.3 281.9" fill="none" stroke="#6b7280" stroke-width="9" stroke-linecap="round" opacity=".55"/>
+  <g stroke="#1d4ed8" stroke-width="2.4" fill="none">
+    <path d="M230 30 L140 366" marker-end="url(#pa)"/>
+    <path d="M230 30 L320 366" marker-end="url(#pa)"/>
+  </g>
+  <g stroke="#dc2626" stroke-width="2.4" fill="none">
+    <path d="M230 30 L74 120" marker-end="url(#sa)"/>
+    <path d="M230 30 L386 120" marker-end="url(#sa)"/>
+    <path d="M230 30 L53 241" marker-end="url(#sa)"/>
+    <path d="M230 30 L407 241" marker-end="url(#sa)"/>
+    <path d="M230 30 L230 108" stroke-dasharray="6 4"/>
+  </g>
+  <g stroke="#dc2626" stroke-width="3.5"><path d="M222 100 L238 116 M238 100 L222 116"/></g>
+  <polygon points="230,14 235,25 247,26 238,34 241,46 230,40 219,46 222,34 213,26 225,25" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>
+  <text x="252" y="22" font-size="12" font-weight="700">Terremoto · Earthquake</text>
+  <text x="230" y="425" font-size="12.5" text-anchor="middle" font-weight="700" fill="#4b5563">Zona de sombra: no llegan ondas S · Shadow zone: no S-waves</text>
+  <g font-size="13.5">
+    <line x1="460" y1="70" x2="500" y2="70" stroke="#1d4ed8" stroke-width="3"/>
+    <text x="508" y="66" font-weight="700" fill="#1d4ed8">Ondas P (primarias)</text>
+    <text x="508" y="83" font-size="12">P-waves: sólidos y líquidos</text>
+    <text x="508" y="99" font-size="12" fill="#1d4ed8">solids AND liquids</text>
+    <line x1="460" y1="140" x2="500" y2="140" stroke="#dc2626" stroke-width="3"/>
+    <text x="508" y="136" font-weight="700" fill="#dc2626">Ondas S (secundarias)</text>
+    <text x="508" y="153" font-size="12">S-waves: SOLO sólidos</text>
+    <text x="508" y="169" font-size="12" fill="#1d4ed8">ONLY solids</text>
+    <rect x="455" y="200" width="255" height="120" rx="10" fill="#fff7ed" stroke="#f59e0b"/>
+    <text x="467" y="224" font-weight="800" font-size="13">Conclusión · Conclusion</text>
+    <text x="467" y="245" font-size="12">Las ondas S se detienen a ~2,900 km</text>
+    <text x="467" y="262" font-size="12">→ el núcleo externo es LÍQUIDO.</text>
+    <text x="467" y="285" font-size="12" fill="#1d4ed8">S-waves stop at ~2,900 km</text>
+    <text x="467" y="302" font-size="12" fill="#1d4ed8">→ the outer core is LIQUID.</text>
+  </g>
+</svg></template>
+<template id="svg-plate-boundaries"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g>
+    <rect x="5" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="125" y="30" text-anchor="middle" font-weight="800" font-size="15">Convergente</text>
+    <text x="125" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Convergent</text>
+    <rect x="25" y="150" width="100" height="30" fill="#a0673a"/>
+    <rect x="125" y="150" width="100" height="30" fill="#8d5524"/>
+    <polygon points="85,150 125,85 165,150" fill="#7a4a22"/>
+    <polygon points="112,106 125,85 138,106" fill="#fff"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M35 135 L75 135" marker-end="url(#pb)"/><path d="M215 135 L175 135" marker-end="url(#pb)"/></g>
+    <rect x="25" y="180" width="200" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="125" y="223" text-anchor="middle" font-size="12">chocan → montañas, fosas, volcanes</text>
+    <text x="125" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">collide → mountains, trenches, volcanoes</text>
+  </g>
+  <g>
+    <rect x="260" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="380" y="30" text-anchor="middle" font-weight="800" font-size="15">Divergente</text>
+    <text x="380" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Divergent</text>
+    <rect x="275" y="150" width="95" height="30" fill="#a0673a"/>
+    <rect x="390" y="150" width="95" height="30" fill="#8d5524"/>
+    <path d="M370 150 L380 132 L390 150 Z" fill="#7a4a22"/>
+    <path d="M372 202 C376 185 384 185 388 202 L388 180 C384 170 376 170 372 180 Z" fill="#dc2626"/>
+    <path d="M376 180 C378 160 382 160 384 180" fill="#f97316"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M340 135 L295 135" marker-end="url(#pb)"/><path d="M420 135 L465 135" marker-end="url(#pb)"/></g>
+    <rect x="275" y="180" width="210" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="380" y="223" text-anchor="middle" font-size="12">se separan → dorsal oceánica, rift</text>
+    <text x="380" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">pull apart → mid-ocean ridge, rift valley</text>
+  </g>
+  <g>
+    <rect x="515" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="635" y="30" text-anchor="middle" font-weight="800" font-size="15">Transformante</text>
+    <text x="635" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Transform</text>
+    <rect x="545" y="70" width="88" height="130" fill="#a0673a"/>
+    <rect x="637" y="80" width="88" height="130" fill="#8d5524"/>
+    <path d="M635 66 L635 212" stroke="#1c2130" stroke-width="2" stroke-dasharray="6 4"/>
+    <g stroke="#fff" stroke-width="3.5" fill="none"><path d="M589 175 L589 100" marker-end="url(#pb)"/><path d="M681 105 L681 180" marker-end="url(#pb)"/></g>
+    <text x="635" y="223" text-anchor="middle" font-size="12">se deslizan → fallas, terremotos</text>
+    <text x="635" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">slide past → faults, earthquakes</text>
+  </g>
+</svg></template>
+<template id="svg-soil-horizons"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" font-family="Inter, sans-serif">
+  <g stroke="#3f7d20" stroke-width="3" stroke-linecap="round">
+    <path d="M45 30 l-4 -16 M60 30 l3 -18 M80 30 l-2 -14 M105 30 l4 -17 M130 30 l-3 -15 M160 30 l2 -18 M190 30 l-4 -14 M215 30 l3 -16 M240 30 l-2 -15"/>
+  </g>
+  <rect x="30" y="30" width="230" height="40" fill="#3a2716"/>
+  <g fill="#7cb342"><ellipse cx="60" cy="42" rx="12" ry="5"/><ellipse cx="120" cy="55" rx="10" ry="4"/><ellipse cx="185" cy="44" rx="12" ry="5"/><ellipse cx="235" cy="58" rx="9" ry="4"/></g>
+  <g fill="#a1887f"><ellipse cx="95" cy="40" rx="9" ry="4"/><ellipse cx="215" cy="40" rx="8" ry="3"/></g>
+  <rect x="30" y="70" width="230" height="70" fill="#5b3c21"/>
+  <g stroke="#c8a27a" stroke-width="1.5" fill="none"><path d="M70 70 q5 25 -5 55 M150 70 q-6 20 4 45 M215 70 q4 18 -4 35"/></g>
+  <rect x="30" y="140" width="230" height="70" fill="#b27445"/>
+  <g fill="#8d5524"><circle cx="60" cy="160" r="3"/><circle cx="110" cy="185" r="3"/><circle cx="170" cy="165" r="3"/><circle cx="220" cy="195" r="3"/><circle cx="90" cy="200" r="2.5"/><circle cx="200" cy="150" r="2.5"/></g>
+  <rect x="30" y="210" width="230" height="70" fill="#a39b8f"/>
+  <g fill="#7b7468" stroke="#5f594f"><path d="M45 225 l25 -5 l10 20 l-20 15 l-18 -10z"/><path d="M110 240 l30 -8 l12 18 l-25 14 l-20 -8z"/><path d="M180 222 l28 2 l6 22 l-26 8 l-14 -14z"/><path d="M220 255 l25 0 l5 18 l-28 4z"/></g>
+  <rect x="30" y="280" width="230" height="70" fill="#6b6b6b"/>
+  <g stroke="#4b4b4b" stroke-width="2" fill="none"><path d="M80 280 l10 30 l-8 40 M170 280 l-6 25 l12 45"/></g>
+  <g font-size="24" font-weight="800" fill="#fff" text-anchor="middle">
+    <text x="15" y="58" fill="#3a2716">O</text><text x="15" y="113" fill="#5b3c21">A</text><text x="15" y="183" fill="#b27445">B</text><text x="15" y="253" fill="#7b7468">C</text><text x="15" y="323" fill="#4b4b4b">R</text>
+  </g>
+  <g stroke="#9aa1ae" stroke-width="1.2"><path d="M262 50 L285 50 M262 105 L285 105 M262 175 L285 175 M262 245 L285 245 M262 315 L285 315"/></g>
+  <g font-size="14.5">
+    <text x="292" y="45" font-weight="700">O · Capa orgánica · <tspan fill="#1d4ed8">Organic layer</tspan></text>
+    <text x="292" y="62" font-size="12">hojas frescas y en descomposición · fresh &amp; decomposing leaves</text>
+    <text x="292" y="100" font-weight="700">A · Suelo superficial · <tspan fill="#1d4ed8">Topsoil</tspan></text>
+    <text x="292" y="117" font-size="12">oscuro, humus + minerales, raíces · dark, humus, roots, fertile</text>
+    <text x="292" y="170" font-weight="700">B · Subsuelo · <tspan fill="#1d4ed8">Subsoil</tspan></text>
+    <text x="292" y="187" font-size="12">arcilla y minerales lavados desde arriba · clay &amp; minerals washed down</text>
+    <text x="292" y="240" font-weight="700">C · Material parental · <tspan fill="#1d4ed8">Parent material</tspan></text>
+    <text x="292" y="257" font-size="12">pedazos de roca madre meteorizada · broken, weathered bedrock</text>
+    <text x="292" y="310" font-weight="700">R · Roca madre · <tspan fill="#1d4ed8">Bedrock</tspan></text>
+    <text x="292" y="327" font-size="12">roca sólida sin meteorizar · solid, unweathered rock</text>
+  </g>
+</svg></template>
+<template id="svg-rock-cycle"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 428" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4b5563"/></marker>
+  </defs>
+  <g stroke="#4b5563" stroke-width="2.5" fill="none" marker-end="url(#ra)">
+    <path d="M150 180 Q190 100 262 72"/>
+    <path d="M450 72 Q530 100 570 180"/>
+    <path d="M575 240 Q560 300 525 330"/>
+    <path d="M385 362 L335 362"/>
+    <path d="M195 330 Q160 300 150 240"/>
+  </g>
+  <g font-size="12.5" font-weight="600">
+    <text x="180" y="110" text-anchor="end">meteorización y erosión</text>
+    <text x="180" y="126" text-anchor="end" fill="#1d4ed8">weathering &amp; erosion</text>
+    <text x="540" y="110">compactación y cementación</text>
+    <text x="540" y="126" fill="#1d4ed8">compaction &amp; cementation</text>
+    <text x="580" y="300">calor y presión</text>
+    <text x="580" y="316" fill="#1d4ed8">heat &amp; pressure</text>
+    <text x="360" y="420" text-anchor="middle">fusión (se derrite) · <tspan fill="#1d4ed8">melting</tspan></text>
+    <text x="150" y="300" text-anchor="end">enfriamiento</text>
+    <text x="150" y="316" text-anchor="end" fill="#1d4ed8">cooling</text>
+  </g>
+  <g>
+    <rect x="30" y="182" width="190" height="58" rx="12" fill="#fde2d2" stroke="#c2410c" stroke-width="2"/>
+    <text x="125" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca ígnea</text>
+    <text x="125" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Igneous rock</text>
+    <rect x="265" y="40" width="190" height="58" rx="12" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+    <text x="360" y="65" text-anchor="middle" font-weight="800" font-size="15">Sedimentos</text>
+    <text x="360" y="84" text-anchor="middle" font-size="13" fill="#1d4ed8">Sediments</text>
+    <rect x="490" y="182" width="200" height="58" rx="12" fill="#fde68a" stroke="#a16207" stroke-width="2"/>
+    <text x="590" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca sedimentaria</text>
+    <text x="590" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Sedimentary rock</text>
+    <rect x="390" y="333" width="200" height="58" rx="12" fill="#e0e7ff" stroke="#4338ca" stroke-width="2"/>
+    <text x="490" y="358" text-anchor="middle" font-weight="800" font-size="15">Roca metamórfica</text>
+    <text x="490" y="377" text-anchor="middle" font-size="13" fill="#1d4ed8">Metamorphic rock</text>
+    <rect x="135" y="333" width="195" height="58" rx="12" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+    <text x="232" y="358" text-anchor="middle" font-weight="800" font-size="15">Magma</text>
+    <text x="232" y="377" text-anchor="middle" font-size="12.5" fill="#1d4ed8">melted rock · roca fundida</text>
+  </g>
+  <text x="360" y="215" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">Cualquier roca puede</text>
+  <text x="360" y="232" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">convertirse en otra</text>
+  <text x="360" y="252" text-anchor="middle" font-size="12.5" fill="#1d4ed8">Any rock can become another</text>
+</svg></template>
+<template id="svg-cells"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="Inter, sans-serif">
+  <text x="185" y="28" text-anchor="middle" font-weight="800" font-size="16">Célula vegetal · <tspan fill="#1d4ed8">Plant cell</tspan></text>
+  <text x="575" y="28" text-anchor="middle" font-weight="800" font-size="16">Célula animal · <tspan fill="#1d4ed8">Animal cell</tspan></text>
+  <rect x="40" y="45" width="290" height="230" rx="10" fill="#eef7e6" stroke="#2f7d32" stroke-width="9"/>
+  <rect x="50" y="55" width="270" height="210" rx="6" fill="none" stroke="#9ccc65" stroke-width="2.5"/>
+  <rect x="150" y="75" width="120" height="170" rx="35" fill="#cfeaf7" stroke="#5aa9d6" stroke-width="2"/>
+  <circle cx="95" cy="110" r="28" fill="#c9b8ec" stroke="#6a4fb3" stroke-width="2"/>
+  <circle cx="99" cy="106" r="9" fill="#6a4fb3"/>
+  <g fill="#43a047" stroke="#1b5e20" stroke-width="1.2">
+    <ellipse cx="90" cy="200" rx="17" ry="9"/><ellipse cx="295" cy="120" rx="15" ry="8"/><ellipse cx="205" cy="256" rx="14" ry="6"/><ellipse cx="300" cy="225" rx="13" ry="7"/>
+  </g>
+  <g fill="#ff8a50" stroke="#d84315" stroke-width="1.2"><ellipse cx="90" cy="245" rx="16" ry="9"/><ellipse cx="295" cy="175" rx="13" ry="7"/></g>
+  <ellipse cx="575" cy="160" rx="140" ry="110" fill="#fde9f0" stroke="#d8537a" stroke-width="3.5"/>
+  <circle cx="560" cy="150" r="32" fill="#c9b8ec" stroke="#6a4fb3" stroke-width="2"/>
+  <circle cx="565" cy="146" r="10" fill="#6a4fb3"/>
+  <g fill="#ff8a50" stroke="#d84315" stroke-width="1.2"><ellipse cx="480" cy="120" rx="17" ry="9" transform="rotate(-20 480 120)"/><ellipse cx="650" cy="200" rx="17" ry="9" transform="rotate(25 650 200)"/></g>
+  <g fill="#f48fb1" stroke="#ad1457" stroke-width="1.2"><circle cx="660" cy="110" r="10"/><circle cx="500" cy="210" r="9"/></g>
+  <circle cx="620" cy="240" r="12" fill="#cfeaf7" stroke="#5aa9d6" stroke-width="1.5"/>
+  <g fill="#37474f"><circle cx="530" cy="228" r="2.6"/><circle cx="540" cy="236" r="2.6"/><circle cx="522" cy="238" r="2.6"/><circle cx="610" cy="95" r="2.6"/><circle cx="620" cy="102" r="2.6"/><circle cx="460" cy="170" r="2.6"/><circle cx="470" cy="180" r="2.6"/></g>
+  <g font-size="12" font-weight="800" text-anchor="middle">
+    <g fill="#fff" stroke="#1c2130" stroke-width="1.5">
+      <circle cx="40" cy="160" r="10"/><circle cx="125" cy="55" r="10"/><circle cx="95" cy="145" r="10"/><circle cx="210" cy="160" r="10"/><circle cx="117" cy="200" r="10"/><circle cx="118" cy="245" r="10"/><circle cx="125" cy="170" r="10"/>
+      <circle cx="575" cy="50" r="10"/><circle cx="560" cy="190" r="10"/><circle cx="480" cy="145" r="10"/><circle cx="690" cy="160" r="10"/><circle cx="660" cy="135" r="10"/><circle cx="620" cy="217" r="10"/><circle cx="531" cy="210" r="11"/>
+    </g>
+    <text x="40" y="164">1</text><text x="125" y="59">2</text><text x="95" y="149">3</text><text x="210" y="164">4</text><text x="117" y="204">5</text><text x="118" y="249">6</text><text x="125" y="174">7</text>
+    <text x="575" y="54">2</text><text x="560" y="194">3</text><text x="480" y="149">6</text><text x="690" y="164">7</text><text x="660" y="139">8</text><text x="620" y="221">9</text><text x="531" y="214">10</text>
+  </g>
+  <g font-size="12.5">
+    <text x="45" y="305" font-weight="800" fill="#2f7d32">1 Pared celular · Cell wall ★</text>
+    <text x="45" y="323">2 Membrana celular · Cell membrane</text>
+    <text x="45" y="341">3 Núcleo · Nucleus</text>
+    <text x="45" y="359" font-weight="800" fill="#2f7d32">4 Vacuola central grande · Large central vacuole ★</text>
+    <text x="45" y="377" font-weight="800" fill="#2f7d32">5 Cloroplasto · Chloroplast ★</text>
+    <text x="45" y="395">6 Mitocondria · Mitochondria</text>
+    <text x="45" y="413">7 Citoplasma · Cytoplasm</text>
+    <text x="45" y="433" font-size="11" fill="#2f7d32">★ solo en plantas · plants only</text>
+    <text x="440" y="305">2 Membrana celular · Cell membrane</text>
+    <text x="440" y="323">3 Núcleo · Nucleus</text>
+    <text x="440" y="341">6 Mitocondria · Mitochondria</text>
+    <text x="440" y="359">7 Citoplasma · Cytoplasm</text>
+    <text x="440" y="377" font-weight="800" fill="#ad1457">8 Lisosoma · Lysosome</text>
+    <text x="440" y="395">9 Vacuola pequeña · Small vacuole</text>
+    <text x="440" y="413">10 Ribosomas · Ribosomes (en todas · in all cells)</text>
+    <text x="440" y="433" font-size="11" fill="#ad1457">Sin pared, sin cloroplastos · No wall, no chloroplasts</text>
+  </g>
+</svg></template>
+<template id="svg-virus"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="Inter, sans-serif">
+  <text x="170" y="22" text-anchor="middle" font-weight="800" font-size="15">Bacteriófago · <tspan fill="#1d4ed8">Bacteriophage</tspan></text>
+  <polygon points="170,40 215,65 215,115 170,140 125,115 125,65" fill="#e0e7ff" stroke="#4338ca" stroke-width="3"/>
+  <path d="M150 75 c10 15 25 -10 30 10 s-20 20 -5 30 s25 -5 20 10" fill="none" stroke="#c2410c" stroke-width="2.5"/>
+  <rect x="160" y="140" width="20" height="80" fill="#c7d2fe" stroke="#4338ca" stroke-width="2"/>
+  <g stroke="#4338ca" stroke-width="1.5"><path d="M160 152 h20 M160 164 h20 M160 176 h20 M160 188 h20 M160 200 h20"/></g>
+  <rect x="148" y="220" width="44" height="8" fill="#4338ca"/>
+  <g stroke="#4338ca" stroke-width="3" fill="none" stroke-linecap="round"><path d="M150 228 L120 255 L110 285"/><path d="M190 228 L220 255 L230 285"/><path d="M160 228 L150 262 L140 290"/><path d="M180 228 L190 262 L200 290"/></g>
+  <g stroke="#9aa1ae" stroke-width="1.3"><path d="M215 70 L262 55"/><path d="M180 95 L262 110"/><path d="M180 180 L262 178"/><path d="M222 262 L262 250"/></g>
+  <g font-size="12.5">
+    <text x="268" y="52" font-weight="700">Cápside (cubierta de proteína)</text><text x="268" y="67" fill="#1d4ed8">Capsid (protein coat)</text>
+    <text x="268" y="108" font-weight="700">Material genético: ADN o ARN</text><text x="268" y="123" fill="#1d4ed8">Genetic material: DNA or RNA</text>
+    <text x="268" y="176" font-weight="700">Cola · <tspan fill="#1d4ed8">Tail</tspan></text>
+    <text x="268" y="248" font-weight="700">Fibras de la cola · <tspan fill="#1d4ed8">Tail fibers</tspan></text>
+  </g>
+  <text x="570" y="22" text-anchor="middle" font-weight="800" font-size="15">Virus con envoltura · <tspan fill="#1d4ed8">Enveloped</tspan></text>
+  <g stroke="#b91c1c" stroke-width="3" stroke-linecap="round">
+    <path d="M570 60 v-14 M570 220 v14 M490 140 h-14 M650 140 h14 M513 83 l-10 -10 M627 83 l10 -10 M513 197 l-10 10 M627 197 l10 10"/>
+  </g>
+  <g fill="#b91c1c"><circle cx="570" cy="44" r="5"/><circle cx="570" cy="236" r="5"/><circle cx="474" cy="140" r="5"/><circle cx="666" cy="140" r="5"/><circle cx="501" cy="71" r="5"/><circle cx="639" cy="71" r="5"/><circle cx="501" cy="209" r="5"/><circle cx="639" cy="209" r="5"/></g>
+  <circle cx="570" cy="140" r="80" fill="#fff1f2" stroke="#e11d48" stroke-width="4"/>
+  <circle cx="570" cy="140" r="52" fill="#e0e7ff" stroke="#4338ca" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <path d="M545 130 c10 -20 20 20 30 0 s15 20 25 0" fill="none" stroke="#c2410c" stroke-width="2.5"/>
+  <text x="570" y="270" text-anchor="middle" font-size="12.5"><tspan font-weight="700">Envoltura</tspan> · <tspan fill="#1d4ed8">Envelope</tspan> · <tspan font-weight="700">Espículas</tspan> · <tspan fill="#1d4ed8">Spikes</tspan></text>
+  <text x="570" y="290" text-anchor="middle" font-size="12" fill="#4b5563">ej. gripe · e.g. flu</text>
+  <rect x="265" y="285" width="190" height="30" rx="8" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="360" y="305" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">NO es una célula · NOT a cell</text>
+</svg></template>
+<template id="svg-lytic-lysogenic"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="la" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4b5563"/></marker>
+  </defs>
+  <text x="10" y="24" font-weight="800" font-size="16" fill="#b91c1c">Ciclo lítico · <tspan fill="#1d4ed8">Lytic cycle</tspan> <tspan font-size="12.5" fill="#4b5563" font-weight="600">— rápido, destruye la célula · fast, destroys the cell</tspan></text>
+  <g fill="#fef2f2" stroke="#dc2626" stroke-width="2">
+    <rect x="10" y="38" width="140" height="84" rx="10"/><rect x="170" y="38" width="140" height="84" rx="10"/><rect x="330" y="38" width="140" height="84" rx="10"/><rect x="490" y="38" width="140" height="84" rx="10"/><rect x="650" y="38" width="140" height="84" rx="10"/>
+  </g>
+  <text x="10" y="182" font-weight="800" font-size="16" fill="#6d28d9">Ciclo lisogénico · <tspan fill="#1d4ed8">Lysogenic cycle</tspan> <tspan font-size="12.5" fill="#4b5563" font-weight="600">— se esconde, no mata aún · hides, doesn't kill yet</tspan></text>
+  <g fill="#f5f3ff" stroke="#7c3aed" stroke-width="2">
+    <rect x="10" y="196" width="140" height="84" rx="10"/><rect x="170" y="196" width="140" height="84" rx="10"/><rect x="330" y="196" width="140" height="84" rx="10"/><rect x="490" y="196" width="140" height="84" rx="10"/><rect x="650" y="196" width="140" height="84" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+  </g>
+  <g stroke="#4b5563" stroke-width="2.2" marker-end="url(#la)">
+    <path d="M151 80 L168 80"/><path d="M311 80 L328 80"/><path d="M471 80 L488 80"/><path d="M631 80 L648 80"/>
+    <path d="M151 238 L168 238"/><path d="M311 238 L328 238"/><path d="M471 238 L488 238"/><path d="M631 238 L648 238"/>
+    <path d="M700 195 L440 124" stroke="#ea580c" stroke-dasharray="6 4"/>
+  </g>
+  <g font-size="12.5" text-anchor="middle">
+    <text x="80" y="62" font-weight="700">1. Se adhiere</text><text x="80" y="96" fill="#1d4ed8">Attaches</text>
+    <text x="240" y="62" font-weight="700">2. Inyecta su ADN</text><text x="240" y="96" fill="#1d4ed8">Injects its DNA</text>
+    <text x="400" y="58" font-weight="700">3. La célula hace</text><text x="400" y="74" font-weight="700">copias del virus</text><text x="400" y="96" fill="#1d4ed8">Cell makes</text><text x="400" y="111" fill="#1d4ed8">virus copies</text>
+    <text x="560" y="62" font-weight="700">4. Se arman</text><text x="560" y="78" font-weight="700">virus nuevos</text><text x="560" y="100" fill="#1d4ed8">New viruses assembled</text>
+    <text x="720" y="58" font-weight="700">5. La célula</text><text x="720" y="74" font-weight="700">revienta (lisis)</text><text x="720" y="96" fill="#1d4ed8">Cell bursts</text><text x="720" y="111" fill="#1d4ed8">(lysis)</text>
+    <text x="80" y="220" font-weight="700">1. Se adhiere</text><text x="80" y="254" fill="#1d4ed8">Attaches</text>
+    <text x="240" y="220" font-weight="700">2. Inyecta su ADN</text><text x="240" y="254" fill="#1d4ed8">Injects its DNA</text>
+    <text x="400" y="216" font-weight="700">3. ADN viral se une</text><text x="400" y="232" font-weight="700">al ADN de la célula</text><text x="400" y="254" fill="#1d4ed8">Viral DNA joins</text><text x="400" y="269" fill="#1d4ed8">the host DNA</text>
+    <text x="560" y="216" font-weight="700">4. La célula se divide</text><text x="560" y="232" font-weight="700">y copia el ADN viral</text><text x="560" y="254" fill="#1d4ed8">Cell divides and</text><text x="560" y="269" fill="#1d4ed8">copies viral DNA</text>
+    <text x="720" y="216" font-weight="700">5. Detonante</text><text x="720" y="232" font-weight="700">(estrés) → lítico</text><text x="720" y="254" fill="#1d4ed8">Trigger (stress)</text><text x="720" y="269" fill="#1d4ed8">→ lytic cycle</text>
+  </g>
+  <text x="612" y="158" font-size="11.5" fill="#ea580c" font-weight="700">puede cambiar · can switch</text>
+</svg></template>
+<template id="svg-bacteria"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" font-family="Inter, sans-serif">
+  <g stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"><path d="M200 82 L192 58 M262 76 L262 52 M330 76 L338 52 M395 84 L408 62"/></g>
+  <rect x="112" y="74" width="336" height="136" rx="68" fill="#fff3d6" stroke="#e0b44c" stroke-width="2"/>
+  <rect x="120" y="82" width="320" height="120" rx="60" fill="#e8f4ff" stroke="#2b6cb0" stroke-width="5"/>
+  <rect x="129" y="91" width="302" height="102" rx="51" fill="#f6faff" stroke="#63a4e6" stroke-width="2"/>
+  <path d="M245 140 c10 -25 25 15 35 -8 s20 22 32 -2 s18 18 28 -6 s-15 30 -30 18 s-25 -12 -40 10 s-30 -5 -25 -12z" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
+  <circle cx="385" cy="160" r="10" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
+  <g fill="#37474f"><circle cx="170" cy="120" r="3.5"/><circle cx="185" cy="165" r="3.5"/><circle cx="205" cy="135" r="3.5"/><circle cx="160" cy="150" r="3.5"/><circle cx="360" cy="115" r="3.5"/><circle cx="400" cy="130" r="3.5"/><circle cx="345" cy="175" r="3.5"/></g>
+  <path d="M448 142 c25 -30 45 30 70 0 s45 30 70 0 s45 30 70 0" fill="none" stroke="#4b5563" stroke-width="3"/>
+  <g stroke="#9aa1ae" stroke-width="1.3" fill="none">
+    <path d="M118 120 L80 60"/><path d="M262 52 L262 40"/><path d="M425 100 L470 45"/><path d="M438 125 L560 85"/>
+    <path d="M170 150 L150 245"/><path d="M290 150 L300 245"/><path d="M385 170 L440 245"/><path d="M600 150 L610 200"/>
+  </g>
+  <g font-size="13">
+    <text x="20" y="40" font-weight="700">Cápsula</text><text x="20" y="56" fill="#1d4ed8">Capsule</text>
+    <text x="230" y="20" font-weight="700">Pili · <tspan fill="#1d4ed8">Pili</tspan></text>
+    <text x="440" y="24" font-weight="700">Pared celular</text><text x="440" y="40" fill="#1d4ed8">Cell wall (peptidoglycan)</text>
+    <text x="565" y="78" font-weight="700">Membrana</text><text x="565" y="94" fill="#1d4ed8">Cell membrane</text>
+    <text x="90" y="262" font-weight="700">Ribosomas</text><text x="90" y="278" fill="#1d4ed8">Ribosomes</text>
+    <text x="230" y="262" font-weight="700">ADN circular (nucleoide)</text><text x="230" y="278" fill="#1d4ed8">Circular DNA (nucleoid)</text>
+    <text x="420" y="262" font-weight="700">Plásmido</text><text x="420" y="278" fill="#1d4ed8">Plasmid</text>
+    <text x="570" y="218" font-weight="700">Flagelo</text><text x="570" y="234" fill="#1d4ed8">Flagellum</text>
+  </g>
+  <text x="285" y="108" font-size="11" text-anchor="middle" fill="#7b3fb2" font-weight="700">SIN núcleo · NO nucleus</text>
+</svg></template>
+
+<script>
+// Temario de la convocatoria organizado como en la guía de la app:
+// Examen → Módulos → Micro-lecciones (temas) → Ítems activos.
+// Cada tema trae el Sistema de Entender: map (guía), sum (resumen), beats (explicador),
+// life (ejemplo de tu vida) e items: [id, pregunta ES, pregunta EN, respuesta ES, respuesta EN, fija en examen].
+const CONTENT = {
+  exam: { date: "2026-12-04", name: "Make-up Science Test · 7.º grado" },
+  modules: [
+    { id: "geo", es: "Geología", en: "Geology", objectives: "Objetivos 1–4" },
+    { id: "cell", es: "La Célula", en: "The Cell", objectives: "Objetivos 5–8" },
+  ],
+  // Plan por fecha (Deadline Scheduler): qué temas son "el tema de hoy".
+  plan: {
+    "2026-11-26": ["capas", "evidencia"],
+    "2026-11-27": ["placas", "relieves"],
+    "2026-11-28": ["meteorizacion", "suelo"],
+    "2026-11-29": ["minerales", "rocas"],
+    "2026-11-30": [],
+    "2026-12-01": ["teoria", "niveles", "organelos", "tipos"],
+    "2026-12-02": ["virus", "microbios", "reproduccion", "papel"],
+    "2026-12-03": [],
+  },
+  topics: [
+    {
+      id: "capas", mod: "geo", svg: "earth-layers",
+      es: "Las capas de la Tierra", en: "Earth's layers",
+      map: {
+        easy: ["Los nombres y el orden de las 4 capas.", "The names and order of the 4 layers."],
+        hard: ["Qué capa es líquida, cuál es sólida y por qué.", "Which layer is liquid, which is solid, and why."],
+        exam: ["El campo magnético (núcleo externo) y el grosor de la corteza: 5 km oceánica, 70 km continental.", "The magnetic field (outer core) and crust thickness: 5 km oceanic, 70 km continental."],
+      },
+      sum: [
+        ["La Tierra es como un aguacate: cáscara fina (corteza), pulpa gruesa (manto) y semilla (núcleo).", "Earth is like an avocado: thin skin (crust), thick flesh (mantle) and a seed (core)."],
+        ["Corteza: sólida y delgada, 5 km bajo el océano y hasta 70 km bajo las montañas.", "Crust: solid and thin, 5 km under oceans and up to 70 km under mountains."],
+        ["Manto: la capa más grande; roca que fluye muy lento y mueve las placas.", "Mantle: the largest layer; rock that flows very slowly and moves the plates."],
+        ["Núcleo externo: hierro y níquel LÍQUIDOS; su movimiento crea el campo magnético.", "Outer core: LIQUID iron and nickel; its movement creates the magnetic field."],
+        ["Núcleo interno: hierro y níquel SÓLIDOS por la enorme presión; es el más caliente.", "Inner core: SOLID iron and nickel because of huge pressure; it is the hottest."],
+      ],
+      beats: [
+        ["Imagina que cortas la Tierra por la mitad, como una fruta.", "Imagine cutting Earth in half, like a fruit."],
+        ["Afuera está la corteza: tan delgada como la cáscara de un aguacate.", "Outside is the crust: as thin as an avocado's skin."],
+        ["Debajo está el manto: roca caliente que se mueve lentísimo, como plastilina.", "Below is the mantle: hot rock that moves very slowly, like modeling clay."],
+        ["Luego viene el núcleo externo, de metal líquido. Al moverse funciona como un imán gigante.", "Then comes the outer core, made of liquid metal. As it moves it works like a giant magnet."],
+        ["En el centro está el núcleo interno: es el más caliente, pero sigue sólido porque lo aplasta el peso de todo lo de arriba.", "At the center is the inner core: the hottest, but still solid because the weight of everything above squeezes it."],
+      ],
+      life: ["Cuando la brújula de tu celular apunta al norte, está usando el campo magnético que crea el núcleo externo líquido.", "When your phone's compass points north, it is using the magnetic field made by the liquid outer core."],
+      items: [
+        ["capas-1", "¿Qué capa crea el campo magnético de la Tierra?", "Which layer creates Earth's magnetic field?", "El núcleo externo: hierro y níquel líquidos en movimiento.", "The outer core: moving liquid iron and nickel.", true],
+        ["capas-2", "¿Cuál es la capa más grande y qué hace?", "Which is the largest layer and what does it do?", "El manto: su roca fluye lento y mueve las placas tectónicas.", "The mantle: its rock flows slowly and moves the tectonic plates.", true],
+        ["capas-3", "¿Qué grosor tienen la corteza oceánica y la continental?", "How thick are the oceanic and continental crust?", "Oceánica unos 5 km (basalto); continental hasta unos 70 km (granito).", "Oceanic about 5 km (basalt); continental up to about 70 km (granite).", true],
+        ["capas-4", "¿Por qué el núcleo interno es sólido si es el más caliente?", "Why is the inner core solid if it is the hottest?", "Por la enorme presión de todas las capas de arriba.", "Because of the immense pressure of all the layers above.", true],
+        ["capas-5", "Ordena las capas de afuera hacia adentro.", "Order the layers from outside to inside.", "Corteza → manto → núcleo externo → núcleo interno.", "Crust → mantle → outer core → inner core.", false],
+      ],
+    },
+    {
+      id: "evidencia", mod: "geo", svg: "seismic",
+      es: "Evidencia del interior", en: "Evidence of Earth's interior",
+      map: {
+        easy: ["Nadie ha llegado al manto: el pozo más profundo mide unos 12 km.", "No one has reached the mantle: the deepest hole is about 12 km."],
+        hard: ["Por qué las ondas S demuestran que el núcleo externo es líquido.", "Why S-waves prove the outer core is liquid."],
+        exam: ["Ondas P y S, meteoritos de hierro y níquel, y xenolitos.", "P and S waves, iron-nickel meteorites and xenoliths."],
+      },
+      sum: [
+        ["Como no podemos llegar adentro, usamos pistas: evidencia directa e indirecta.", "Since we can't go inside, we use clues: direct and indirect evidence."],
+        ["Ondas P: pasan por sólidos y líquidos. Ondas S: solo por sólidos.", "P-waves: go through solids and liquids. S-waves: only solids."],
+        ["Las ondas S se detienen a 2,900 km: ahí empieza el núcleo externo líquido.", "S-waves stop at 2,900 km: the liquid outer core starts there."],
+        ["Los meteoritos de hierro y níquel son pistas de qué está hecho el núcleo.", "Iron-nickel meteorites are clues about what the core is made of."],
+        ["Los xenolitos son rocas reales del manto que un volcán sube a la superficie.", "Xenoliths are real mantle rocks that a volcano brings to the surface."],
+      ],
+      beats: [
+        ["Un terremoto manda dos tipos de ondas por dentro de la Tierra.", "An earthquake sends two kinds of waves through Earth."],
+        ["Las ondas P son como un empujón: pasan por roca y por líquido.", "P-waves are like a push: they pass through rock and liquid."],
+        ["Las ondas S son como sacudir una cuerda: solo viajan por sólidos.", "S-waves are like shaking a rope: they only travel through solids."],
+        ["A 2,900 km las ondas S desaparecen. Conclusión: ahí hay un líquido, el núcleo externo.", "At 2,900 km the S-waves disappear. Conclusion: there is a liquid there, the outer core."],
+        ["Los meteoritos metálicos y los xenolitos son las otras pistas: muestras de núcleos de otros cuerpos y del manto.", "Metallic meteorites and xenoliths are the other clues: samples of other bodies' cores and of the mantle."],
+      ],
+      life: ["Es como adivinar qué hay dentro de un regalo sin abrirlo: lo sacudes y escuchas. Los científicos sacuden la Tierra con los terremotos.", "It's like guessing what's inside a gift without opening it: you shake it and listen. Scientists shake Earth with earthquakes."],
+      items: [
+        ["ev-1", "Las ondas S se detienen a 2,900 km. ¿Qué concluyes del núcleo externo?", "S-waves stop at 2,900 km. What do you conclude about the outer core?", "Que es líquido (metal fundido), porque las ondas S no viajan por líquidos.", "It is liquid (molten metal), because S-waves can't travel through liquids.", true],
+        ["ev-2", "¿Por qué son valiosos los xenolitos?", "Why are xenoliths valuable?", "Son muestras físicas reales del manto que sube un volcán.", "They are actual physical samples of the mantle brought up by a volcano.", true],
+        ["ev-3", "¿Qué nos dicen los meteoritos de hierro y níquel?", "What do iron-nickel meteorites tell us?", "Dan pistas de la composición química de los núcleos de los planetas.", "They give clues about the chemical composition of planetary cores.", true],
+        ["ev-4", "¿Qué ondas viajan por sólidos Y por líquidos?", "Which waves travel through solids AND liquids?", "Las ondas P (primarias).", "P-waves (primary).", false],
+        ["ev-5", "¿Por qué casi todo lo que sabemos del interior es evidencia indirecta?", "Why is most of what we know about the interior indirect evidence?", "Porque las capas son muy profundas y calientes; el pozo más profundo solo llegó a unos 12 km.", "Because the layers are too deep and hot; the deepest hole only reached about 12 km.", false],
+      ],
+    },
+    {
+      id: "placas", mod: "geo", svg: "plate-boundaries",
+      es: "Procesos y límites de placas", en: "Processes and plate boundaries",
+      map: {
+        easy: ["Endógeno = de adentro; exógeno = de afuera.", "Endogenic = from inside; exogenic = from outside."],
+        hard: ["Qué relieve forma cada límite de placas.", "Which landform each plate boundary makes."],
+        exam: ["La subducción en Costa Rica y la dorsal oceánica (placas oceánicas que se separan).", "Subduction in Costa Rica and the mid-ocean ridge (oceanic plates pulling apart)."],
+      },
+      sum: [
+        ["Procesos endógenos (de adentro, construyen): placas, plegamiento, fallas, volcanes, terremotos.", "Endogenic processes (inside, build up): plates, folding, faulting, volcanoes, earthquakes."],
+        ["Procesos exógenos (de afuera, desgastan): meteorización, erosión, depósito.", "Exogenic processes (outside, wear down): weathering, erosion, deposition."],
+        ["Convergente: las placas chocan y forman montañas plegadas, fosas y volcanes.", "Convergent: plates collide and form folded mountains, trenches and volcanoes."],
+        ["Divergente: se separan y forman una dorsal oceánica (océano) o un valle de rift (continente).", "Divergent: they pull apart and form a mid-ocean ridge (ocean) or a rift valley (continent)."],
+        ["Transformante: se deslizan de lado y producen fallas y terremotos.", "Transform: they slide past each other and cause faults and earthquakes."],
+      ],
+      beats: [
+        ["La corteza está partida en placas, como un rompecabezas que flota sobre el manto.", "The crust is broken into plates, like a puzzle floating on the mantle."],
+        ["Si dos placas chocan, es un límite convergente: la tierra se arruga y salen montañas.", "If two plates collide, it's a convergent boundary: the land wrinkles and mountains rise."],
+        ["Si una placa oceánica se hunde bajo otra, es subducción: se forman una fosa y volcanes, como en Costa Rica.", "If an oceanic plate sinks under another, it's subduction: a trench and volcanoes form, like in Costa Rica."],
+        ["Si se separan, es divergente: en el océano sube magma y forma una dorsal.", "If they pull apart, it's divergent: in the ocean magma rises and forms a ridge."],
+        ["Si se deslizan de lado, es transformante: hay fallas y terremotos.", "If they slide sideways, it's transform: there are faults and earthquakes."],
+      ],
+      life: ["Empuja dos alfombras una contra la otra en el piso: se levantan y se arrugan. Así se forman las montañas plegadas.", "Push two rugs against each other on the floor: they rise and wrinkle. That's how folded mountains form."],
+      items: [
+        ["pl-1", "Dos placas continentales chocan y las capas se doblan. ¿Qué relieve se forma?", "Two continental plates collide and the layers fold. Which landform forms?", "Una cordillera plegada (límite convergente).", "A folded mountain range (convergent boundary).", true],
+        ["pl-2", "Dos placas oceánicas se separan y sube magma. ¿Qué se forma?", "Two oceanic plates pull apart and magma rises. What forms?", "Una dorsal oceánica (mid-ocean ridge), no una fosa.", "A mid-ocean ridge, not a trench.", true],
+        ["pl-3", "¿Qué pasa en Costa Rica con la placa Cocos?", "What happens in Costa Rica with the Cocos plate?", "Se hunde bajo la placa Caribe (subducción) y forma una fosa y volcanes.", "It sinks under the Caribbean plate (subduction), forming a trench and volcanoes.", false],
+        ["pl-4", "Nombra 2 procesos endógenos.", "Name 2 endogenic processes.", "Movimiento de placas (plegamiento, fallas), volcanismo y terremotos.", "Plate movement (folding, faulting), volcanism and earthquakes.", true],
+        ["pl-5", "¿Por qué un límite divergente forma una dorsal en el océano pero un valle de rift en un continente?", "Why does a divergent boundary make a ridge in the ocean but a rift valley on a continent?", "La corteza oceánica es delgada (5 km) y el magma sube fácil; la continental es gruesa (70 km) y se hunde al estirarse.", "Oceanic crust is thin (5 km) so magma rises easily; continental crust is thick (70 km) and sinks when stretched.", false],
+      ],
+    },
+    {
+      id: "meteorizacion", mod: "geo", svg: null,
+      es: "Meteorización, erosión y depósito", en: "Weathering, erosion and deposition",
+      map: {
+        easy: ["Meteorización rompe; erosión mueve; depósito deja caer.", "Weathering breaks; erosion moves; deposition drops."],
+        hard: ["Distinguir la meteorización mecánica de la química.", "Telling mechanical from chemical weathering."],
+        exam: ["Hielo en grietas = mecánica; ácido que disuelve caliza = química; raíces = biológica.", "Ice in cracks = mechanical; acid dissolving limestone = chemical; roots = biological."],
+      },
+      sum: [
+        ["Meteorización: romper la roca en su lugar.", "Weathering: breaking rock in place."],
+        ["Mecánica: la roca se parte sin cambiar, por ejemplo cuando el agua se congela en grietas.", "Mechanical: the rock splits without changing, for example when water freezes in cracks."],
+        ["Química: la sustancia cambia o se disuelve, como el ácido sobre la caliza o el óxido.", "Chemical: the substance changes or dissolves, like acid on limestone or rust."],
+        ["Biológica: la causan seres vivos, como las raíces que parten la roca.", "Biological: caused by living things, like roots splitting rock."],
+        ["La erosión mueve los pedazos; el depósito los deja caer cuando el agua o el viento se hacen lentos.", "Erosion moves the pieces; deposition drops them when water or wind slows down."],
+      ],
+      beats: [
+        ["Una roca no se rompe de un día para otro: la rompen el agua, el hielo, los ácidos y los seres vivos.", "A rock doesn't break overnight: water, ice, acids and living things break it."],
+        ["Si el agua entra en una grieta y se congela, se expande y parte la roca: eso es mecánico.", "If water gets into a crack and freezes, it expands and splits the rock: that's mechanical."],
+        ["Si la lluvia trae ácido carbónico y disuelve una estatua de caliza, la sustancia cambió: eso es químico.", "If rain carries carbonic acid and dissolves a limestone statue, the substance changed: that's chemical."],
+        ["Si las raíces de un árbol crecen en las grietas y la parten, es biológico.", "If tree roots grow in the cracks and split it, it's biological."],
+        ["Después, la erosión se lleva los pedazos y el depósito los deja en otro lugar.", "Then erosion carries the pieces away and deposition leaves them somewhere else."],
+      ],
+      life: ["Una botella de vidrio llena de agua en el congelador se revienta porque el hielo empuja. Lo mismo pasa en las grietas de una roca.", "A full glass bottle of water in the freezer cracks because the ice pushes. The same happens in the cracks of a rock."],
+      items: [
+        ["me-1", "El agua se congela y se expande en grietas y parte la roca. ¿Qué proceso es?", "Water freezes and expands in cracks, splitting the rock. What process is it?", "Meteorización mecánica (física).", "Mechanical (physical) weathering.", true],
+        ["me-2", "El ácido carbónico de la lluvia disuelve una estatua de caliza. ¿Qué es?", "Carbonic acid in rain dissolves a limestone statue. What is it?", "Meteorización química.", "Chemical weathering.", true],
+        ["me-3", "Las raíces de un árbol parten el granito. ¿Qué tipo de meteorización es?", "Tree roots split granite. Which type of weathering is it?", "Biológica.", "Biological.", false],
+        ["me-4", "Un río recoge sedimento y lo suelta en un llano. ¿Qué dos procesos ocurren?", "A river picks up sediment and drops it in a meadow. Which two processes happen?", "Erosión y luego depósito.", "Erosion followed by deposition.", true],
+        ["me-5", "Nombra 2 fuerzas destructivas que forman el relieve.", "Name 2 destructive forces that shape landforms.", "Meteorización y erosión (del agua, el viento o el hielo); también los deslizamientos.", "Weathering and erosion (by water, wind or ice); also landslides.", true],
+      ],
+    },
+    {
+      id: "relieves", mod: "geo", svg: null,
+      es: "Los 4 relieves de la pregunta larga", en: "The 4 landforms of the long question",
+      map: {
+        easy: ["Cada relieve tiene una fuerza y un tipo de roca.", "Each landform has a force and a rock type."],
+        hard: ["Explicar el proceso paso a paso: primero, luego, después, finalmente.", "Explaining the process step by step: first, then, next, finally."],
+        exam: ["La pregunta larga de 5 puntos: cañón, volcán, fosa o delta.", "The 5-point long question: canyon, volcano, trench or delta."],
+      },
+      sum: [
+        ["Cañón: un río erosiona hacia abajo por millones de años; tiene capas de roca sedimentaria.", "Canyon: a river erodes downward for millions of years; it has layers of sedimentary rock."],
+        ["Volcán: el magma de la subducción sube y sale; roca ígnea extrusiva.", "Volcano: magma from subduction rises and erupts; extrusive igneous rock."],
+        ["Fosa: una placa oceánica se hunde bajo otra (subducción); basalto.", "Trench: an oceanic plate sinks under another (subduction); basalt."],
+        ["Delta: un río se hace lento en el mar y deposita sedimento; roca sedimentaria.", "Delta: a river slows at the sea and deposits sediment; sedimentary rock."],
+        ["Siempre responde 4 cosas: fuerza, límite o agente, proceso y roca con su porqué.", "Always answer 4 things: force, boundary or agent, process, and rock with why."],
+      ],
+      beats: [
+        ["Vamos con el volcán, el relieve que más ves en Costa Rica.", "Let's take the volcano, the landform you see most in Costa Rica."],
+        ["Primero, la placa oceánica Cocos se hunde bajo la Caribe y se derrite.", "First, the oceanic Cocos plate sinks under the Caribbean plate and melts."],
+        ["Luego, ese magma, que es menos denso, sube por grietas hasta una cámara.", "Then that magma, which is less dense, rises through cracks into a chamber."],
+        ["Después, la presión crece y salen lava y ceniza.", "Next, pressure builds and lava and ash erupt."],
+        ["Finalmente, las capas se enfrían y forman el cono. La roca es ígnea extrusiva porque se enfría rápido.", "Finally, the layers cool and build the cone. The rock is extrusive igneous because it cools quickly."],
+      ],
+      life: ["Un delta es como cuando lavas el carro: el agua con tierra se frena en la acera y deja la tierra en forma de abanico.", "A delta is like washing a car: the muddy water slows down at the curb and leaves the dirt in a fan shape."],
+      items: [
+        ["re-1", "Volcán: ¿cuál es la fuerza dominante y el tipo de límite?", "Volcano: what is the dominant force and boundary type?", "Fuerza constructiva (endógena, el magma); límite convergente con subducción.", "Constructive (endogenic, magma) force; convergent boundary with subduction.", true],
+        ["re-2", "Cañón: ¿qué lo forma y qué roca tiene?", "Canyon: what forms it and what rock does it have?", "La erosión de un río (fuerza destructiva); capas de roca sedimentaria.", "River erosion (a destructive force); layers of sedimentary rock.", true],
+        ["re-3", "Delta: ¿qué proceso lo forma?", "Delta: what process forms it?", "El depósito: el río se hace lento al llegar al mar y suelta el sedimento.", "Deposition: the river slows down at the sea and drops its sediment.", true],
+        ["re-4", "Fosa oceánica: ¿cómo se forma?", "Deep-ocean trench: how does it form?", "Una placa oceánica densa se hunde bajo otra (subducción) y la corteza se dobla hacia abajo.", "A dense oceanic plate sinks under another (subduction) and the crust bends down.", true],
+        ["re-5", "¿Por qué en un volcán hay roca ígnea extrusiva?", "Why is there extrusive igneous rock in a volcano?", "Porque la lava se enfría rápido en la superficie.", "Because lava cools quickly on the surface.", false],
+      ],
+    },
+    {
+      id: "suelo", mod: "geo", svg: "soil-horizons",
+      es: "El suelo y su conservación", en: "Soil and its conservation",
+      map: {
+        easy: ["El orden O-A-B-C-R de arriba hacia abajo.", "The order O-A-B-C-R from top to bottom."],
+        hard: ["Qué hay en cada horizonte (pareo del examen).", "What is in each horizon (test matching)."],
+        exam: ["Topsoil = A, Subsoil = B, Bedrock = R, y 2 prácticas de conservación.", "Topsoil = A, Subsoil = B, Bedrock = R, and 2 conservation practices."],
+      },
+      sum: [
+        ["Suelo = roca meteorizada + humus + agua + aire + seres vivos.", "Soil = weathered rock + humus + water + air + living things."],
+        ["O: hojas que se descomponen. A: suelo superficial oscuro y fértil.", "O: decomposing leaves. A: dark, fertile topsoil."],
+        ["B: subsuelo con arcilla y minerales lavados desde arriba.", "B: subsoil with clay and minerals washed down from above."],
+        ["C: pedazos de roca madre. R: roca madre sólida.", "C: broken pieces of bedrock. R: solid bedrock."],
+        ["Se conserva con rotación de cultivos, curvas de nivel, terrazas y cortinas rompevientos.", "It is conserved with crop rotation, contour plowing, terracing and windbreaks."],
+      ],
+      beats: [
+        ["Si cavas un hueco profundo en un potrero, ves capas de colores: es el perfil del suelo.", "If you dig a deep hole in a pasture, you see colored layers: the soil profile."],
+        ["Arriba está la capa O: hojas y ramitas pudriéndose.", "On top is the O layer: leaves and twigs decaying."],
+        ["Luego la A, el suelo superficial oscuro, donde crecen las raíces.", "Then A, the dark topsoil, where roots grow."],
+        ["La B es el subsuelo: el agua le trajo arcilla y minerales desde arriba.", "B is the subsoil: water brought clay and minerals down from above."],
+        ["Más abajo está la C, con pedazos de roca, y al fondo la R, la roca madre sólida.", "Lower is C, with chunks of rock, and at the bottom R, solid bedrock."],
+      ],
+      life: ["Es como un emparedado: siempre en el mismo orden de arriba hacia abajo, O-A-B-C-R. Truco: Osos Amables Bailan Con Ritmo.", "It's like a sandwich: always the same order from top to bottom, O-A-B-C-R. Trick: Old Ants Bring Cold Rocks."],
+      items: [
+        ["su-1", "Topsoil: mezcla oscura de humus y minerales. ¿Qué horizonte es?", "Topsoil: a dark mix of humus and minerals. Which horizon is it?", "Horizonte A.", "A Horizon.", true],
+        ["su-2", "Subsoil: arcilla y minerales lavados desde arriba. ¿Qué horizonte es?", "Subsoil: clay and minerals washed down from above. Which horizon is it?", "Horizonte B.", "B Horizon.", true],
+        ["su-3", "Parent material: pedazos de roca madre meteorizada. ¿Qué horizonte es?", "Parent material: chunks of weathered bedrock. Which horizon is it?", "Horizonte C.", "C Horizon.", true],
+        ["su-4", "Hojas frescas y en descomposición: ¿qué horizonte? ¿Y la roca sólida del fondo?", "Fresh and decaying leaves: which horizon? And the solid rock at the bottom?", "Hojas = horizonte O; roca sólida = horizonte R (bedrock).", "Leaves = O horizon; solid rock = R horizon (bedrock).", true],
+        ["su-5", "Un agricultor siembra maíz 10 años en el mismo lugar y el suelo pierde minerales. ¿Qué debe hacer?", "A farmer plants corn for 10 years on the same land and the soil loses minerals. What should the farmer do?", "Rotación de cultivos: cambiar de cultivo (por ejemplo, frijoles) para recuperar nutrientes.", "Crop rotation: change crops (for example, beans) to restore nutrients.", true],
+        ["su-6", "Explica otra práctica de conservación del suelo.", "Explain another soil conservation practice.", "Arado en curvas de nivel o terrazas: frenan el agua de lluvia y evitan la erosión.", "Contour plowing or terracing: they slow rainwater and prevent erosion.", true],
+        ["su-7", "¿Qué función tiene el suelo con el agua subterránea?", "What role does soil play for groundwater?", "Es un filtro natural: sus organismos atrapan contaminantes antes de que el agua llegue al acuífero.", "It is a natural filter: its organisms trap pollutants before water reaches the aquifer.", false],
+      ],
+    },
+    {
+      id: "minerales", mod: "geo", svg: null,
+      es: "Los minerales", en: "Minerals",
+      map: {
+        easy: ["Un mineral cumple 5 reglas: N-I-S-C-C.", "A mineral meets 5 rules: N-I-S-C-C."],
+        hard: ["No confundir características (qué es un mineral) con propiedades (cómo se identifica).", "Don't confuse characteristics (what a mineral is) with properties (how to identify it)."],
+        exam: ["La raya: el color del polvo en la porcelana.", "Streak: the color of the powder on porcelain."],
+      },
+      sum: [
+        ["Mineral: natural, inorgánico, sólido, con composición química definida y estructura cristalina.", "Mineral: naturally occurring, inorganic, solid, with a definite chemical composition and crystal structure."],
+        ["El carbón, la perla y el vidrio no son minerales.", "Coal, pearl and glass are not minerals."],
+        ["Raya: color del polvo al rayarlo en porcelana sin esmalte.", "Streak: color of the powder on unglazed porcelain."],
+        ["Brillo: cómo refleja la luz. Dureza: qué tan fácil se raya (Mohs 1–10).", "Luster: how it reflects light. Hardness: how easily it scratches (Mohs 1–10)."],
+        ["Exfoliación: se rompe en planos lisos. Fractura: se rompe irregular.", "Cleavage: breaks in smooth planes. Fracture: breaks unevenly."],
+      ],
+      beats: [
+        ["No toda piedra brillante es un mineral. Tiene que cumplir 5 reglas: N-I-S-C-C.", "Not every shiny stone is a mineral. It must meet 5 rules: N-I-S-C-C."],
+        ["Natural, inorgánico, o sea que no viene de seres vivos, y sólido.", "Naturally occurring, inorganic, meaning not from living things, and solid."],
+        ["Con una fórmula química fija y átomos ordenados en un cristal.", "With a fixed chemical formula and atoms arranged in a crystal."],
+        ["Para identificarlo lo rayas en porcelana: el color del polvo es la raya. La hematita deja polvo rojo-café.", "To identify it, you scratch it on porcelain: the powder's color is the streak. Hematite leaves red-brown powder."],
+        ["También miras el brillo, la dureza y cómo se rompe: exfoliación o fractura.", "You also check its luster, hardness and how it breaks: cleavage or fracture."],
+      ],
+      life: ["La sal de la cocina (halita) es un mineral: natural, sólida, NaCl y en cubitos. El azúcar no, porque viene de una planta.", "Kitchen salt (halite) is a mineral: natural, solid, NaCl and in little cubes. Sugar isn't, because it comes from a plant."],
+      items: [
+        ["mi-1", "Nombra 2 características que debe tener un mineral.", "Name 2 characteristics a mineral must have.", "Dos de estas: natural, inorgánico, sólido, composición química definida, estructura cristalina.", "Two of these: naturally occurring, inorganic, solid, definite chemical composition, crystalline structure.", true],
+        ["mi-2", "Un mineral deja polvo rojo-café en la porcelana. ¿Qué propiedad es?", "A mineral leaves red-brown powder on porcelain. Which property is it?", "La raya (streak).", "Streak.", true],
+        ["mi-3", "¿Por qué el carbón no es un mineral?", "Why is coal not a mineral?", "Porque es orgánico: viene de plantas antiguas.", "Because it is organic: it comes from ancient plants.", false],
+        ["mi-4", "La mica se separa en láminas planas y lisas. ¿Qué propiedad es?", "Mica peels into flat, smooth sheets. Which property is it?", "Exfoliación (cleavage).", "Cleavage.", false],
+        ["mi-5", "¿Qué mide la escala de Mohs?", "What does the Mohs scale measure?", "La dureza: qué tan fácil se raya un mineral (1 talco, 10 diamante).", "Hardness: how easily a mineral scratches (1 talc, 10 diamond).", false],
+      ],
+    },
+    {
+      id: "rocas", mod: "geo", svg: "rock-cycle",
+      es: "Las rocas y su ciclo", en: "Rocks and the rock cycle",
+      map: {
+        easy: ["Hay 3 tipos: ígnea, sedimentaria y metamórfica.", "There are 3 types: igneous, sedimentary and metamorphic."],
+        hard: ["Intrusiva vs. extrusiva, y por qué los fósiles están en las sedimentarias.", "Intrusive vs. extrusive, and why fossils are in sedimentary rock."],
+        exam: ["Granito = intrusiva; mármol = metamórfica; arenisca = sedimentaria.", "Granite = intrusive; marble = metamorphic; sandstone = sedimentary."],
+      },
+      sum: [
+        ["Ígnea: se forma cuando el magma o la lava se enfrían.", "Igneous: forms when magma or lava cools."],
+        ["Intrusiva: lenta, bajo tierra, cristales grandes (granito). Extrusiva: rápida, en la superficie, cristales pequeños (basalto, obsidiana).", "Intrusive: slow, underground, large crystals (granite). Extrusive: fast, on the surface, tiny crystals (basalt, obsidian)."],
+        ["Sedimentaria: sedimentos compactados y cementados, en capas y con fósiles (arenisca, caliza).", "Sedimentary: compacted and cemented sediments, in layers and with fossils (sandstone, limestone)."],
+        ["Metamórfica: una roca cambia por calor y presión sin derretirse (mármol, pizarra).", "Metamorphic: a rock changes by heat and pressure without melting (marble, slate)."],
+        ["En el ciclo de las rocas, cualquier roca puede convertirse en otra.", "In the rock cycle, any rock can become another."],
+      ],
+      beats: [
+        ["Las rocas se clasifican por cómo nacen.", "Rocks are classified by how they form."],
+        ["Si nacen del magma que se enfría, son ígneas. Si se enfría lento bajo tierra salen cristales grandes, como el granito.", "If they come from cooling magma, they are igneous. Slow cooling underground gives large crystals, like granite."],
+        ["Si la lava se enfría rápido afuera, los cristales son pequeños: basalto u obsidiana.", "If lava cools fast outside, the crystals are tiny: basalt or obsidian."],
+        ["Si se forman con arena y lodo apretados, son sedimentarias, y guardan fósiles porque el proceso es suave.", "If they form from pressed sand and mud, they're sedimentary, and they keep fossils because the process is gentle."],
+        ["Si una roca se cocina con calor y presión sin derretirse, es metamórfica: la caliza se vuelve mármol.", "If a rock is cooked by heat and pressure without melting, it's metamorphic: limestone becomes marble."],
+      ],
+      life: ["Como hacer melcocha: el azúcar derretido que se enfría lento hace cristales grandes; si se enfría de golpe queda como vidrio. Igual pasa con el granito y la obsidiana.", "Like making candy: melted sugar that cools slowly makes big crystals; cooled suddenly it turns glassy. The same happens with granite and obsidian."],
+      items: [
+        ["ro-1", "Roca de encimera con cristales grandes de cuarzo, feldespato y mica; el magma se enfrió lento bajo tierra. ¿Qué es?", "Countertop rock with large crystals of quartz, feldspar and mica; magma cooled slowly underground. What is it?", "Ígnea intrusiva: granito.", "Intrusive igneous: granite.", true],
+        ["ro-2", "¿Por qué los fósiles se conservan en rocas sedimentarias y no en ígneas?", "Why are fossils preserved in sedimentary rocks and not in igneous rocks?", "La compactación y la cementación son suaves; el calor del magma destruye los restos.", "Compaction and cementation are gentle; magma's heat destroys remains.", true],
+        ["ro-3", "La caliza recibe calor y presión sin derretirse. ¿Qué roca nueva se forma?", "Limestone gets heat and pressure without melting. Which new rock forms?", "Mármol (metamórfica).", "Marble (metamorphic).", true],
+        ["ro-4", "Nombra los 2 tipos de roca ígnea.", "Name the 2 types of igneous rock.", "Intrusiva y extrusiva.", "Intrusive and extrusive.", true],
+        ["ro-5", "Roca porosa de granos de arena de cuarzo pegados. ¿Cuál es?", "Porous rock of glued quartz sand grains. Which one is it?", "Arenisca (sedimentaria).", "Sandstone (sedimentary).", false],
+        ["ro-6", "La lava se enfría rápido y forma una roca oscura de cristales diminutos. ¿Qué tipo es?", "Lava cools fast and makes a dark rock with tiny crystals. Which type is it?", "Ígnea extrusiva (basalto).", "Extrusive igneous (basalt).", false],
+      ],
+    },
+    {
+      id: "teoria", mod: "cell", svg: null,
+      es: "La teoría celular", en: "The cell theory",
+      map: {
+        easy: ["Hooke usó la palabra célula en 1665.", "Hooke first used the word cell in 1665."],
+        hard: ["Los 3 postulados con las palabras exactas.", "The 3 postulates in exact words."],
+        exam: ["Te pedirán los 3 postulados: no son tipos de células.", "They will ask for the 3 postulates: they are not cell types."],
+      },
+      sum: [
+        ["Hooke (1665) observó corcho y usó la palabra célula.", "Hooke (1665) observed cork and used the word cell."],
+        ["Leeuwenhoek vio las primeras células vivas.", "Leeuwenhoek saw the first living cells."],
+        ["Schleiden (plantas) y Schwann (animales): todo ser vivo tiene células.", "Schleiden (plants) and Schwann (animals): all living things have cells."],
+        ["Virchow: toda célula viene de otra célula.", "Virchow: every cell comes from another cell."],
+        ["Postulados: hechos de células · unidad básica · vienen de otra célula.", "Postulates: made of cells · basic unit · come from cells."],
+      ],
+      beats: [
+        ["En 1665 Robert Hooke miró un pedacito de corcho y vio cuartitos: los llamó células.", "In 1665 Robert Hooke looked at a piece of cork and saw little rooms: he called them cells."],
+        ["Después Leeuwenhoek vio células vivas moviéndose en el agua.", "Later Leeuwenhoek saw living cells moving in water."],
+        ["Schleiden dijo que las plantas están hechas de células, y Schwann agregó que los animales también.", "Schleiden said plants are made of cells, and Schwann added that animals are too."],
+        ["Virchow completó la teoría: toda célula viene de otra célula.", "Virchow completed the theory: every cell comes from another cell."],
+        ["Los tres postulados: todo ser vivo está hecho de células; la célula es la unidad básica; toda célula viene de otra.", "The three postulates: all living things are made of cells; the cell is the basic unit; all cells come from cells."],
+      ],
+      life: ["Como los ladrillos de tu casa: toda la casa está hecha de ladrillos (postulado 1) y el ladrillo es la pieza básica (postulado 2). Pero una célula nueva solo sale de otra célula (postulado 3).", "Like the bricks of your house: the whole house is made of bricks (postulate 1) and the brick is the basic piece (postulate 2). But a new cell only comes from another cell (postulate 3)."],
+      items: [
+        ["te-1", "Escribe los 3 postulados de la teoría celular.", "Write the 3 postulates of the cell theory.", "1) Todos los seres vivos están hechos de células. 2) La célula es la unidad básica de estructura y función. 3) Toda célula viene de otra célula.", "1) All living things are made of cells. 2) The cell is the basic unit of structure and function. 3) All cells come from pre-existing cells.", true],
+        ["te-2", "¿Quién usó por primera vez la palabra célula y qué observó?", "Who first used the word cell and what did they observe?", "Robert Hooke, en 1665, al observar corcho.", "Robert Hooke, in 1665, observing cork.", true],
+        ["te-3", "¿Qué aportó Schwann en 1839?", "What did Schwann contribute in 1839?", "Amplió las ideas de Schleiden: los animales también están hechos de células, y así unió plantas y animales.", "He extended Schleiden's ideas: animals are also made of cells, unifying plants and animals.", false],
+        ["te-4", "Una ameba digiere, elimina desechos y produce energía en su única célula. ¿Qué postulado muestra?", "An amoeba digests, removes waste and makes energy in its single cell. Which postulate does it show?", "La célula es la unidad básica de estructura y función.", "The cell is the basic unit of structure and function.", false],
+        ["te-5", "¿Quién dijo que toda célula viene de otra célula?", "Who said every cell comes from another cell?", "Rudolf Virchow.", "Rudolf Virchow.", false],
+      ],
+    },
+    {
+      id: "niveles", mod: "cell", svg: null,
+      es: "Niveles de organización", en: "Levels of organization",
+      map: {
+        easy: ["El orden: célula, tejido, órgano, sistema, organismo.", "The order: cell, tissue, organ, system, organism."],
+        hard: ["Un organismo unicelular no tiene órganos.", "A unicellular organism has no organs."],
+        exam: ["Tejido = células parecidas con una función.", "Tissue = similar cells with one function."],
+      },
+      sum: [
+        ["Célula → tejido → órgano → sistema de órganos → organismo.", "Cell → tissue → organ → organ system → organism."],
+        ["Tejido: grupo de células parecidas con una función.", "Tissue: a group of similar cells with one function."],
+        ["Órgano: varios tejidos juntos, como el corazón.", "Organ: several tissues together, like the heart."],
+        ["Sistema: varios órganos, como el sistema digestivo.", "System: several organs, like the digestive system."],
+        ["Unicelular (paramecio): una célula hace todo. Multicelular (humano): células especializadas.", "Unicellular (paramecium): one cell does everything. Multicellular (human): specialized cells."],
+      ],
+      beats: [
+        ["Piensa en un equipo de fútbol.", "Think of a soccer team."],
+        ["Un jugador es una célula; los defensas juntos son un tejido.", "One player is a cell; the defenders together are a tissue."],
+        ["La defensa, el medio y el ataque son órganos; el equipo completo es un sistema.", "Defense, midfield and attack are organs; the whole team is a system."],
+        ["Y el club entero es el organismo.", "And the whole club is the organism."],
+        ["Un paramecio es un equipo de un solo jugador: esa célula hace todo.", "A paramecium is a one-player team: that cell does everything."],
+      ],
+      life: ["Tu corazón es un órgano hecho de tejido muscular, nervioso y conectivo, y trabaja con los vasos sanguíneos en el sistema circulatorio.", "Your heart is an organ made of muscle, nerve and connective tissue, and works with blood vessels in the circulatory system."],
+      items: [
+        ["ni-1", "Ordena los 5 niveles de lo más simple a lo más complejo.", "Order the 5 levels from simplest to most complex.", "Célula → tejido → órgano → sistema de órganos → organismo.", "Cell → tissue → organ → organ system → organism.", true],
+        ["ni-2", "¿Cómo se llama un grupo de células parecidas que trabajan para una función?", "What is a group of similar cells working together for one function called?", "Tejido.", "Tissue.", true],
+        ["ni-3", "¿En qué se diferencia un paramecio de un humano en su organización?", "How do a paramecium and a human differ in organization?", "El paramecio hace todo en una sola célula; el humano depende de tejidos, órganos y sistemas especializados.", "The paramecium does everything in one cell; humans rely on specialized tissues, organs and systems.", true],
+        ["ni-4", "El corazón tiene tejido muscular, nervioso y conectivo. ¿Qué nivel es?", "The heart has muscle, nerve and connective tissue. Which level is it?", "Un órgano.", "An organ.", false],
+      ],
+    },
+    {
+      id: "organelos", mod: "cell", svg: "cells",
+      es: "Los organelos", en: "Cell organelles",
+      map: {
+        easy: ["Cada organelo tiene una palabra clave.", "Each organelle has a keyword."],
+        hard: ["El pareo de 8 sin repetir letras.", "The 8-item matching without repeating letters."],
+        exam: ["Sacaste 1 de 8 en este pareo: es lo que más puntos te puede dar.", "You got 1 of 8 on this matching: it's where you can gain the most points."],
+      },
+      sum: [
+        ["Membrana: barrera selectiva. Núcleo: guarda el ADN.", "Membrane: selective barrier. Nucleus: holds the DNA."],
+        ["Mitocondria: energía (ATP). Cloroplasto: fotosíntesis, solo en plantas.", "Mitochondria: energy (ATP). Chloroplast: photosynthesis, plants only."],
+        ["Ribosoma: fabrica proteínas. Vacuola: almacena.", "Ribosome: makes proteins. Vacuole: stores."],
+        ["Lisosoma: enzimas digestivas. Cilios y flagelos: movimiento.", "Lysosome: digestive enzymes. Cilia and flagella: movement."],
+        ["Pared celular: soporte (plantas, hongos, bacterias). Golgi: empaca proteínas.", "Cell wall: support (plants, fungi, bacteria). Golgi: packages proteins."],
+      ],
+      beats: [
+        ["Imagina la célula como tu colegio.", "Imagine the cell as your school."],
+        ["La membrana es el portón con guarda: decide quién entra. El núcleo es la dirección, donde están las instrucciones, el ADN.", "The membrane is the gate with a guard: it decides who enters. The nucleus is the principal's office, with the instructions, the DNA."],
+        ["La mitocondria es la planta eléctrica que da energía. Los ribosomas son la cocina donde se fabrican proteínas.", "Mitochondria are the power plant that gives energy. Ribosomes are the kitchen where proteins are made."],
+        ["La vacuola es la bodega y los lisosomas son el equipo de limpieza con enzimas.", "The vacuole is the storeroom and lysosomes are the cleaning crew with enzymes."],
+        ["Los cilios y flagelos son las ruedas para moverse, y el cloroplasto es el panel solar, solo en plantas.", "Cilia and flagella are the wheels to move, and the chloroplast is the solar panel, plants only."],
+      ],
+      life: ["Cuando corres en Educación Física, tus células musculares usan muchas mitocondrias para darte energía.", "When you run in P.E., your muscle cells use lots of mitochondria to give you energy."],
+      items: [
+        ["or-1", "Rodea la célula y es una barrera selectiva.", "Surrounds the cell and is a selective barrier.", "Membrana celular.", "Cell membrane.", true],
+        ["or-2", "Guarda el ADN y está en el centro de las células eucariotas.", "Houses DNA and is in the center of eukaryotic cells.", "Núcleo.", "Nucleus.", true],
+        ["or-3", "Genera energía por respiración celular (ATP).", "Generates energy through cellular respiration (ATP).", "Mitocondria.", "Mitochondria.", true],
+        ["or-4", "Solo en plantas y organismos fotosintéticos; hace la fotosíntesis.", "Exclusive to plants and photosynthetic organisms; carries out photosynthesis.", "Cloroplasto.", "Chloroplast.", true],
+        ["or-5", "Sintetiza proteínas con la información del ARN mensajero.", "Synthesizes proteins using the information in messenger RNA.", "Ribosoma.", "Ribosome.", true],
+        ["or-6", "Almacena nutrientes, agua, iones y desechos.", "Stores nutrients, water, ions and waste.", "Vacuola.", "Vacuole.", true],
+        ["or-7", "Contiene enzimas digestivas que rompen moléculas y materiales no deseados.", "Contains digestive enzymes that break down molecules and unwanted materials.", "Lisosomas.", "Lysosomes.", true],
+        ["or-8", "Estructuras especializadas para el movimiento.", "Specialized structures for movement.", "Cilios y flagelos.", "Cilia and flagella.", true],
+        ["or-9", "Empaca y envía proteínas, como un correo.", "Packages and ships proteins, like a post office.", "Aparato de Golgi.", "Golgi apparatus.", false],
+        ["or-10", "Capa rígida fuera de la membrana que da soporte en plantas, hongos y bacterias.", "Rigid layer outside the membrane that gives support in plants, fungi and bacteria.", "Pared celular.", "Cell wall.", false],
+      ],
+    },
+    {
+      id: "tipos", mod: "cell", svg: "cells",
+      es: "Tipos de células", en: "Cell types",
+      map: {
+        easy: ["Procariota = sin núcleo; eucariota = con núcleo.", "Prokaryotic = no nucleus; eukaryotic = nucleus."],
+        hard: ["Identificar una célula por lo que le FALTA.", "Identifying a cell by what it LACKS."],
+        exam: ["Sin pared, cloroplastos ni vacuola central → célula animal.", "No wall, chloroplasts or central vacuole → animal cell."],
+      },
+      sum: [
+        ["Procariota: sin núcleo, ADN libre y sin organelos con membrana; así son las bacterias.", "Prokaryotic: no nucleus, free DNA and no membrane-bound organelles; bacteria are like this."],
+        ["Eucariota: núcleo y organelos; protistas, hongos, plantas y animales.", "Eukaryotic: nucleus and organelles; protists, fungi, plants and animals."],
+        ["Ambas tienen membrana, citoplasma, ribosomas y ADN.", "Both have a membrane, cytoplasm, ribosomes and DNA."],
+        ["Solo la célula vegetal tiene pared celular, cloroplastos y vacuola central grande.", "Only plant cells have a cell wall, chloroplasts and a large central vacuole."],
+        ["Semejanza entre vegetal y animal: las dos son eucariotas.", "Similarity between plant and animal cells: both are eukaryotic."],
+      ],
+      beats: [
+        ["Hay dos grandes tipos de células: con núcleo y sin núcleo.", "There are two big types of cells: with a nucleus and without one."],
+        ["Sin núcleo es procariota: el ADN flota libre. Así son las bacterias.", "Without a nucleus it's prokaryotic: DNA floats free. Bacteria are like that."],
+        ["Con núcleo es eucariota: plantas, animales, hongos y protistas.", "With a nucleus it's eukaryotic: plants, animals, fungi and protists."],
+        ["La célula vegetal agrega tres cosas: pared, cloroplastos y una vacuola central grande.", "A plant cell adds three things: a wall, chloroplasts and a large central vacuole."],
+        ["Si una célula eucariota no tiene esas tres cosas, es animal.", "If a eukaryotic cell has none of those three things, it's an animal cell."],
+      ],
+      life: ["La lechuga cruje porque sus células tienen pared y una vacuola llena de agua; la carne no cruje porque sus células no tienen pared.", "Lettuce is crunchy because its cells have walls and a water-filled vacuole; meat isn't crunchy because its cells have no wall."],
+      items: [
+        ["ti-1", "El material genético flota libre en el citoplasma, sin membrana nuclear. ¿Qué célula es?", "Genetic material floats freely in the cytoplasm, with no nuclear membrane. Which cell is it?", "Procariota (bacteria).", "Prokaryotic (a bacterium).", true],
+        ["ti-2", "Célula eucariota con mitocondrias, Golgi y lisosomas, pero sin pared, cloroplastos ni vacuola central. ¿Qué es?", "Eukaryotic cell with mitochondria, Golgi and lysosomes, but no wall, chloroplasts or central vacuole. What is it?", "Una célula animal.", "An animal cell.", true],
+        ["ti-3", "Nombra 1 diferencia entre la célula vegetal y la animal.", "Name 1 difference between plant and animal cells.", "La vegetal tiene pared celular y cloroplastos (y vacuola central grande); la animal no.", "Plant cells have a cell wall and chloroplasts (and a large central vacuole); animal cells don't.", true],
+        ["ti-4", "Nombra 1 semejanza entre la célula vegetal y la animal.", "Name 1 similarity between plant and animal cells.", "Las dos son eucariotas: tienen núcleo, membrana y mitocondrias.", "Both are eukaryotic: they have a nucleus, membrane and mitochondria.", false],
+        ["ti-5", "¿Qué estructura tienen tanto las procariotas como las eucariotas?", "Which structure do both prokaryotes and eukaryotes have?", "Ribosomas (también membrana, citoplasma y ADN).", "Ribosomes (also membrane, cytoplasm and DNA).", false],
+      ],
+    },
+    {
+      id: "virus", mod: "cell", svg: "virus",
+      es: "Los virus", en: "Viruses",
+      map: {
+        easy: ["Un virus es una cápside con ADN o ARN.", "A virus is a capsid with DNA or RNA."],
+        hard: ["El ciclo lítico vs. el lisogénico y su diferencia.", "The lytic vs. lysogenic cycle and their difference."],
+        exam: ["Por qué son acelulares, por qué no sirven los antibióticos y la inmunidad de rebaño.", "Why they're non-cellular, why antibiotics don't work, and herd immunity."],
+      },
+      sum: [
+        ["Virus: cápside de proteína + ADN o ARN; no es una célula.", "Virus: protein capsid + DNA or RNA; it is not a cell."],
+        ["Solo se reproduce dentro de una célula huésped.", "It only reproduces inside a host cell."],
+        ["Lítico: la célula hace copias del virus y revienta rápido.", "Lytic: the cell makes virus copies and bursts quickly."],
+        ["Lisogénico: el ADN viral se esconde en el ADN de la célula.", "Lysogenic: the viral DNA hides in the cell's DNA."],
+        ["Los antibióticos no sirven contra virus; las vacunas y la inmunidad de rebaño sí protegen.", "Antibiotics don't work on viruses; vaccines and herd immunity protect."],
+      ],
+      beats: [
+        ["Un virus es como una memoria USB con un programa malo: solo tiene instrucciones y una cubierta.", "A virus is like a USB stick with a bad program: just instructions and a case."],
+        ["Solo no hace nada. Tiene que conectarse a una compu, la célula, para funcionar.", "Alone it does nothing. It has to plug into a computer, the cell, to work."],
+        ["En el ciclo lítico, la célula copia el virus muchas veces hasta reventar: es rápido.", "In the lytic cycle, the cell copies the virus many times until it bursts: it's fast."],
+        ["En el lisogénico, el programa se esconde dentro del sistema y espera; con estrés se activa.", "In the lysogenic cycle, the program hides inside the system and waits; stress activates it."],
+        ["Por eso los antibióticos, que atacan bacterias, no sirven contra los virus.", "That's why antibiotics, which attack bacteria, don't work against viruses."],
+      ],
+      life: ["Cuando te da gripe, el médico no te da antibiótico porque la gripe es un virus. Para una faringitis por estreptococo sí, porque es una bacteria.", "When you get the flu, the doctor doesn't give antibiotics because flu is a virus. For strep throat they do, because it's a bacterium."],
+      items: [
+        ["vi-1", "Agente sin citoplasma, ribosomas ni membrana; solo cápside y material genético. ¿Qué es?", "Agent with no cytoplasm, ribosomes or membrane; only a capsid and genetic material. What is it?", "Un virus (acelular).", "A non-cellular virus.", true],
+        ["vi-2", "Explica el ciclo lítico.", "Explain the lytic cycle.", "El virus inyecta su ADN, la célula hace muchas copias y revienta (lisis), liberándolas.", "The virus injects its DNA, the cell makes many copies and bursts (lysis), releasing them.", true],
+        ["vi-3", "Explica el ciclo lisogénico.", "Explain the lysogenic cycle.", "El ADN viral se une al ADN de la célula y se queda escondido; se copia en cada división hasta que un detonante lo activa.", "Viral DNA joins the host DNA and stays hidden; it is copied at each division until a trigger activates it.", true],
+        ["vi-4", "¿Por qué los antibióticos curan la faringitis pero no el resfriado?", "Why do antibiotics cure strep throat but not the common cold?", "La faringitis la causa una bacteria y el resfriado un virus; los antibióticos solo matan bacterias.", "Strep throat is caused by bacteria and the cold by a virus; antibiotics only kill bacteria.", true],
+        ["vi-5", "¿Por qué vacunar a casi todos protege a los bebés y a las personas inmunocomprometidas?", "Why does vaccinating almost everyone protect newborns and immunocompromised people?", "Por la inmunidad de rebaño: el microbio no se puede propagar y no les llega.", "Herd immunity: the germ can't spread, so it doesn't reach them.", true],
+        ["vi-6", "¿Por qué es difícil diseñar antivirales?", "Why is it hard to design antiviral medicines?", "Porque deben detener el virus sin dañar las células humanas donde vive.", "Because they must stop the virus without harming the human cells it lives in.", false],
+      ],
+    },
+    {
+      id: "microbios", mod: "cell", svg: "bacteria",
+      es: "Bacterias, protistas y hongos", en: "Bacteria, protists and fungi",
+      map: {
+        easy: ["Bacteria = procariota; protistas y hongos = eucariotas.", "Bacteria = prokaryotic; protists and fungi = eukaryotic."],
+        hard: ["El número de células y cómo se alimenta cada uno.", "The number of cells and how each one feeds."],
+        exam: ["Los hongos pueden ser unicelulares o multicelulares.", "Fungi can be unicellular or multicellular."],
+      },
+      sum: [
+        ["Bacterias: procariotas y unicelulares; se dividen por fisión binaria.", "Bacteria: prokaryotic and unicellular; they divide by binary fission."],
+        ["Protistas: eucariotas, casi todos unicelulares: ameba, paramecio, euglena, algas.", "Protists: eukaryotic, mostly unicellular: amoeba, paramecium, euglena, algae."],
+        ["Hongos: eucariotas, unicelulares (levadura) o multicelulares (setas); pared de quitina.", "Fungi: eukaryotic, unicellular (yeast) or multicellular (mushrooms); chitin wall."],
+        ["Los hongos se alimentan por absorción: sueltan enzimas y absorben.", "Fungi feed by absorption: they release enzymes and absorb."],
+        ["Las algas hacen fotosíntesis, los protozoos comen y las bacterias pueden hacer cualquiera de las dos.", "Algae photosynthesize, protozoa eat, and bacteria can do either."],
+      ],
+      beats: [
+        ["Hay tres grupos de microbios que sí son células: bacterias, protistas y hongos.", "There are three groups of microbes that are cells: bacteria, protists and fungi."],
+        ["Las bacterias son las más simples: una célula sin núcleo que se parte en dos.", "Bacteria are the simplest: one cell without a nucleus that splits in two."],
+        ["Los protistas ya tienen núcleo; casi todos son de una célula, como la ameba o el paramecio.", "Protists have a nucleus; most are single cells, like the amoeba or the paramecium."],
+        ["Los hongos también tienen núcleo y pueden ser una célula, como la levadura, o muchas, como un hongo de sombrero.", "Fungi also have a nucleus and can be one cell, like yeast, or many, like a mushroom."],
+        ["Los hongos no hacen fotosíntesis: sueltan enzimas sobre la comida y absorben lo que necesitan.", "Fungi don't photosynthesize: they release enzymes onto food and absorb what they need."],
+      ],
+      life: ["El moho verde del pan viejo es un hongo: está digiriendo el pan por fuera con sus enzimas.", "The green mold on old bread is a fungus: it is digesting the bread from the outside with its enzymes."],
+      items: [
+        ["mb-1", "Compara el número de células de bacterias, protistas y hongos.", "Compare the number of cells of bacteria, protists and fungi.", "Bacterias: unicelulares. Protistas: casi todos unicelulares. Hongos: unicelulares o multicelulares.", "Bacteria: unicellular. Protists: mostly unicellular. Fungi: unicellular or multicellular.", true],
+        ["mb-2", "Compara el tipo de célula de bacterias, protistas y hongos.", "Compare the cell type of bacteria, protists and fungi.", "Bacterias: procariotas. Protistas y hongos: eucariotas.", "Bacteria: prokaryotic. Protists and fungi: eukaryotic.", true],
+        ["mb-3", "¿Qué distingue a las bacterias de los protistas y los hongos?", "What distinguishes bacteria from protists and fungi?", "No tienen núcleo ni organelos con membrana.", "They lack a nucleus and membrane-bound organelles.", true],
+        ["mb-4", "¿Cómo se alimentan los hongos?", "How do fungi feed?", "Por absorción: sueltan enzimas digestivas y absorben los nutrientes.", "By absorption: they release digestive enzymes and absorb the nutrients.", false],
+        ["mb-5", "¿Qué protista se mueve con cilios? ¿Y cuál con seudópodos?", "Which protist moves with cilia? And which with pseudopods?", "Paramecio (cilios); ameba (seudópodos).", "Paramecium (cilia); amoeba (pseudopods).", false],
+        ["mb-6", "¿Qué organismos convierten el nitrógeno del aire en compuestos para las plantas?", "Which organisms turn nitrogen gas from the air into compounds plants can use?", "Las bacterias fijadoras de nitrógeno.", "Nitrogen-fixing bacteria.", true],
+      ],
+    },
+    {
+      id: "reproduccion", mod: "cell", svg: null,
+      es: "Reproducción sexual y asexual", en: "Sexual and asexual reproduction",
+      map: {
+        easy: ["Asexual = 1 padre; sexual = 2 padres.", "Asexual = 1 parent; sexual = 2 parents."],
+        hard: ["Explicar por qué cada una es mejor según el ambiente.", "Explaining why each is better depending on the environment."],
+        exam: ["Gemación vs. fisión binaria vs. fragmentación.", "Budding vs. binary fission vs. fragmentation."],
+      },
+      sum: [
+        ["Asexual: un padre, hijos idénticos y rápida.", "Asexual: one parent, identical offspring, fast."],
+        ["Fisión binaria: 1 célula → 2 iguales (bacterias).", "Binary fission: 1 cell → 2 equal cells (bacteria)."],
+        ["Gemación: un brote crece y se separa (levadura). Fragmentación: el cuerpo se rompe y cada pedazo crece (estrella de mar).", "Budding: a bud grows and detaches (yeast). Fragmentation: the body breaks and each piece grows (starfish)."],
+        ["Sexual: dos padres y variación genética.", "Sexual: two parents and genetic variation."],
+        ["Ambiente estable → asexual. Ambiente cambiante → sexual.", "Stable environment → asexual. Changing environment → sexual."],
+      ],
+      beats: [
+        ["Hay dos formas de tener hijos: con uno o con dos padres.", "There are two ways to have offspring: with one parent or two."],
+        ["Con un padre es asexual: salen copias idénticas, como fotocopias.", "With one parent it's asexual: identical copies come out, like photocopies."],
+        ["Si nada cambia, sacar muchas fotocopias rápido de alguien que ya funciona bien es lo mejor.", "If nothing changes, making many quick copies of someone who already does well is best."],
+        ["Con dos padres es sexual: cada hijo es una mezcla diferente.", "With two parents it's sexual: each offspring is a different mix."],
+        ["Si el ambiente cambia, por ejemplo llega una enfermedad, la variedad hace que algunos sobrevivan.", "If the environment changes, for example a disease arrives, variety lets some survive."],
+      ],
+      life: ["Si todas las matas de plátano de una finca son clones, una sola plaga las puede matar a todas. Por eso la variación genética protege.", "If all the banana plants on a farm are clones, a single disease can kill them all. That's why genetic variation protects."],
+      items: [
+        ["rp-1", "¿Por qué la reproducción asexual es mejor en ambientes estables?", "Why is asexual reproduction better in stable environments?", "Un padre que ya está adaptado produce muchos hijos idénticos rápido, sin buscar pareja.", "A parent that is already well adapted produces many identical offspring quickly, without finding a mate.", true],
+        ["rp-2", "¿Por qué la reproducción sexual es mejor en ambientes cambiantes?", "Why is sexual reproduction better in changing environments?", "Por la variación genética: si el ambiente cambia, algunos hijos tendrán rasgos para sobrevivir.", "Because of genetic variation: if the environment changes, some offspring will have traits to survive.", true],
+        ["rp-3", "En la levadura crece un brote pequeño que luego se separa. ¿Cómo se llama?", "In yeast a small bud grows and then detaches. What is it called?", "Gemación.", "Budding.", true],
+        ["rp-4", "Nombra 1 semejanza y 1 diferencia entre la fisión binaria y la fragmentación.", "Name 1 similarity and 1 difference between binary fission and fragmentation.", "Semejanza: las dos son asexuales. Diferencia: en la fisión una célula se divide en dos iguales; en la fragmentación el cuerpo se rompe en pedazos y cada uno crece.", "Similarity: both are asexual. Difference: in fission one cell splits into two equal cells; in fragmentation the body breaks into pieces that each grow.", true],
+        ["rp-5", "Una estrella de mar pierde un brazo y el brazo forma una estrella nueva. ¿Qué es?", "A starfish loses an arm and the arm grows into a new starfish. What is it?", "Fragmentación.", "Fragmentation.", false],
+        ["rp-6", "Una bacteria copia su ADN circular y se divide en dos células iguales. ¿Qué es?", "A bacterium copies its circular DNA and divides into two identical cells. What is it?", "Fisión binaria.", "Binary fission.", false],
+      ],
+    },
+    {
+      id: "papel", mod: "cell", svg: null,
+      es: "El papel de los microorganismos", en: "The role of microorganisms",
+      map: {
+        easy: ["Los microbios pueden ser útiles o dañinos.", "Microbes can be helpful or harmful."],
+        hard: ["Decir QUÉ hacen y dar un ejemplo.", "Saying WHAT they do and giving an example."],
+        exam: ["Pregunta escrita de 3 puntos: ecosistemas y salud.", "3-point written question: ecosystems and health."],
+      },
+      sum: [
+        ["Ecosistemas: bacterias y hongos descomponen y devuelven nutrientes al suelo.", "Ecosystems: bacteria and fungi decompose and return nutrients to the soil."],
+        ["Algunas bacterias fijan nitrógeno y las algas producen oxígeno.", "Some bacteria fix nitrogen and algae produce oxygen."],
+        ["Salud: la microbiota intestinal ayuda a digerir y produce vitamina K.", "Health: the gut microbiome helps digestion and makes vitamin K."],
+        ["Se usan para medicinas (penicilina) y alimentos (yogur, pan).", "They are used for medicines (penicillin) and food (yogurt, bread)."],
+        ["Algunos son patógenos: faringitis (bacteria), gripe (virus), malaria (protista).", "Some are pathogens: strep throat (bacteria), flu (virus), malaria (protist)."],
+      ],
+      beats: [
+        ["Si no existieran los descomponedores, el bosque estaría lleno de hojas y animales muertos.", "Without decomposers, the forest would be full of dead leaves and animals."],
+        ["Las bacterias y los hongos los descomponen y devuelven los nutrientes al suelo para que crezcan plantas nuevas.", "Bacteria and fungi break them down and return nutrients to the soil so new plants can grow."],
+        ["En tu intestino viven billones de bacterias que te ayudan a digerir y fabrican vitamina K.", "Trillions of bacteria in your gut help you digest food and make vitamin K."],
+        ["Del moho Penicillium sale la penicilina, una medicina.", "Penicillin, a medicine, comes from the mold Penicillium."],
+        ["Pero algunos causan enfermedades: por eso nos lavamos las manos y nos vacunamos.", "But some cause disease: that's why we wash our hands and get vaccinated."],
+      ],
+      life: ["El yogur que comes tiene bacterias buenas (Lactobacillus) que transforman la leche.", "The yogurt you eat has good bacteria (Lactobacillus) that transform the milk."],
+      items: [
+        ["pa-1", "Explica el papel de los microorganismos en los ecosistemas.", "Explain the role of microorganisms in ecosystems.", "Son descomponedores: rompen organismos muertos y devuelven nutrientes al suelo; algunos fijan nitrógeno y las algas producen oxígeno.", "They are decomposers: they break down dead organisms and return nutrients to the soil; some fix nitrogen and algae produce oxygen.", true],
+        ["pa-2", "Explica el papel de los microorganismos en la salud humana.", "Explain the role of microorganisms in human health.", "Ayudan a digerir y producen vitamina K; sirven para medicinas como la penicilina; algunos causan enfermedades.", "They help digestion and make vitamin K; they are used for medicines like penicillin; some cause disease.", true],
+        ["pa-3", "¿Qué hace la microbiota intestinal?", "What does the gut microbiome do?", "Ayuda a digerir la comida y produce vitamina K.", "It helps digest food and makes vitamin K.", true],
+        ["pa-4", "Da un ejemplo de microorganismo útil y uno dañino.", "Give one example of a helpful microorganism and one of a harmful one.", "Útil: Lactobacillus del yogur o Penicillium. Dañino: el estreptococo o el virus de la gripe.", "Helpful: Lactobacillus in yogurt or Penicillium. Harmful: strep bacteria or the flu virus.", false],
+      ],
+    },
+  ],
+};
+
+const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb>opposite side of Earth\u003c/b> detects \u003cb>P-waves\u003c/b> but \u003cb>no S-waves\u003c/b>. What does this tell scientists?", "help": "Una estación al otro lado de la Tierra recibe ondas P pero no ondas S. ¿Qué indica?", "opts": ["The inner core is made of gas.", "Part of Earth's core is \u003cb>liquid\u003c/b>, because S-waves cannot travel through liquids.", "The crust is thicker on the opposite side of Earth."], "ans": 1, "why": ["Las ondas S no pasan por líquidos → núcleo externo líquido.", "S-waves can&#x27;t cross liquids → liquid outer core."]}, {"mod": "geo", "q": "The \u003cb>deepest hole\u003c/b> ever drilled reached only about \u003cb>12 km\u003c/b>. Why does most knowledge about Earth's interior come from \u003cb>indirect evidence\u003c/b>?", "help": "El pozo más profundo llegó a 12 km. ¿Por qué casi todo lo que sabemos viene de evidencia indirecta?", "opts": ["The mantle is made of ice that melts the drills.", "The inner layers are too deep and hot to sample, so scientists study seismic waves, meteorites and xenoliths.", "Seismic waves can only be measured from space."], "ans": 1, "why": ["Las capas son muy profundas y calientes; se estudian con ondas, meteoritos y xenolitos.", "Layers are too deep and hot; studied with waves, meteorites, xenoliths."]}, {"mod": "geo", "q": "Earth's \u003cb>average density\u003c/b> (5.5 g/cm³) is much \u003cb>higher\u003c/b> than the density of crust rocks (about 2.7 g/cm³). What does this suggest?", "help": "La Tierra en promedio es mucho más densa que las rocas de la corteza. ¿Qué sugiere?", "opts": ["The core is made of very \u003cb>dense metal\u003c/b>.", "The mantle is hollow.", "The crust is the heaviest layer."], "ans": 0, "why": ["Si la Tierra es más densa que su corteza, el centro es metal denso (hierro y níquel).", "If Earth is denser than its crust, the center is dense metal."]}, {"mod": "geo", "q": "Which layer is the \u003cb>largest by volume\u003c/b> and has slowly \u003cb>flowing\u003c/b> rock that moves tectonic plates?", "help": "¿Qué capa es la más grande y tiene roca que fluye y mueve las placas?", "opts": ["Crust", "Mantle", "Inner core"], "ans": 1, "why": ["El manto es la capa más grande y sus corrientes mueven las placas.", "The mantle is the largest; its currents move plates."]}, {"mod": "geo", "q": "In Costa Rica, the \u003cb>oceanic Cocos plate sinks beneath\u003c/b> the Caribbean plate. Which \u003cb>two features\u003c/b> form because of this \u003cb>subduction\u003c/b>?", "help": "La placa Cocos se hunde bajo la placa Caribe. ¿Qué dos relieves se forman?", "opts": ["A deep-ocean trench and volcanoes.", "A delta and a canyon.", "A mid-ocean ridge and a rift valley."], "ans": 0, "why": ["Subducción → fosa (Mesoamericana) y volcanes (Arenal, Poás).", "Subduction → trench and volcanoes."]}, {"mod": "geo", "q": "Which is an example of an \u003cb>exogenic\u003c/b> process?", "help": "¿Cuál es un proceso exógeno (externo)?", "opts": ["Magma rising inside a volcano.", "Wind carrying sand and dropping it to form a dune.", "Two plates colliding to form mountains."], "ans": 1, "why": ["El viento es un agente externo → exógeno.", "Wind is an external agent → exogenic."]}, {"mod": "geo", "q": "Two \u003cb>continental\u003c/b> plates \u003cb>pull apart\u003c/b>. The crust \u003cb>stretches\u003c/b> and the center \u003cb>sinks\u003c/b>. Which landform is created?", "help": "Dos placas continentales se separan y el centro se hunde. ¿Qué relieve se forma?", "opts": ["A rift valley.", "A folded mountain range.", "A delta."], "ans": 0, "why": ["Divergente en un continente → valle de rift.", "Divergent on a continent → rift valley."]}, {"mod": "geo", "q": "Along the San Andreas Fault, two plates \u003cb>slide past each other\u003c/b> horizontally. What is \u003cb>most common\u003c/b> there?", "help": "Dos placas se deslizan de lado. ¿Qué es lo más común ahí?", "opts": ["Earthquakes.", "New oceanic crust.", "A deep-ocean trench."], "ans": 0, "why": ["Límite transformante → fallas y terremotos.", "Transform boundary → faults and earthquakes."]}, {"mod": "geo", "q": "The walls of a \u003cb>canyon\u003c/b> show many colored \u003cb>layers\u003c/b> of sandstone, shale and limestone. What type of rock are these layers?", "help": "Las paredes de un cañón muestran capas de arenisca, lutita y caliza. ¿Qué tipo de roca son?", "opts": ["Extrusive igneous rock.", "Sedimentary rock.", "Metamorphic rock."], "ans": 1, "why": ["Arenisca, lutita y caliza en capas = sedimentarias.", "Sandstone, shale, limestone in layers = sedimentary."]}, {"mod": "geo", "q": "A geologist rubs a \u003cb>gold-colored\u003c/b> mineral on an unglazed porcelain plate and gets a \u003cb>greenish-black powder\u003c/b>, so the geologist knows it is pyrite, not gold. Which property helped?", "help": "Un mineral dorado deja un polvo negro verdoso en la placa. ¿Qué propiedad usó?", "opts": ["Streak", "Hardness", "Magnetism"], "ans": 0, "why": ["Color del polvo = raya.", "Powder color = streak."]}, {"mod": "geo", "q": "Which of these is \u003cb>NOT\u003c/b> a mineral?", "help": "¿Cuál NO es un mineral?", "opts": ["Quartz", "Halite (rock salt)", "Coal (formed from ancient plants)"], "ans": 2, "why": ["El carbón viene de plantas → orgánico → no es mineral.", "Coal comes from plants → organic → not a mineral."]}, {"mod": "geo", "q": "Which property measures how easily a mineral can be \u003cb>scratched\u003c/b>, using the \u003cb>Mohs scale\u003c/b> from 1 to 10?", "help": "¿Qué propiedad mide qué tan fácil se raya un mineral (escala de Mohs)?", "opts": ["Luster", "Hardness", "Cleavage"], "ans": 1, "why": ["Rayar / escala de Mohs = dureza.", "Scratching / Mohs scale = hardness."]}, {"mod": "geo", "q": "\u003cb>Obsidian\u003c/b> is a black, glassy rock with \u003cb>no visible crystals\u003c/b>. How did it form?", "help": "La obsidiana es negra, como vidrio, sin cristales. ¿Cómo se formó?", "opts": ["Lava cooled very quickly on Earth's surface.", "Magma cooled slowly deep underground.", "Sediments were compacted and cemented."], "ans": 0, "why": ["Sin cristales = enfriamiento muy rápido → ígnea extrusiva.", "No crystals = very fast cooling → extrusive igneous."]}, {"mod": "geo", "q": "\u003cb>Shale\u003c/b> is buried deep and changed by \u003cb>heat and pressure\u003c/b> into \u003cb>slate\u003c/b>, without melting. What type of rock is slate?", "help": "La lutita se convierte en pizarra por calor y presión. ¿Qué tipo de roca es la pizarra?", "opts": ["Sedimentary", "Metamorphic", "Igneous"], "ans": 1, "why": ["Calor + presión sin derretirse = metamórfica.", "Heat + pressure without melting = metamorphic."]}, {"mod": "geo", "q": "\u003cb>Mica\u003c/b> peels apart into thin, flat, smooth \u003cb>sheets\u003c/b>. Which property is this?", "help": "La mica se separa en láminas planas y lisas. ¿Qué propiedad es?", "opts": ["Cleavage", "Fracture", "Streak"], "ans": 0, "why": ["Se rompe en láminas planas = exfoliación.", "Breaks in flat sheets = cleavage."]}, {"mod": "geo", "q": "Ocean waves hit a cliff and \u003cb>break\u003c/b> the rock; then the water \u003cb>carries\u003c/b> the pieces away. The breaking is ______ and the carrying away is ______.", "help": "Las olas rompen la roca y luego se llevan los pedazos. Romper = ___ ; llevar = ___.", "opts": ["erosion; weathering", "weathering; erosion", "deposition; weathering"], "ans": 1, "why": ["Romper = meteorización; transportar = erosión.", "Breaking = weathering; carrying = erosion."]}, {"mod": "geo", "q": "\u003cb>Red rusty stains\u003c/b> appear on rocks that contain \u003cb>iron\u003c/b> after years of rain. This is:", "help": "Manchas rojas de óxido en rocas con hierro. Esto es:", "opts": ["Chemical weathering (oxidation).", "Mechanical weathering.", "Deposition."], "ans": 0, "why": ["Hierro + oxígeno = óxido → química.", "Iron + oxygen = rust → chemical."]}, {"mod": "geo", "q": "\u003cb>Lichens\u003c/b> growing on a rock produce weak \u003cb>acids\u003c/b> that slowly break the rock down. What type of weathering is caused by \u003cb>living things\u003c/b>?", "help": "Los líquenes (seres vivos) rompen la roca. ¿Qué tipo de meteorización es?", "opts": ["Biological weathering.", "Compaction.", "Deposition."], "ans": 0, "why": ["Seres vivos (líquenes) → biológica.", "Living things (lichens) → biological."]}, {"mod": "geo", "q": "Which soil horizon is the \u003cb>most fertile\u003c/b>, dark, and full of \u003cb>humus and plant roots\u003c/b>?", "help": "¿Qué horizonte es el más fértil, oscuro, con humus y raíces?", "opts": ["A horizon (topsoil)", "C horizon (parent material)", "R horizon (bedrock)"], "ans": 0, "why": ["Horizonte A = suelo superficial fértil.", "A horizon = fertile topsoil."]}, {"mod": "geo", "q": "A farmer grows crops on a \u003cb>steep hill\u003c/b>. Every time it rains, water \u003cb>washes the soil away\u003c/b>. Which conservation practice is best?", "help": "Un agricultor siembra en una colina empinada y la lluvia se lleva el suelo. ¿Qué práctica es mejor?", "opts": ["Terracing or contour plowing.", "Removing all plants from the field.", "Plowing straight down the hill."], "ans": 0, "why": ["Terrazas o arado en curvas frenan el agua.", "Terracing or contour plowing slow the water."]}, {"mod": "cell", "q": "Which scientist was the \u003cb>first to see living\u003c/b> microorganisms (\"animalcules\") with simple microscopes he built himself?", "help": "¿Quién vio primero microorganismos vivos?", "opts": ["Robert Hooke", "Anton van Leeuwenhoek", "Rudolf Virchow"], "ans": 1, "why": ["Leeuwenhoek vio los primeros microorganismos vivos.", "Leeuwenhoek saw the first living microorganisms."]}, {"mod": "cell", "q": "Which scientist is known for the idea that \u003cb>all cells come from pre-existing cells\u003c/b>?", "help": "¿Quién dijo que toda célula viene de otra célula?", "opts": ["Rudolf Virchow", "Matthias Schleiden", "Robert Hooke"], "ans": 0, "why": ["Virchow: toda célula viene de otra célula.", "Virchow: all cells come from cells."]}, {"mod": "cell", "q": "Which statement is a \u003cb>postulate\u003c/b> of the cell theory?", "help": "¿Cuál es un postulado de la teoría celular?", "opts": ["All cells have a nucleus.", "All living things are made of one or more cells.", "All cells are the same size."], "ans": 1, "why": ["Es el postulado 1. Las bacterias no tienen núcleo, así que &quot;a&quot; es falsa.", "It&#x27;s postulate 1. Bacteria have no nucleus, so &quot;a&quot; is false."]}, {"mod": "cell", "q": "The \u003cb>heart\u003c/b> is made of muscle tissue, nerve tissue and connective tissue working together. The heart is an example of:", "help": "El corazón tiene varios tejidos trabajando juntos. Es un…", "opts": ["a cell.", "an organ.", "an organism."], "ans": 1, "why": ["Varios tejidos juntos = órgano.", "Several tissues together = organ."]}, {"mod": "cell", "q": "The stomach, intestines and liver \u003cb>work together\u003c/b> to digest food. Together they form:", "help": "Estómago, intestinos e hígado trabajan juntos. Forman…", "opts": ["a tissue.", "an organ system.", "a cell."], "ans": 1, "why": ["Varios órganos juntos = sistema de órganos.", "Several organs together = organ system."]}, {"mod": "cell", "q": "A cell has a \u003cb>cell wall\u003c/b>, \u003cb>chloroplasts\u003c/b> and a \u003cb>large central vacuole\u003c/b>. What type of cell is it?", "help": "Tiene pared, cloroplastos y vacuola central grande.", "opts": ["Animal cell", "Plant cell", "Virus"], "ans": 1, "why": ["Pared + cloroplastos + vacuola central = vegetal.", "Wall + chloroplasts + central vacuole = plant."]}, {"mod": "cell", "q": "Which structure is found in \u003cb>BOTH\u003c/b> prokaryotic and eukaryotic cells?", "help": "¿Qué estructura tienen las procariotas y las eucariotas?", "opts": ["Nucleus", "Ribosomes", "Mitochondria"], "ans": 1, "why": ["Los ribosomas están en todas las células.", "Ribosomes are in all cells."]}, {"mod": "cell", "q": "\u003cb>Muscle cells\u003c/b> need a lot of \u003cb>energy\u003c/b>. Which organelle would you find in very large numbers in them?", "help": "Las células musculares necesitan mucha energía. ¿Qué organelo tienen en gran cantidad?", "opts": ["Mitochondria", "Vacuoles", "Chloroplasts"], "ans": 0, "why": ["Mitocondria = energía (ATP).", "Mitochondria = energy (ATP)."]}, {"mod": "cell", "q": "A cell has \u003cb>circular DNA\u003c/b> in its cytoplasm, ribosomes and a cell wall, but \u003cb>no nucleus\u003c/b>. What is it?", "help": "ADN circular, ribosomas, pared, pero sin núcleo.", "opts": ["A eukaryotic animal cell", "A prokaryotic bacterium", "A eukaryotic plant cell"], "ans": 1, "why": ["Sin núcleo + ADN circular = bacteria procariota.", "No nucleus + circular DNA = prokaryotic bacterium."]}, {"mod": "cell", "q": "Which organelle works like a \u003cb>post office\u003c/b>, \u003cb>packaging and shipping proteins\u003c/b>?", "help": "¿Qué organelo empaca y envía proteínas?", "opts": ["Golgi apparatus", "Lysosome", "Vacuole"], "ans": 0, "why": ["Golgi empaca y envía proteínas.", "Golgi packages and ships proteins."]}, {"mod": "cell", "q": "A virus injects its DNA into a bacterium. The viral DNA \u003cb>joins the bacterium's DNA\u003c/b> and stays \u003cb>hidden\u003c/b> for many generations. Which cycle is this?", "help": "El ADN viral se une al de la bacteria y se queda escondido.", "opts": ["Lytic cycle", "Lysogenic cycle", "Binary fission"], "ans": 1, "why": ["ADN escondido en el de la célula = lisogénico.", "DNA hidden in the host DNA = lysogenic."]}, {"mod": "cell", "q": "A \u003cb>starfish\u003c/b> loses an arm, and the \u003cb>arm grows into a whole new starfish\u003c/b>. This asexual reproduction is called:", "help": "Un brazo de estrella de mar se convierte en una estrella nueva.", "opts": ["Fragmentation", "Budding", "Binary fission"], "ans": 0, "why": ["Un pedazo crece hasta ser un organismo nuevo = fragmentación.", "A piece grows into a new organism = fragmentation."]}, {"mod": "cell", "q": "How does \u003cb>bread mold\u003c/b> (a fungus) get its food?", "help": "¿Cómo se alimenta el moho del pan?", "opts": ["By photosynthesis, like plants.", "By releasing digestive enzymes onto the bread and absorbing the nutrients.", "By catching bacteria with pseudopods."], "ans": 1, "why": ["Los hongos sueltan enzimas y absorben.", "Fungi release enzymes and absorb."]}, {"mod": "cell", "q": "Which protist moves using \u003cb>cilia\u003c/b> (tiny hairs)?", "help": "¿Qué protista se mueve con cilios?", "opts": ["Amoeba", "Paramecium", "Euglena"], "ans": 1, "why": ["Paramecio = cilios (ameba = seudópodos; euglena = flagelo).", "Paramecium = cilia (amoeba = pseudopods; euglena = flagellum)."]}, {"mod": "cell", "q": "Why can \u003cb>sexual reproduction\u003c/b> help a species survive a \u003cb>new disease\u003c/b>?", "help": "¿Por qué la reproducción sexual ayuda a sobrevivir a una enfermedad nueva?", "opts": ["All the offspring are identical to the parent.", "Offspring have genetic variation, so some may resist the disease.", "It is faster than binary fission."], "ans": 1, "why": ["Variación genética → algunos resisten.", "Genetic variation → some resist."]}, {"mod": "cell", "q": "Which of these is a \u003cb>non-cellular\u003c/b> agent?", "help": "¿Cuál NO es una célula?", "opts": ["Bacterium", "Yeast", "Virus"], "ans": 2, "why": ["El virus es acelular.", "The virus is non-cellular."]}, {"mod": "cell", "q": "A doctor does \u003cb>not\u003c/b> prescribe antibiotics for the \u003cb>flu\u003c/b> because:", "help": "El doctor no da antibióticos para la gripe porque…", "opts": ["the flu is caused by a virus, and antibiotics only kill bacteria.", "antibiotics only work against fungi.", "the flu is caused by a protist."], "ans": 0, "why": ["Gripe = virus; antibióticos = solo bacterias.", "Flu = virus; antibiotics = only bacteria."]}, {"mod": "cell", "q": "Which microorganisms are the main \u003cb>decomposers\u003c/b> that return nutrients to the soil?", "help": "¿Quiénes son los principales descomponedores?", "opts": ["Viruses", "Bacteria and fungi", "Only algae"], "ans": 1, "why": ["Bacterias y hongos descomponen y reciclan nutrientes.", "Bacteria and fungi decompose and recycle nutrients."]}, {"mod": "cell", "q": "\u003cb>Plant-like protists\u003c/b> such as diatoms and algae are important for life on Earth because they:", "help": "Los protistas tipo planta son importantes porque…", "opts": ["produce oxygen through photosynthesis.", "cause the common cold.", "destroy the soil."], "ans": 0, "why": ["Las algas hacen fotosíntesis y producen oxígeno.", "Algae photosynthesize and produce oxygen."]}, {"mod": "cell", "q": "The \u003cb>cell walls of fungi\u003c/b> are made of:", "help": "La pared celular de los hongos es de…", "opts": ["cellulose", "chitin", "peptidoglycan"], "ans": 1, "why": ["Hongos = quitina (plantas = celulosa; bacterias = peptidoglicano).", "Fungi = chitin (plants = cellulose; bacteria = peptidoglycan)."]}];
+</script>
+<script>
+(() => {
+  "use strict";
+
+  /* ================= Datos ================= */
+  const TOPICS = CONTENT.topics;
+  const TOPIC = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
+  const MOD = Object.fromEntries(CONTENT.modules.map((m) => [m.id, m]));
+  const ITEMS = [];
+  const ITEM = {};
+  TOPICS.forEach((t) => t.items.forEach(([id, qes, qen, aes, aen, hot]) => {
+    const it = { id, topic: t.id, mod: t.mod, q: [qes, qen], a: [aes, aen], hot: !!hot };
+    ITEMS.push(it); ITEM[id] = it;
+  }));
+  const DAY = 864e5;
+  const EXAM = new Date(2026, 11, 4, 7, 0, 0).getTime();
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const bl = (p, tag = "span") => `<${tag} class="es">${esc(p[0])}</${tag}><${tag} class="en">${esc(p[1])}</${tag}>`;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const pad = (n) => String(n).padStart(2, "0");
+  const dayKey = (ts = Date.now()) => { const d = new Date(ts); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const daysToExam = () => Math.max(0, Math.ceil((new Date(2026, 11, 4).getTime() - new Date(new Date().toDateString()).getTime()) / DAY));
+  const PANIC_N = Math.ceil(ITEMS.length * 0.2); // el 20 % más probable
+  const MODES = { ratitos: { es: "Ratitos", min: 5, note: "3–5 min · bus" }, pomodoro: { es: "Pomodoro", min: 25, note: "25 min + 5 de pausa" }, maraton: { es: "Maratón", min: 90, note: "1–2 h con pausas" } };
+
+  /* ================= FSRS-6 (21 pesos por defecto) ================= */
+  const W = [0.212, 1.2931, 2.3065, 8.2956, 6.4133, 0.8334, 3.0194, 0.001, 1.8722, 0.1666, 0.796, 1.4835, 0.0614, 0.2629, 1.6483, 0.6014, 1.8729, 0.5425, 0.0912, 0.0658, 0.1542];
+  const DECAY = -W[20];
+  const FACTOR = Math.pow(0.9, 1 / DECAY) - 1;
+  const retr = (t, s) => Math.pow(1 + (FACTOR * t) / s, DECAY);
+  const ivl = (s, r = 0.9) => (s / FACTOR) * (Math.pow(r, 1 / DECAY) - 1);
+  const clampD = (d) => Math.min(10, Math.max(1, d));
+  const d0 = (g) => clampD(W[4] - Math.exp(W[5] * (g - 1)) + 1);
+  const nextD = (d, g) => { const dp = d + (-W[6] * (g - 3) * (10 - d)) / 9; return clampD(W[7] * d0(4) + (1 - W[7]) * dp); };
+  const sRecall = (d, s, r, g) => s * (Math.exp(W[8]) * (11 - d) * Math.pow(s, -W[9]) * (Math.exp(W[10] * (1 - r)) - 1) * (g === 2 ? W[15] : 1) * (g === 4 ? W[16] : 1) + 1);
+  const sForget = (d, s, r) => Math.min(s, W[11] * Math.pow(d, -W[12]) * (Math.pow(s + 1, W[13]) - 1) * Math.exp(W[14] * (1 - r)));
+  const sShort = (s, g) => { let inc = Math.exp(W[17] * (g - 3 + W[18])) * Math.pow(s, -W[19]); if (g >= 3) inc = Math.max(inc, 1); return s * inc; };
+
+  /* ================= Estado y guardado ================= */
+  const KEY = "entender7:v1";
+  const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0 });
+  const loadLocal = () => { try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch { /* sin almacenamiento */ } return blank(); };
+  let S = loadLocal();
+  let lang = "both";
+  try { lang = localStorage.getItem("entender7:lang") || "both"; } catch { /* nada */ }
+  document.body.dataset.lang = lang;
+
+  let remote = null, writing = false, again = false, remoteTimer = 0, sync = "local";
+  const persistLocal = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* nada */ } };
+  function save() {
+    S.updatedAt = Date.now();
+    const k = dayKey();
+    S.hist[k] = { geo: modPct("geo"), cell: modPct("cell") };
+    const keys = Object.keys(S.hist).sort();
+    while (keys.length > 40) delete S.hist[keys.shift()];
+    persistLocal();
+    if (remote) { clearTimeout(remoteTimer); remoteTimer = setTimeout(flushRemote, 1500); }
+  }
+  async function flushRemote() {
+    if (!remote) return;
+    if (writing) { again = true; return; }
+    writing = true;
+    try { await remote.set(JSON.parse(JSON.stringify(S))); setSync("cloud"); }
+    catch (e) { if (e && e.code === "invalid_argument") { remote = null; setSync("local"); } else setSync("retry"); }
+    finally { writing = false; if (again) { again = false; flushRemote(); } }
+  }
+  function setSync(s) { sync = s; const el = $("#sync"); if (el) el.textContent = SYNC_COPY[s]; }
+  const SYNC_COPY = { cloud: "☁ Progreso guardado en tu cuenta", local: "Guardado en este dispositivo", loading: "Sincronizando…", slow: "Sin conexión: se guarda en este dispositivo", retry: "No se pudo sincronizar; se guarda aquí y se reintenta" };
+  async function initRemote() {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if (!db || !user) return;
+      const uid = await user.id();
+      if (!uid) return;
+      const ref = db.doc(`data/users/${uid}/progreso`);
+      setSync("loading");
+      const timer = setTimeout(() => setSync("slow"), 10000);
+      const snap = await ref.get();
+      clearTimeout(timer);
+      remote = ref;
+      if (snap.exists) {
+        const r = snap.data();
+        if ((r.updatedAt || 0) > (S.updatedAt || 0)) { S = Object.assign(blank(), JSON.parse(JSON.stringify(r))); persistLocal(); render(); }
+        else if ((S.updatedAt || 0) > (r.updatedAt || 0)) flushRemote();
+      } else if (S.updatedAt) flushRemote();
+      setSync("cloud");
+    } catch { remote = null; setSync("local"); }
+  }
+
+  /* ================= Memoria: estados y dominio ================= */
+  function status(id, now = Date.now()) {
+    const c = S.cards[id];
+    if (!c || !c.reps) return "new";
+    if (c.due <= now) return "due";
+    if (c.st === "review" && c.s >= 5 && retr((now - c.last) / DAY, c.s) >= 0.85) return "mastered";
+    return "learning";
+  }
+  function mastery(id, now = Date.now()) {
+    const c = S.cards[id];
+    if (!c || !c.reps || c.st !== "review") return c && c.reps ? 0.05 : 0;
+    return Math.max(0, Math.min(1, retr((now - c.last) / DAY, c.s) * Math.min(1, c.s / 5)));
+  }
+  const avg = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0);
+  const modPct = (m) => Math.round(100 * avg(ITEMS.filter((i) => i.mod === m).map((i) => mastery(i.id))));
+  const topicPct = (t) => Math.round(100 * avg(ITEMS.filter((i) => i.topic === t).map((i) => mastery(i.id))));
+  const counts = (pool) => pool.reduce((a, i) => { a[status(i.id)]++; return a; }, { new: 0, learning: 0, mastered: 0, due: 0 });
+  function yesterdayPct(m) {
+    const today = dayKey();
+    const prev = Object.keys(S.hist).filter((k) => k < today).sort().pop();
+    return prev ? S.hist[prev][m] : 0;
+  }
+  function streak() {
+    let n = 0; let d = new Date(); if (!S.days[dayKey(d.getTime())]) d = new Date(d.getTime() - DAY);
+    while (S.days[dayKey(d.getTime())]) { n++; d = new Date(d.getTime() - DAY); }
+    return n;
+  }
+  function capDue(due) {
+    const now = Date.now();
+    if (S.life && now >= EXAM) return Math.max(due, now + 30 * DAY);
+    if (now >= EXAM) return due;
+    const lim = EXAM - 20 * 3600e3; // el día antes del examen
+    return Math.min(due, Math.max(now + 6 * 3600e3, lim));
+  }
+  function rate(id, g, ms, err) {
+    const now = Date.now();
+    const c = Object.assign({ st: "new", reps: 0, lapses: 0 }, S.cards[id]);
+    if (!c.reps) { c.s = W[g - 1]; c.d = d0(g); }
+    else {
+      const t = Math.max(0, (now - c.last) / DAY);
+      c.s = t < 1 ? sShort(c.s, g) : g === 1 ? sForget(c.d, c.s, retr(t, c.s)) : sRecall(c.d, c.s, retr(t, c.s), g);
+      c.d = nextD(c.d, g);
+    }
+    if (g === 1 && c.st === "review") c.lapses++;
+    c.reps++; c.last = now;
+    if (g === 1) { c.st = "learn"; c.due = now + 5 * 60e3; }
+    else { c.st = "review"; c.due = capDue(now + Math.max(1, Math.round(ivl(c.s) * (g === 2 ? 0.8 : 1))) * DAY); }
+    S.cards[id] = c;
+    S.log.push([now, id, g, Math.round(ms), err || 0]);
+    if (S.log.length > 300) S.log.splice(0, S.log.length - 300);
+    S.days[dayKey(now)] = (S.days[dayKey(now)] || 0) + 1;
+    save();
+  }
+
+  /* ================= Planificador por fecha (Deadline Scheduler) ================= */
+  function todayTopics() {
+    const k = dayKey();
+    const keys = Object.keys(CONTENT.plan).sort();
+    if (k < keys[0]) return CONTENT.plan[keys[0]];
+    return CONTENT.plan[k] || [];
+  }
+  function mood() { return S.checkin && S.checkin.date === dayKey() ? S.checkin.mood : "normal"; }
+  const isNight = () => new Date().getHours() >= 22;
+  function interleave(list) {
+    const groups = {};
+    list.forEach((id) => (groups[ITEM[id].topic] ||= []).push(id));
+    const out = []; let last = null;
+    while (out.length < list.length) {
+      const keys = Object.keys(groups).filter((k) => groups[k].length).sort((a, b) => groups[b].length - groups[a].length);
+      const k = keys.find((x) => x !== last) || keys[0];
+      out.push(groups[k].shift()); last = k;
+    }
+    return out;
+  }
+  function planCounts() {
+    const due = ITEMS.filter((i) => status(i.id) === "due").length;
+    const fresh = ITEMS.filter((i) => status(i.id) === "new").length;
+    const days = Math.max(1, daysToExam());
+    let quota = Math.min(fresh, Math.ceil(fresh / days) + 2);
+    if (mood() === "cansado") quota = Math.min(quota, 3);
+    if (mood() === "energia") quota = Math.min(fresh, quota + 4);
+    if (isNight() || Date.now() >= EXAM) quota = 0;
+    return { due, quota };
+  }
+  function buildQueue(kind, minutes, topic) {
+    let target = minutes <= 5 ? 8 : minutes <= 30 ? 32 : 80;
+    if (mood() === "cansado") target = Math.round(target * 0.6);
+    let pool = ITEMS;
+    if (kind === "topic") pool = ITEMS.filter((i) => i.topic === topic);
+    if (kind === "panic") pool = ITEMS.filter((i) => i.hot);
+    const due = pool.filter((i) => status(i.id) === "due").sort((a, b) => S.cards[a.id].due - S.cards[b.id].due).map((i) => i.id);
+    const fresh = pool.filter((i) => status(i.id) === "new").map((i) => i.id);
+    if (kind === "panic") return interleave(pool.slice().sort((a, b) => mastery(a.id) - mastery(b.id)).slice(0, PANIC_N).map((i) => i.id));
+    if (kind === "topic") {
+      const rest = pool.map((i) => i.id).filter((id) => !due.includes(id) && !fresh.includes(id));
+      return [...due, ...fresh, ...rest];
+    }
+    const today = todayTopics();
+    const order = [...fresh.filter((id) => today.includes(ITEM[id].topic)), ...fresh.filter((id) => !today.includes(ITEM[id].topic))];
+    const { quota } = planCounts();
+    const reviews = due.slice(0, target);
+    const nNew = Math.max(0, Math.min(quota, target - reviews.length));
+    return interleave([...reviews, ...order.slice(0, nNew)]);
+  }
+
+  /* ================= Navegación ================= */
+  function route() {
+    const h = location.hash.slice(1);
+    if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
+    if (["hoy", "sesion", "simulacro", "panico"].includes(h)) return { name: h };
+    return { name: "hoy" };
+  }
+  let ctxTopic = null;
+  function render() {
+    const r = route();
+    if (r.name !== "sesion" && SES && SES.phase !== "done") endSession(false);
+    if (r.name !== "simulacro" && SIM) { clearInterval(simTick); SIM = null; }
+    if (r.name === "sesion" && !SES) { location.hash = "hoy"; return; }
+    document.body.classList.toggle("focus", r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
+    ctxTopic = r.name === "topic" ? r.id : r.name === "sesion" && SES ? ITEM[SES.current()]?.topic || ctxTopic : null;
+    renderSide(r); renderCtx();
+    const v = $("#view");
+    if (r.name === "topic") renderTopic(v, TOPIC[r.id]);
+    else if (r.name === "sesion") renderSession(v);
+    else if (r.name === "simulacro") renderSim(v);
+    else if (r.name === "panico") renderPanic(v);
+    else renderHoy(v);
+    $("#timer").hidden = !(r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
+    if (r.name !== "sesion" && r.name !== "simulacro") $("#ptop").style.width = "0";
+  }
+  window.addEventListener("hashchange", () => { closeSide(); stopSpeech(); render(); window.scrollTo(0, 0); });
+
+  /* ================= Barra lateral ================= */
+  function renderSide(r) {
+    const cur = r.name === "topic" ? `t-${r.id}` : r.name;
+    const mods = CONTENT.modules.map((m) => {
+      const pct = modPct(m.id);
+      const list = TOPICS.filter((t) => t.mod === m.id).map((t) => {
+        const p = topicPct(t.id);
+        return `<li><a class="topic-link" href="#t-${t.id}" ${cur === "t-" + t.id ? 'aria-current="page"' : ""}><span class="ring" style="--p:${p}"></span><span>${esc(t.es)}</span><span class="pct">${p}%</span></a></li>`;
+      }).join("");
+      return `<div class="mod"><div class="mod-row"><span>${esc(m.es)}</span><span class="mono">${pct}%</span></div><div class="bar"><span style="width:${pct}%"></span></div><ul class="topic-list">${list}</ul></div>`;
+    }).join("");
+    const days = daysToExam();
+    $("#side").innerHTML = `
+      <div><div class="brand">Entender</div><div class="brand-sub">Ciencias 7.º · convocatoria</div></div>
+      <nav aria-label="Secciones">
+        <div><a class="side-link" href="#hoy" ${cur === "hoy" ? 'aria-current="page"' : ""}>Hoy<span class="kicker">${days > 0 ? days + " días" : "examen"}</span></a>
+        <a class="side-link" href="#simulacro" ${cur === "simulacro" ? 'aria-current="page"' : ""}>Simulacro real</a>
+        <a class="side-link" href="#panico" ${cur === "panico" ? 'aria-current="page"' : ""}>Modo Pánico</a></div>
+        <div class="kicker" style="padding:0 .6rem">Tus materias</div>
+        ${mods}
+      </nav>
+      <div class="side-foot">
+        <div class="row"><span class="muted">Modo</span><b>${MODES[S.mode].es} ${MODES[S.mode].min < 60 ? MODES[S.mode].min + "m" : ""}</b></div>
+        <div class="row"><span class="muted">Racha</span><b class="mono">${streak()} ${streak() === 1 ? "día" : "días"}</b></div>
+        <div class="row"><span class="muted">Idioma</span>
+          <div class="seg" role="group" aria-label="Idioma">${[["both", "ES+EN"], ["es", "ES"], ["en", "EN"]].map(([k, l]) => `<button type="button" data-lang="${k}" aria-pressed="${lang === k}">${l}</button>`).join("")}</div></div>
+        <div class="sync" id="sync">${SYNC_COPY[sync]}</div>
+      </div>`;
+    $$("#side [data-lang]").forEach((b) => b.addEventListener("click", () => {
+      lang = b.dataset.lang; document.body.dataset.lang = lang;
+      try { localStorage.setItem("entender7:lang", lang); } catch { /* nada */ }
+      render();
+    }));
+  }
+  const openSide = () => { $("#side").classList.add("open"); $("#scrim").hidden = false; };
+  const closeSide = () => { $("#side").classList.remove("open"); $("#scrim").hidden = true; };
+  $("#menu-btn").addEventListener("click", openSide);
+  $("#scrim").addEventListener("click", closeSide);
+
+  /* ================= Hoy ================= */
+  const fmtDate = () => new Date().toLocaleDateString("es-CR", { weekday: "long", day: "numeric", month: "long" });
+  function greeting() { const h = new Date().getHours(); return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches"; }
+  function renderHoy(v) {
+    $("#crumb").innerHTML = `<b>Hoy</b> · <span class="muted">${esc(fmtDate())}</span>`;
+    const days = daysToExam();
+    const after = Date.now() >= EXAM;
+    const away = S.lastVisit && Date.now() - S.lastVisit > 3 * DAY;
+    const { due, quota } = planCounts();
+    const today = todayTopics();
+    const est = Math.round(due * 0.4 + quota * 1.2);
+    const checked = S.checkin && S.checkin.date === dayKey();
+    const modRows = CONTENT.modules.map((m) => {
+      const pool = ITEMS.filter((i) => i.mod === m.id);
+      const c = counts(pool);
+      return `<div class="stat-row"><b>${esc(m.es)}</b><span class="delta">${yesterdayPct(m.id)}% → ${modPct(m.id)}%</span>
+        <div class="bar" style="grid-column:1/-1;margin:0"><span style="width:${modPct(m.id)}%"></span></div>
+        <div class="states" style="grid-column:1/-1"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso pendiente ${c.due}</span></div></div>`;
+    }).join("");
+    const lastSim = S.sims[S.sims.length - 1];
+    v.innerHTML = `
+      <div><div class="kicker">${after ? "Después del examen" : days === 0 ? "Hoy es el examen" : `${days} ${days === 1 ? "día" : "días"} para el examen · 4 de diciembre`}</div>
+      <h1 class="title">${greeting()}.</h1></div>
+      ${away ? `<div class="notice">Te extrañé. ¿Todo bien? Retomemos con 5 minutos, sin presión.</div>` : ""}
+      ${isNight() ? `<div class="notice">Son más de las 10 p. m.: hoy toca <b>repaso suave nocturno</b>, solo lo que ya viste y nada nuevo.</div>` : ""}
+      ${checked ? "" : `<section class="card" aria-labelledby="mood-h"><h2 class="h" id="mood-h">¿Cómo andas hoy?</h2>
+        <div class="mood">${[["energia", "⚡", "Con energía"], ["normal", "🙂", "Normal"], ["cansado", "😴", "Cansado"]].map(([k, e, l]) => `<button type="button" data-mood="${k}"><span aria-hidden="true">${e}</span>${l}</button>`).join("")}</div>
+        <p class="small muted">Ajusto la sesión a cómo te sientes. Un toque y listo.</p></section>`}
+      <section class="card accent" aria-labelledby="plan-h">
+        <div><div class="kicker">${after ? "Para la vida" : "Hoy solo estudia esto"}</div><h2 class="h" id="plan-h">${due} repasos + ${quota} preguntas nuevas</h2>
+        <p class="small muted">${today.length ? "Tema del día: " + today.map((t) => esc(TOPIC[t].es)).join(" · ") : after ? "Repasos suaves para no olvidar." : "Día de repaso: mezclo todo lo que estás por olvidar."}</p></div>
+        ${today.length ? `<div class="plan-topics">${today.map((t) => `<a href="#t-${t}"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${topicPct(t)}%</span></a>`).join("")}</div>` : ""}
+        <div><div class="kicker" style="margin-bottom:.4rem">¿Cuánto tiempo tienes?</div>
+        <div class="modes" role="group" aria-label="Tiempo">${Object.entries(MODES).map(([k, m]) => `<button type="button" data-mode="${k}" aria-pressed="${S.mode === k}"><b>${m.es}</b><small>${m.note}</small></button>`).join("")}</div></div>
+        <button type="button" class="btn primary block" id="start">${due + quota ? `Empezar · ~${Math.max(2, Math.min(MODES[S.mode].min, est))} min` : "Todo al día · practicar libre"}</button>
+      </section>
+      <section class="card" aria-labelledby="prog-h"><div class="kicker">Tu avance real · ayer → hoy</div><h2 class="h" id="prog-h" hidden>Avance</h2>${modRows}</section>
+      <div class="grid2">
+        <a class="card" href="#panico" style="text-decoration:none"><div class="kicker" style="color:var(--accent)">Modo Pánico</div><b>Solo lo que más sale en el examen</b><span class="small muted">30 minutos con las preguntas más probables.</span></a>
+        <a class="card" href="#simulacro" style="text-decoration:none"><div class="kicker">Simulacro real</div><b>20 preguntas · 20 minutos · nota cruda</b><span class="small muted">${lastSim ? `Último: ${lastSim.score}/${lastSim.total} (${Math.round((100 * lastSim.score) / lastSim.total)} %)` : "Como el examen, con preguntas tramposas."}</span></a>
+      </div>
+      <section class="card quiet"><div class="row-wrap" style="justify-content:space-between"><div><b>Guardar para la vida</b><p class="small muted">Después del examen: 1 micro-repaso de 5 minutos al mes con lo más importante.</p></div>
+        <button type="button" class="btn" id="life" aria-pressed="${S.life}">${S.life ? "Activado" : "Activar"}</button></div></section>
+      <section class="only-mobile" style="gap:.6rem">${CONTENT.modules.map((m) => `<div class="kicker">${esc(m.es)}</div><div class="plan-topics">${TOPICS.filter((t) => t.mod === m.id).map((t) => `<a href="#t-${t.id}"><span>${esc(t.es)}</span><span class="mono muted">${topicPct(t.id)}%</span></a>`).join("")}</div>`).join("")}</section>`;
+    $$("[data-mood]", v).forEach((b) => b.addEventListener("click", () => {
+      S.checkin = { date: dayKey(), mood: b.dataset.mood };
+      if (b.dataset.mood === "cansado") S.mode = "ratitos";
+      save(); render();
+    }));
+    $$("[data-mode]", v).forEach((b) => b.addEventListener("click", () => { S.mode = b.dataset.mode; save(); render(); }));
+    $("#start", v).addEventListener("click", () => {
+      const q = buildQueue("plan", MODES[S.mode].min);
+      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
+    });
+    $("#life", v).addEventListener("click", () => { S.life = !S.life; save(); render(); });
+    S.lastVisit = Date.now(); persistLocal();
+  }
+
+  /* ================= Tema: Sistema de Entender en 5 pasos ================= */
+  function renderTopic(v, t) {
+    const idx = TOPICS.filter((x) => x.mod === t.mod).indexOf(t) + 1;
+    const total = TOPICS.filter((x) => x.mod === t.mod).length;
+    $("#crumb").innerHTML = `<b>${esc(MOD[t.mod].es)}</b> · Bloque ${idx}/${total} · <span class="mono">${topicPct(t.id)}%</span>`;
+    const c = counts(ITEMS.filter((i) => i.topic === t.id));
+    const feyn = S.feyn[t.id];
+    const svg = t.svg ? document.getElementById("svg-" + t.svg) : null;
+    v.innerHTML = `
+      <div><div class="kicker">${esc(MOD[t.mod].es)} · ${esc(MOD[t.mod].objectives)}</div>
+      <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
+      <div class="states" style="margin-top:.6rem"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso ${c.due}</span></div></div>
+      <div class="steps">
+        <section class="step"><div class="step-n">1</div><div class="step-body"><h2 class="h">Guía · el mapa</h2>
+          <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div></div></section>
+        <section class="step"><div class="step-n">2</div><div class="step-body"><h2 class="h">Resumen que sí se entiende</h2>
+          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div></section>
+        <section class="step"><div class="step-n">3</div><div class="step-body"><h2 class="h">Explicador de 2 minutos</h2>
+          ${svg ? `<figure class="plate" id="plate"></figure>` : ""}
+          <ol class="beats" id="beats">${t.beats.map((p, i) => `<li data-b="${i}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>
+          <div class="row-wrap">
+            <button type="button" class="btn dark" id="play" hidden>▶ Escuchar · 2 min</button>
+            <button type="button" class="btn" id="audio" hidden>🎧 Solo audio (bus)</button>
+            <button type="button" class="btn" id="stepbtn">Paso a paso →</button>
+            <button type="button" class="btn" id="stop" hidden>■ Parar</button>
+          </div></div></section>
+        <section class="step"><div class="step-n">4</div><div class="step-body"><h2 class="h">Ejemplo de tu vida</h2>
+          <div class="card life">${bl(t.life, "p")}</div></div></section>
+        <section class="step"><div class="step-n">5</div><div class="step-body"><h2 class="h">¿De verdad entendiste?</h2>
+          <p>Explícamelo con tus palabras en el cuadro de abajo, como si se lo enseñaras a alguien de 10 años. El tutor te dice qué entendiste y qué falta, sin juzgarte.</p>
+          ${feyn ? `<span class="chip ${feyn === "entendido" ? "ok" : ""}">${{ entendido: "✓ Lo explicaste con tus palabras", casi: "◐ Casi: te falta un detalle", todavia: "Todavía no: vuelve a intentarlo" }[feyn]}</span>` : ""}
+          <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
+          <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
+      </div>`;
+    if (svg) { const fig = $("#plate", v); fig.append(svg.content.cloneNode(true)); $("svg", fig).setAttribute("aria-label", `${t.es}: diagrama`); }
+    S.seen[t.id] = true; persistLocal();
+    $("#practice", v).addEventListener("click", () => startSession("topic", buildQueue("topic", 30, t.id), 0));
+    $("#explain", v).addEventListener("click", () => { ctxTopic = t.id; renderCtx(); const a = $("#ask"); a.focus(); a.placeholder = `Explica «${t.es}» con tus palabras…`; });
+    setupExplainer(v, t);
+  }
+
+  /* Explicador: voz (tts) o paso a paso */
+  let TTS = null, beatIdx = -1, speaking = false;
+  function stopSpeech() { if (TTS && speaking) TTS.stop().catch(() => {}); speaking = false; const o = $(".audio-only"); if (o) o.remove(); }
+  function markBeat(v, i) { beatIdx = i; $$("#beats li", v).forEach((li) => li.classList.toggle("now", Number(li.dataset.b) === i)); const o = $(".audio-only .now-line"); if (o) o.textContent = i >= 0 ? (lang === "en" ? currentBeats[i][1] : currentBeats[i][0]) : ""; }
+  let currentBeats = [];
+  function setupExplainer(v, t) {
+    currentBeats = t.beats; beatIdx = -1;
+    $("#stepbtn", v).addEventListener("click", () => { markBeat(v, (beatIdx + 1) % t.beats.length); const li = $(`#beats li[data-b="${beatIdx}"]`, v); if (li) li.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
+    if (!TTS) return;
+    $("#play", v).hidden = false; $("#audio", v).hidden = false;
+    const lines = () => t.beats.flatMap((p, i) => {
+      const out = [];
+      if (lang !== "en") out.push({ text: p[0], language: "es", id: `b${i}` });
+      if (lang !== "es") out.push({ text: p[1], language: "en", id: `b${i}` });
+      return out;
+    });
+    const play = (audioOnly) => {
+      if (audioOnly) {
+        const o = document.createElement("div"); o.className = "audio-only";
+        o.innerHTML = `<div style="display:grid;gap:1.4rem;justify-items:center"><div class="kicker">Solo audio · ${esc(t.es)}</div><p class="now-line">Preparando…</p><button type="button" class="btn dark">■ Parar</button></div>`;
+        $("button", o).addEventListener("click", stopSpeech);
+        document.body.append(o);
+      }
+      speaking = true; $("#stop", v).hidden = false;
+      TTS.speak(lines()).catch((e) => { if (e && (e.code === "not_granted" || e.code === "unavailable")) { $("#play", v).hidden = true; $("#audio", v).hidden = true; } })
+        .finally(() => { speaking = false; const s = $("#stop", v); if (s) s.hidden = true; const o = $(".audio-only"); if (o) o.remove(); markBeat(v, -1); });
+    };
+    $("#play", v).addEventListener("click", () => play(false));
+    $("#audio", v).addEventListener("click", () => play(true));
+    $("#stop", v).addEventListener("click", stopSpeech);
+  }
+
+  /* ================= Sesión (modo enfoque, 2 botones, antitrampa) ================= */
+  let SES = null, tick = 0;
+  function startSession(kind, queue, minutes) {
+    stopSpeech();
+    const before = { geo: modPct("geo"), cell: modPct("cell") };
+    SES = { kind, queue: queue.slice(), i: 0, minutes, start: Date.now(), shownAt: 0, phase: "q", pend: null, anti: null, hint: false, results: [], repeats: {}, before, banner: null, breakUntil: 0, nextBreak: Date.now() + 25 * 60e3,
+      current() { return this.anti ? this.anti.alt : this.queue[this.i]; } };
+    location.hash = "sesion";
+    if (location.hash === "#sesion") render();
+    clearInterval(tick); tick = setInterval(tickTimer, 1000);
+  }
+  function endSession(show) {
+    clearInterval(tick);
+    if (!SES) return;
+    if (show) { SES.phase = "done"; render(); } else SES = null;
+  }
+  function tickTimer() {
+    if (!SES) return clearInterval(tick);
+    const el = $("#timer");
+    const now = Date.now();
+    if (SES.phase === "break") {
+      const left = Math.max(0, SES.breakUntil - now);
+      el.textContent = `pausa ${fmtMs(left)}`;
+      if (!left) { SES.phase = "q"; SES.nextBreak = now + 25 * 60e3; render(); }
+      return;
+    }
+    if (SES.minutes && SES.minutes < 60) el.textContent = fmtMs(Math.max(0, SES.start + SES.minutes * 60e3 - now));
+    else el.textContent = fmtMs(now - SES.start);
+  }
+  const fmtMs = (ms) => { const s = Math.round(ms / 1000); return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`; };
+  function renderSession(v) {
+    const s = SES;
+    tickTimer();
+    $("#ptop").style.width = `${Math.round((100 * Math.min(s.i, s.queue.length)) / Math.max(1, s.queue.length))}%`;
+    const label = { plan: "Sesión de hoy", free: "Práctica libre", topic: "Práctica del tema", panic: "Modo Pánico" }[s.kind];
+    if (s.phase === "done") return renderDone(v);
+    if (s.phase === "break") {
+      $("#crumb").innerHTML = `<b>${label}</b> · pausa`;
+      v.innerHTML = `<div class="card" style="text-align:center;justify-items:center;padding:2rem 1rem"><div class="kicker">Pausa guiada</div><h1 class="title">Descansa 5 minutos.</h1>
+        <p class="muted">Toma agua, estírate y mira lejos de la pantalla. Tu avance ya está guardado.</p>
+        <button type="button" class="btn" id="skip">Seguir ahora</button></div>`;
+      $("#skip", v).addEventListener("click", () => { s.phase = "q"; s.nextBreak = Date.now() + 25 * 60e3; render(); });
+      return;
+    }
+    const id = s.current();
+    if (!id) return endSession(true);
+    const it = ITEM[id], t = TOPIC[it.topic];
+    ctxTopic = it.topic; renderCtx();
+    $("#crumb").innerHTML = `<b>${label}</b> · ${esc(t.es)} · <span class="mono">${Math.min(s.i + 1, s.queue.length)}/${s.queue.length}</span>`;
+    const st = status(id);
+    const intro = st === "new" && !S.seen[it.topic] && s.phase === "q" && !s.anti;
+    if (intro && !s.introShown) {
+      v.innerHTML = `<div class="kicker">Nuevo tema · micro-concepto (30 s)</div>
+        <div class="qcard"><h1 class="title" style="font-size:1.5rem">${esc(t.es)}</h1><ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div>
+        <div class="actions"><button type="button" class="btn primary block" id="ready">Listo, pregúntame</button>
+        <a class="link-btn" href="#t-${t.id}">Ver el tema completo (5 pasos)</a></div>`;
+      $("#ready", v).addEventListener("click", () => { S.seen[it.topic] = true; persistLocal(); s.introShown = true; render(); });
+      return;
+    }
+    s.introShown = false;
+    const showAns = s.phase === "a";
+    v.innerHTML = `
+      ${s.banner ? `<div class="notice">${s.banner}</div>` : ""}
+      ${s.anti && !showAns ? `<div class="notice">Respondiste muy rápido. ¿De verdad la entendiste? Prueba este otro caso del mismo tema.</div>` : ""}
+      <div class="row-wrap"><span class="chip">${esc(t.es)}</span>${it.hot ? '<span class="chip hot">Fija en examen</span>' : ""}<span class="chip">${{ new: "Nuevo", learning: "En curso", mastered: "Dominado", due: "Repaso pendiente" }[st]}</span></div>
+      <article class="qcard" aria-live="polite">
+        <p class="q">${bl(it.q)}</p>
+        ${s.hint && !showAns ? `<p class="small muted">Pista: ${esc(hintFor(it))}</p>` : ""}
+        ${showAns ? `<div class="answer"><div class="kicker">${s.pend.g === 1 ? "Así es la respuesta" : "Compara con la respuesta"}</div><p class="a">${bl(it.a)}</p>
+          ${s.pend.g > 1 ? `<div><button type="button" class="link-btn" id="wrong">Me equivoqué</button></div>` : `<div class="err-chips" role="group" aria-label="¿Por qué fallaste?">${[[1, "No lo sabía"], [2, "Confundí conceptos"], [3, "Leí mal la pregunta"]].map(([k, l]) => `<button type="button" data-err="${k}" aria-pressed="${s.pend.err === k}">${l}</button>`).join("")}</div>`}
+        </div>` : ""}
+      </article>
+      <div class="actions">
+        ${showAns
+          ? `<button type="button" class="btn primary block" id="next">Siguiente →</button>
+             ${s.pend.g === 1 ? `<button type="button" class="link-btn" id="ask-tutor">No entiendo: explícamelo de otra forma</button>` : ""}`
+          : `<div class="two"><button type="button" class="btn" id="no">No me la sé</button><button type="button" class="btn dark" id="yes">Sí me la sé</button></div>
+             <div class="row-wrap" style="justify-content:space-between">${s.hint ? "<span></span>" : `<button type="button" class="link-btn" id="hint">Pista</button>`}<button type="button" class="link-btn" id="quit">Terminar sesión</button></div>`}
+      </div>`;
+    if (!showAns) {
+      s.shownAt = Date.now();
+      $("#no", v).addEventListener("click", () => answer(false));
+      $("#yes", v).addEventListener("click", () => answer(true));
+      const h = $("#hint", v); if (h) h.addEventListener("click", () => { s.hint = true; render(); });
+      $("#quit", v).addEventListener("click", () => endSession(true));
+    } else {
+      $("#next", v).addEventListener("click", nextCard);
+      const w = $("#wrong", v); if (w) w.addEventListener("click", () => { s.pend.g = 1; render(); });
+      $$("[data-err]", v).forEach((b) => b.addEventListener("click", () => { s.pend.err = Number(b.dataset.err); render(); }));
+      const at = $("#ask-tutor", v); if (at) at.addEventListener("click", () => sendTutor(`No entiendo esta pregunta: «${it.q[0]}». La respuesta es «${it.a[0]}». Explícamelo de otra forma, sencillo.`));
+    }
+  }
+  function hintFor(it) { const a = it.a[0]; const words = a.split(" "); return words.slice(0, Math.max(1, Math.ceil(words.length / 4))).join(" ") + " …"; }
+  function answer(yes) {
+    const s = SES, id = s.current(), ms = Date.now() - s.shownAt;
+    // Antitrampa: "Sí" en menos de 1.2 s → otro caso del mismo tema antes de darlo por dominado.
+    if (yes && ms < 1200 && !s.anti) {
+      const same = ITEMS.filter((i) => i.topic === ITEM[id].topic && i.id !== id);
+      const alt = same.sort(() => Math.random() - 0.5)[0];
+      if (alt) { s.anti = { orig: id, alt: alt.id }; render(); return; }
+    }
+    // Inferencia silenciosa: Again(1) · Hard(2) con pista · Easy(4) si < 4 s sin ayuda · Good(3).
+    const g = !yes ? 1 : s.hint ? 2 : ms < 4000 && !s.anti ? 4 : 3;
+    s.pend = { id, g, ms, err: 0 };
+    s.phase = "a"; render();
+  }
+  function nextCard() {
+    const s = SES, p = s.pend;
+    rate(p.id, p.g, p.ms, p.err);
+    if (s.anti) { rate(s.anti.orig, p.g === 1 ? 1 : 3, p.ms, p.err); s.anti = null; }
+    s.results.push({ id: p.id, g: p.g, ms: p.ms });
+    if (p.g === 1 && (s.repeats[p.id] || 0) < 2) { s.repeats[p.id] = (s.repeats[p.id] || 0) + 1; s.queue.splice(Math.min(s.queue.length, s.i + 4), 0, p.id); }
+    s.i++; s.phase = "q"; s.hint = false; s.pend = null;
+    // Detección silenciosa de cansancio o confusión.
+    const last = s.results.slice(-6);
+    s.banner = null;
+    if (last.length >= 6 && last.filter((r) => r.ms < 1500).length >= 4 && last.filter((r) => r.g === 1).length >= 3) s.banner = "Vas muy rápido y fallando varias. ¿Una pausa de 2 minutos? Tu avance está guardado.";
+    else if (s.results.slice(-3).length === 3 && s.results.slice(-3).every((r) => r.ms > 40000)) s.banner = "Te noto pensando mucho. Si quieres, escríbele al tutor abajo y te lo explica con otro ejemplo.";
+    const now = Date.now();
+    if (s.minutes && s.minutes <= 5 && now - s.start > s.minutes * 60e3) return endSession(true);
+    if (s.kind !== "panic" && s.minutes >= 25 && now >= s.nextBreak) { s.phase = "break"; s.breakUntil = now + 5 * 60e3; if (s.minutes <= 30) { /* Pomodoro: termina tras la pausa si ya pasaron 25 min */ s.queue.length = Math.min(s.queue.length, s.i + 8); } return render(); }
+    if (s.i >= s.queue.length) return endSession(true);
+    render();
+    window.scrollTo(0, 0);
+  }
+  function renderDone(v) {
+    const s = SES;
+    clearInterval(tick); $("#timer").hidden = true; $("#ptop").style.width = "100%";
+    const n = s.results.length, ok = s.results.filter((r) => r.g > 1).length;
+    const missed = {}; s.results.filter((r) => r.g === 1).forEach((r) => { const t = ITEM[r.id].topic; missed[t] = (missed[t] || 0) + 1; });
+    const worst = Object.entries(missed).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    $("#crumb").innerHTML = `<b>Sesión terminada</b>`;
+    v.innerHTML = `
+      <div><div class="kicker">Sesión terminada · ${fmtMs(Date.now() - s.start)}</div><h1 class="title">${n ? "Buen trabajo." : "Nada que repasar por ahora."}</h1></div>
+      <section class="card"><div class="row-wrap" style="gap:1.5rem"><div><div class="done-num">${n}</div><span class="small muted">preguntas</span></div><div><div class="done-num">${n ? Math.round((100 * ok) / n) : 0}%</div><span class="small muted">"sí me la sé"</span></div></div>
+        ${CONTENT.modules.map((m) => `<div class="stat-row"><b>${esc(m.es)}</b><span class="delta">${s.before[m.id]}% → ${modPct(m.id)}%</span></div>`).join("")}
+        <p class="small muted">El dominio sube cuando respondes bien en días distintos: así se queda en la memoria.</p></section>
+      ${worst.length ? `<section class="card"><div class="kicker">Lo que más te costó hoy</div>${worst.map(([t, k]) => `<a class="btn" href="#t-${t}" style="justify-content:space-between"><span>${esc(TOPIC[t].es)}</span><span class="mono muted">${k} ✗</span></a>`).join("")}</section>` : ""}
+      <div class="row-wrap"><button type="button" class="btn primary" id="more">Otra ronda</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
+    $("#more", v).addEventListener("click", () => {
+      const q = buildQueue("plan", MODES[S.mode].min);
+      startSession(q.length ? "plan" : "free", q.length ? q : interleave(ITEMS.map((i) => i.id).sort(() => Math.random() - 0.5)).slice(0, 12), MODES[S.mode].min);
+    });
+    SES = null;
+  }
+
+  /* ================= Modo Pánico ================= */
+  function renderPanic(v) {
+    $("#crumb").innerHTML = `<b>Modo Pánico</b>`;
+    const hot = ITEMS.filter((i) => i.hot);
+    const weak = hot.filter((i) => mastery(i.id) < 0.6).length;
+    v.innerHTML = `<div><div class="kicker">Botón de emergencia</div><h1 class="title">Modo Pánico</h1></div>
+      <section class="card"><p>Solo el 20 % más probable: <b class="mono">${PANIC_N}</b> preguntas de las <b class="mono">${hot.length}</b> que siempre salen en el examen, empezando por las que menos dominas (ahora tienes <b class="mono">${weak}</b> débiles).</p>
+      <p class="small muted">Úsalo 2 horas antes del examen o cuando tengas poco tiempo. Dura unos 30 minutos.</p>
+      <button type="button" class="btn primary block" id="go">Empezar Modo Pánico</button></section>`;
+    $("#go", v).addEventListener("click", () => startSession("panic", buildQueue("panic", 30), 30));
+  }
+
+  /* ================= Simulacro real + nota cruda ================= */
+  let SIM = null, simTick = 0;
+  function renderSim(v) {
+    if (!SIM || SIM.phase === "intro") {
+      $("#crumb").innerHTML = `<b>Simulacro real</b>`;
+      v.innerHTML = `<div><div class="kicker">Como el examen</div><h1 class="title">Simulacro real</h1></div>
+        <section class="card"><p><b class="mono">20</b> preguntas de selección (10 de Geología y 10 de La Célula), <b class="mono">20</b> minutos y nota cruda al final. No puedes volver atrás, igual que en el examen.</p>
+        <p class="small muted">Las preguntas están en inglés, como el examen; la ayuda en español aparece según el idioma que elegiste.</p>
+        <button type="button" class="btn primary block" id="go">Empezar simulacro</button></section>
+        ${S.sims.length ? `<section class="card quiet"><div class="kicker">Tus simulacros</div>${S.sims.slice(-5).reverse().map((x) => `<div class="stat-row"><span>${esc(x.date)}</span><span class="delta">${x.score}/${x.total} · ${Math.round((100 * x.score) / x.total)} %</span></div>`).join("")}</section>` : ""}`;
+      $("#go", v).addEventListener("click", () => {
+        const pick = (m) => MCQ.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
+        SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, end: Date.now() + 20 * 60e3 };
+        clearInterval(simTick); simTick = setInterval(() => { if (!SIM || SIM.phase !== "run") return clearInterval(simTick); const left = SIM.end - Date.now(); $("#timer").textContent = fmtMs(Math.max(0, left)); if (left <= 0) finishSim(); }, 1000);
+        render();
+      });
+      return;
+    }
+    if (SIM.phase === "done") return renderSimDone(v);
+    const q = MCQ[SIM.qs[SIM.i]];
+    $("#timer").textContent = fmtMs(Math.max(0, SIM.end - Date.now()));
+    $("#ptop").style.width = `${Math.round((100 * SIM.i) / SIM.qs.length)}%`;
+    $("#crumb").innerHTML = `<b>Simulacro</b> · <span class="mono">${SIM.i + 1}/${SIM.qs.length}</span> · ${q.mod === "geo" ? "Geología" : "La Célula"}`;
+    v.innerHTML = `<article class="qcard"><p class="q" style="font-size:1.2rem">${q.q}${q.help ? `<span class="es small" style="display:block;font-family:var(--font-body);font-weight:400;color:var(--muted);margin-top:.4rem">${q.help}</span>` : ""}</p>
+      <div class="opts" role="group" aria-label="Opciones">${q.opts.map((o, k) => `<button type="button" data-k="${k}" aria-pressed="${SIM.sel === k}"><span>${"abcd"[k]}.</span><span>${o}</span></button>`).join("")}</div></article>
+      <div class="actions"><button type="button" class="btn primary block" id="next" ${SIM.sel === null ? "disabled" : ""}>${SIM.i + 1 < SIM.qs.length ? "Siguiente →" : "Terminar y ver mi nota"}</button></div>`;
+    $$("[data-k]", v).forEach((b) => b.addEventListener("click", () => { SIM.sel = Number(b.dataset.k); render(); }));
+    $("#next", v).addEventListener("click", () => {
+      SIM.picks.push(SIM.sel); SIM.sel = null; SIM.i++;
+      if (SIM.i >= SIM.qs.length) finishSim(); else { render(); window.scrollTo(0, 0); }
+    });
+  }
+  function finishSim() {
+    if (!SIM || SIM.phase !== "run") return;
+    clearInterval(simTick);
+    while (SIM.picks.length < SIM.qs.length) SIM.picks.push(-1);
+    SIM.score = SIM.qs.filter((qi, k) => MCQ[qi].ans === SIM.picks[k]).length;
+    SIM.phase = "done";
+    S.sims.push({ date: dayKey(), score: SIM.score, total: SIM.qs.length });
+    if (S.sims.length > 20) S.sims.shift();
+    save(); render();
+  }
+  function renderSimDone(v) {
+    $("#crumb").innerHTML = `<b>Simulacro</b> · nota cruda`;
+    $("#ptop").style.width = "100%";
+    const n = SIM.qs.length, pct = Math.round((100 * SIM.score) / n);
+    const need = Math.max(0, Math.ceil(0.7 * n) - SIM.score);
+    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => MCQ[qi].mod === m); return `${ks.filter(([qi, k]) => MCQ[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
+    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => MCQ[qi].ans !== SIM.picks[k]);
+    v.innerHTML = `<div><div class="kicker">Nota cruda</div><h1 class="title"><span class="mono">${SIM.score}/${n}</span> · ${pct} %</h1>
+      <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70 %.` : "Llegas al 70 %: vas aprobando."}</p></div>
+      <section class="card"><div class="stat-row"><b>Geología</b><span class="delta">${by("geo")}</span></div><div class="stat-row"><b>La Célula</b><span class="delta">${by("cell")}</span></div></section>
+      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = MCQ[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
+      <div class="row-wrap"><button type="button" class="btn primary" id="again">Otro simulacro</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
+    $("#again", v).addEventListener("click", () => { SIM = { phase: "intro" }; render(); });
+  }
+
+  /* ================= Tutor Feynman (sample) + entrada única ================= */
+  let SAMPLE = null, DICT = null, IMG = null, photo = null, ctl = null;
+  const CHATS = {};
+  const tries = {};
+  function renderCtx() {
+    const t = ctxTopic ? TOPIC[ctxTopic] : null;
+    $("#ctx").innerHTML = t ? `Tutor sobre <b>${esc(t.es)}</b> <button type="button" class="link-btn" id="ctx-clear" style="font-size:.78rem">cambiar a general</button>` : `Tutor · <b>todo el temario</b>`;
+    const c = $("#ctx-clear"); if (c) c.addEventListener("click", () => { ctxTopic = null; renderCtx(); });
+    if (photo) $("#ctx").insertAdjacentHTML("beforeend", ` <span class="attach">📷 foto lista <button type="button" class="link-btn" id="photo-x" aria-label="Quitar foto">×</button></span>`);
+    const x = $("#photo-x"); if (x) x.addEventListener("click", () => { photo = null; renderCtx(); });
+  }
+  function temario(t) {
+    if (!t) return TOPICS.map((x) => `## ${MOD[x.mod].es} · ${x.es}\n` + x.sum.map((p) => "- " + p[0]).join("\n")).join("\n\n");
+    return [`${MOD[t.mod].es} · ${t.es} (${t.en})`,
+      `Lo fácil: ${t.map.easy[0]}`, `Lo difícil: ${t.map.hard[0]}`, `Siempre sale en el examen: ${t.map.exam[0]}`,
+      "Resumen:", ...t.sum.map((p) => `- ${p[0]} / ${p[1]}`),
+      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`)].join("\n");
+  }
+  function rules(t) {
+    return `Eres el tutor de "Entender", una app de estudio. Hablas con un estudiante de 7.º grado de Costa Rica que estudia Ciencias para un examen EN INGLÉS el 4 de diciembre de 2026. Su idioma fuerte es el español.
+Reglas:
+- Cero juicios. Nunca lo hagas sentir mal; si dice que no entiende nada, está bien.
+- Responde en español sencillo, en máximo 110 palabras, con oraciones cortas, sin títulos, tablas ni markdown. Escribe los términos clave también en inglés entre paréntesis, porque el examen es en inglés.
+- Si explica un tema con sus palabras, compáralo SOLO con el temario de abajo: di primero qué entendió bien, luego qué le falta o qué confundió, y re-explica eso con una analogía de la vida diaria (Costa Rica, fútbol, la casa, el bus, el celular).
+- Si pide otra explicación, usa una analogía diferente a las que ya usaste en esta conversación.
+- Si envía una foto, léela y ayúdale según el temario.
+- No inventes datos que no estén en el temario.
+- Termina con UNA pregunta corta para comprobar que entendió.
+- Solo si el estudiante intentó explicar el tema con sus palabras, agrega al final una línea aparte con una sola etiqueta: [ENTENDIDO], [CASI] o [TODAVIA_NO].
+
+TEMARIO:
+${temario(t)}`;
+  }
+  const TAG = /\s*\[(ENTENDIDO|CASI|TODAVIA_NO)\]\s*$/;
+  const ERR_COPY = { not_granted: "El tutor necesita tu permiso para usar Claude. Puedes darlo desde el menú Permisos de esta página.", sampling_disabled: "El tutor no está disponible en esta cuenta.", rate_limited: "Muchas preguntas seguidas. Espera un momento y vuelve a intentar.", session_expired: "Tu sesión expiró. Vuelve a iniciar sesión en Claude.", refused: "No puedo responder eso. Prueba preguntarlo de otra forma.", image_rejected: "No pude leer esa foto. Prueba con otra más clara.", prompt_too_large: "El mensaje es muy largo. Escríbelo más corto." };
+  function addMsg(who, text) {
+    const d = document.createElement("div"); d.className = `msg ${who}`; d.textContent = text;
+    $("#msgs").append(d); d.scrollIntoView({ block: "end" }); return d;
+  }
+  async function sendTutor(text) {
+    $("#tutor").hidden = false; measure();
+    const t = ctxTopic ? TOPIC[ctxTopic] : null;
+    const key = t ? t.id : "_";
+    const chat = (CHATS[key] ||= []);
+    $("#tutor-topic").textContent = t ? t.es : "Todo el temario";
+    if (!SAMPLE) { addMsg("tu", "El tutor no está disponible en esta vista. Abre la app dentro de Claude para usarlo; todo lo demás funciona igual."); return; }
+    const img = photo; photo = null; renderCtx();
+    addMsg("me", text || "📷 Te envío una foto.");
+    chat.push({ role: "user", content: (text || "Te envío una foto de mis apuntes o de una pregunta. Ayúdame con ella.") + (img ? "\n(Adjunto una foto.)" : "") });
+    const out = addMsg("tu", "Pensando…");
+    ctl = new AbortController();
+    $("#tutor-stop").hidden = false; $("#send-btn").disabled = true;
+    try {
+      const turns = [{ role: "user", content: rules(t) }, ...chat.slice(-8)];
+      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { out.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); } };
+      if (img) opts.images = [img];
+      const res = await SAMPLE(turns, opts);
+      const m = res.text.match(TAG);
+      const clean = res.text.replace(TAG, "");
+      out.textContent = clean;
+      chat.push({ role: "assistant", content: clean });
+      if (m && t) {
+        S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[m[1]]; save();
+        out.insertAdjacentHTML("beforeend", `<div class="meta"><span class="chip ${m[1] === "ENTENDIDO" ? "ok" : ""}">${{ ENTENDIDO: "✓ Lo entendiste", CASI: "◐ Casi", TODAVIA_NO: "Todavía no, y está bien" }[m[1]]}</span></div>`);
+        if (route().name === "topic") renderSide(route());
+      }
+      if (TTS) {
+        const b = document.createElement("button"); b.type = "button"; b.className = "link-btn"; b.textContent = "🔊 Escuchar";
+        b.addEventListener("click", () => { TTS.speak(clean, { language: "es" }).catch(() => {}); });
+        const meta = $(".meta", out) || out.appendChild(Object.assign(document.createElement("div"), { className: "meta" }));
+        meta.append(b);
+      }
+    } catch (e) {
+      chat.pop();
+      if (e && e.code === "cancelled") out.textContent = e.text || "Detenido.";
+      else out.textContent = (e && e.text ? e.text + "\n\n" : "") + (ERR_COPY[e && e.code] || "Se cortó la conexión. Vuelve a enviar tu mensaje.");
+      if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) SAMPLE = null;
+      if (e && e.code === "images_unavailable") { IMG = null; $("#photo-btn").hidden = true; }
+    } finally {
+      $("#tutor-stop").hidden = true; $("#send-btn").disabled = false; ctl = null;
+    }
+  }
+  $("#composer").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const a = $("#ask"); const text = a.value.trim();
+    if (!text && !photo) return;
+    a.value = ""; grow();
+    sendTutor(text);
+  });
+  $("#ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#composer").requestSubmit(); } });
+  const grow = () => { const a = $("#ask"); a.style.height = "auto"; a.style.height = Math.min(140, a.scrollHeight) + "px"; measure(); };
+  $("#ask").addEventListener("input", grow);
+  $("#tutor-close").addEventListener("click", () => { $("#tutor").hidden = true; if (ctl) ctl.abort(); });
+  $("#tutor-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
+  $("#tutor-again").addEventListener("click", () => {
+    const key = ctxTopic || "_";
+    tries[key] = (tries[key] || 0) + 1;
+    if (tries[key] > 5) { addMsg("tu", "Ya van 5 explicaciones distintas. Practica el tema un rato y vuelve: a veces se entiende mejor después de intentarlo."); return; }
+    sendTutor(`Explícamelo de otra forma, con una analogía distinta (intento ${tries[key]} de 5).`);
+  });
+  $("#photo-btn").addEventListener("click", () => $("#photo").click());
+  $("#photo").addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f && IMG && f.size <= IMG.maxInputBytes) { photo = f; renderCtx(); $("#ask").focus(); }
+    e.target.value = "";
+  });
+  // Dictado: el botón llama start() directo desde el clic.
+  $("#mic-btn").addEventListener("click", () => {
+    if (!DICT) return;
+    if (DICT.active()) { DICT.stop().catch(() => {}); return; }
+    DICT.start().catch((e) => { if (e && (e.code === "not_granted" || e.code === "unavailable")) $("#mic-btn").hidden = true; });
+  });
+  function measure() { const h = $("#composer").offsetHeight; document.documentElement.style.setProperty("--composer-h", h + "px"); }
+  window.addEventListener("resize", measure);
+
+  /* ================= Capacidades de la plataforma ================= */
+  async function initCaps() {
+    if (!window.claude || !window.claude.use) return;
+    claude.use("sample").then(async (s) => {
+      SAMPLE = s;
+      if (!s) return;
+      const lim = await s.limits().catch(() => null);
+      if (lim && lim.images) { IMG = lim.images; $("#photo").accept = lim.images.mediaTypes.join(","); $("#photo-btn").hidden = false; }
+    });
+    claude.use("tts").then((t) => {
+      TTS = t; if (!t) return;
+      t.onLine(({ id }) => { if (id && id[0] === "b") markBeat($("#view"), Number(id.slice(1))); });
+      t.onState(({ state }) => { if (state === "idle") speaking = false; });
+      if (route().name === "topic") render();
+    });
+    claude.use("dictation").then((d) => {
+      DICT = d; if (!d) return;
+      $("#mic-btn").hidden = false;
+      d.onState(({ state }) => { $("#mic-btn").classList.toggle("on", state !== "idle"); $("#partial").hidden = state === "idle"; if (state === "idle") $("#partial").textContent = ""; measure(); });
+      d.onPartial(({ text }) => { $("#partial").textContent = text; });
+      d.onFinal(({ text }) => { const a = $("#ask"); a.value = a.value ? a.value + text : text.trimStart(); grow(); });
+    });
+  }
+
+  render(); measure();
+  initRemote(); initCaps();
+})();
+</script>
