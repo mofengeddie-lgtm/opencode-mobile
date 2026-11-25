@@ -1,0 +1,588 @@
+<title>Resumen Ciencias 7.º</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: barra fija con pestañas + una columna de lectura (máx. 880px). Bloques bilingües apilados en el celular, lado a lado desde 900px. */
+:root {
+  --bg: #f4f7f6; --surface: #ffffff; --sunken: #e9efed; --ink: #16201d; --muted: #56645f; --line: #d6dfdc;
+  --geo: #b45309; --geo-soft: #fbefe3; --cell: #0f7a55; --cell-soft: #e2f3eb; --en: #2448c2;
+  --good: #157a3d; --good-soft: #e4f4e9; --bad: #b42318; --bad-soft: #fdece9;
+  --warn: #8a5a00; --warn-soft: #fcf2d6; --note: #4338ca; --note-soft: #ecebff;
+  --plate: #fffdf9; --plate-line: #e5ddcf;
+  --acc: var(--ink); --acc-soft: var(--sunken);
+  --font-display: "Space Grotesk", Inter, system-ui, sans-serif;
+  --font-body: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1513; --surface: #161f1c; --sunken: #1d2825; --ink: #e3eae7; --muted: #9aa9a3; --line: #2b3733;
+    --geo: #d9782a; --geo-soft: #2a1d12; --cell: #2fae7f; --cell-soft: #11281f; --en: #93b2ff;
+    --good: #5fcf8a; --good-soft: #13291c; --bad: #ff8b7e; --bad-soft: #331816;
+    --warn: #f0c04a; --warn-soft: #2e260f; --note: #a9a4ff; --note-soft: #1f1e3b;
+    --plate: #f6f3ec; --plate-line: #3a443f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1513; --surface: #161f1c; --sunken: #1d2825; --ink: #e3eae7; --muted: #9aa9a3; --line: #2b3733;
+  --geo: #d9782a; --geo-soft: #2a1d12; --cell: #2fae7f; --cell-soft: #11281f; --en: #93b2ff;
+  --good: #5fcf8a; --good-soft: #13291c; --bad: #ff8b7e; --bad-soft: #331816;
+  --warn: #f0c04a; --warn-soft: #2e260f; --note: #a9a4ff; --note-soft: #1f1e3b;
+  --plate: #f6f3ec; --plate-line: #3a443f; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 880px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--en); }
+b, strong { font-weight: 700; }
+.en-t { color: var(--en); font-weight: 500; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 3px solid var(--en); outline-offset: 2px; border-radius: 6px; }
+
+/* ---------- Barra superior ---------- */
+.appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.appbar .wrap { display: grid; gap: .5rem; padding-block: .65rem .4rem; }
+.bar-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: .6rem; min-width: 0; }
+.brand h1 { font-size: 1.05rem; font-weight: 700; }
+.brand .label { white-space: nowrap; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--sunken); }
+.seg button { border: 0; background: transparent; color: var(--muted); font: 600 .8rem var(--font-body); padding: .3rem .7rem; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / .12); }
+.tabs { display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none; margin: 0 -4px; padding: 0 4px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; text-decoration: none; color: var(--muted); font-weight: 600; font-size: .92rem; padding: .45rem .8rem; border-radius: 10px 10px 0 0; border-bottom: 3px solid transparent; }
+.tab[aria-current="page"] { color: var(--ink); border-bottom-color: var(--acc-tab, var(--ink)); }
+.tab[data-v="geologia"] { --acc-tab: var(--geo); }
+.tab[data-v="celula"] { --acc-tab: var(--cell); }
+
+/* ---------- Vistas ---------- */
+main { padding-block: 1.5rem 4rem; }
+.view { display: grid; gap: 1.25rem; }
+.view[data-v="geologia"] { --acc: var(--geo); --acc-soft: var(--geo-soft); }
+.view[data-v="celula"] { --acc: var(--cell); --acc-soft: var(--cell-soft); }
+.view-head { display: grid; gap: .5rem; }
+.view-head h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.view-head .sub { color: var(--muted); }
+.jump { display: flex; flex-wrap: wrap; gap: .4rem; }
+.jump button, .chip-btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 .85rem var(--font-body); padding: .3rem .7rem; border-radius: 999px; cursor: pointer; }
+.jump button:hover, .chip-btn:hover { border-color: var(--acc); }
+
+/* ---------- Inicio ---------- */
+.hero { display: grid; gap: 1.1rem; padding: 1.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); grid-template-columns: 1fr auto; align-items: end; }
+.hero h2 { font-size: clamp(1.8rem, 5.5vw, 2.8rem); letter-spacing: -.01em; }
+.hero h2 .en-t { display: block; font-size: .55em; margin-top: .35rem; font-weight: 600; }
+.hero p { color: var(--muted); max-width: 52ch; }
+.countdown { text-align: right; }
+.countdown .num { font-family: var(--font-mono); font-weight: 600; font-size: clamp(3rem, 12vw, 4.6rem); line-height: .9; }
+.strata { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.strata span { height: 8px; border-radius: 2px; }
+.strata-labels { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); margin-top: -.75rem; }
+.strata-labels span { font: 600 .7rem var(--font-mono); color: var(--muted); }
+.hero-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .5rem; }
+.btn { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; font-weight: 600; font-size: .95rem; padding: .6rem 1rem; border-radius: 10px; border: 1px solid var(--line); color: var(--ink); background: var(--surface); cursor: pointer; }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; display: grid; gap: 1rem; }
+.panel h3 { font-size: 1.3rem; }
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+
+/* Gráfica de diagnóstico */
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+.chart { position: relative; display: grid; gap: .35rem; }
+.chart .grp { font-weight: 700; font-size: .95rem; margin-top: .6rem; display: flex; justify-content: space-between; gap: .5rem; }
+.chart .grp .mono { font-weight: 600; color: var(--muted); font-size: .85rem; }
+.crow { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr 5.2rem; align-items: center; gap: .6rem; padding: .25rem .2rem; border-radius: 8px; cursor: default; }
+.crow:hover, .crow:focus-visible { background: var(--sunken); }
+.crow .nm { font-size: .88rem; line-height: 1.25; }
+.crow .nm small { display: block; color: var(--en); font-size: .78rem; }
+.track { position: relative; height: 14px; }
+.track .fill { position: absolute; inset: 0 auto 0 0; border-radius: 0 4px 4px 0; }
+.track .goal { position: absolute; top: -6px; bottom: -6px; left: 70%; border-left: 2px dashed var(--muted); opacity: .7; }
+.track .base { position: absolute; left: 0; top: -4px; bottom: -4px; border-left: 1px solid var(--line); }
+.crow .val { font: 600 .85rem var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+.crow .val small { display: block; color: var(--muted); font-weight: 500; }
+.goal-key { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr 5.2rem; gap: .6rem; font: 600 .72rem var(--font-mono); color: var(--muted); }
+.goal-key span:nth-child(2) { position: relative; }
+.goal-key span:nth-child(2)::after { content: "meta 70 % · goal"; position: absolute; left: 70%; transform: translateX(-50%); white-space: nowrap; }
+.tip { position: absolute; z-index: 3; pointer-events: none; background: var(--ink); color: var(--bg); font-size: .82rem; line-height: 1.35; padding: .5rem .7rem; border-radius: 8px; max-width: 18rem; box-shadow: 0 6px 18px rgb(0 0 0 / .18); }
+details.tableview summary { cursor: pointer; color: var(--muted); font-size: .88rem; }
+details.tableview table { margin-top: .6rem; }
+
+/* Lista de ideas */
+.ideas { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.ideas li { display: grid; grid-template-columns: auto 1fr auto; gap: .75rem; align-items: start; padding: .65rem .75rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.ideas input { width: 1.15rem; height: 1.15rem; margin-top: .2rem; accent-color: var(--good); }
+.ideas li.done { opacity: .6; }
+.ideas li.done .txt { text-decoration: line-through; }
+.ideas .txt small { display: block; color: var(--en); }
+.ideas .go { font-size: .82rem; white-space: nowrap; border: 0; background: none; color: var(--en); cursor: pointer; padding: .2rem; font-weight: 600; }
+.progress { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--good); width: 0; transition: width .3s; }
+
+/* ---------- Temas ---------- */
+.topic { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; display: grid; gap: .9rem; scroll-margin-top: 8.5rem; min-width: 0; }
+.topic > h2 { font-size: 1.35rem; color: var(--acc); }
+.topic > h2 .en { color: var(--en); font-weight: 500; font-size: .85em; }
+.topic ul, .topic ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .3rem; }
+
+.bi { display: grid; gap: .6rem; }
+.bi > div { min-width: 0; display: grid; gap: .45rem; padding-left: .85rem; border-left: 3px solid var(--line); }
+.bi > .es { border-left-color: var(--acc); }
+.bi > .en { border-left-color: var(--en); }
+.bi > div::before { font: 600 .68rem var(--font-mono); letter-spacing: .08em; color: var(--muted); }
+.bi > .es::before { content: "ESPAÑOL"; }
+.bi > .en::before { content: "ENGLISH"; color: var(--en); }
+@media (min-width: 900px) { body:not([data-lang="es"]):not([data-lang="en"]) .bi { grid-template-columns: 1fr 1fr; gap: 1.25rem; } }
+body[data-lang="es"] .bi > .en, body[data-lang="en"] .bi > .es { display: none; }
+
+.box { border-radius: 10px; padding: .85rem 1rem; display: grid; gap: .55rem; background: var(--note-soft); }
+.box-title { font-weight: 700; font-size: .92rem; }
+.box.warn { background: var(--bad-soft); } .box.warn .box-title { color: var(--bad); }
+.box.warn .box-title::before { content: "⚠ "; }
+.box.memo { background: var(--warn-soft); } .box.memo .box-title { color: var(--warn); }
+.box.memo .box-title::before { content: "★ "; }
+.box.exam { background: var(--good-soft); } .box.exam .box-title { color: var(--good); }
+.box.exam .box-title::before { content: "✎ "; }
+.box.tip .box-title { color: var(--note); }
+.box .bi > div { border-left-color: transparent; padding-left: 0; }
+
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 32rem; }
+th, td { text-align: left; vertical-align: top; padding: .5rem .65rem; border-bottom: 1px solid var(--line); }
+th { background: var(--acc-soft); font-weight: 700; font-size: .82rem; }
+tr:last-child td { border-bottom: 0; }
+td em, th em { color: var(--en); }
+
+.plate { margin: 0; display: grid; gap: .4rem; }
+.plate-scroll { overflow-x: auto; background: var(--plate); border: 1px solid var(--plate-line); border-radius: 12px; padding: .75rem; }
+.plate-scroll svg { display: block; width: 100%; min-width: 600px; height: auto; }
+.plate figcaption { font-size: .82rem; color: var(--muted); }
+
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.flow .step { background: var(--acc-soft); border: 1px solid var(--acc); border-radius: 10px; padding: .4rem .7rem; font-weight: 700; font-size: .9rem; line-height: 1.25; }
+.flow .step span { display: block; font-weight: 500; font-size: .78rem; color: var(--en); }
+.flow .arrow { color: var(--acc); font-weight: 700; }
+
+.organelles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+@media (min-width: 700px) { .organelles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.organelles > div { border: 1px solid var(--line); border-radius: 10px; padding: .65rem .75rem; display: grid; gap: .1rem; background: var(--bg); }
+.organelles b { justify-self: start; background: var(--acc); color: var(--surface); font: 600 .74rem var(--font-mono); padding: .1rem .45rem; border-radius: 6px; }
+.organelles span { font-size: .74rem; color: var(--en); margin-bottom: .2rem; }
+.organelles strong { font-size: .95rem; }
+.organelles em { font-size: .82rem; color: var(--en); }
+
+/* ---------- Examen pasado ---------- */
+.filters { display: grid; gap: .6rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1rem; }
+.filters .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.switch { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; font-size: .9rem; cursor: pointer; }
+.switch input { width: 2.4rem; height: 1.35rem; appearance: none; background: var(--sunken); border: 1px solid var(--line); border-radius: 999px; position: relative; cursor: pointer; transition: background .2s; }
+.switch input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 1rem; height: 1rem; border-radius: 50%; background: var(--muted); transition: transform .2s, background .2s; }
+.switch input:checked { background: var(--good-soft); border-color: var(--good); }
+.switch input:checked::after { transform: translateX(1.05rem); background: var(--good); }
+.count { font-size: .88rem; color: var(--muted); }
+.part { display: grid; gap: .6rem; }
+.part-head { display: grid; gap: .2rem; padding-top: .6rem; }
+.part-head .label { color: var(--acc); }
+.part-head h3 { font-size: 1.25rem; }
+.part-head h3 .en { color: var(--en); font-weight: 500; font-size: .85em; }
+.part[data-exam="geo"] { --acc: var(--geo); --acc-soft: var(--geo-soft); }
+.part[data-exam="cell"] { --acc: var(--cell); --acc-soft: var(--cell-soft); }
+.sub-head { font: 600 .82rem var(--font-body); color: var(--muted); margin-top: .3rem; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; display: grid; gap: .6rem; min-width: 0; }
+.item-top { display: grid; grid-template-columns: auto 1fr auto; gap: .7rem; align-items: start; }
+.num { font: 600 .82rem var(--font-mono); background: var(--acc-soft); color: var(--acc); border-radius: 8px; padding: .2rem .45rem; min-width: 2.2rem; text-align: center; }
+.q { font-style: italic; }
+.q em { font-style: normal; }
+.status { font: 600 .74rem var(--font-body); padding: .2rem .55rem; border-radius: 999px; white-space: nowrap; }
+.status.bad { background: var(--bad-soft); color: var(--bad); }
+.status.good { background: var(--good-soft); color: var(--good); }
+.status.partial, .status.review { background: var(--warn-soft); color: var(--warn); }
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip { font-size: .82rem; font-weight: 600; padding: .15rem .55rem; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); }
+.chip.bad { color: var(--bad); border-color: currentColor; }
+.chip.good { color: var(--good); border-color: currentColor; }
+.chip.ok { color: var(--warn); border-color: currentColor; }
+.chip.note { color: var(--note); border-color: currentColor; }
+.answer { display: grid; gap: .6rem; }
+.reveal { justify-self: start; }
+body.practice .item:not(.open) .answer, body.practice .item:not(.open) .chips { display: none; }
+body:not(.practice) .reveal { display: none; }
+.item .bi > div { border-left-width: 2px; }
+.clue { font-size: .88rem; color: var(--muted); }
+
+/* ---------- Repaso ---------- */
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+@media (min-width: 700px) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.flash { perspective: 800px; border: 0; padding: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; min-height: 8.5rem; }
+.flash .inner { position: relative; display: grid; height: 100%; min-height: 8.5rem; transition: transform .45s; transform-style: preserve-3d; }
+.flash[aria-pressed="true"] .inner { transform: rotateY(180deg); }
+.flash .face { grid-area: 1 / 1; backface-visibility: hidden; border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; display: grid; align-content: space-between; gap: .4rem; background: var(--surface); }
+.flash .back { transform: rotateY(180deg); background: var(--acc-soft); border-color: var(--acc); }
+.flash .term { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+.flash .back .term { color: var(--en); }
+.flash .def { font-size: .85rem; color: var(--muted); }
+.flash .hint { font: 500 .7rem var(--font-mono); color: var(--muted); }
+.flash[data-exam="geo"] { --acc: var(--geo); --acc-soft: var(--geo-soft); }
+.flash[data-exam="cell"] { --acc: var(--cell); --acc-soft: var(--cell-soft); }
+.quick { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; counter-reset: q; }
+.quick li { counter-increment: q; display: grid; grid-template-columns: 2.2rem 1fr auto; gap: .6rem; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: .6rem .75rem; }
+.quick li::before { content: counter(q); font: 600 .8rem var(--font-mono); color: var(--muted); padding-top: .15rem; }
+.quick .a { grid-column: 2 / -1; font-weight: 700; color: var(--good); }
+.quick li:not(.open) .a { display: none; }
+.quick button { font: 600 .8rem var(--font-body); border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: .25rem .55rem; cursor: pointer; }
+
+footer { color: var(--muted); font-size: .82rem; padding-block: 1rem 2rem; }
+
+@media (max-width: 560px) {
+  .hero { grid-template-columns: 1fr; }
+  .countdown { text-align: left; }
+  .crow, .goal-key { grid-template-columns: 6.8rem 1fr 4.4rem; gap: .45rem; }
+  .brand .label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flash .inner, .progress span, .switch input, .switch input::after { transition: none; }
+}
+</style>
+
+<header class="appbar">
+  <div class="wrap">
+    <div class="bar-row">
+      <div class="brand"><h1>Resumen · Ciencias 7.º</h1><span class="label">Make-up test · 4 dic 2026</span></div>
+      <div class="seg" role="group" aria-label="Idioma · Language">
+        <button type="button" data-lang="both" aria-pressed="true">ES + EN</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Secciones">
+      <a class="tab" data-v="inicio" href="#inicio">Inicio</a>
+      <a class="tab" data-v="geologia" href="#geologia">🌋 Geología</a>
+      <a class="tab" data-v="celula" href="#celula">🦠 La Célula</a>
+      <a class="tab" data-v="examen" href="#examen">Examen pasado</a>
+      <a class="tab" data-v="repaso" href="#repaso">Repaso rápido</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= INICIO ================= -->
+<section class="view" data-v="inicio">
+  <div class="hero">
+    <div style="display:grid;gap:.6rem;min-width:0">
+      <span class="label">Make-up Science Test · 7.º grado</span>
+      <h2>Tu resumen para la convocatoria<span class="en-t">Your make-up test summary</span></h2>
+      <p>Geología y La Célula, con cada pregunta de los exámenes pasados explicada en español y en inglés.</p>
+    </div>
+    <div class="countdown" aria-live="polite">
+      <div class="num" id="days">–</div>
+      <div class="label" id="days-label">días para el examen</div>
+    </div>
+    <div class="strata" aria-hidden="true">
+      <span style="background:#3a2716"></span><span style="background:#5b3c21"></span><span style="background:#b27445"></span><span style="background:#a39b8f"></span><span style="background:#6b6b6b"></span>
+    </div>
+    <div class="strata-labels" aria-hidden="true"><span>O</span><span>A</span><span>B</span><span>C</span><span>R</span></div>
+    <div class="hero-actions">
+      <a class="btn primary" href="#examen">Repasar el examen pasado →</a>
+      <a class="btn" href="#geologia">Geología</a>
+      <a class="btn" href="#celula">La Célula</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Tu diagnóstico <span class="en-t" style="font-size:.8em">· Your diagnosis</span></h3>
+      <div class="legend"><span><i style="background:var(--geo)"></i>Geología · 22.5/50</span><span><i style="background:var(--cell)"></i>La Célula · 23/50</span></div>
+    </div>
+    <div class="chart" id="chart" role="img" aria-label="Porcentaje por parte de los dos exámenes pasados. Selección única: 59 % y 73 %. Pareos: 22 % y 13 %. Respuestas escritas: entre 29 % y 45 %. La meta es 70 %.">
+      <div class="goal-key" aria-hidden="true"><span></span><span></span><span></span></div>
+    </div>
+    <details class="tableview">
+      <summary>Ver como tabla · View as table</summary>
+      <div class="table-scroll"><table id="chart-table"><thead><tr><th>Examen</th><th>Parte · Part</th><th>Puntos</th><th>%</th></tr></thead><tbody></tbody></table></div>
+    </details>
+    <div class="bi">
+      <div class="es"><p>En <b>selección única te fue bien</b>: entiendes las ideas cuando las lees. Pierdes casi todos los puntos en los <b>pareos</b> y en las <b>respuestas escritas</b>, porque hay que recordar la <b>palabra exacta</b> y explicar el <b>por qué en inglés</b>.</p></div>
+      <div class="en"><p>You did <b>well on multiple choice</b>: you understand ideas when you read them. You lose most points on <b>matching</b> and <b>written answers</b>, because you must remember the <b>exact word</b> and explain <b>why in English</b>.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Las 12 ideas que más puntos te costaron <span class="en-t" style="font-size:.8em">· The 12 costliest ideas</span></h3>
+      <span class="count mono" id="ideas-count">0 / 12</span>
+    </div>
+    <div class="progress" aria-hidden="true"><span id="ideas-bar"></span></div>
+    <p class="count">Marca cada una cuando ya la sepas sin mirar. Se guarda en este navegador.</p>
+    <ul class="ideas" id="ideas"></ul>
+  </div>
+</section>
+
+<!-- ================= GEOLOGÍA ================= -->
+<section class="view" data-v="geologia" hidden>
+  <div class="view-head">
+    <span class="label" style="color:var(--geo)">Objetivos 1–4</span>
+    <h2>Geología <span class="en-t" style="font-size:.6em">· Geology</span></h2>
+    <p class="sub">Capas, evidencia, procesos, relieves, suelo, minerales y rocas.</p>
+    <div class="jump" data-jump></div>
+  </div>
+  {{GEO}}
+</section>
+
+<!-- ================= LA CÉLULA ================= -->
+<section class="view" data-v="celula" hidden>
+  <div class="view-head">
+    <span class="label" style="color:var(--cell)">Objetivos 5–8</span>
+    <h2>La Célula <span class="en-t" style="font-size:.6em">· The Cell</span></h2>
+    <p class="sub">Teoría celular, organelos, tipos de células, microorganismos y reproducción.</p>
+    <div class="jump" data-jump></div>
+  </div>
+  {{CELL}}
+</section>
+
+<!-- ================= EXAMEN ================= -->
+<section class="view" data-v="examen" hidden>
+  <div class="view-head">
+    <span class="label">Exámenes pasados · Past tests</span>
+    <h2>Cada pregunta, explicada <span class="en-t" style="font-size:.6em">· Every question, explained</span></h2>
+    <p class="sub">Tu respuesta, la correcta y por qué. Activa el modo práctica para responder antes de ver la solución.</p>
+  </div>
+  <div class="filters">
+    <div class="row" role="group" aria-label="Examen">
+      <span class="label">Examen</span>
+      <div class="seg" id="f-exam">
+        <button type="button" data-f="all" aria-pressed="true">Todos</button>
+        <button type="button" data-f="geo" aria-pressed="false">🌋 Geología</button>
+        <button type="button" data-f="cell" aria-pressed="false">🦠 La Célula</button>
+      </div>
+    </div>
+    <div class="row" role="group" aria-label="Resultado">
+      <span class="label">Resultado</span>
+      <div class="seg" id="f-res">
+        <button type="button" data-f="all" aria-pressed="true">Todas</button>
+        <button type="button" data-f="review" aria-pressed="false">Para repasar</button>
+        <button type="button" data-f="good" aria-pressed="false">Correctas</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="switch"><input type="checkbox" id="practice"> Modo práctica · <span class="en-t">Practice mode</span></label>
+      <span class="count" id="exam-count"></span>
+    </div>
+  </div>
+  <div id="exam-list" class="view" style="gap:1rem"></div>
+</section>
+
+<!-- ================= REPASO ================= -->
+<section class="view" data-v="repaso" hidden>
+  <div class="view-head">
+    <span class="label">Repaso rápido · Quick review</span>
+    <h2>Tarjetas y preguntas relámpago <span class="en-t" style="font-size:.6em">· Flashcards & quick-fire</span></h2>
+    <p class="sub">Toca una tarjeta para ver la palabra en inglés. Di la respuesta en voz alta antes de voltearla.</p>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Tarjetas de vocabulario</h3>
+      <div class="row" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+        <div class="seg" id="f-flash">
+          <button type="button" data-f="geo" aria-pressed="true">🌋 Geología</button>
+          <button type="button" data-f="cell" aria-pressed="false">🦠 La Célula</button>
+        </div>
+        <button type="button" class="chip-btn" id="shuffle">Mezclar · Shuffle</button>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h3>30 preguntas relámpago <span class="en-t" style="font-size:.8em">· Quick-fire</span></h3>
+      <span class="count">Meta: 25 de 30, en inglés</span>
+    </div>
+    <ol class="quick" id="quick"></ol>
+  </div>
+</section>
+
+<footer>Resumen del paquete de estudio · Make-up Science Test, 7.º grado · Examen: jueves 4 de diciembre de 2026.</footer>
+</main>
+
+<script type="application/json" id="data">{{DATA}}</script>
+<script>
+(() => {
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('resumen7:' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('resumen7:' + k, JSON.stringify(v)); } catch { /* sin almacenamiento */ } },
+  };
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const seg = (root, value) => $$('button', root).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === value || b.dataset.lang === value)));
+
+  /* ---- Idioma ---- */
+  const setLang = (l) => { document.body.dataset.lang = l; seg($('.appbar .seg'), l); store.set('lang', l); };
+  $$('.appbar .seg button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  setLang(store.get('lang', 'both'));
+
+  /* ---- Cuenta regresiva ---- */
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const diff = Math.round((new Date(2026, 11, 4) - today) / 86400000);
+  $('#days').textContent = diff > 0 ? diff : diff === 0 ? '¡Hoy!' : '✓';
+  $('#days-label').textContent = diff > 1 ? 'días para el examen · days left' : diff === 1 ? 'día para el examen · day left' : diff === 0 ? 'es el examen · test day' : 'examen terminado';
+
+  /* ---- Gráfica ---- */
+  const chart = $('#chart');
+  const tip = el('div', 'tip'); tip.hidden = true; chart.appendChild(tip);
+  const tbody = $('#chart-table tbody');
+  DATA.scores.forEach(g => {
+    const head = el('div', 'grp', `<span>${g.icon} ${g.name}</span><span class="mono">${g.total}</span>`);
+    chart.appendChild(head);
+    g.parts.forEach(p => {
+      const pct = Math.round(100 * p.pts / p.max);
+      const row = el('div', 'crow');
+      row.tabIndex = 0;
+      row.innerHTML = `<div class="nm">${p.es}<small>${p.en}</small></div>
+        <div class="track"><span class="base"></span><span class="fill" style="width:${pct}%;background:var(--${g.key})"></span><span class="goal"></span></div>
+        <div class="val">${pct} %<small>${p.pts}/${p.max}</small></div>`;
+      const show = () => {
+        tip.innerHTML = `<b>${g.name} · ${p.es}</b><br>${p.pts} de ${p.max} puntos (${pct} %)<br>${p.lost}`;
+        tip.hidden = false;
+        const r = row.getBoundingClientRect(), c = chart.getBoundingClientRect();
+        tip.style.top = (r.top - c.top - tip.offsetHeight - 6) + 'px';
+        tip.style.left = Math.max(0, Math.min(c.width - tip.offsetWidth, r.left - c.left + r.width * .3)) + 'px';
+      };
+      const hide = () => { tip.hidden = true; };
+      row.addEventListener('pointerenter', show); row.addEventListener('focus', show);
+      row.addEventListener('pointerleave', hide); row.addEventListener('blur', hide);
+      chart.appendChild(row);
+      tbody.appendChild(el('tr', null, `<td>${g.name}</td><td>${p.es}</td><td class="mono">${p.pts} / ${p.max}</td><td class="mono">${pct} %</td>`));
+    });
+  });
+
+  /* ---- 12 ideas ---- */
+  const done = store.get('ideas', []);
+  const ideasEl = $('#ideas');
+  const updIdeas = () => {
+    const n = $$('#ideas input:checked').length;
+    $('#ideas-count').textContent = `${n} / ${DATA.ideas.length}`;
+    $('#ideas-bar').style.width = (100 * n / DATA.ideas.length) + '%';
+  };
+  DATA.ideas.forEach((it, i) => {
+    const li = el('li', done[i] ? 'done' : '');
+    li.innerHTML = `<input type="checkbox" id="idea-${i}" ${done[i] ? 'checked' : ''} aria-label="Ya la sé"><label class="txt" for="idea-${i}">${it.es}<small>${it.en}</small></label><button type="button" class="go" data-go="${it.go}">Ver →</button>`;
+    $('input', li).addEventListener('change', e => {
+      done[i] = e.target.checked; li.classList.toggle('done', done[i]); store.set('ideas', done); updIdeas();
+    });
+    ideasEl.appendChild(li);
+  });
+  updIdeas();
+
+  /* ---- Navegación ---- */
+  const VIEWS = ['inicio', 'geologia', 'celula', 'examen', 'repaso'];
+  const showView = () => {
+    const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'inicio';
+    $$('.view[data-v]').forEach(s => { if (VIEWS.includes(s.dataset.v)) s.hidden = s.dataset.v !== v; });
+    $$('.tab').forEach(t => { if (t.dataset.v === v) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current'); });
+    return v;
+  };
+  const goTo = (target) => {
+    const [v, id] = target.split(':');
+    if (location.hash.slice(1) !== v) location.hash = v; else showView();
+    requestAnimationFrame(() => { const t = id && document.getElementById(id); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); else window.scrollTo({ top: 0 }); });
+  };
+  window.addEventListener('hashchange', () => { showView(); window.scrollTo({ top: 0 }); });
+  showView();
+  document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goTo(b.dataset.go); });
+
+  // Índice de cada vista
+  $$('.view[data-v="geologia"], .view[data-v="celula"]').forEach(v => {
+    const j = $('[data-jump]', v);
+    $$('.topic > h2[id]', v).forEach(h => {
+      const b = el('button', null, h.firstChild.textContent.trim());
+      b.type = 'button'; b.dataset.go = `${v.dataset.v}:${h.id}`; j.appendChild(b);
+    });
+  });
+
+  /* ---- Examen pasado ---- */
+  const list = $('#exam-list');
+  const STATUS = { bad: '✗ Repasar', good: '✓ Bien', partial: '◐ A medias', review: '? Pregunta a tu docente' };
+  DATA.parts.forEach(p => {
+    const part = el('div', 'part'); part.dataset.exam = p.exam;
+    part.appendChild(el('div', 'part-head', `<span class="label">${p.exam === 'geo' ? '🌋 Geología' : '🦠 La Célula'}</span><h3>${p.es} <span class="en">· ${p.en}</span></h3>`));
+    let sub = null;
+    p.items.forEach(it => {
+      if (it.sub && it.sub !== sub) { sub = it.sub; part.appendChild(el('div', 'sub-head', sub)); }
+      const card = el('article', 'item'); card.dataset.status = it.status;
+      card.innerHTML = `<div class="item-top"><span class="num">${it.n}</span><div class="q">${it.q}</div><span class="status ${it.status}">${STATUS[it.status]}</span></div>
+        <div class="chips">${it.tags.map(t => `<span class="chip ${t.k}">${t.t}</span>`).join('')}</div>
+        <button type="button" class="chip-btn reveal">Ver respuesta · Show answer</button>
+        <div class="answer">${it.body}</div>`;
+      $('.reveal', card).addEventListener('click', () => card.classList.add('open'));
+      part.appendChild(card);
+    });
+    p.notes.forEach(n => part.appendChild(el('div', null, n)));
+    list.appendChild(part);
+  });
+  let fExam = 'all', fRes = 'all';
+  const applyFilters = () => {
+    let shown = 0, review = 0;
+    $$('.part', list).forEach(p => {
+      const okExam = fExam === 'all' || p.dataset.exam === fExam;
+      let any = false;
+      $$('.item', p).forEach(c => {
+        const st = c.dataset.status;
+        const okRes = fRes === 'all' || (fRes === 'good' ? st === 'good' : st !== 'good');
+        const vis = okExam && okRes; c.hidden = !vis;
+        if (vis) { any = true; shown++; if (st !== 'good') review++; }
+      });
+      p.hidden = !any;
+    });
+    $('#exam-count').textContent = `${shown} preguntas · ${review} para repasar`;
+  };
+  $$('#f-exam button').forEach(b => b.addEventListener('click', () => { fExam = b.dataset.f; seg($('#f-exam'), fExam); applyFilters(); }));
+  $$('#f-res button').forEach(b => b.addEventListener('click', () => { fRes = b.dataset.f; seg($('#f-res'), fRes); applyFilters(); }));
+  const pr = $('#practice');
+  pr.checked = store.get('practice', false);
+  const setPractice = () => { document.body.classList.toggle('practice', pr.checked); $$('.item.open').forEach(c => c.classList.remove('open')); store.set('practice', pr.checked); };
+  pr.addEventListener('change', setPractice); setPractice();
+  applyFilters();
+
+  /* ---- Tarjetas ---- */
+  let fFlash = 'geo', order = null;
+  const cardsEl = $('#cards');
+  const renderCards = () => {
+    cardsEl.innerHTML = '';
+    let items = DATA.flash.filter(f => f.exam === fFlash);
+    if (order) items = order.filter(f => f.exam === fFlash);
+    items.forEach(f => {
+      const b = el('button', 'flash'); b.type = 'button'; b.dataset.exam = f.exam; b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = `<span class="inner"><span class="face front"><span class="term">${f.es}</span><span class="hint">toca · tap</span></span><span class="face back"><span class="term">${f.en}</span><span class="def">${f.def}</span></span></span>`;
+      b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')));
+      cardsEl.appendChild(b);
+    });
+  };
+  $$('#f-flash button').forEach(b => b.addEventListener('click', () => { fFlash = b.dataset.f; seg($('#f-flash'), fFlash); renderCards(); }));
+  $('#shuffle').addEventListener('click', () => {
+    order = DATA.flash.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    renderCards();
+  });
+  renderCards();
+
+  /* ---- Preguntas relámpago ---- */
+  const quick = $('#quick');
+  DATA.quick.forEach(q => {
+    const li = el('li', null, `<span>${q.q}</span><button type="button">Ver</button><span class="a">${q.a}</span>`);
+    $('button', li).addEventListener('click', e => { li.classList.toggle('open'); e.target.textContent = li.classList.contains('open') ? 'Ocultar' : 'Ver'; });
+    quick.appendChild(li);
+  });
+})();
+</script>

@@ -14,6 +14,7 @@ node render.cjs \
   "build/07-guia.html::../07-guia-de-estudio.pdf::Guía de estudio · Study guide"
 
 python3 slides.py
+python3 web/build_web.py
 node video.cjs pdf
 
 if [[ "${1:-}" == "video" ]]; then
