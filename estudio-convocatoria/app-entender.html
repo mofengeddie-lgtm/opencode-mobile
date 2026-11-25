@@ -143,7 +143,7 @@ body[data-lang="en"] .en { color: inherit; font-size: 1em; }
 .step-n { width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font: 600 .85rem var(--font-mono); }
 .step-body { display: grid; gap: .7rem; min-width: 0; padding-bottom: .4rem; }
 .map3 { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
-.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; }
+.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; align-content: start; }
 .map3 > div.exam { border-color: var(--accent); background: var(--accent-soft); }
 .map3 .kicker { color: var(--ink); display: block; }
 body.focus .menu-btn { display: none; }
@@ -151,6 +151,14 @@ body.focus .menu-btn { display: none; }
 .sum { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
 .sum li { padding-left: .9rem; border-left: 2px solid var(--line); }
 .plate { margin: 0; overflow-x: auto; background: var(--plate); border: 1px solid var(--line); border-radius: 14px; padding: .7rem; }
+.fig-wrap { margin: 0; display: grid; gap: .35rem; min-width: 0; }
+.fig-wrap figcaption { font-size: .84rem; color: var(--muted); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.tbl table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: .5rem .65rem; border-bottom: 1px solid var(--line); line-height: 1.4; }
+.tbl thead th { background: var(--soft); font-size: .8rem; font-weight: 700; }
+.tbl tbody th { font-weight: 600; }
+.tbl tbody tr:last-child > * { border-bottom: 0; }
 .plate svg { display: block; width: 100%; min-width: 560px; height: auto; }
 .beats { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; counter-reset: b; }
 .beats li { counter-increment: b; display: grid; grid-template-columns: 1.6rem 1fr; gap: .5rem; padding: .5rem .6rem; border-radius: 10px; transition: background .2s; }
@@ -251,196 +259,30 @@ body.focus .menu-btn { display: none; }
   </div>
 </div>
 
-<template id="svg-earth-layers"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Inter, sans-serif">
-  <circle cx="190" cy="190" r="176" fill="#7a4a22"/>
-  <circle cx="190" cy="190" r="166" fill="#e8843f"/>
-  <circle cx="190" cy="190" r="96" fill="#f5b53c"/>
-  <circle cx="190" cy="190" r="48" fill="#fff1a8" stroke="#e7c75a" stroke-width="2"/>
-  <g stroke="#1c2130" stroke-width="1.6" fill="none">
-    <path d="M300 55 L400 42"/>
-    <path d="M318 145 L400 132"/>
-    <path d="M262 205 L400 222"/>
-    <path d="M205 210 L400 312"/>
+<template id="svg-bacteria"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" font-family="Inter, sans-serif">
+  <g stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"><path d="M200 82 L192 58 M262 76 L262 52 M330 76 L338 52 M395 84 L408 62"/></g>
+  <rect x="112" y="74" width="336" height="136" rx="68" fill="#fff3d6" stroke="#e0b44c" stroke-width="2"/>
+  <rect x="120" y="82" width="320" height="120" rx="60" fill="#e8f4ff" stroke="#2b6cb0" stroke-width="5"/>
+  <rect x="129" y="91" width="302" height="102" rx="51" fill="#f6faff" stroke="#63a4e6" stroke-width="2"/>
+  <path d="M245 140 c10 -25 25 15 35 -8 s20 22 32 -2 s18 18 28 -6 s-15 30 -30 18 s-25 -12 -40 10 s-30 -5 -25 -12z" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
+  <circle cx="385" cy="160" r="10" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
+  <g fill="#37474f"><circle cx="170" cy="120" r="3.5"/><circle cx="185" cy="165" r="3.5"/><circle cx="205" cy="135" r="3.5"/><circle cx="160" cy="150" r="3.5"/><circle cx="360" cy="115" r="3.5"/><circle cx="400" cy="130" r="3.5"/><circle cx="345" cy="175" r="3.5"/></g>
+  <path d="M448 142 c25 -30 45 30 70 0 s45 30 70 0 s45 30 70 0" fill="none" stroke="#4b5563" stroke-width="3"/>
+  <g stroke="#9aa1ae" stroke-width="1.3" fill="none">
+    <path d="M118 120 L80 60"/><path d="M262 52 L262 40"/><path d="M425 100 L470 45"/><path d="M438 125 L560 85"/>
+    <path d="M170 150 L150 245"/><path d="M290 150 L300 245"/><path d="M385 170 L440 245"/><path d="M600 150 L610 200"/>
   </g>
-  <g fill="#1c2130">
-    <circle cx="300" cy="55" r="3.5"/><circle cx="318" cy="145" r="3.5"/>
-    <circle cx="262" cy="205" r="3.5"/><circle cx="205" cy="210" r="3.5"/>
+  <g font-size="13">
+    <text x="20" y="40" font-weight="700">Cápsula</text><text x="20" y="56" fill="#1d4ed8">Capsule</text>
+    <text x="230" y="20" font-weight="700">Pili · <tspan fill="#1d4ed8">Pili</tspan></text>
+    <text x="440" y="24" font-weight="700">Pared celular</text><text x="440" y="40" fill="#1d4ed8">Cell wall (peptidoglycan)</text>
+    <text x="565" y="78" font-weight="700">Membrana</text><text x="565" y="94" fill="#1d4ed8">Cell membrane</text>
+    <text x="90" y="262" font-weight="700">Ribosomas</text><text x="90" y="278" fill="#1d4ed8">Ribosomes</text>
+    <text x="230" y="262" font-weight="700">ADN circular (nucleoide)</text><text x="230" y="278" fill="#1d4ed8">Circular DNA (nucleoid)</text>
+    <text x="420" y="262" font-weight="700">Plásmido</text><text x="420" y="278" fill="#1d4ed8">Plasmid</text>
+    <text x="570" y="218" font-weight="700">Flagelo</text><text x="570" y="234" fill="#1d4ed8">Flagellum</text>
   </g>
-  <g font-size="15">
-    <text x="408" y="38" font-weight="700">Corteza · <tspan fill="#1d4ed8">Crust</tspan></text>
-    <text x="408" y="57" font-size="12.5" fill="#444">sólida, delgada · 5–70 km</text>
-    <text x="408" y="73" font-size="12.5" fill="#1d4ed8">thin, solid · 5–70 km</text>
-    <text x="408" y="128" font-weight="700">Manto · <tspan fill="#1d4ed8">Mantle</tspan></text>
-    <text x="408" y="147" font-size="12.5" fill="#444">la más grande; roca que fluye lento</text>
-    <text x="408" y="163" font-size="12.5" fill="#1d4ed8">largest; slowly flowing rock · ~2,900 km</text>
-    <text x="408" y="218" font-weight="700">Núcleo externo · <tspan fill="#1d4ed8">Outer core</tspan></text>
-    <text x="408" y="237" font-size="12.5" fill="#444">LÍQUIDO (hierro y níquel) → campo magnético</text>
-    <text x="408" y="253" font-size="12.5" fill="#1d4ed8">LIQUID iron &amp; nickel → magnetic field</text>
-    <text x="408" y="308" font-weight="700">Núcleo interno · <tspan fill="#1d4ed8">Inner core</tspan></text>
-    <text x="408" y="327" font-size="12.5" fill="#444">SÓLIDO por la presión; el más caliente</text>
-    <text x="408" y="343" font-size="12.5" fill="#1d4ed8">SOLID due to pressure; hottest</text>
-  </g>
-</svg></template>
-<template id="svg-seismic"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" font-family="Inter, sans-serif">
-  <defs>
-    <marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/></marker>
-    <marker id="sa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
-  </defs>
-  <circle cx="230" cy="210" r="180" fill="#fbd9bd" stroke="#7a4a22" stroke-width="5"/>
-  <circle cx="230" cy="210" r="100" fill="#fde7a3" stroke="#e0a526" stroke-width="2"/>
-  <circle cx="230" cy="210" r="45" fill="#fff6cf" stroke="#e7c75a" stroke-width="1.5"/>
-  <text x="230" y="214" font-size="11" text-anchor="middle" fill="#7a5a00">sólido · solid</text>
-  <text x="230" y="150" font-size="11.5" text-anchor="middle" fill="#7a5a00" font-weight="700">LÍQUIDO · LIQUID</text>
-  <path d="M403.7 281.9 A188 188 0 0 1 56.3 281.9" fill="none" stroke="#6b7280" stroke-width="9" stroke-linecap="round" opacity=".55"/>
-  <g stroke="#1d4ed8" stroke-width="2.4" fill="none">
-    <path d="M230 30 L140 366" marker-end="url(#pa)"/>
-    <path d="M230 30 L320 366" marker-end="url(#pa)"/>
-  </g>
-  <g stroke="#dc2626" stroke-width="2.4" fill="none">
-    <path d="M230 30 L74 120" marker-end="url(#sa)"/>
-    <path d="M230 30 L386 120" marker-end="url(#sa)"/>
-    <path d="M230 30 L53 241" marker-end="url(#sa)"/>
-    <path d="M230 30 L407 241" marker-end="url(#sa)"/>
-    <path d="M230 30 L230 108" stroke-dasharray="6 4"/>
-  </g>
-  <g stroke="#dc2626" stroke-width="3.5"><path d="M222 100 L238 116 M238 100 L222 116"/></g>
-  <polygon points="230,14 235,25 247,26 238,34 241,46 230,40 219,46 222,34 213,26 225,25" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>
-  <text x="252" y="22" font-size="12" font-weight="700">Terremoto · Earthquake</text>
-  <text x="230" y="425" font-size="12.5" text-anchor="middle" font-weight="700" fill="#4b5563">Zona de sombra: no llegan ondas S · Shadow zone: no S-waves</text>
-  <g font-size="13.5">
-    <line x1="460" y1="70" x2="500" y2="70" stroke="#1d4ed8" stroke-width="3"/>
-    <text x="508" y="66" font-weight="700" fill="#1d4ed8">Ondas P (primarias)</text>
-    <text x="508" y="83" font-size="12">P-waves: sólidos y líquidos</text>
-    <text x="508" y="99" font-size="12" fill="#1d4ed8">solids AND liquids</text>
-    <line x1="460" y1="140" x2="500" y2="140" stroke="#dc2626" stroke-width="3"/>
-    <text x="508" y="136" font-weight="700" fill="#dc2626">Ondas S (secundarias)</text>
-    <text x="508" y="153" font-size="12">S-waves: SOLO sólidos</text>
-    <text x="508" y="169" font-size="12" fill="#1d4ed8">ONLY solids</text>
-    <rect x="455" y="200" width="255" height="120" rx="10" fill="#fff7ed" stroke="#f59e0b"/>
-    <text x="467" y="224" font-weight="800" font-size="13">Conclusión · Conclusion</text>
-    <text x="467" y="245" font-size="12">Las ondas S se detienen a ~2,900 km</text>
-    <text x="467" y="262" font-size="12">→ el núcleo externo es LÍQUIDO.</text>
-    <text x="467" y="285" font-size="12" fill="#1d4ed8">S-waves stop at ~2,900 km</text>
-    <text x="467" y="302" font-size="12" fill="#1d4ed8">→ the outer core is LIQUID.</text>
-  </g>
-</svg></template>
-<template id="svg-plate-boundaries"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" font-family="Inter, sans-serif">
-  <defs>
-    <marker id="pb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
-  </defs>
-  <g>
-    <rect x="5" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
-    <text x="125" y="30" text-anchor="middle" font-weight="800" font-size="15">Convergente</text>
-    <text x="125" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Convergent</text>
-    <rect x="25" y="150" width="100" height="30" fill="#a0673a"/>
-    <rect x="125" y="150" width="100" height="30" fill="#8d5524"/>
-    <polygon points="85,150 125,85 165,150" fill="#7a4a22"/>
-    <polygon points="112,106 125,85 138,106" fill="#fff"/>
-    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M35 135 L75 135" marker-end="url(#pb)"/><path d="M215 135 L175 135" marker-end="url(#pb)"/></g>
-    <rect x="25" y="180" width="200" height="22" fill="#f2a46a" opacity=".6"/>
-    <text x="125" y="223" text-anchor="middle" font-size="12">chocan → montañas, fosas, volcanes</text>
-    <text x="125" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">collide → mountains, trenches, volcanoes</text>
-  </g>
-  <g>
-    <rect x="260" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
-    <text x="380" y="30" text-anchor="middle" font-weight="800" font-size="15">Divergente</text>
-    <text x="380" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Divergent</text>
-    <rect x="275" y="150" width="95" height="30" fill="#a0673a"/>
-    <rect x="390" y="150" width="95" height="30" fill="#8d5524"/>
-    <path d="M370 150 L380 132 L390 150 Z" fill="#7a4a22"/>
-    <path d="M372 202 C376 185 384 185 388 202 L388 180 C384 170 376 170 372 180 Z" fill="#dc2626"/>
-    <path d="M376 180 C378 160 382 160 384 180" fill="#f97316"/>
-    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M340 135 L295 135" marker-end="url(#pb)"/><path d="M420 135 L465 135" marker-end="url(#pb)"/></g>
-    <rect x="275" y="180" width="210" height="22" fill="#f2a46a" opacity=".6"/>
-    <text x="380" y="223" text-anchor="middle" font-size="12">se separan → dorsal oceánica, rift</text>
-    <text x="380" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">pull apart → mid-ocean ridge, rift valley</text>
-  </g>
-  <g>
-    <rect x="515" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
-    <text x="635" y="30" text-anchor="middle" font-weight="800" font-size="15">Transformante</text>
-    <text x="635" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Transform</text>
-    <rect x="545" y="70" width="88" height="130" fill="#a0673a"/>
-    <rect x="637" y="80" width="88" height="130" fill="#8d5524"/>
-    <path d="M635 66 L635 212" stroke="#1c2130" stroke-width="2" stroke-dasharray="6 4"/>
-    <g stroke="#fff" stroke-width="3.5" fill="none"><path d="M589 175 L589 100" marker-end="url(#pb)"/><path d="M681 105 L681 180" marker-end="url(#pb)"/></g>
-    <text x="635" y="223" text-anchor="middle" font-size="12">se deslizan → fallas, terremotos</text>
-    <text x="635" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">slide past → faults, earthquakes</text>
-  </g>
-</svg></template>
-<template id="svg-soil-horizons"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" font-family="Inter, sans-serif">
-  <g stroke="#3f7d20" stroke-width="3" stroke-linecap="round">
-    <path d="M45 30 l-4 -16 M60 30 l3 -18 M80 30 l-2 -14 M105 30 l4 -17 M130 30 l-3 -15 M160 30 l2 -18 M190 30 l-4 -14 M215 30 l3 -16 M240 30 l-2 -15"/>
-  </g>
-  <rect x="30" y="30" width="230" height="40" fill="#3a2716"/>
-  <g fill="#7cb342"><ellipse cx="60" cy="42" rx="12" ry="5"/><ellipse cx="120" cy="55" rx="10" ry="4"/><ellipse cx="185" cy="44" rx="12" ry="5"/><ellipse cx="235" cy="58" rx="9" ry="4"/></g>
-  <g fill="#a1887f"><ellipse cx="95" cy="40" rx="9" ry="4"/><ellipse cx="215" cy="40" rx="8" ry="3"/></g>
-  <rect x="30" y="70" width="230" height="70" fill="#5b3c21"/>
-  <g stroke="#c8a27a" stroke-width="1.5" fill="none"><path d="M70 70 q5 25 -5 55 M150 70 q-6 20 4 45 M215 70 q4 18 -4 35"/></g>
-  <rect x="30" y="140" width="230" height="70" fill="#b27445"/>
-  <g fill="#8d5524"><circle cx="60" cy="160" r="3"/><circle cx="110" cy="185" r="3"/><circle cx="170" cy="165" r="3"/><circle cx="220" cy="195" r="3"/><circle cx="90" cy="200" r="2.5"/><circle cx="200" cy="150" r="2.5"/></g>
-  <rect x="30" y="210" width="230" height="70" fill="#a39b8f"/>
-  <g fill="#7b7468" stroke="#5f594f"><path d="M45 225 l25 -5 l10 20 l-20 15 l-18 -10z"/><path d="M110 240 l30 -8 l12 18 l-25 14 l-20 -8z"/><path d="M180 222 l28 2 l6 22 l-26 8 l-14 -14z"/><path d="M220 255 l25 0 l5 18 l-28 4z"/></g>
-  <rect x="30" y="280" width="230" height="70" fill="#6b6b6b"/>
-  <g stroke="#4b4b4b" stroke-width="2" fill="none"><path d="M80 280 l10 30 l-8 40 M170 280 l-6 25 l12 45"/></g>
-  <g font-size="24" font-weight="800" fill="#fff" text-anchor="middle">
-    <text x="15" y="58" fill="#3a2716">O</text><text x="15" y="113" fill="#5b3c21">A</text><text x="15" y="183" fill="#b27445">B</text><text x="15" y="253" fill="#7b7468">C</text><text x="15" y="323" fill="#4b4b4b">R</text>
-  </g>
-  <g stroke="#9aa1ae" stroke-width="1.2"><path d="M262 50 L285 50 M262 105 L285 105 M262 175 L285 175 M262 245 L285 245 M262 315 L285 315"/></g>
-  <g font-size="14.5">
-    <text x="292" y="45" font-weight="700">O · Capa orgánica · <tspan fill="#1d4ed8">Organic layer</tspan></text>
-    <text x="292" y="62" font-size="12">hojas frescas y en descomposición · fresh &amp; decomposing leaves</text>
-    <text x="292" y="100" font-weight="700">A · Suelo superficial · <tspan fill="#1d4ed8">Topsoil</tspan></text>
-    <text x="292" y="117" font-size="12">oscuro, humus + minerales, raíces · dark, humus, roots, fertile</text>
-    <text x="292" y="170" font-weight="700">B · Subsuelo · <tspan fill="#1d4ed8">Subsoil</tspan></text>
-    <text x="292" y="187" font-size="12">arcilla y minerales lavados desde arriba · clay &amp; minerals washed down</text>
-    <text x="292" y="240" font-weight="700">C · Material parental · <tspan fill="#1d4ed8">Parent material</tspan></text>
-    <text x="292" y="257" font-size="12">pedazos de roca madre meteorizada · broken, weathered bedrock</text>
-    <text x="292" y="310" font-weight="700">R · Roca madre · <tspan fill="#1d4ed8">Bedrock</tspan></text>
-    <text x="292" y="327" font-size="12">roca sólida sin meteorizar · solid, unweathered rock</text>
-  </g>
-</svg></template>
-<template id="svg-rock-cycle"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 428" font-family="Inter, sans-serif">
-  <defs>
-    <marker id="ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4b5563"/></marker>
-  </defs>
-  <g stroke="#4b5563" stroke-width="2.5" fill="none" marker-end="url(#ra)">
-    <path d="M150 180 Q190 100 262 72"/>
-    <path d="M450 72 Q530 100 570 180"/>
-    <path d="M575 240 Q560 300 525 330"/>
-    <path d="M385 362 L335 362"/>
-    <path d="M195 330 Q160 300 150 240"/>
-  </g>
-  <g font-size="12.5" font-weight="600">
-    <text x="180" y="110" text-anchor="end">meteorización y erosión</text>
-    <text x="180" y="126" text-anchor="end" fill="#1d4ed8">weathering &amp; erosion</text>
-    <text x="540" y="110">compactación y cementación</text>
-    <text x="540" y="126" fill="#1d4ed8">compaction &amp; cementation</text>
-    <text x="580" y="300">calor y presión</text>
-    <text x="580" y="316" fill="#1d4ed8">heat &amp; pressure</text>
-    <text x="360" y="420" text-anchor="middle">fusión (se derrite) · <tspan fill="#1d4ed8">melting</tspan></text>
-    <text x="150" y="300" text-anchor="end">enfriamiento</text>
-    <text x="150" y="316" text-anchor="end" fill="#1d4ed8">cooling</text>
-  </g>
-  <g>
-    <rect x="30" y="182" width="190" height="58" rx="12" fill="#fde2d2" stroke="#c2410c" stroke-width="2"/>
-    <text x="125" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca ígnea</text>
-    <text x="125" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Igneous rock</text>
-    <rect x="265" y="40" width="190" height="58" rx="12" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
-    <text x="360" y="65" text-anchor="middle" font-weight="800" font-size="15">Sedimentos</text>
-    <text x="360" y="84" text-anchor="middle" font-size="13" fill="#1d4ed8">Sediments</text>
-    <rect x="490" y="182" width="200" height="58" rx="12" fill="#fde68a" stroke="#a16207" stroke-width="2"/>
-    <text x="590" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca sedimentaria</text>
-    <text x="590" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Sedimentary rock</text>
-    <rect x="390" y="333" width="200" height="58" rx="12" fill="#e0e7ff" stroke="#4338ca" stroke-width="2"/>
-    <text x="490" y="358" text-anchor="middle" font-weight="800" font-size="15">Roca metamórfica</text>
-    <text x="490" y="377" text-anchor="middle" font-size="13" fill="#1d4ed8">Metamorphic rock</text>
-    <rect x="135" y="333" width="195" height="58" rx="12" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
-    <text x="232" y="358" text-anchor="middle" font-weight="800" font-size="15">Magma</text>
-    <text x="232" y="377" text-anchor="middle" font-size="12.5" fill="#1d4ed8">melted rock · roca fundida</text>
-  </g>
-  <text x="360" y="215" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">Cualquier roca puede</text>
-  <text x="360" y="232" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">convertirse en otra</text>
-  <text x="360" y="252" text-anchor="middle" font-size="12.5" fill="#1d4ed8">Any rock can become another</text>
+  <text x="285" y="108" font-size="11" text-anchor="middle" fill="#7b3fb2" font-weight="700">SIN núcleo · NO nucleus</text>
 </svg></template>
 <template id="svg-cells"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="Inter, sans-serif">
   <text x="185" y="28" text-anchor="middle" font-weight="800" font-size="16">Célula vegetal · <tspan fill="#1d4ed8">Plant cell</tspan></text>
@@ -488,33 +330,160 @@ body.focus .menu-btn { display: none; }
     <text x="440" y="433" font-size="11" fill="#ad1457">Sin pared, sin cloroplastos · No wall, no chloroplasts</text>
   </g>
 </svg></template>
-<template id="svg-virus"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="Inter, sans-serif">
-  <text x="170" y="22" text-anchor="middle" font-weight="800" font-size="15">Bacteriófago · <tspan fill="#1d4ed8">Bacteriophage</tspan></text>
-  <polygon points="170,40 215,65 215,115 170,140 125,115 125,65" fill="#e0e7ff" stroke="#4338ca" stroke-width="3"/>
-  <path d="M150 75 c10 15 25 -10 30 10 s-20 20 -5 30 s25 -5 20 10" fill="none" stroke="#c2410c" stroke-width="2.5"/>
-  <rect x="160" y="140" width="20" height="80" fill="#c7d2fe" stroke="#4338ca" stroke-width="2"/>
-  <g stroke="#4338ca" stroke-width="1.5"><path d="M160 152 h20 M160 164 h20 M160 176 h20 M160 188 h20 M160 200 h20"/></g>
-  <rect x="148" y="220" width="44" height="8" fill="#4338ca"/>
-  <g stroke="#4338ca" stroke-width="3" fill="none" stroke-linecap="round"><path d="M150 228 L120 255 L110 285"/><path d="M190 228 L220 255 L230 285"/><path d="M160 228 L150 262 L140 290"/><path d="M180 228 L190 262 L200 290"/></g>
-  <g stroke="#9aa1ae" stroke-width="1.3"><path d="M215 70 L262 55"/><path d="M180 95 L262 110"/><path d="M180 180 L262 178"/><path d="M222 262 L262 250"/></g>
+<template id="svg-convection"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="cv-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+    <marker id="cv-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#b45309"/></marker>
+    <marker id="cv-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/></marker>
+    <marker id="cv-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker>
+    <marker id="cv-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <rect x="20" y="90" width="680" height="190" fill="#fbd9bd"/>
+  <rect x="20" y="280" width="680" height="44" fill="#f5b53c"/>
+  <rect x="20" y="58" width="334" height="32" fill="#8d5524"/>
+  <rect x="366" y="58" width="334" height="32" fill="#8d5524"/>
+  <path d="M354 90 L360 70 L366 90 Z" fill="#dc2626"/>
+  <g stroke-width="3" fill="none">
+    <path d="M250 44 L130 44" stroke="#1c2130" marker-end="url(#cv-k)"/>
+    <path d="M470 44 L590 44" stroke="#1c2130" marker-end="url(#cv-k)"/>
+  </g>
+  <text x="360" y="26" text-anchor="middle" font-size="13" font-weight="700">las placas se separan arrastradas · plates are dragged apart</text>
+  <g stroke-width="4" fill="none">
+    <path d="M360 262 L360 120" stroke="#dc2626" marker-end="url(#cv-r)"/>
+    <path d="M348 108 L140 108" stroke="#b45309" marker-end="url(#cv-o)"/>
+    <path d="M372 108 L580 108" stroke="#b45309" marker-end="url(#cv-o)"/>
+    <path d="M110 118 L110 246" stroke="#2563eb" marker-end="url(#cv-b)"/>
+    <path d="M610 118 L610 246" stroke="#2563eb" marker-end="url(#cv-b)"/>
+    <path d="M124 264 L340 264" stroke="#6b7280" marker-end="url(#cv-g)"/>
+    <path d="M596 264 L380 264" stroke="#6b7280" marker-end="url(#cv-g)"/>
+  </g>
   <g font-size="12.5">
-    <text x="268" y="52" font-weight="700">Cápside (cubierta de proteína)</text><text x="268" y="67" fill="#1d4ed8">Capsid (protein coat)</text>
-    <text x="268" y="108" font-weight="700">Material genético: ADN o ARN</text><text x="268" y="123" fill="#1d4ed8">Genetic material: DNA or RNA</text>
-    <text x="268" y="176" font-weight="700">Cola · <tspan fill="#1d4ed8">Tail</tspan></text>
-    <text x="268" y="248" font-weight="700">Fibras de la cola · <tspan fill="#1d4ed8">Tail fibers</tspan></text>
+    <text x="372" y="182" font-weight="700" fill="#b91c1c">1. sube caliente</text>
+    <text x="372" y="198" fill="#1d4ed8">hot material rises</text>
+    <text x="244" y="132" text-anchor="middle" font-weight="700" fill="#92400e">2. se mueve bajo las placas</text>
+    <text x="244" y="148" text-anchor="middle" fill="#1d4ed8">moves under the plates</text>
+    <text x="124" y="190" font-weight="700" fill="#1e40af">3. se enfría y baja</text>
+    <text x="124" y="206" fill="#1d4ed8">cools and sinks</text>
+    <text x="596" y="190" text-anchor="end" font-weight="700" fill="#1e40af">3. se enfría y baja</text>
+    <text x="596" y="206" text-anchor="end" fill="#1d4ed8">cools and sinks</text>
+    <text x="232" y="254" text-anchor="middle" fill="#374151">4. vuelve al centro · returns</text>
+    <text x="40" y="78" fill="#fff" font-weight="700">Placa · Plate</text>
+    <text x="680" y="78" fill="#fff" font-weight="700" text-anchor="end">Placa · Plate</text>
+    <text x="360" y="308" text-anchor="middle" font-weight="700">El núcleo calienta el manto desde abajo · The core heats the mantle from below</text>
   </g>
-  <text x="570" y="22" text-anchor="middle" font-weight="800" font-size="15">Virus con envoltura · <tspan fill="#1d4ed8">Enveloped</tspan></text>
-  <g stroke="#b91c1c" stroke-width="3" stroke-linecap="round">
-    <path d="M570 60 v-14 M570 220 v14 M490 140 h-14 M650 140 h14 M513 83 l-10 -10 M627 83 l10 -10 M513 197 l-10 10 M627 197 l10 10"/>
+  <text x="560" y="150" text-anchor="middle" font-size="13" font-weight="800" fill="#7c2d12">Manto · Mantle</text>
+</svg></template>
+<template id="svg-earth-layers"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Inter, sans-serif">
+  <circle cx="190" cy="190" r="176" fill="#7a4a22"/>
+  <circle cx="190" cy="190" r="166" fill="#e8843f"/>
+  <circle cx="190" cy="190" r="96" fill="#f5b53c"/>
+  <circle cx="190" cy="190" r="48" fill="#fff1a8" stroke="#e7c75a" stroke-width="2"/>
+  <g stroke="#1c2130" stroke-width="1.6" fill="none">
+    <path d="M300 55 L400 42"/>
+    <path d="M318 145 L400 132"/>
+    <path d="M262 205 L400 222"/>
+    <path d="M205 210 L400 312"/>
   </g>
-  <g fill="#b91c1c"><circle cx="570" cy="44" r="5"/><circle cx="570" cy="236" r="5"/><circle cx="474" cy="140" r="5"/><circle cx="666" cy="140" r="5"/><circle cx="501" cy="71" r="5"/><circle cx="639" cy="71" r="5"/><circle cx="501" cy="209" r="5"/><circle cx="639" cy="209" r="5"/></g>
-  <circle cx="570" cy="140" r="80" fill="#fff1f2" stroke="#e11d48" stroke-width="4"/>
-  <circle cx="570" cy="140" r="52" fill="#e0e7ff" stroke="#4338ca" stroke-width="2.5" stroke-dasharray="7 4"/>
-  <path d="M545 130 c10 -20 20 20 30 0 s15 20 25 0" fill="none" stroke="#c2410c" stroke-width="2.5"/>
-  <text x="570" y="270" text-anchor="middle" font-size="12.5"><tspan font-weight="700">Envoltura</tspan> · <tspan fill="#1d4ed8">Envelope</tspan> · <tspan font-weight="700">Espículas</tspan> · <tspan fill="#1d4ed8">Spikes</tspan></text>
-  <text x="570" y="290" text-anchor="middle" font-size="12" fill="#4b5563">ej. gripe · e.g. flu</text>
-  <rect x="265" y="285" width="190" height="30" rx="8" fill="#fef2f2" stroke="#dc2626"/>
-  <text x="360" y="305" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">NO es una célula · NOT a cell</text>
+  <g fill="#1c2130">
+    <circle cx="300" cy="55" r="3.5"/><circle cx="318" cy="145" r="3.5"/>
+    <circle cx="262" cy="205" r="3.5"/><circle cx="205" cy="210" r="3.5"/>
+  </g>
+  <g font-size="15">
+    <text x="408" y="38" font-weight="700">Corteza · <tspan fill="#1d4ed8">Crust</tspan></text>
+    <text x="408" y="57" font-size="12.5" fill="#444">sólida, delgada · 5–70 km</text>
+    <text x="408" y="73" font-size="12.5" fill="#1d4ed8">thin, solid · 5–70 km</text>
+    <text x="408" y="128" font-weight="700">Manto · <tspan fill="#1d4ed8">Mantle</tspan></text>
+    <text x="408" y="147" font-size="12.5" fill="#444">la más grande; roca que fluye lento</text>
+    <text x="408" y="163" font-size="12.5" fill="#1d4ed8">largest; slowly flowing rock · ~2,900 km</text>
+    <text x="408" y="218" font-weight="700">Núcleo externo · <tspan fill="#1d4ed8">Outer core</tspan></text>
+    <text x="408" y="237" font-size="12.5" fill="#444">LÍQUIDO (hierro y níquel) → campo magnético</text>
+    <text x="408" y="253" font-size="12.5" fill="#1d4ed8">LIQUID iron &amp; nickel → magnetic field</text>
+    <text x="408" y="308" font-weight="700">Núcleo interno · <tspan fill="#1d4ed8">Inner core</tspan></text>
+    <text x="408" y="327" font-size="12.5" fill="#444">SÓLIDO por la presión; el más caliente</text>
+    <text x="408" y="343" font-size="12.5" fill="#1d4ed8">SOLID due to pressure; hottest</text>
+  </g>
+</svg></template>
+<template id="svg-earth-systems"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="es-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g stroke-width="2">
+    <rect x="40" y="26" width="200" height="80" rx="14" fill="#e0f2fe" stroke="#0284c7"/>
+    <rect x="480" y="26" width="200" height="80" rx="14" fill="#dcfce7" stroke="#16a34a"/>
+    <rect x="40" y="254" width="200" height="80" rx="14" fill="#fbe7d3" stroke="#9a4d0f"/>
+    <rect x="480" y="254" width="200" height="80" rx="14" fill="#dbeafe" stroke="#1d4ed8"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="140" y="56" font-size="16" font-weight="800">Atmósfera</text><text x="140" y="74" font-size="12.5" fill="#1d4ed8">Atmosphere</text><text x="140" y="94" font-size="12" fill="#4b5563">el aire · air</text>
+    <text x="580" y="56" font-size="16" font-weight="800">Biosfera</text><text x="580" y="74" font-size="12.5" fill="#1d4ed8">Biosphere</text><text x="580" y="94" font-size="12" fill="#4b5563">seres vivos · living things</text>
+    <text x="140" y="284" font-size="16" font-weight="800">Geosfera</text><text x="140" y="302" font-size="12.5" fill="#1d4ed8">Geosphere</text><text x="140" y="322" font-size="12" fill="#4b5563">rocas, suelo, capas · solid Earth</text>
+    <text x="580" y="284" font-size="16" font-weight="800">Hidrosfera</text><text x="580" y="302" font-size="12.5" fill="#1d4ed8">Hydrosphere</text><text x="580" y="322" font-size="12" fill="#4b5563">toda el agua · all water</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2.2" fill="none" marker-end="url(#es-a)">
+    <path d="M478 66 L244 66"/>
+    <path d="M140 252 L140 110"/>
+    <path d="M478 294 L244 294"/>
+    <path d="M580 252 L580 110"/>
+  </g>
+  <g font-size="12.5">
+    <text x="361" y="56" text-anchor="middle" font-weight="600">las plantas sueltan oxígeno</text>
+    <text x="361" y="86" text-anchor="middle" fill="#1d4ed8">plants release oxygen</text>
+    <text x="152" y="176" font-weight="600">los volcanes lanzan gases</text>
+    <text x="152" y="193" fill="#1d4ed8">volcanoes release gases</text>
+    <text x="361" y="284" text-anchor="middle" font-weight="600">la lluvia y los ríos rompen rocas</text>
+    <text x="361" y="314" text-anchor="middle" fill="#1d4ed8">rain and rivers break rocks</text>
+    <text x="568" y="176" text-anchor="end" font-weight="600">el agua mantiene la vida</text>
+    <text x="568" y="193" text-anchor="end" fill="#1d4ed8">water supports life</text>
+  </g>
+  <text x="361" y="232" text-anchor="middle" font-size="12" fill="#4b5563" font-style="italic">lo que pasa en uno cambia a los otros · each one changes the others</text>
+</svg></template>
+<template id="svg-layers-compare"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 430" font-family="Inter, sans-serif">
+  <text x="200" y="26" text-anchor="middle" font-size="15" font-weight="800">Por composición</text>
+  <text x="200" y="42" text-anchor="middle" font-size="12.5" fill="#1d4ed8">By composition · de qué está hecha</text>
+  <text x="560" y="26" text-anchor="middle" font-size="15" font-weight="800">Por comportamiento</text>
+  <text x="560" y="42" text-anchor="middle" font-size="12.5" fill="#1d4ed8">By behavior · cómo se porta</text>
+  <g>
+    <rect x="110" y="56" width="180" height="12" fill="#7a4a22"/>
+    <rect x="110" y="68" width="180" height="172" fill="#e8843f"/>
+    <rect x="110" y="240" width="180" height="90" fill="#f5b53c"/>
+    <rect x="110" y="330" width="180" height="70" fill="#fff1a8" stroke="#e7c75a"/>
+  </g>
+  <g>
+    <rect x="470" y="56" width="180" height="34" fill="#5b3a1e"/>
+    <rect x="470" y="90" width="180" height="38" fill="#f4a462"/>
+    <path d="M478 109 q10 -6 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0" fill="none" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="470" y="128" width="180" height="112" fill="#d9722e"/>
+    <rect x="470" y="240" width="180" height="90" fill="#f5b53c"/>
+    <rect x="470" y="330" width="180" height="70" fill="#fff1a8" stroke="#e7c75a"/>
+  </g>
+  <g stroke="#1c2130" stroke-width="1.2" stroke-dasharray="5 4">
+    <path d="M290 90 L470 90"/><path d="M290 128 L470 128"/>
+  </g>
+  <g stroke="#1c2130" stroke-width="1.6"><path d="M290 240 L470 240"/><path d="M290 330 L470 330"/></g>
+  <g font-size="12" font-family="JetBrains Mono, monospace" text-anchor="middle" fill="#1c2130">
+    <rect x="336" y="49" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="61">0 km</text>
+    <rect x="336" y="82" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="94">~100 km</text>
+    <rect x="336" y="120" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="132">~350 km</text>
+    <rect x="336" y="232" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="244">2,900 km</text>
+    <rect x="336" y="322" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="334">5,150 km</text>
+    <rect x="336" y="392" width="88" height="16" rx="4" fill="#fff"/><text x="380" y="404">6,371 km</text>
+  </g>
+  <g font-size="13.5" font-weight="700" text-anchor="middle">
+    <text x="200" y="160">Manto</text><text x="200" y="177" font-size="12" font-weight="500" fill="#1d4ed8">Mantle</text>
+    <text x="200" y="283">Núcleo externo</text><text x="200" y="300" font-size="12" font-weight="500" fill="#1d4ed8">Outer core · líquido</text>
+    <text x="200" y="363">Núcleo interno</text><text x="200" y="380" font-size="12" font-weight="500" fill="#1d4ed8">Inner core · sólido</text>
+    <text x="560" y="77" fill="#fff">Litosfera · rígida</text>
+    <text x="560" y="105">Astenosfera · fluye</text>
+    <text x="560" y="180">Mesosfera</text><text x="560" y="197" font-size="12" font-weight="500" fill="#1d4ed8">Mesosphere · sólida, rígida</text>
+    <text x="560" y="283">Núcleo externo</text><text x="560" y="300" font-size="12" font-weight="500" fill="#1d4ed8">Outer core · líquido</text>
+    <text x="560" y="363">Núcleo interno</text><text x="560" y="380" font-size="12" font-weight="500" fill="#1d4ed8">Inner core · sólido</text>
+  </g>
+  <path d="M106 62 L70 62" stroke="#1c2130" stroke-width="1.2"/>
+  <text x="66" y="58" text-anchor="end" font-size="13" font-weight="700">Corteza</text>
+  <text x="66" y="74" text-anchor="end" font-size="12" fill="#1d4ed8">Crust</text>
+  <text x="656" y="68" font-size="11.5" fill="#4b5563">corteza +</text>
+  <text x="656" y="82" font-size="11.5" fill="#4b5563">manto sup.</text>
+  <text x="360" y="424" text-anchor="middle" font-size="11.5" fill="#4b5563">No está a escala · Not to scale</text>
 </svg></template>
 <template id="svg-lytic-lysogenic"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Inter, sans-serif">
   <defs>
@@ -547,30 +516,328 @@ body.focus .menu-btn { display: none; }
   </g>
   <text x="612" y="158" font-size="11.5" fill="#ea580c" font-weight="700">puede cambiar · can switch</text>
 </svg></template>
-<template id="svg-bacteria"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" font-family="Inter, sans-serif">
-  <g stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"><path d="M200 82 L192 58 M262 76 L262 52 M330 76 L338 52 M395 84 L408 62"/></g>
-  <rect x="112" y="74" width="336" height="136" rx="68" fill="#fff3d6" stroke="#e0b44c" stroke-width="2"/>
-  <rect x="120" y="82" width="320" height="120" rx="60" fill="#e8f4ff" stroke="#2b6cb0" stroke-width="5"/>
-  <rect x="129" y="91" width="302" height="102" rx="51" fill="#f6faff" stroke="#63a4e6" stroke-width="2"/>
-  <path d="M245 140 c10 -25 25 15 35 -8 s20 22 32 -2 s18 18 28 -6 s-15 30 -30 18 s-25 -12 -40 10 s-30 -5 -25 -12z" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
-  <circle cx="385" cy="160" r="10" fill="none" stroke="#7b3fb2" stroke-width="2.5"/>
-  <g fill="#37474f"><circle cx="170" cy="120" r="3.5"/><circle cx="185" cy="165" r="3.5"/><circle cx="205" cy="135" r="3.5"/><circle cx="160" cy="150" r="3.5"/><circle cx="360" cy="115" r="3.5"/><circle cx="400" cy="130" r="3.5"/><circle cx="345" cy="175" r="3.5"/></g>
-  <path d="M448 142 c25 -30 45 30 70 0 s45 30 70 0 s45 30 70 0" fill="none" stroke="#4b5563" stroke-width="3"/>
-  <g stroke="#9aa1ae" stroke-width="1.3" fill="none">
-    <path d="M118 120 L80 60"/><path d="M262 52 L262 40"/><path d="M425 100 L470 45"/><path d="M438 125 L560 85"/>
-    <path d="M170 150 L150 245"/><path d="M290 150 L300 245"/><path d="M385 170 L440 245"/><path d="M600 150 L610 200"/>
+<template id="svg-mohs"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 230" font-family="Inter, sans-serif">
+  <g fill="#1c2130" font-size="11.5">
+    <text x="159" y="34" text-anchor="middle" font-weight="700">uña · fingernail 2.5</text>
+    <text x="225" y="58" text-anchor="middle" font-weight="700">moneda · coin 3.5</text>
+    <text x="357" y="34" text-anchor="middle" font-weight="700">vidrio · glass 5.5</text>
   </g>
-  <g font-size="13">
-    <text x="20" y="40" font-weight="700">Cápsula</text><text x="20" y="56" fill="#1d4ed8">Capsule</text>
-    <text x="230" y="20" font-weight="700">Pili · <tspan fill="#1d4ed8">Pili</tspan></text>
-    <text x="440" y="24" font-weight="700">Pared celular</text><text x="440" y="40" fill="#1d4ed8">Cell wall (peptidoglycan)</text>
-    <text x="565" y="78" font-weight="700">Membrana</text><text x="565" y="94" fill="#1d4ed8">Cell membrane</text>
-    <text x="90" y="262" font-weight="700">Ribosomas</text><text x="90" y="278" fill="#1d4ed8">Ribosomes</text>
-    <text x="230" y="262" font-weight="700">ADN circular (nucleoide)</text><text x="230" y="278" fill="#1d4ed8">Circular DNA (nucleoid)</text>
-    <text x="420" y="262" font-weight="700">Plásmido</text><text x="420" y="278" fill="#1d4ed8">Plasmid</text>
-    <text x="570" y="218" font-weight="700">Flagelo</text><text x="570" y="234" fill="#1d4ed8">Flagellum</text>
+  <g stroke="#6b7280" stroke-width="1.2"><path d="M159 40 L159 82"/><path d="M225 64 L225 82"/><path d="M357 40 L357 82"/></g>
+  <g fill="#1c2130"><path d="M153 84 L165 84 L159 94 Z"/><path d="M219 84 L231 84 L225 94 Z"/><path d="M351 84 L363 84 L357 94 Z"/></g>
+  <g>
+    <rect x="27" y="112" width="64" height="16" fill="#fef3c7"/><rect x="93" y="112" width="64" height="16" fill="#fde68a"/>
+    <rect x="159" y="112" width="64" height="16" fill="#fcd34d"/><rect x="225" y="112" width="64" height="16" fill="#fbbf24"/>
+    <rect x="291" y="112" width="64" height="16" fill="#f59e0b"/><rect x="357" y="112" width="64" height="16" fill="#d97706"/>
+    <rect x="423" y="112" width="64" height="16" fill="#b45309"/><rect x="489" y="112" width="64" height="16" fill="#92400e"/>
+    <rect x="555" y="112" width="64" height="16" fill="#78350f"/><rect x="621" y="112" width="64" height="16" fill="#451a03"/>
   </g>
-  <text x="285" y="108" font-size="11" text-anchor="middle" fill="#7b3fb2" font-weight="700">SIN núcleo · NO nucleus</text>
+  <g font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" text-anchor="middle" fill="#1c2130">
+    <text x="60" y="106">1</text><text x="126" y="106">2</text><text x="192" y="106">3</text><text x="258" y="106">4</text><text x="324" y="106">5</text>
+    <text x="390" y="106">6</text><text x="456" y="106">7</text><text x="522" y="106">8</text><text x="588" y="106">9</text><text x="654" y="106">10</text>
+  </g>
+  <g font-size="12" text-anchor="middle">
+    <text x="60" y="148" font-weight="700">Talco</text><text x="126" y="148" font-weight="700">Yeso</text><text x="192" y="148" font-weight="700">Calcita</text>
+    <text x="258" y="148" font-weight="700">Fluorita</text><text x="324" y="148" font-weight="700">Apatito</text><text x="390" y="148" font-weight="700">Ortoclasa</text>
+    <text x="456" y="148" font-weight="700">Cuarzo</text><text x="522" y="148" font-weight="700">Topacio</text><text x="588" y="148" font-weight="700">Corindón</text>
+    <text x="654" y="148" font-weight="700">Diamante</text>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="#1d4ed8">
+    <text x="60" y="164">Talc</text><text x="126" y="164">Gypsum</text><text x="192" y="164">Calcite</text><text x="258" y="164">Fluorite</text><text x="324" y="164">Apatite</text>
+    <text x="390" y="164">Orthoclase</text><text x="456" y="164">Quartz</text><text x="522" y="164">Topaz</text><text x="588" y="164">Corundum</text><text x="654" y="164">Diamond</text>
+  </g>
+  <defs><marker id="mh-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker></defs>
+  <path d="M300 196 L60 196" stroke="#1c2130" stroke-width="2" marker-end="url(#mh-a)"/>
+  <path d="M420 196 L660 196" stroke="#1c2130" stroke-width="2" marker-end="url(#mh-a)"/>
+  <text x="360" y="200" text-anchor="middle" font-size="12" font-weight="700">dureza · hardness</text>
+  <text x="60" y="218" font-size="11.5" fill="#4b5563">más blando · softer</text>
+  <text x="660" y="218" font-size="11.5" text-anchor="end" fill="#4b5563">más duro · harder</text>
+</svg></template>
+<template id="svg-plate-boundaries"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g>
+    <rect x="5" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="125" y="30" text-anchor="middle" font-weight="800" font-size="15">Convergente</text>
+    <text x="125" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Convergent</text>
+    <rect x="25" y="150" width="100" height="30" fill="#a0673a"/>
+    <rect x="125" y="150" width="100" height="30" fill="#8d5524"/>
+    <polygon points="85,150 125,85 165,150" fill="#7a4a22"/>
+    <polygon points="112,106 125,85 138,106" fill="#fff"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M35 135 L75 135" marker-end="url(#pb)"/><path d="M215 135 L175 135" marker-end="url(#pb)"/></g>
+    <rect x="25" y="180" width="200" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="125" y="223" text-anchor="middle" font-size="12">chocan → montañas, fosas, volcanes</text>
+    <text x="125" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">collide → mountains, trenches, volcanoes</text>
+  </g>
+  <g>
+    <rect x="260" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="380" y="30" text-anchor="middle" font-weight="800" font-size="15">Divergente</text>
+    <text x="380" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Divergent</text>
+    <rect x="275" y="150" width="95" height="30" fill="#a0673a"/>
+    <rect x="390" y="150" width="95" height="30" fill="#8d5524"/>
+    <path d="M370 150 L380 132 L390 150 Z" fill="#7a4a22"/>
+    <path d="M372 202 C376 185 384 185 388 202 L388 180 C384 170 376 170 372 180 Z" fill="#dc2626"/>
+    <path d="M376 180 C378 160 382 160 384 180" fill="#f97316"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M340 135 L295 135" marker-end="url(#pb)"/><path d="M420 135 L465 135" marker-end="url(#pb)"/></g>
+    <rect x="275" y="180" width="210" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="380" y="223" text-anchor="middle" font-size="12">se separan → dorsal oceánica, rift</text>
+    <text x="380" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">pull apart → mid-ocean ridge, rift valley</text>
+  </g>
+  <g>
+    <rect x="515" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="635" y="30" text-anchor="middle" font-weight="800" font-size="15">Transformante</text>
+    <text x="635" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Transform</text>
+    <rect x="545" y="70" width="88" height="130" fill="#a0673a"/>
+    <rect x="637" y="80" width="88" height="130" fill="#8d5524"/>
+    <path d="M635 66 L635 212" stroke="#1c2130" stroke-width="2" stroke-dasharray="6 4"/>
+    <g stroke="#fff" stroke-width="3.5" fill="none"><path d="M589 175 L589 100" marker-end="url(#pb)"/><path d="M681 105 L681 180" marker-end="url(#pb)"/></g>
+    <text x="635" y="223" text-anchor="middle" font-size="12">se deslizan → fallas, terremotos</text>
+    <text x="635" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">slide past → faults, earthquakes</text>
+  </g>
+</svg></template>
+<template id="svg-protein-path"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 240" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pp-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <text x="390" y="24" text-anchor="middle" font-size="14" font-weight="800">El viaje de una proteína · <tspan fill="#1d4ed8">A protein's journey</tspan></text>
+  <g stroke-width="2">
+    <rect x="12" y="50" width="100" height="100" rx="14" fill="#ede9fe" stroke="#6d28d9"/>
+    <rect x="144" y="50" width="100" height="100" rx="14" fill="#f3f4f6" stroke="#374151"/>
+    <rect x="276" y="50" width="100" height="100" rx="14" fill="#fee2e2" stroke="#b91c1c"/>
+    <rect x="408" y="50" width="100" height="100" rx="14" fill="#fef3c7" stroke="#b45309"/>
+    <rect x="540" y="50" width="100" height="100" rx="14" fill="#dcfce7" stroke="#15803d"/>
+    <rect x="672" y="50" width="100" height="100" rx="14" fill="#fde9f0" stroke="#be185d"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="62" y="80" font-size="13.5" font-weight="800">Núcleo</text><text x="62" y="96" font-size="11.5" fill="#1d4ed8">Nucleus</text><text x="62" y="120" font-size="11">guarda el</text><text x="62" y="134" font-size="11">ADN</text>
+    <text x="194" y="80" font-size="13.5" font-weight="800">Ribosoma</text><text x="194" y="96" font-size="11.5" fill="#1d4ed8">Ribosome</text><text x="194" y="120" font-size="11">fabrica la</text><text x="194" y="134" font-size="11">proteína</text>
+    <text x="326" y="76" font-size="13" font-weight="800">RE rugoso</text><text x="326" y="92" font-size="11.5" fill="#1d4ed8">Rough ER</text><text x="326" y="120" font-size="11">la transporta</text><text x="326" y="134" font-size="11">(con ribosomas)</text>
+    <text x="458" y="80" font-size="13.5" font-weight="800">Golgi</text><text x="458" y="96" font-size="11.5" fill="#1d4ed8">Golgi</text><text x="458" y="120" font-size="11">la modifica</text><text x="458" y="134" font-size="11">y la empaca</text>
+    <text x="590" y="80" font-size="13.5" font-weight="800">Vesícula</text><text x="590" y="96" font-size="11.5" fill="#1d4ed8">Vesicle</text><text x="590" y="120" font-size="11">burbuja que</text><text x="590" y="134" font-size="11">la lleva</text>
+    <text x="722" y="80" font-size="13.5" font-weight="800">Membrana</text><text x="722" y="96" font-size="11.5" fill="#1d4ed8">Membrane</text><text x="722" y="120" font-size="11">la saca de</text><text x="722" y="134" font-size="11">la célula</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2" marker-end="url(#pp-a)">
+    <path d="M114 100 L142 100"/><path d="M246 100 L274 100"/><path d="M378 100 L406 100"/><path d="M510 100 L538 100"/><path d="M642 100 L670 100"/>
+  </g>
+  <g font-size="10.5" text-anchor="middle" font-weight="600" fill="#374151">
+    <text x="128" y="44">ARNm</text><text x="260" y="44">proteína</text><text x="392" y="44">viaja</text><text x="524" y="44">paquete</text><text x="656" y="44">envío</text>
+  </g>
+  <g stroke="#9ca3af" stroke-width="1"><path d="M128 48 L128 92"/><path d="M260 48 L260 92"/><path d="M392 48 L392 92"/><path d="M524 48 L524 92"/><path d="M656 48 L656 92"/></g>
+  <g font-size="12">
+    <text x="12" y="186"><tspan font-weight="800">RE liso</tspan> · <tspan fill="#1d4ed8">Smooth ER</tspan>: sin ribosomas; fabrica lípidos (grasas) y elimina tóxicos · makes lipids</text>
+    <text x="12" y="210"><tspan font-weight="800">Citoesqueleto</tspan> · <tspan fill="#1d4ed8">Cytoskeleton</tspan>: fibras de proteína que dan forma, sostienen y guían el transporte</text>
+  </g>
+</svg></template>
+<template id="svg-rock-cycle"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 428" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="ra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4b5563"/></marker>
+  </defs>
+  <g stroke="#4b5563" stroke-width="2.5" fill="none" marker-end="url(#ra)">
+    <path d="M150 180 Q190 100 262 72"/>
+    <path d="M450 72 Q530 100 570 180"/>
+    <path d="M575 240 Q560 300 525 330"/>
+    <path d="M385 362 L335 362"/>
+    <path d="M195 330 Q160 300 150 240"/>
+  </g>
+  <g font-size="12.5" font-weight="600">
+    <text x="180" y="110" text-anchor="end">meteorización y erosión</text>
+    <text x="180" y="126" text-anchor="end" fill="#1d4ed8">weathering &amp; erosion</text>
+    <text x="540" y="110">compactación y cementación</text>
+    <text x="540" y="126" fill="#1d4ed8">compaction &amp; cementation</text>
+    <text x="580" y="300">calor y presión</text>
+    <text x="580" y="316" fill="#1d4ed8">heat &amp; pressure</text>
+    <text x="360" y="420" text-anchor="middle">fusión (se derrite) · <tspan fill="#1d4ed8">melting</tspan></text>
+    <text x="150" y="300" text-anchor="end">enfriamiento</text>
+    <text x="150" y="316" text-anchor="end" fill="#1d4ed8">cooling</text>
+  </g>
+  <g>
+    <rect x="30" y="182" width="190" height="58" rx="12" fill="#fde2d2" stroke="#c2410c" stroke-width="2"/>
+    <text x="125" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca ígnea</text>
+    <text x="125" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Igneous rock</text>
+    <rect x="265" y="40" width="190" height="58" rx="12" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+    <text x="360" y="65" text-anchor="middle" font-weight="800" font-size="15">Sedimentos</text>
+    <text x="360" y="84" text-anchor="middle" font-size="13" fill="#1d4ed8">Sediments</text>
+    <rect x="490" y="182" width="200" height="58" rx="12" fill="#fde68a" stroke="#a16207" stroke-width="2"/>
+    <text x="590" y="207" text-anchor="middle" font-weight="800" font-size="15">Roca sedimentaria</text>
+    <text x="590" y="226" text-anchor="middle" font-size="13" fill="#1d4ed8">Sedimentary rock</text>
+    <rect x="390" y="333" width="200" height="58" rx="12" fill="#e0e7ff" stroke="#4338ca" stroke-width="2"/>
+    <text x="490" y="358" text-anchor="middle" font-weight="800" font-size="15">Roca metamórfica</text>
+    <text x="490" y="377" text-anchor="middle" font-size="13" fill="#1d4ed8">Metamorphic rock</text>
+    <rect x="135" y="333" width="195" height="58" rx="12" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+    <text x="232" y="358" text-anchor="middle" font-weight="800" font-size="15">Magma</text>
+    <text x="232" y="377" text-anchor="middle" font-size="12.5" fill="#1d4ed8">melted rock · roca fundida</text>
+  </g>
+  <text x="360" y="215" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">Cualquier roca puede</text>
+  <text x="360" y="232" text-anchor="middle" font-size="13" fill="#4b5563" font-weight="700">convertirse en otra</text>
+  <text x="360" y="252" text-anchor="middle" font-size="12.5" fill="#1d4ed8">Any rock can become another</text>
+</svg></template>
+<template id="svg-seismic"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1d4ed8"/></marker>
+    <marker id="sa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+  </defs>
+  <circle cx="230" cy="210" r="180" fill="#fbd9bd" stroke="#7a4a22" stroke-width="5"/>
+  <circle cx="230" cy="210" r="100" fill="#fde7a3" stroke="#e0a526" stroke-width="2"/>
+  <circle cx="230" cy="210" r="45" fill="#fff6cf" stroke="#e7c75a" stroke-width="1.5"/>
+  <text x="230" y="214" font-size="11" text-anchor="middle" fill="#7a5a00">sólido · solid</text>
+  <text x="230" y="150" font-size="11.5" text-anchor="middle" fill="#7a5a00" font-weight="700">LÍQUIDO · LIQUID</text>
+  <path d="M403.7 281.9 A188 188 0 0 1 56.3 281.9" fill="none" stroke="#6b7280" stroke-width="9" stroke-linecap="round" opacity=".55"/>
+  <g stroke="#1d4ed8" stroke-width="2.4" fill="none">
+    <path d="M230 30 L140 366" marker-end="url(#pa)"/>
+    <path d="M230 30 L320 366" marker-end="url(#pa)"/>
+  </g>
+  <g stroke="#dc2626" stroke-width="2.4" fill="none">
+    <path d="M230 30 L74 120" marker-end="url(#sa)"/>
+    <path d="M230 30 L386 120" marker-end="url(#sa)"/>
+    <path d="M230 30 L53 241" marker-end="url(#sa)"/>
+    <path d="M230 30 L407 241" marker-end="url(#sa)"/>
+    <path d="M230 30 L230 108" stroke-dasharray="6 4"/>
+  </g>
+  <g stroke="#dc2626" stroke-width="3.5"><path d="M222 100 L238 116 M238 100 L222 116"/></g>
+  <polygon points="230,14 235,25 247,26 238,34 241,46 230,40 219,46 222,34 213,26 225,25" fill="#f59e0b" stroke="#92400e" stroke-width="1.5"/>
+  <text x="252" y="22" font-size="12" font-weight="700">Terremoto · Earthquake</text>
+  <text x="230" y="425" font-size="12.5" text-anchor="middle" font-weight="700" fill="#4b5563">Zona de sombra: no llegan ondas S · Shadow zone: no S-waves</text>
+  <g font-size="13.5">
+    <line x1="460" y1="70" x2="500" y2="70" stroke="#1d4ed8" stroke-width="3"/>
+    <text x="508" y="66" font-weight="700" fill="#1d4ed8">Ondas P (primarias)</text>
+    <text x="508" y="83" font-size="12">P-waves: sólidos y líquidos</text>
+    <text x="508" y="99" font-size="12" fill="#1d4ed8">solids AND liquids</text>
+    <line x1="460" y1="140" x2="500" y2="140" stroke="#dc2626" stroke-width="3"/>
+    <text x="508" y="136" font-weight="700" fill="#dc2626">Ondas S (secundarias)</text>
+    <text x="508" y="153" font-size="12">S-waves: SOLO sólidos</text>
+    <text x="508" y="169" font-size="12" fill="#1d4ed8">ONLY solids</text>
+    <rect x="455" y="200" width="255" height="120" rx="10" fill="#fff7ed" stroke="#f59e0b"/>
+    <text x="467" y="224" font-weight="800" font-size="13">Conclusión · Conclusion</text>
+    <text x="467" y="245" font-size="12">Las ondas S se detienen a ~2,900 km</text>
+    <text x="467" y="262" font-size="12">→ el núcleo externo es LÍQUIDO.</text>
+    <text x="467" y="285" font-size="12" fill="#1d4ed8">S-waves stop at ~2,900 km</text>
+    <text x="467" y="302" font-size="12" fill="#1d4ed8">→ the outer core is LIQUID.</text>
+  </g>
+</svg></template>
+<template id="svg-sexual"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 280" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="sx-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g stroke-width="2">
+    <rect x="10" y="30" width="130" height="76" rx="12" fill="#dbeafe" stroke="#1d4ed8"/>
+    <rect x="10" y="174" width="130" height="76" rx="12" fill="#fde9f0" stroke="#be185d"/>
+    <rect x="230" y="30" width="140" height="76" rx="12" fill="#eff6ff" stroke="#1d4ed8"/>
+    <rect x="230" y="174" width="140" height="76" rx="12" fill="#fdf2f8" stroke="#be185d"/>
+    <rect x="460" y="102" width="130" height="76" rx="12" fill="#fef3c7" stroke="#b45309"/>
+    <rect x="640" y="102" width="110" height="76" rx="12" fill="#dcfce7" stroke="#15803d"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="75" y="56" font-size="13.5" font-weight="800">Padre · <tspan fill="#1d4ed8">Father</tspan></text>
+    <text x="75" y="88" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="75" y="200" font-size="13.5" font-weight="800">Madre · <tspan fill="#1d4ed8">Mother</tspan></text>
+    <text x="75" y="232" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="300" y="54" font-size="13" font-weight="800">Espermatozoide</text>
+    <text x="300" y="70" font-size="11.5" fill="#1d4ed8">Sperm · gameto</text>
+    <text x="300" y="96" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">23</text>
+    <text x="300" y="198" font-size="13" font-weight="800">Óvulo</text>
+    <text x="300" y="214" font-size="11.5" fill="#1d4ed8">Egg · gameto</text>
+    <text x="300" y="240" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">23</text>
+    <text x="525" y="126" font-size="13.5" font-weight="800">Cigoto</text>
+    <text x="525" y="142" font-size="11.5" fill="#1d4ed8">Zygote</text>
+    <text x="525" y="168" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="695" y="128" font-size="12.5" font-weight="800">Nuevo</text>
+    <text x="695" y="144" font-size="12.5" font-weight="800">organismo</text>
+    <text x="695" y="164" font-size="11" fill="#1d4ed8">único · unique</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2.2" fill="none" marker-end="url(#sx-a)">
+    <path d="M142 68 L228 68"/><path d="M142 212 L228 212"/>
+    <path d="M372 76 L458 126"/><path d="M372 204 L458 156"/>
+    <path d="M592 140 L638 140"/>
+  </g>
+  <g font-size="12" text-anchor="middle" font-weight="700">
+    <text x="185" y="58">meiosis</text><text x="185" y="202">meiosis</text>
+    <text x="185" y="88" font-weight="500" font-size="11" fill="#4b5563">mitad · half</text><text x="185" y="232" font-weight="500" font-size="11" fill="#4b5563">mitad · half</text>
+    <text x="440" y="96" fill="#b45309">fecundación</text><text x="440" y="198" fill="#b45309" font-weight="500" font-size="11">fertilization</text>
+    <text x="615" y="128" font-size="11">mitosis</text>
+  </g>
+  <text x="380" y="272" text-anchor="middle" font-size="12" fill="#4b5563">23 + 23 = 46 · cada gameto es distinto → variación genética · each gamete differs → genetic variation</text>
+</svg></template>
+<template id="svg-soil-horizons"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" font-family="Inter, sans-serif">
+  <g stroke="#3f7d20" stroke-width="3" stroke-linecap="round">
+    <path d="M45 30 l-4 -16 M60 30 l3 -18 M80 30 l-2 -14 M105 30 l4 -17 M130 30 l-3 -15 M160 30 l2 -18 M190 30 l-4 -14 M215 30 l3 -16 M240 30 l-2 -15"/>
+  </g>
+  <rect x="30" y="30" width="230" height="40" fill="#3a2716"/>
+  <g fill="#7cb342"><ellipse cx="60" cy="42" rx="12" ry="5"/><ellipse cx="120" cy="55" rx="10" ry="4"/><ellipse cx="185" cy="44" rx="12" ry="5"/><ellipse cx="235" cy="58" rx="9" ry="4"/></g>
+  <g fill="#a1887f"><ellipse cx="95" cy="40" rx="9" ry="4"/><ellipse cx="215" cy="40" rx="8" ry="3"/></g>
+  <rect x="30" y="70" width="230" height="70" fill="#5b3c21"/>
+  <g stroke="#c8a27a" stroke-width="1.5" fill="none"><path d="M70 70 q5 25 -5 55 M150 70 q-6 20 4 45 M215 70 q4 18 -4 35"/></g>
+  <rect x="30" y="140" width="230" height="70" fill="#b27445"/>
+  <g fill="#8d5524"><circle cx="60" cy="160" r="3"/><circle cx="110" cy="185" r="3"/><circle cx="170" cy="165" r="3"/><circle cx="220" cy="195" r="3"/><circle cx="90" cy="200" r="2.5"/><circle cx="200" cy="150" r="2.5"/></g>
+  <rect x="30" y="210" width="230" height="70" fill="#a39b8f"/>
+  <g fill="#7b7468" stroke="#5f594f"><path d="M45 225 l25 -5 l10 20 l-20 15 l-18 -10z"/><path d="M110 240 l30 -8 l12 18 l-25 14 l-20 -8z"/><path d="M180 222 l28 2 l6 22 l-26 8 l-14 -14z"/><path d="M220 255 l25 0 l5 18 l-28 4z"/></g>
+  <rect x="30" y="280" width="230" height="70" fill="#6b6b6b"/>
+  <g stroke="#4b4b4b" stroke-width="2" fill="none"><path d="M80 280 l10 30 l-8 40 M170 280 l-6 25 l12 45"/></g>
+  <g font-size="24" font-weight="800" fill="#fff" text-anchor="middle">
+    <text x="15" y="58" fill="#3a2716">O</text><text x="15" y="113" fill="#5b3c21">A</text><text x="15" y="183" fill="#b27445">B</text><text x="15" y="253" fill="#7b7468">C</text><text x="15" y="323" fill="#4b4b4b">R</text>
+  </g>
+  <g stroke="#9aa1ae" stroke-width="1.2"><path d="M262 50 L285 50 M262 105 L285 105 M262 175 L285 175 M262 245 L285 245 M262 315 L285 315"/></g>
+  <g font-size="14.5">
+    <text x="292" y="45" font-weight="700">O · Capa orgánica · <tspan fill="#1d4ed8">Organic layer</tspan></text>
+    <text x="292" y="62" font-size="12">hojas frescas y en descomposición · fresh &amp; decomposing leaves</text>
+    <text x="292" y="100" font-weight="700">A · Suelo superficial · <tspan fill="#1d4ed8">Topsoil</tspan></text>
+    <text x="292" y="117" font-size="12">oscuro, humus + minerales, raíces · dark, humus, roots, fertile</text>
+    <text x="292" y="170" font-weight="700">B · Subsuelo · <tspan fill="#1d4ed8">Subsoil</tspan></text>
+    <text x="292" y="187" font-size="12">arcilla y minerales lavados desde arriba · clay &amp; minerals washed down</text>
+    <text x="292" y="240" font-weight="700">C · Material parental · <tspan fill="#1d4ed8">Parent material</tspan></text>
+    <text x="292" y="257" font-size="12">pedazos de roca madre meteorizada · broken, weathered bedrock</text>
+    <text x="292" y="310" font-weight="700">R · Roca madre · <tspan fill="#1d4ed8">Bedrock</tspan></text>
+    <text x="292" y="327" font-size="12">roca sólida sin meteorizar · solid, unweathered rock</text>
+  </g>
+</svg></template>
+<template id="svg-valleys"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" font-family="Inter, sans-serif">
+  <text x="180" y="26" text-anchor="middle" font-size="15" font-weight="800">Valle en V · <tspan fill="#1d4ed8">V-shaped valley</tspan></text>
+  <text x="540" y="26" text-anchor="middle" font-size="15" font-weight="800">Valle en U · <tspan fill="#1d4ed8">U-shaped valley</tspan></text>
+  <path d="M20 60 L110 60 L198 236 L212 236 L300 60 L340 60 L340 270 L20 270 Z" fill="#a0673a"/>
+  <path d="M20 60 L110 60 L198 236 L212 236 L300 60 L340 60" fill="none" stroke="#3f7d20" stroke-width="5"/>
+  <path d="M196 232 Q205 226 214 232 L212 236 L198 236 Z" fill="#3b82f6"/>
+  <path d="M380 60 L440 60 C462 150 472 206 540 210 C608 206 618 150 640 60 L700 60 L700 270 L380 270 Z" fill="#a0673a"/>
+  <path d="M380 60 L440 60 C462 150 472 206 540 210 C608 206 618 150 640 60 L700 60" fill="none" stroke="#3f7d20" stroke-width="5"/>
+  <path d="M447 90 C466 155 476 204 540 207 C604 204 614 155 633 90 Z" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="2"/>
+  <g stroke="#1c2130" stroke-width="1.3" fill="none"><path d="M216 228 L262 196"/><path d="M540 160 L540 130"/></g>
+  <g font-size="12.5">
+    <text x="266" y="192" font-weight="700" fill="#fff">un río corta</text>
+    <text x="266" y="208" fill="#fff">a river cuts</text>
+    <text x="540" y="122" text-anchor="middle" font-weight="700">glaciar raspa · glacier scrapes</text>
+  </g>
+  <g font-size="12.5" text-anchor="middle">
+    <text x="180" y="296" font-weight="700">angosto, laderas empinadas</text>
+    <text x="180" y="314" fill="#1d4ed8">narrow, steep sides · erosión por agua</text>
+    <text x="540" y="296" font-weight="700">ancho, fondo plano</text>
+    <text x="540" y="314" fill="#1d4ed8">wide, flat bottom · erosión por hielo</text>
+  </g>
+</svg></template>
+<template id="svg-virus"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="Inter, sans-serif">
+  <text x="170" y="22" text-anchor="middle" font-weight="800" font-size="15">Bacteriófago · <tspan fill="#1d4ed8">Bacteriophage</tspan></text>
+  <polygon points="170,40 215,65 215,115 170,140 125,115 125,65" fill="#e0e7ff" stroke="#4338ca" stroke-width="3"/>
+  <path d="M150 75 c10 15 25 -10 30 10 s-20 20 -5 30 s25 -5 20 10" fill="none" stroke="#c2410c" stroke-width="2.5"/>
+  <rect x="160" y="140" width="20" height="80" fill="#c7d2fe" stroke="#4338ca" stroke-width="2"/>
+  <g stroke="#4338ca" stroke-width="1.5"><path d="M160 152 h20 M160 164 h20 M160 176 h20 M160 188 h20 M160 200 h20"/></g>
+  <rect x="148" y="220" width="44" height="8" fill="#4338ca"/>
+  <g stroke="#4338ca" stroke-width="3" fill="none" stroke-linecap="round"><path d="M150 228 L120 255 L110 285"/><path d="M190 228 L220 255 L230 285"/><path d="M160 228 L150 262 L140 290"/><path d="M180 228 L190 262 L200 290"/></g>
+  <g stroke="#9aa1ae" stroke-width="1.3"><path d="M215 70 L262 55"/><path d="M180 95 L262 110"/><path d="M180 180 L262 178"/><path d="M222 262 L262 250"/></g>
+  <g font-size="12.5">
+    <text x="268" y="52" font-weight="700">Cápside (cubierta de proteína)</text><text x="268" y="67" fill="#1d4ed8">Capsid (protein coat)</text>
+    <text x="268" y="108" font-weight="700">Material genético: ADN o ARN</text><text x="268" y="123" fill="#1d4ed8">Genetic material: DNA or RNA</text>
+    <text x="268" y="176" font-weight="700">Cola · <tspan fill="#1d4ed8">Tail</tspan></text>
+    <text x="268" y="248" font-weight="700">Fibras de la cola · <tspan fill="#1d4ed8">Tail fibers</tspan></text>
+  </g>
+  <text x="570" y="22" text-anchor="middle" font-weight="800" font-size="15">Virus con envoltura · <tspan fill="#1d4ed8">Enveloped</tspan></text>
+  <g stroke="#b91c1c" stroke-width="3" stroke-linecap="round">
+    <path d="M570 60 v-14 M570 220 v14 M490 140 h-14 M650 140 h14 M513 83 l-10 -10 M627 83 l10 -10 M513 197 l-10 10 M627 197 l10 10"/>
+  </g>
+  <g fill="#b91c1c"><circle cx="570" cy="44" r="5"/><circle cx="570" cy="236" r="5"/><circle cx="474" cy="140" r="5"/><circle cx="666" cy="140" r="5"/><circle cx="501" cy="71" r="5"/><circle cx="639" cy="71" r="5"/><circle cx="501" cy="209" r="5"/><circle cx="639" cy="209" r="5"/></g>
+  <circle cx="570" cy="140" r="80" fill="#fff1f2" stroke="#e11d48" stroke-width="4"/>
+  <circle cx="570" cy="140" r="52" fill="#e0e7ff" stroke="#4338ca" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <path d="M545 130 c10 -20 20 20 30 0 s15 20 25 0" fill="none" stroke="#c2410c" stroke-width="2.5"/>
+  <text x="570" y="270" text-anchor="middle" font-size="12.5"><tspan font-weight="700">Envoltura</tspan> · <tspan fill="#1d4ed8">Envelope</tspan> · <tspan font-weight="700">Espículas</tspan> · <tspan fill="#1d4ed8">Spikes</tspan></text>
+  <text x="570" y="290" text-anchor="middle" font-size="12" fill="#4b5563">ej. gripe · e.g. flu</text>
+  <rect x="265" y="285" width="190" height="30" rx="8" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="360" y="305" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">NO es una célula · NOT a cell</text>
 </svg></template>
 
 <script>
@@ -586,18 +853,77 @@ const CONTENT = {
   ],
   // Plan por fecha (Deadline Scheduler): qué temas son "el tema de hoy".
   plan: {
-    "2026-11-26": ["capas", "evidencia"],
-    "2026-11-27": ["placas", "relieves"],
-    "2026-11-28": ["meteorizacion", "suelo"],
-    "2026-11-29": ["minerales", "rocas"],
+    "2026-11-26": ["sistemas", "capas", "comportamiento", "evidencia"],
+    "2026-11-27": ["endogenos", "placas", "relieves-int"],
+    "2026-11-28": ["meteorizacion", "erosion", "relieves-ext", "relieves"],
+    "2026-11-29": ["suelo", "minerales", "propiedades", "rocas"],
     "2026-11-30": [],
-    "2026-12-01": ["teoria", "niveles", "organelos", "tipos"],
-    "2026-12-02": ["virus", "microbios", "reproduccion", "papel"],
+    "2026-12-01": ["teoria", "niveles", "organelos", "organelos2", "tipos"],
+    "2026-12-02": ["virus", "microbios", "comparacion", "reproduccion", "sexual", "papel"],
     "2026-12-03": [],
   },
+  // Preguntas extra para el Simulacro (se suman a las 40 de la práctica).
+  mcq: [
+    { mod: "geo", q: "Which of Earth's systems includes rocks, minerals, soil and landforms?", help: "¿Qué sistema incluye rocas, minerales, suelo y relieve?", opts: ["Hydrosphere", "Geosphere", "Biosphere"], ans: 1, why: ["Geosfera = la parte sólida de la Tierra.", "Geosphere = the solid part of Earth."] },
+    { mod: "geo", q: "The <b>rigid</b> layer made of the crust and the uppermost mantle, broken into tectonic plates, is the:", help: "Capa rígida (corteza + manto superior) rota en placas.", opts: ["Asthenosphere", "Lithosphere", "Mesosphere"], ans: 1, why: ["Litosfera = corteza + manto superior, rígida.", "Lithosphere = crust + upper mantle, rigid."] },
+    { mod: "geo", q: "Tectonic plates slide over a <b>soft, slowly flowing</b> layer of the upper mantle called the:", help: "Capa blanda del manto sobre la que se mueven las placas.", opts: ["Asthenosphere", "Inner core", "Crust"], ans: 0, why: ["La astenosfera es blanda y fluye.", "The asthenosphere is soft and flows."] },
+    { mod: "geo", q: "Which instrument <b>records</b> the seismic waves of an earthquake?", help: "¿Qué instrumento registra las ondas de un terremoto?", opts: ["Barometer", "Seismograph", "Thermometer"], ans: 1, why: ["El sismógrafo registra las ondas en un sismograma.", "A seismograph records waves on a seismogram."] },
+    { mod: "geo", q: "Seismic waves suddenly <b>speed up</b> at the boundary between the <b>crust and the mantle</b>. What is this boundary called?", help: "Límite corteza–manto donde las ondas se aceleran.", opts: ["Gutenberg discontinuity", "Mohorovičić discontinuity (Moho)", "Shadow zone"], ans: 1, why: ["Moho = límite corteza–manto. Gutenberg = manto–núcleo.", "Moho = crust–mantle boundary. Gutenberg = mantle–core."] },
+    { mod: "geo", q: "What makes tectonic plates <b>move</b>?", help: "¿Qué hace que se muevan las placas?", opts: ["Convection currents in the mantle", "Ocean tides", "Wind blowing on the continents"], ans: 0, why: ["Las corrientes de convección del manto arrastran las placas.", "Mantle convection currents drag the plates."] },
+    { mod: "geo", q: "Rock <b>breaks</b> along faults and some blocks rise while others drop. Which landform forms?", help: "La roca se rompe y unos bloques suben y otros bajan.", opts: ["Fault-block mountain", "Delta", "Sand dune"], ans: 0, why: ["Romperse en bloques = falla → montaña de falla.", "Breaking into blocks = fault → fault-block mountain."] },
+    { mod: "geo", q: "A <b>glacier</b> moves down a mountain valley for thousands of years. What shape does the valley get?", help: "Un glaciar baja por un valle. ¿Qué forma le deja?", opts: ["V-shaped", "U-shaped", "Fan-shaped"], ans: 1, why: ["Glaciar = valle en U; río = valle en V.", "Glacier = U-shaped valley; river = V-shaped."] },
+    { mod: "geo", q: "A river leaves the mountains, <b>slows down on flat land</b> and drops sediment in a <b>fan</b> shape. This landform is a(n):", help: "Un río sale de la montaña a un llano y deja sedimento en abanico.", opts: ["Alluvial fan", "Canyon", "Plateau"], ans: 0, why: ["Abanico aluvial: depósito al pie de una montaña.", "Alluvial fan: deposition at the foot of a mountain."] },
+    { mod: "geo", q: "A mineral is <b>attracted to a magnet</b>. Which mineral is it most likely to be?", help: "Un mineral se pega a un imán. ¿Cuál es?", opts: ["Quartz", "Magnetite", "Talc"], ans: 1, why: ["Magnetismo = magnetita.", "Magnetism = magnetite."] },
+    { mod: "geo", q: "On the <b>Mohs scale</b>, which mineral is the hardest?", help: "En la escala de Mohs, ¿cuál es el más duro?", opts: ["Quartz (7)", "Diamond (10)", "Talc (1)"], ans: 1, why: ["Diamante = 10, el más duro.", "Diamond = 10, the hardest."] },
+    { mod: "geo", q: "Which agent of erosion forms <b>sand dunes</b>?", help: "¿Qué agente forma las dunas?", opts: ["Wind", "Gravity", "Glaciers"], ans: 0, why: ["El viento lleva y amontona la arena.", "Wind carries and piles up sand."] },
+    { mod: "cell", q: "Which organelle has <b>ribosomes</b> on its surface and helps make and transport <b>proteins</b>?", help: "Organelo con ribosomas que transporta proteínas.", opts: ["Smooth endoplasmic reticulum", "Rough endoplasmic reticulum", "Vacuole"], ans: 1, why: ["Rugoso = con ribosomas = proteínas.", "Rough = with ribosomes = proteins."] },
+    { mod: "cell", q: "Which structure is a <b>network of protein fibers</b> that gives the cell its shape and support?", help: "Red de fibras que da forma y soporte.", opts: ["Cytoskeleton", "Cell wall", "Nucleus"], ans: 0, why: ["El citoesqueleto es la red de fibras interna.", "The cytoskeleton is the internal fiber network."] },
+    { mod: "cell", q: "Fungal cell walls are made of chitin. What are <b>plant</b> cell walls made of?", help: "¿De qué es la pared celular de las plantas?", opts: ["Peptidoglycan", "Cellulose", "Chitin"], ans: 1, why: ["Plantas: celulosa. Bacterias: peptidoglicano.", "Plants: cellulose. Bacteria: peptidoglycan."] },
+    { mod: "cell", q: "Which list shows the <b>path of a protein</b> in the cell?", help: "¿Cuál es el camino de una proteína?", opts: ["Golgi → ribosome → rough ER", "Ribosome → rough ER → Golgi → vesicle", "Vesicle → nucleus → ribosome"], ans: 1, why: ["Se fabrica, se transporta, se empaca y se envía.", "It is made, transported, packaged and shipped."] },
+    { mod: "cell", q: "Which of these is <b>neither</b> prokaryotic <b>nor</b> eukaryotic?", help: "¿Cuál no es procariota ni eucariota?", opts: ["A bacterium", "A virus", "A yeast"], ans: 1, why: ["El virus no es una célula.", "A virus is not a cell."] },
+    { mod: "cell", q: "Which statement is a <b>similarity</b> between bacteria, protists and fungi?", help: "Semejanza entre bacterias, protistas y hongos.", opts: ["All of them have a nucleus", "All of them are cells with a membrane, cytoplasm and ribosomes", "All of them do photosynthesis"], ans: 1, why: ["Los tres son células; las bacterias no tienen núcleo.", "All three are cells; bacteria have no nucleus."] },
+    { mod: "cell", q: "A human sperm cell has <b>23</b> chromosomes. How many chromosomes does the <b>zygote</b> have after fertilization?", help: "Espermatozoide 23. ¿Cuántos tiene el cigoto?", opts: ["23", "46", "92"], ans: 1, why: ["23 + 23 = 46.", "23 + 23 = 46."] },
+    { mod: "cell", q: "Which type of cell division produces <b>gametes</b> with <b>half</b> the number of chromosomes?", help: "¿Qué división forma gametos con la mitad de cromosomas?", opts: ["Mitosis", "Meiosis", "Binary fission"], ans: 1, why: ["Meiosis = gametos con la mitad.", "Meiosis = gametes with half."] },
+    { mod: "cell", q: "A farmer plants <b>pieces of potato</b> and each one grows into a new plant. This is:", help: "Pedazos de papa que crecen como plantas nuevas.", opts: ["Vegetative propagation (asexual)", "Fertilization (sexual)", "Conjugation"], ans: 0, why: ["Reproducción vegetativa: asexual, a partir de tubérculos.", "Vegetative propagation: asexual, from tubers."] },
+    { mod: "cell", q: "Two paramecia join and <b>exchange genetic material</b>. This process is called:", help: "Dos paramecios intercambian material genético.", opts: ["Budding", "Conjugation", "Fragmentation"], ans: 1, why: ["Conjugación: forma sexual en protistas.", "Conjugation: a sexual process in protists."] },
+    { mod: "cell", q: "How do <b>viruses</b> get energy and materials?", help: "¿Cómo se alimentan los virus?", opts: ["By photosynthesis", "By absorbing food like fungi", "They don't feed; they use the host cell"], ans: 2, why: ["El virus no tiene metabolismo: usa la célula huésped.", "A virus has no metabolism: it uses the host cell."] },
+    { mod: "cell", q: "Two fungal <b>hyphae of different mating types</b> join and produce spores. What type of reproduction is this?", help: "Dos hifas distintas se unen y forman esporas.", opts: ["Sexual", "Binary fission", "Vegetative"], ans: 0, why: ["Unión de dos tipos = sexual, con variación.", "Joining two types = sexual, with variation."] },
+  ],
   topics: [
     {
-      id: "capas", mod: "geo", svg: "earth-layers",
+      id: "sistemas", mod: "geo", figs: [["earth-systems", "Los 4 sistemas y cómo se afectan", "The 4 systems and how they affect each other"]],
+      es: "Los sistemas de la Tierra", en: "Earth's systems",
+      map: {
+        easy: ["Son 4 sistemas: geosfera, hidrosfera, atmósfera y biosfera.", "There are 4 systems: geosphere, hydrosphere, atmosphere and biosphere."],
+        hard: ["Explicar cómo se afectan unos a otros con un ejemplo.", "Explaining how they affect each other with an example."],
+        exam: ["La geosfera es la primera línea del temario: la parte sólida de la Tierra.", "The geosphere is the first line of the syllabus: the solid part of Earth."],
+      },
+      sum: [
+        ["Geosfera: la parte sólida — rocas, minerales, suelo, capas internas y relieve.", "Geosphere: the solid part — rocks, minerals, soil, internal layers and landforms."],
+        ["Hidrosfera: toda el agua — océanos, ríos, lagos, hielo y agua subterránea.", "Hydrosphere: all the water — oceans, rivers, lakes, ice and groundwater."],
+        ["Atmósfera: la capa de gases (aire) que rodea la Tierra.", "Atmosphere: the layer of gases (air) around Earth."],
+        ["Biosfera: todos los seres vivos y los lugares donde viven.", "Biosphere: all living things and the places where they live."],
+        ["Los 4 sistemas interactúan: lo que pasa en uno cambia a los otros.", "The 4 systems interact: what happens in one changes the others."],
+      ],
+      beats: [
+        ["Piensa en la Tierra como un equipo de cuatro jugadores que siempre se pasan la bola.", "Think of Earth as a team of four players who always pass the ball."],
+        ["La lluvia, que es hidrosfera, cae sobre las rocas, que son geosfera, y las va rompiendo.", "Rain, which is hydrosphere, falls on rocks, which are geosphere, and slowly breaks them."],
+        ["Las plantas, que son biosfera, toman minerales del suelo y sueltan oxígeno a la atmósfera.", "Plants, which are biosphere, take minerals from the soil and release oxygen into the atmosphere."],
+        ["Un volcán, que es geosfera, lanza gases y ceniza a la atmósfera.", "A volcano, which is geosphere, throws gases and ash into the atmosphere."],
+        ["El viento, que es atmósfera, mueve el agua del mar y forma olas que golpean la costa.", "Wind, which is atmosphere, moves seawater and makes waves that hit the coast."],
+      ],
+      life: ["Cuando llueve fuerte en Costa Rica y hay un derrumbe, actúan juntas la atmósfera (la lluvia), la hidrosfera (el agua en el suelo) y la geosfera (la tierra que se desliza).", "When heavy rain in Costa Rica causes a landslide, the atmosphere (rain), the hydrosphere (water in the soil) and the geosphere (the sliding land) act together."],
+      items: [
+        ["si-1", "¿Qué es la geosfera?", "What is the geosphere?", "La parte sólida de la Tierra: rocas, minerales, suelo, capas internas y relieve.", "The solid part of Earth: rocks, minerals, soil, internal layers and landforms.", true],
+        ["si-2", "Nombra los 4 sistemas de la Tierra.", "Name Earth's 4 systems.", "Geosfera, hidrosfera, atmósfera y biosfera.", "Geosphere, hydrosphere, atmosphere and biosphere.", true],
+        ["si-3", "La lluvia rompe las rocas de una montaña. ¿Qué dos sistemas interactúan?", "Rain breaks the rocks of a mountain. Which two systems interact?", "La hidrosfera (la lluvia) y la geosfera (las rocas).", "The hydrosphere (rain) and the geosphere (rocks).", true],
+        ["si-4", "Un volcán lanza gases al aire. ¿Qué sistemas interactúan?", "A volcano releases gases into the air. Which systems interact?", "La geosfera (el volcán) y la atmósfera (el aire).", "The geosphere (volcano) and the atmosphere (air).", false],
+        ["si-5", "¿A qué sistema pertenecen el agua subterránea y los glaciares?", "Which system do groundwater and glaciers belong to?", "A la hidrosfera.", "The hydrosphere.", false],
+        ["si-6", "Las raíces de un árbol parten una roca. ¿Qué sistemas interactúan?", "Tree roots split a rock. Which systems interact?", "La biosfera (el árbol) y la geosfera (la roca).", "The biosphere (tree) and the geosphere (rock).", false],
+      ],
+    },
+    {
+      id: "capas", mod: "geo", figs: [["earth-layers", "Las 4 capas por composición (no está a escala)", "The 4 layers by composition (not to scale)"]],
       es: "Las capas de la Tierra", en: "Earth's layers",
       map: {
         easy: ["Los nombres y el orden de las 4 capas.", "The names and order of the 4 layers."],
@@ -628,7 +954,39 @@ const CONTENT = {
       ],
     },
     {
-      id: "evidencia", mod: "geo", svg: "seismic",
+      id: "comportamiento", mod: "geo", figs: [["layers-compare", "La misma Tierra dividida de dos formas", "The same Earth divided in two ways"]],
+      es: "Capas por comportamiento", en: "Layers by physical behavior",
+      map: {
+        easy: ["Litosfera rígida arriba, astenosfera blanda debajo.", "Rigid lithosphere on top, soft asthenosphere below."],
+        hard: ["No confundir la división por composición (de qué están hechas) con la de comportamiento (cómo se portan).", "Not confusing the division by composition (what they are made of) with the one by behavior (how they behave)."],
+        exam: ["Pareo: litosfera = placas rígidas; astenosfera = fluye; mesosfera = manto inferior sólido.", "Matching: lithosphere = rigid plates; asthenosphere = flows; mesosphere = solid lower mantle."],
+      },
+      sum: [
+        ["Hay dos formas de dividir la Tierra: por composición (corteza, manto, núcleo) y por comportamiento (rígida, blanda, sólida o líquida).", "There are two ways to divide Earth: by composition (crust, mantle, core) and by behavior (rigid, soft, solid or liquid)."],
+        ["Litosfera: la corteza + la parte de arriba del manto; rígida, de unos 100 km, y rota en placas tectónicas.", "Lithosphere: the crust + the top part of the mantle; rigid, about 100 km, and broken into tectonic plates."],
+        ["Astenosfera: parte del manto superior, blanda y plástica; fluye lento y sobre ella se mueven las placas.", "Asthenosphere: part of the upper mantle, soft and plastic; it flows slowly and the plates move on it."],
+        ["Mesosfera: el manto inferior, hasta 2,900 km; sólida y rígida por la presión.", "Mesosphere: the lower mantle, down to 2,900 km; solid and rigid because of pressure."],
+        ["Después siguen el núcleo externo (líquido) y el núcleo interno (sólido).", "Then come the outer core (liquid) and the inner core (solid)."],
+      ],
+      beats: [
+        ["Puedes dividir la Tierra por lo que está hecha, o por cómo se porta: si es dura, blanda o líquida.", "You can divide Earth by what it's made of, or by how it behaves: hard, soft or liquid."],
+        ["Arriba está la litosfera: la corteza más un pedazo del manto. Es dura y está partida en placas.", "On top is the lithosphere: the crust plus a piece of the mantle. It is hard and broken into plates."],
+        ["Debajo, la astenosfera es como plastilina caliente: las placas flotan y se deslizan sobre ella.", "Below, the asthenosphere is like warm modeling clay: the plates float and slide on it."],
+        ["Más abajo, la mesosfera vuelve a ser sólida y rígida, porque la presión es enorme.", "Deeper, the mesosphere is solid and rigid again, because the pressure is huge."],
+        ["Al final están el núcleo externo líquido y el núcleo interno sólido.", "At the end are the liquid outer core and the solid inner core."],
+      ],
+      life: ["Es como un queque con una capa de dulce de leche: la capa de arriba es dura (litosfera) y el dulce de leche de abajo se mueve (astenosfera), por eso la de arriba se puede deslizar.", "It's like a cake with a caramel layer: the top layer is hard (lithosphere) and the caramel below moves (asthenosphere), so the top can slide."],
+      items: [
+        ["co-1", "Capa rígida formada por la corteza y la parte superior del manto, rota en placas.", "Rigid layer made of the crust and the upper mantle, broken into plates.", "Litosfera.", "Lithosphere.", true],
+        ["co-2", "Capa blanda y plástica del manto superior sobre la que se mueven las placas.", "Soft, plastic layer of the upper mantle on which the plates move.", "Astenosfera.", "Asthenosphere.", true],
+        ["co-3", "Manto inferior, sólido y rígido por la presión, hasta 2,900 km.", "Lower mantle, solid and rigid because of pressure, down to 2,900 km.", "Mesosfera.", "Mesosphere.", true],
+        ["co-4", "¿En qué se diferencia la división por composición de la división por comportamiento?", "How is the division by composition different from the division by behavior?", "Composición: de qué material está hecha cada capa (corteza, manto, núcleo). Comportamiento: si es rígida, blanda, sólida o líquida (litosfera, astenosfera, mesosfera, núcleos).", "Composition: what material each layer is made of (crust, mantle, core). Behavior: whether it is rigid, soft, solid or liquid (lithosphere, asthenosphere, mesosphere, cores).", true],
+        ["co-5", "¿Por qué se pueden mover las placas tectónicas?", "Why can tectonic plates move?", "Porque la litosfera rígida flota sobre la astenosfera, que es blanda y fluye.", "Because the rigid lithosphere floats on the asthenosphere, which is soft and flows.", false],
+        ["co-6", "¿Qué capas forman la litosfera?", "Which layers make up the lithosphere?", "La corteza y la parte de arriba del manto.", "The crust and the top part of the mantle.", false],
+      ],
+    },
+    {
+      id: "evidencia", mod: "geo", figs: [["seismic", "Las ondas S no atraviesan el núcleo externo líquido", "S-waves cannot cross the liquid outer core"]],
       es: "Evidencia del interior", en: "Evidence of Earth's interior",
       map: {
         easy: ["Nadie ha llegado al manto: el pozo más profundo mide unos 12 km.", "No one has reached the mantle: the deepest hole is about 12 km."],
@@ -636,17 +994,18 @@ const CONTENT = {
         exam: ["Ondas P y S, meteoritos de hierro y níquel, y xenolitos.", "P and S waves, iron-nickel meteorites and xenoliths."],
       },
       sum: [
-        ["Como no podemos llegar adentro, usamos pistas: evidencia directa e indirecta.", "Since we can't go inside, we use clues: direct and indirect evidence."],
-        ["Ondas P: pasan por sólidos y líquidos. Ondas S: solo por sólidos.", "P-waves: go through solids and liquids. S-waves: only solids."],
-        ["Las ondas S se detienen a 2,900 km: ahí empieza el núcleo externo líquido.", "S-waves stop at 2,900 km: the liquid outer core starts there."],
-        ["Los meteoritos de hierro y níquel son pistas de qué está hecho el núcleo.", "Iron-nickel meteorites are clues about what the core is made of."],
-        ["Los xenolitos son rocas reales del manto que un volcán sube a la superficie.", "Xenoliths are real mantle rocks that a volcano brings to the surface."],
+        ["Como no podemos llegar adentro, usamos pistas: evidencia directa (xenolitos, perforaciones) e indirecta (ondas sísmicas, meteoritos).", "Since we can't go inside, we use clues: direct evidence (xenoliths, drilling) and indirect evidence (seismic waves, meteorites)."],
+        ["El sismógrafo registra las ondas de un terremoto en un sismograma. Ondas P: sólidos y líquidos. Ondas S: solo sólidos.", "A seismograph records earthquake waves on a seismogram. P-waves: solids and liquids. S-waves: only solids."],
+        ["Discontinuidad de Mohorovičić (Moho): el límite corteza–manto, donde las ondas se aceleran (a 5–70 km).", "Mohorovičić discontinuity (Moho): the crust–mantle boundary, where waves speed up (at 5–70 km)."],
+        ["Discontinuidad de Gutenberg: el límite manto–núcleo a 2,900 km; ahí se detienen las ondas S, porque el núcleo externo es líquido.", "Gutenberg discontinuity: the mantle–core boundary at 2,900 km; S-waves stop there because the outer core is liquid."],
+        ["Meteoritos de hierro y níquel = composición del núcleo. Xenolitos = muestras reales del manto.", "Iron-nickel meteorites = core composition. Xenoliths = real mantle samples."],
       ],
       beats: [
         ["Un terremoto manda dos tipos de ondas por dentro de la Tierra.", "An earthquake sends two kinds of waves through Earth."],
-        ["Las ondas P son como un empujón: pasan por roca y por líquido.", "P-waves are like a push: they pass through rock and liquid."],
-        ["Las ondas S son como sacudir una cuerda: solo viajan por sólidos.", "S-waves are like shaking a rope: they only travel through solids."],
-        ["A 2,900 km las ondas S desaparecen. Conclusión: ahí hay un líquido, el núcleo externo.", "At 2,900 km the S-waves disappear. Conclusion: there is a liquid there, the outer core."],
+        ["Un sismógrafo, como un lápiz que tiembla sobre papel, dibuja esas ondas. El dibujo se llama sismograma.", "A seismograph, like a pen shaking on paper, draws those waves. The drawing is called a seismogram."],
+        ["Las ondas P son como un empujón y pasan por roca y por líquido; las ondas S son como sacudir una cuerda y solo viajan por sólidos.", "P-waves are like a push and pass through rock and liquid; S-waves are like shaking a rope and only travel through solids."],
+        ["Al pasar de la corteza al manto, las ondas se aceleran de golpe: ese límite es la Moho.", "Going from the crust into the mantle, the waves suddenly speed up: that boundary is the Moho."],
+        ["A 2,900 km las ondas S desaparecen: es la discontinuidad de Gutenberg, donde empieza el núcleo externo líquido.", "At 2,900 km the S-waves disappear: that's the Gutenberg discontinuity, where the liquid outer core begins."],
         ["Los meteoritos metálicos y los xenolitos son las otras pistas: muestras de núcleos de otros cuerpos y del manto.", "Metallic meteorites and xenoliths are the other clues: samples of other bodies' cores and of the mantle."],
       ],
       life: ["Es como adivinar qué hay dentro de un regalo sin abrirlo: lo sacudes y escuchas. Los científicos sacuden la Tierra con los terremotos.", "It's like guessing what's inside a gift without opening it: you shake it and listen. Scientists shake Earth with earthquakes."],
@@ -656,6 +1015,42 @@ const CONTENT = {
         ["ev-3", "¿Qué nos dicen los meteoritos de hierro y níquel?", "What do iron-nickel meteorites tell us?", "Dan pistas de la composición química de los núcleos de los planetas.", "They give clues about the chemical composition of planetary cores.", true],
         ["ev-4", "¿Qué ondas viajan por sólidos Y por líquidos?", "Which waves travel through solids AND liquids?", "Las ondas P (primarias).", "P-waves (primary).", false],
         ["ev-5", "¿Por qué casi todo lo que sabemos del interior es evidencia indirecta?", "Why is most of what we know about the interior indirect evidence?", "Porque las capas son muy profundas y calientes; el pozo más profundo solo llegó a unos 12 km.", "Because the layers are too deep and hot; the deepest hole only reached about 12 km.", false],
+        ["ev-6", "¿Qué instrumento registra las ondas sísmicas?", "Which instrument records seismic waves?", "El sismógrafo; el registro se llama sismograma.", "The seismograph; the record is called a seismogram.", true],
+        ["ev-7", "¿Qué es la discontinuidad de Mohorovičić (Moho)?", "What is the Mohorovičić discontinuity (Moho)?", "El límite entre la corteza y el manto, donde las ondas sísmicas se aceleran.", "The boundary between the crust and the mantle, where seismic waves speed up.", true],
+        ["ev-8", "¿Qué es la discontinuidad de Gutenberg y a qué profundidad está?", "What is the Gutenberg discontinuity and how deep is it?", "El límite entre el manto y el núcleo externo, a unos 2,900 km; ahí se detienen las ondas S.", "The boundary between the mantle and the outer core, at about 2,900 km; S-waves stop there.", true],
+        ["ev-9", "¿Qué es la zona de sombra?", "What is the shadow zone?", "La parte de la Tierra adonde no llegan ondas S, porque el núcleo externo líquido las detiene.", "The part of Earth where S-waves don't arrive, because the liquid outer core stops them.", false],
+      ],
+    },
+    {
+      id: "endogenos", mod: "geo", figs: [["convection", "Las corrientes de convección del manto arrastran las placas", "Mantle convection currents drag the plates"]],
+      es: "Convección, plegamiento y fallas", en: "Convection, folding and faulting",
+      map: {
+        easy: ["Las placas se mueven porque el manto se mueve.", "Plates move because the mantle moves."],
+        hard: ["Diferenciar plegamiento (la roca se dobla) de falla (la roca se rompe).", "Telling folding (rock bends) from faulting (rock breaks)."],
+        exam: ["Por qué se mueven las placas: las corrientes de convección del manto.", "Why plates move: mantle convection currents."],
+      },
+      sum: [
+        ["Corrientes de convección: el manto caliente sube, se enfría arriba y baja, en un ciclo que no para.", "Convection currents: hot mantle rises, cools near the top and sinks, in a cycle that never stops."],
+        ["Ese movimiento arrastra las placas: donde el material sube, se separan; donde baja, chocan.", "That movement drags the plates: where material rises they pull apart; where it sinks, they collide."],
+        ["Plegamiento: las capas de roca se doblan por compresión (empuje) y forman montañas plegadas.", "Folding: rock layers bend under compression (pushing) and form folded mountains."],
+        ["Falla: la roca se rompe y los bloques se mueven; forma montañas de falla y valles de rift, y causa terremotos.", "Faulting: the rock breaks and the blocks move; it forms fault-block mountains and rift valleys, and causes earthquakes."],
+        ["Otros procesos endógenos: volcanismo, terremotos y levantamiento del terreno.", "Other endogenic processes: volcanism, earthquakes and uplift."],
+      ],
+      beats: [
+        ["Pon a hervir agua con arroz: el agua caliente sube por el centro, se enfría arriba y baja por los lados.", "Boil water with rice: hot water rises in the middle, cools at the top and sinks at the sides."],
+        ["El manto hace lo mismo, pero lentísimo: son las corrientes de convección.", "The mantle does the same, but very slowly: these are convection currents."],
+        ["Esas corrientes arrastran las placas que están encima, como la banda de la caja del supermercado.", "Those currents drag the plates on top, like the conveyor belt at a supermarket checkout."],
+        ["Si las placas empujan y la roca se dobla sin romperse, es plegamiento: salen montañas plegadas.", "If plates push and the rock bends without breaking, it's folding: folded mountains rise."],
+        ["Si la roca no aguanta y se rompe, es una falla: los bloques suben o bajan y tiembla.", "If the rock can't take it and breaks, it's a fault: blocks move up or down and the ground shakes."],
+      ],
+      life: ["Empuja los extremos de una barra de plastilina: se arruga (plegamiento). Haz lo mismo con una galleta: se quiebra (falla).", "Push the ends of a clay bar: it wrinkles (folding). Do the same with a cookie: it snaps (faulting)."],
+      items: [
+        ["en-1", "¿Por qué se mueven las placas tectónicas?", "Why do tectonic plates move?", "Por las corrientes de convección del manto: el material caliente sube, se enfría y baja, y arrastra las placas.", "Because of mantle convection currents: hot material rises, cools and sinks, dragging the plates.", true],
+        ["en-2", "Las capas de roca se doblan por compresión sin romperse. ¿Qué proceso es?", "Rock layers bend under compression without breaking. What process is it?", "Plegamiento: forma montañas plegadas.", "Folding: it forms folded mountains.", true],
+        ["en-3", "La roca se rompe y un bloque sube o baja. ¿Qué es?", "Rock breaks and a block moves up or down. What is it?", "Una falla: forma montañas de falla y causa terremotos.", "A fault: it forms fault-block mountains and causes earthquakes.", true],
+        ["en-4", "¿Qué le pasa al material del manto en una corriente de convección?", "What happens to mantle material in a convection current?", "Se calienta y sube, se enfría y se vuelve más denso, y baja otra vez.", "It heats up and rises, cools and becomes denser, and sinks again.", false],
+        ["en-5", "Nombra 3 procesos endógenos.", "Name 3 endogenic processes.", "Plegamiento, fallas y volcanismo (también terremotos y levantamiento).", "Folding, faulting and volcanism (also earthquakes and uplift).", true],
+        ["en-6", "¿Cuál es la diferencia entre plegamiento y falla?", "What is the difference between folding and faulting?", "En el plegamiento la roca se dobla; en la falla la roca se rompe y los bloques se desplazan.", "In folding the rock bends; in faulting the rock breaks and the blocks shift.", false],
       ],
     },
     {
@@ -690,6 +1085,49 @@ const CONTENT = {
       ],
     },
     {
+      id: "relieves-int", mod: "geo", svg: null,
+      es: "Relieves por fuerzas internas", en: "Landforms from internal forces",
+      table: {
+        head: ["Relieve · Landform", "Cómo se forma · How it forms", "Ejemplo"],
+        rows: [
+          ["Montañas plegadas · Folded mountains", "dos placas chocan y las capas se doblan (plegamiento)", "Himalaya, Alpes"],
+          ["Montañas de falla · Fault-block mountains", "la roca se rompe y unos bloques suben mientras otros bajan", "Sierra Nevada (EE. UU.)"],
+          ["Volcanes · Volcanoes", "el magma sale a la superficie y se acumula en capas", "Arenal, Poás, Irazú"],
+          ["Mesetas · Plateaus", "zonas altas y planas levantadas por fuerzas internas o formadas por coladas de lava", "Meseta del Colorado"],
+          ["Fosas oceánicas · Trenches", "subducción: una placa se hunde bajo otra", "Fosa Mesoamericana"],
+          ["Dorsales oceánicas · Mid-ocean ridges", "placas oceánicas se separan y sube el magma", "Dorsal del Atlántico"],
+          ["Valles de rift · Rift valleys", "placas continentales se separan y el centro se hunde por fallas", "Rift de África Oriental"],
+        ],
+      },
+      map: {
+        easy: ["Las fuerzas de adentro construyen el relieve.", "Forces from inside build landforms."],
+        hard: ["Montaña plegada (se dobla) vs. montaña de falla (se rompe).", "Folded mountain (bends) vs. fault-block mountain (breaks)."],
+        exam: ["Relacionar cada relieve con el proceso que lo forma.", "Matching each landform to the process that forms it."],
+      },
+      sum: [
+        ["Montañas plegadas: capas de roca dobladas cuando dos placas chocan.", "Folded mountains: rock layers bent when two plates collide."],
+        ["Montañas de falla: bloques de roca rotos que suben mientras otros bajan.", "Fault-block mountains: broken blocks of rock that rise while others drop."],
+        ["Volcanes: el magma sale y se acumula en capas.", "Volcanoes: magma erupts and piles up in layers."],
+        ["Mesetas: zonas altas y planas, levantadas por fuerzas internas o formadas por coladas de lava.", "Plateaus: high, flat areas, lifted by internal forces or built by lava flows."],
+        ["En el océano: fosas (subducción) y dorsales (placas que se separan).", "In the ocean: trenches (subduction) and ridges (plates pulling apart)."],
+      ],
+      beats: [
+        ["Las fuerzas internas son las constructoras: levantan, doblan y rompen la corteza.", "Internal forces are the builders: they lift, bend and break the crust."],
+        ["Si la corteza se dobla como una alfombra, salen montañas plegadas.", "If the crust bends like a rug, folded mountains rise."],
+        ["Si se rompe en bloques, unos suben como escalones: son montañas de falla.", "If it breaks into blocks, some rise like steps: these are fault-block mountains."],
+        ["Si una región entera sube sin doblarse mucho, queda alta y plana: es una meseta.", "If a whole region rises without bending much, it stays high and flat: it's a plateau."],
+        ["Y si sale magma, se construyen volcanes, como los de las cordilleras de Costa Rica.", "And if magma comes out, volcanoes are built, like those in Costa Rica's mountain ranges."],
+      ],
+      life: ["La Cordillera Volcánica Central (Poás, Barva, Irazú, Turrialba) la formaron fuerzas internas: el magma de la subducción de la placa Cocos.", "The Central Volcanic Range (Poás, Barva, Irazú, Turrialba) was built by internal forces: magma from the subduction of the Cocos plate."],
+      items: [
+        ["ri-1", "¿Cómo se forma una montaña de falla?", "How does a fault-block mountain form?", "La roca se rompe por fallas y unos bloques suben mientras otros bajan.", "Rock breaks along faults and some blocks rise while others drop.", true],
+        ["ri-2", "¿Qué es una meseta y cómo se forma?", "What is a plateau and how does it form?", "Una zona alta y plana; se forma cuando fuerzas internas levantan una región o por coladas de lava.", "A high, flat area; it forms when internal forces lift a region or from lava flows.", true],
+        ["ri-3", "Montaña plegada vs. montaña de falla: ¿cuál es la diferencia?", "Folded vs. fault-block mountain: what's the difference?", "En la plegada las capas se doblan; en la de falla la roca se rompe en bloques.", "In a folded mountain the layers bend; in a fault-block mountain the rock breaks into blocks.", true],
+        ["ri-4", "Nombra 3 relieves formados por fuerzas internas.", "Name 3 landforms made by internal forces.", "Montañas plegadas, volcanes y mesetas (también montañas de falla, fosas, dorsales y valles de rift).", "Folded mountains, volcanoes and plateaus (also fault-block mountains, trenches, ridges and rift valleys).", false],
+        ["ri-5", "¿Qué relieve se forma cuando placas continentales se separan y el centro se hunde?", "Which landform forms when continental plates pull apart and the center sinks?", "Un valle de rift.", "A rift valley.", false],
+      ],
+    },
+    {
       id: "meteorizacion", mod: "geo", svg: null,
       es: "Meteorización, erosión y depósito", en: "Weathering, erosion and deposition",
       map: {
@@ -718,6 +1156,95 @@ const CONTENT = {
         ["me-3", "Las raíces de un árbol parten el granito. ¿Qué tipo de meteorización es?", "Tree roots split granite. Which type of weathering is it?", "Biológica.", "Biological.", false],
         ["me-4", "Un río recoge sedimento y lo suelta en un llano. ¿Qué dos procesos ocurren?", "A river picks up sediment and drops it in a meadow. Which two processes happen?", "Erosión y luego depósito.", "Erosion followed by deposition.", true],
         ["me-5", "Nombra 2 fuerzas destructivas que forman el relieve.", "Name 2 destructive forces that shape landforms.", "Meteorización y erosión (del agua, el viento o el hielo); también los deslizamientos.", "Weathering and erosion (by water, wind or ice); also landslides.", true],
+      ],
+    },
+    {
+      id: "erosion", mod: "geo", svg: null,
+      es: "Agentes de erosión", en: "Agents of erosion",
+      table: {
+        head: ["Agente · Agent", "Qué hace · What it does", "Relieves · Landforms"],
+        rows: [
+          ["Agua (ríos, lluvia) · Running water", "corta el suelo y arrastra sedimento", "valles en V, cañones, meandros; deltas y abanicos (depósito)"],
+          ["Hielo (glaciares) · Ice", "raspa el suelo y arrastra rocas enormes", "valles en U, morrenas"],
+          ["Viento · Wind", "lleva arena y la choca contra las rocas (abrasión)", "dunas, rocas pulidas"],
+          ["Gravedad · Gravity", "hace caer suelo y rocas pendiente abajo", "deslizamientos (derrumbes)"],
+          ["Olas · Waves", "golpean la costa", "acantilados y arcos; playas (depósito)"],
+        ],
+      },
+      map: {
+        easy: ["Erosión = transportar; los agentes son agua, viento, hielo, gravedad y olas.", "Erosion = carrying away; the agents are water, wind, ice, gravity and waves."],
+        hard: ["Qué relieve deja cada agente.", "Which landform each agent leaves."],
+        exam: ["Reconocer el agente en un caso: glaciar, duna, derrumbe, acantilado.", "Recognizing the agent in a case: glacier, dune, landslide, cliff."],
+      },
+      sum: [
+        ["Agua: el agente más fuerte; los ríos cortan valles en V y cañones.", "Water: the strongest agent; rivers carve V-shaped valleys and canyons."],
+        ["Hielo: los glaciares raspan el suelo y forman valles en U.", "Ice: glaciers scrape the ground and form U-shaped valleys."],
+        ["Viento: lleva arena, pule las rocas y forma dunas.", "Wind: carries sand, polishes rocks and forms dunes."],
+        ["Gravedad: hace caer tierra y rocas en deslizamientos.", "Gravity: pulls soil and rocks down in landslides."],
+        ["Olas: golpean la costa y forman acantilados y arcos; también dejan arena en las playas.", "Waves: hit the coast and form cliffs and arches; they also leave sand on beaches."],
+      ],
+      beats: [
+        ["Erosión es llevarse los pedazos de roca. Hay cinco transportistas.", "Erosion is carrying rock pieces away. There are five carriers."],
+        ["El agua de los ríos es el más trabajador: corta el suelo y deja valles en forma de V.", "River water is the hardest worker: it cuts the ground and leaves V-shaped valleys."],
+        ["Los glaciares son ríos de hielo: raspan todo y dejan valles anchos en forma de U.", "Glaciers are rivers of ice: they scrape everything and leave wide U-shaped valleys."],
+        ["El viento lleva arena y la amontona en dunas; la gravedad jala la tierra hacia abajo en los derrumbes.", "Wind carries sand and piles it into dunes; gravity pulls land downhill in landslides."],
+        ["Y las olas golpean la costa: forman acantilados y arcos, y dejan arena en las playas.", "And waves hit the coast: they form cliffs and arches, and leave sand on beaches."],
+      ],
+      life: ["Los derrumbes en la ruta 32 después de muchas lluvias son erosión por gravedad, ayudada por el agua.", "Landslides on Route 32 after heavy rain are erosion by gravity, helped by water."],
+      items: [
+        ["er-1", "Nombra los 5 agentes de erosión.", "Name the 5 agents of erosion.", "Agua, viento, hielo (glaciares), gravedad y olas.", "Water, wind, ice (glaciers), gravity and waves.", true],
+        ["er-2", "Un glaciar avanza y raspa un valle. ¿Qué forma le deja?", "A glacier moves and scrapes a valley. What shape does it leave?", "Un valle en U: ancho y de fondo plano.", "A U-shaped valley: wide with a flat bottom.", true],
+        ["er-3", "Después de lluvias fuertes, tierra y rocas caen por una ladera. ¿Qué agente actúa?", "After heavy rain, soil and rocks fall down a slope. Which agent acts?", "La gravedad (un deslizamiento), ayudada por el agua.", "Gravity (a landslide), helped by water.", true],
+        ["er-4", "¿Qué agente forma las dunas?", "Which agent forms dunes?", "El viento.", "Wind.", true],
+        ["er-5", "Las olas golpean la costa durante años. ¿Qué relieves forman?", "Waves hit the coast for years. Which landforms do they make?", "Acantilados y arcos (erosión); playas (depósito).", "Cliffs and arches (erosion); beaches (deposition).", false],
+        ["er-6", "¿Qué es la abrasión por el viento?", "What is wind abrasion?", "El viento lanza arena contra las rocas y las va puliendo y desgastando.", "Wind blasts sand against rocks, polishing and wearing them down.", false],
+      ],
+    },
+    {
+      id: "relieves-ext", mod: "geo", figs: [["valleys", "Mira la forma del valle y sabrás quién lo hizo", "A valley's shape tells you what carved it"]],
+      es: "Relieves por fuerzas externas", en: "Landforms from external forces",
+      table: {
+        head: ["Relieve · Landform", "Agente y proceso · Agent and process"],
+        rows: [
+          ["Valle en V · V-shaped valley", "río · erosión"],
+          ["Valle en U · U-shaped valley", "glaciar · erosión"],
+          ["Cañón · Canyon", "río durante millones de años · erosión"],
+          ["Cueva · Cave", "agua con ácido que disuelve la caliza · meteorización química"],
+          ["Meandro · Meander", "río que serpentea: erosiona por fuera de la curva y deposita por dentro"],
+          ["Delta", "río que llega al mar o a un lago · depósito"],
+          ["Abanico aluvial · Alluvial fan", "río que baja de una montaña a un llano · depósito"],
+          ["Llanura · Plain", "zona baja y plana con sedimento de los ríos · depósito"],
+          ["Duna · Dune", "viento · depósito"],
+          ["Playa · Beach", "olas · depósito"],
+        ],
+      },
+      map: {
+        easy: ["Las fuerzas de afuera desgastan (erosión) o construyen (depósito).", "Outside forces wear down (erosion) or build (deposition)."],
+        hard: ["Valle en V (río) vs. valle en U (glaciar), y los meandros.", "V-shaped valley (river) vs. U-shaped valley (glacier), and meanders."],
+        exam: ["Relacionar cada relieve con su agente y con erosión o depósito.", "Matching each landform to its agent and to erosion or deposition."],
+      },
+      sum: [
+        ["Erosión que desgasta: valles en V (ríos), valles en U (glaciares), cañones y cuevas.", "Erosion that wears down: V-shaped valleys (rivers), U-shaped valleys (glaciers), canyons and caves."],
+        ["Meandro: una curva de un río; erosiona por fuera de la curva y deposita por dentro.", "Meander: a river bend; it erodes on the outside of the curve and deposits on the inside."],
+        ["Depósito que construye: deltas (río que llega al mar) y abanicos aluviales (río que sale de una montaña a un llano).", "Deposition that builds: deltas (river reaching the sea) and alluvial fans (river leaving a mountain onto flat land)."],
+        ["Llanuras: zonas bajas y planas hechas del sedimento que dejan los ríos.", "Plains: low, flat areas made of sediment left by rivers."],
+        ["Dunas: arena que amontona el viento. Playas: arena que dejan las olas.", "Dunes: sand piled up by wind. Beaches: sand left by waves."],
+      ],
+      beats: [
+        ["Mira la forma de un valle y sabrás quién lo hizo.", "Look at a valley's shape and you'll know what made it."],
+        ["Un río corta hacia abajo como un cuchillo: deja un valle angosto en forma de V.", "A river cuts down like a knife: it leaves a narrow V-shaped valley."],
+        ["Un glaciar es una lija gigante: raspa los lados y el fondo y deja una U ancha.", "A glacier is giant sandpaper: it scrapes the sides and the bottom and leaves a wide U."],
+        ["Cuando el río llega a un llano se pone lento, hace curvas llamadas meandros y suelta sedimento.", "When the river reaches flat land it slows down, makes curves called meanders and drops sediment."],
+        ["Si sale de una montaña deja un abanico aluvial; si llega al mar, un delta.", "If it leaves a mountain it builds an alluvial fan; if it reaches the sea, a delta."],
+      ],
+      life: ["El río Tempisque hace meandros en la llanura de Guanacaste y deposita sedimento al llegar al golfo de Nicoya.", "The Tempisque River makes meanders across the Guanacaste plain and deposits sediment where it reaches the Gulf of Nicoya."],
+      items: [
+        ["rx-1", "¿Qué forma tiene un valle hecho por un río y uno hecho por un glaciar?", "What shape is a valley made by a river, and one made by a glacier?", "Río: valle en V (angosto). Glaciar: valle en U (ancho, de fondo plano).", "River: V-shaped (narrow). Glacier: U-shaped (wide, flat bottom).", true],
+        ["rx-2", "¿Qué es un meandro?", "What is a meander?", "Una curva de un río que serpentea; erosiona por fuera de la curva y deposita por dentro.", "A bend in a winding river; it erodes on the outside of the curve and deposits on the inside.", true],
+        ["rx-3", "Un río baja de una montaña a un llano y deja sedimento en forma de abanico. ¿Qué relieve es?", "A river comes down a mountain onto flat land and leaves fan-shaped sediment. Which landform is it?", "Un abanico aluvial.", "An alluvial fan.", true],
+        ["rx-4", "¿Cómo se forma una cueva en roca caliza?", "How does a cave form in limestone?", "El agua con ácido carbónico disuelve la caliza (meteorización química) y deja huecos.", "Water with carbonic acid dissolves the limestone (chemical weathering), leaving hollows.", true],
+        ["rx-5", "¿Qué es una llanura?", "What is a plain?", "Una zona baja y plana, formada por el sedimento que depositan los ríos.", "A low, flat area formed by sediment deposited by rivers.", false],
+        ["rx-6", "Clasifica como erosión o depósito: valle en U, duna, cañón, delta.", "Classify as erosion or deposition: U-shaped valley, dune, canyon, delta.", "Erosión: valle en U y cañón. Depósito: duna y delta.", "Erosion: U-shaped valley and canyon. Deposition: dune and delta.", true],
       ],
     },
     {
@@ -786,33 +1313,83 @@ const CONTENT = {
     },
     {
       id: "minerales", mod: "geo", svg: null,
-      es: "Los minerales", en: "Minerals",
+      es: "¿Qué es un mineral?", en: "What is a mineral?",
       map: {
         easy: ["Un mineral cumple 5 reglas: N-I-S-C-C.", "A mineral meets 5 rules: N-I-S-C-C."],
         hard: ["No confundir características (qué es un mineral) con propiedades (cómo se identifica).", "Don't confuse characteristics (what a mineral is) with properties (how to identify it)."],
-        exam: ["La raya: el color del polvo en la porcelana.", "Streak: the color of the powder on porcelain."],
+        exam: ["Las 5 características (N-I-S-C-C) y qué NO es un mineral (carbón, perla, vidrio).", "The 5 characteristics (N-I-S-C-C) and what is NOT a mineral (coal, pearl, glass)."],
       },
       sum: [
         ["Mineral: natural, inorgánico, sólido, con composición química definida y estructura cristalina.", "Mineral: naturally occurring, inorganic, solid, with a definite chemical composition and crystal structure."],
-        ["El carbón, la perla y el vidrio no son minerales.", "Coal, pearl and glass are not minerals."],
-        ["Raya: color del polvo al rayarlo en porcelana sin esmalte.", "Streak: color of the powder on unglazed porcelain."],
-        ["Brillo: cómo refleja la luz. Dureza: qué tan fácil se raya (Mohs 1–10).", "Luster: how it reflects light. Hardness: how easily it scratches (Mohs 1–10)."],
-        ["Exfoliación: se rompe en planos lisos. Fractura: se rompe irregular.", "Cleavage: breaks in smooth planes. Fracture: breaks unevenly."],
+        ["Truco N-I-S-C-C: Natural, Inorgánico, Sólido, Composición química, Cristal.", "N-I-S-C-C trick: Naturally occurring, Inorganic, Solid, Chemical composition, Crystal."],
+        ["Ejemplos: cuarzo, feldespato, mica, calcita, halita (sal), hematita, magnetita y oro.", "Examples: quartz, feldspar, mica, calcite, halite (salt), hematite, magnetite and gold."],
+        ["No son minerales: carbón, perla y ámbar (orgánicos) ni el vidrio (artificial, sin cristales).", "Not minerals: coal, pearl and amber (organic) or glass (man-made, no crystals)."],
+        ["Las rocas están hechas de minerales: el granito tiene cuarzo, feldespato y mica.", "Rocks are made of minerals: granite has quartz, feldspar and mica."],
       ],
       beats: [
         ["No toda piedra brillante es un mineral. Tiene que cumplir 5 reglas: N-I-S-C-C.", "Not every shiny stone is a mineral. It must meet 5 rules: N-I-S-C-C."],
         ["Natural, inorgánico, o sea que no viene de seres vivos, y sólido.", "Naturally occurring, inorganic, meaning not from living things, and solid."],
         ["Con una fórmula química fija y átomos ordenados en un cristal.", "With a fixed chemical formula and atoms arranged in a crystal."],
-        ["Para identificarlo lo rayas en porcelana: el color del polvo es la raya. La hematita deja polvo rojo-café.", "To identify it, you scratch it on porcelain: the powder's color is the streak. Hematite leaves red-brown powder."],
-        ["También miras el brillo, la dureza y cómo se rompe: exfoliación o fractura.", "You also check its luster, hardness and how it breaks: cleavage or fracture."],
+        ["La sal cumple todo: natural, inorgánica, sólida, NaCl y en cubitos. El carbón no, porque viene de plantas.", "Salt meets them all: natural, inorganic, solid, NaCl and in little cubes. Coal doesn't, because it comes from plants."],
+        ["Las rocas son mezclas de minerales: el granito es cuarzo, feldespato y mica juntos.", "Rocks are mixtures of minerals: granite is quartz, feldspar and mica together."],
       ],
       life: ["La sal de la cocina (halita) es un mineral: natural, sólida, NaCl y en cubitos. El azúcar no, porque viene de una planta.", "Kitchen salt (halite) is a mineral: natural, solid, NaCl and in little cubes. Sugar isn't, because it comes from a plant."],
       items: [
         ["mi-1", "Nombra 2 características que debe tener un mineral.", "Name 2 characteristics a mineral must have.", "Dos de estas: natural, inorgánico, sólido, composición química definida, estructura cristalina.", "Two of these: naturally occurring, inorganic, solid, definite chemical composition, crystalline structure.", true],
-        ["mi-2", "Un mineral deja polvo rojo-café en la porcelana. ¿Qué propiedad es?", "A mineral leaves red-brown powder on porcelain. Which property is it?", "La raya (streak).", "Streak.", true],
         ["mi-3", "¿Por qué el carbón no es un mineral?", "Why is coal not a mineral?", "Porque es orgánico: viene de plantas antiguas.", "Because it is organic: it comes from ancient plants.", false],
-        ["mi-4", "La mica se separa en láminas planas y lisas. ¿Qué propiedad es?", "Mica peels into flat, smooth sheets. Which property is it?", "Exfoliación (cleavage).", "Cleavage.", false],
+        ["mi-6", "¿El vidrio es un mineral? ¿Por qué?", "Is glass a mineral? Why?", "No: es artificial (lo hacen las personas) y no tiene estructura cristalina.", "No: it is man-made and has no crystalline structure.", false],
+        ["mi-7", "¿Qué minerales forman el granito?", "Which minerals make up granite?", "Cuarzo, feldespato y mica.", "Quartz, feldspar and mica.", false],
+      ],
+    },
+    {
+      id: "propiedades", mod: "geo", figs: [["mohs", "Escala de Mohs: cada mineral raya a los de número menor", "Mohs scale: each mineral scratches the lower numbers"]],
+      es: "Propiedades de los minerales", en: "Mineral properties",
+      table: {
+        head: ["Propiedad · Property", "Qué es · What it is", "Ejemplo"],
+        rows: [
+          ["Color", "el color de afuera; la propiedad menos confiable", "el cuarzo puede ser blanco, rosado o morado"],
+          ["Raya · Streak", "color del polvo en porcelana sin esmalte", "hematita: rojo-café; pirita: negro verdoso"],
+          ["Brillo · Luster", "cómo refleja la luz: metálico o no metálico (vítreo, perlado, terroso)", "pirita: metálico; cuarzo: vítreo"],
+          ["Dureza · Hardness", "resistencia a ser rayado, escala de Mohs 1–10", "talco 1, cuarzo 7, diamante 10"],
+          ["Exfoliación · Cleavage", "se rompe en planos lisos", "mica (láminas), halita (cubos)"],
+          ["Fractura · Fracture", "se rompe de forma irregular o curva", "cuarzo, obsidiana"],
+          ["Densidad · Density", "qué tan pesado es para su tamaño", "oro y galena son muy densos"],
+          ["Magnetismo · Magnetism", "lo atrae un imán", "magnetita"],
+          ["Forma del cristal · Crystal shape", "figura geométrica de sus cristales", "halita: cubos; cuarzo: prismas de 6 caras"],
+          ["Especiales · Special", "burbujea con ácido, sabor, brilla con luz UV", "calcita burbujea; halita sabe salada"],
+        ],
+      },
+      map: {
+        easy: ["El color es la propiedad menos confiable.", "Color is the least reliable property."],
+        hard: ["La escala de Mohs completa y en orden.", "The full Mohs scale, in order."],
+        exam: ["Raya, brillo, dureza, exfoliación o fractura, densidad y magnetismo.", "Streak, luster, hardness, cleavage or fracture, density and magnetism."],
+      },
+      sum: [
+        ["Color: el menos confiable, porque un mismo mineral puede tener varios colores.", "Color: the least reliable, because one mineral can have several colors."],
+        ["Raya: color del polvo. Brillo: cómo refleja la luz.", "Streak: color of the powder. Luster: how it reflects light."],
+        ["Dureza (Mohs): 1 talco, 2 yeso, 3 calcita, 4 fluorita, 5 apatito, 6 ortoclasa, 7 cuarzo, 8 topacio, 9 corindón, 10 diamante.", "Hardness (Mohs): 1 talc, 2 gypsum, 3 calcite, 4 fluorite, 5 apatite, 6 orthoclase, 7 quartz, 8 topaz, 9 corundum, 10 diamond."],
+        ["Exfoliación: se rompe en planos lisos. Fractura: se rompe irregular.", "Cleavage: breaks in smooth planes. Fracture: breaks unevenly."],
+        ["Densidad (pesado para su tamaño), magnetismo (magnetita) y forma del cristal (la halita en cubos).", "Density (heavy for its size), magnetism (magnetite) and crystal shape (halite in cubes)."],
+      ],
+      beats: [
+        ["Para saber qué mineral tienes, le haces pruebas, como un detective.", "To know which mineral you have, you test it, like a detective."],
+        ["Primero el color, pero cuidado: engaña. Por eso lo rayas en porcelana y miras el color del polvo: la raya.", "First color, but careful: it can fool you. So you scratch it on porcelain and look at the powder's color: the streak."],
+        ["Luego la dureza: ¿qué lo raya? Tu uña es 2.5, una moneda 3.5 y el vidrio 5.5 en la escala de Mohs.", "Then hardness: what scratches it? Your fingernail is 2.5, a coin 3.5 and glass 5.5 on the Mohs scale."],
+        ["El orden de Mohs es: talco, yeso, calcita, fluorita, apatito, ortoclasa, cuarzo, topacio, corindón y diamante.", "The Mohs order is: talc, gypsum, calcite, fluorite, apatite, orthoclase, quartz, topaz, corundum and diamond."],
+        ["También ves si se rompe en láminas, si pesa mucho, si lo atrae un imán y qué forma tienen sus cristales.", "You also check if it breaks into sheets, if it's heavy, if a magnet attracts it and what shape its crystals have."],
+      ],
+      life: ["La mina de tu lápiz es grafito, un mineral blandísimo (dureza 1–2): por eso deja raya en el papel.", "Your pencil lead is graphite, a very soft mineral (hardness 1–2): that's why it leaves a streak on paper."],
+      items: [
+        ["mi-2", "Un mineral deja polvo rojo-café en la porcelana. ¿Qué propiedad es?", "A mineral leaves red-brown powder on porcelain. Which property is it?", "La raya (streak).", "Streak.", true],
+        ["pr-1", "¿Por qué el color es la propiedad menos confiable?", "Why is color the least reliable property?", "Porque un mismo mineral puede tener colores distintos por las impurezas.", "Because the same mineral can have different colors due to impurities.", true],
+        ["pr-2", "Ordena la escala de Mohs del 1 al 10.", "Put the Mohs scale in order from 1 to 10.", "Talco, yeso, calcita, fluorita, apatito, ortoclasa, cuarzo, topacio, corindón, diamante.", "Talc, gypsum, calcite, fluorite, apatite, orthoclase, quartz, topaz, corundum, diamond.", true],
         ["mi-5", "¿Qué mide la escala de Mohs?", "What does the Mohs scale measure?", "La dureza: qué tan fácil se raya un mineral (1 talco, 10 diamante).", "Hardness: how easily a mineral scratches (1 talc, 10 diamond).", false],
+        ["pr-3", "Un mineral se pega a un imán. ¿Qué propiedad es y qué mineral puede ser?", "A mineral sticks to a magnet. Which property is it and which mineral could it be?", "Magnetismo; la magnetita.", "Magnetism; magnetite.", true],
+        ["pr-4", "Dos minerales del mismo tamaño: uno pesa mucho más. ¿Qué propiedad los diferencia?", "Two minerals of the same size: one is much heavier. Which property tells them apart?", "La densidad.", "Density.", true],
+        ["mi-4", "La mica se separa en láminas planas y lisas. ¿Qué propiedad es?", "Mica peels into flat, smooth sheets. Which property is it?", "Exfoliación (cleavage).", "Cleavage.", false],
+        ["pr-5", "La halita forma cristales en forma de cubos. ¿Qué propiedad es?", "Halite forms cube-shaped crystals. Which property is it?", "La forma del cristal.", "Crystal shape.", false],
+        ["pr-6", "El cuarzo raya el vidrio, pero el topacio raya el cuarzo. ¿Qué dureza tiene el cuarzo?", "Quartz scratches glass, but topaz scratches quartz. What is quartz's hardness?", "7 en la escala de Mohs.", "7 on the Mohs scale.", false],
+        ["pr-7", "¿Qué es el brillo de un mineral?", "What is a mineral's luster?", "Cómo refleja la luz: metálico (pirita) o no metálico (vítreo, perlado, terroso).", "How it reflects light: metallic (pyrite) or nonmetallic (glassy, pearly, earthy).", false],
       ],
     },
     {
@@ -940,8 +1517,50 @@ const CONTENT = {
         ["or-6", "Almacena nutrientes, agua, iones y desechos.", "Stores nutrients, water, ions and waste.", "Vacuola.", "Vacuole.", true],
         ["or-7", "Contiene enzimas digestivas que rompen moléculas y materiales no deseados.", "Contains digestive enzymes that break down molecules and unwanted materials.", "Lisosomas.", "Lysosomes.", true],
         ["or-8", "Estructuras especializadas para el movimiento.", "Specialized structures for movement.", "Cilios y flagelos.", "Cilia and flagella.", true],
-        ["or-9", "Empaca y envía proteínas, como un correo.", "Packages and ships proteins, like a post office.", "Aparato de Golgi.", "Golgi apparatus.", false],
+      ],
+    },
+    {
+      id: "organelos2", mod: "cell", figs: [["protein-path", "Ribosoma → retículo rugoso → Golgi → vesícula → membrana", "Ribosome → rough ER → Golgi → vesicle → membrane"]],
+      es: "Retículo, Golgi, citoesqueleto y pared", en: "ER, Golgi, cytoskeleton and cell wall",
+      table: {
+        head: ["Organismo · Organism", "¿Pared celular? · Cell wall?", "Material"],
+        rows: [
+          ["Plantas · Plants", "sí · yes", "celulosa · cellulose"],
+          ["Hongos · Fungi", "sí · yes", "quitina · chitin"],
+          ["Bacterias · Bacteria", "sí · yes", "peptidoglicano · peptidoglycan"],
+          ["Algas (protistas) · Algae", "muchas sí · many do", "celulosa u otros · cellulose or others"],
+          ["Animales · Animals", "no", "—"],
+        ],
+      },
+      map: {
+        easy: ["El retículo y el Golgi trabajan en equipo con los ribosomas.", "The ER and the Golgi work as a team with the ribosomes."],
+        hard: ["Retículo rugoso (con ribosomas) vs. liso (sin ribosomas).", "Rough ER (with ribosomes) vs. smooth ER (without ribosomes)."],
+        exam: ["La pared celular: celulosa (plantas), quitina (hongos), peptidoglicano (bacterias).", "The cell wall: cellulose (plants), chitin (fungi), peptidoglycan (bacteria)."],
+      },
+      sum: [
+        ["Retículo endoplasmático rugoso: tiene ribosomas; fabrica y transporta proteínas.", "Rough endoplasmic reticulum: has ribosomes; makes and transports proteins."],
+        ["Retículo endoplasmático liso: sin ribosomas; fabrica lípidos (grasas) y ayuda a eliminar sustancias tóxicas.", "Smooth endoplasmic reticulum: no ribosomes; makes lipids (fats) and helps remove toxic substances."],
+        ["Aparato de Golgi: modifica, empaca y envía las proteínas en vesículas, como un correo.", "Golgi apparatus: modifies, packages and ships proteins in vesicles, like a post office."],
+        ["Citoesqueleto: red de fibras de proteína que da forma y soporte, y mueve cosas dentro de la célula.", "Cytoskeleton: network of protein fibers that gives shape and support and moves things inside the cell."],
+        ["Pared celular: plantas (celulosa), hongos (quitina) y bacterias (peptidoglicano); los animales no tienen.", "Cell wall: plants (cellulose), fungi (chitin) and bacteria (peptidoglycan); animals have none."],
+      ],
+      beats: [
+        ["Sigamos el viaje de una proteína dentro de la célula.", "Let's follow a protein's journey inside the cell."],
+        ["El ribosoma la fabrica pegado al retículo rugoso, que parece una carretera con piedritas.", "The ribosome makes it while attached to the rough ER, which looks like a road with little pebbles."],
+        ["El retículo la transporta hasta el aparato de Golgi.", "The ER carries it to the Golgi apparatus."],
+        ["El Golgi la arregla, la empaca en una burbuja llamada vesícula y la manda a donde se necesita.", "The Golgi fixes it, packs it in a bubble called a vesicle and ships it where it's needed."],
+        ["Mientras tanto, el citoesqueleto sostiene la célula como las varillas de una tienda de campaña y guía el transporte.", "Meanwhile, the cytoskeleton holds the cell up like tent poles and guides the transport."],
+      ],
+      life: ["Cuando tu estómago fabrica jugos digestivos, sus células usan el retículo rugoso y el Golgi para fabricar y enviar esas proteínas (enzimas).", "When your stomach makes digestive juices, its cells use the rough ER and the Golgi to make and ship those proteins (enzymes)."],
+      items: [
+        ["o2-1", "¿Qué diferencia hay entre el retículo endoplasmático rugoso y el liso?", "What's the difference between the rough and the smooth endoplasmic reticulum?", "El rugoso tiene ribosomas y trabaja con proteínas; el liso no tiene ribosomas y fabrica lípidos.", "The rough one has ribosomes and works with proteins; the smooth one has no ribosomes and makes lipids.", true],
+        ["or-9", "Empaca y envía proteínas, como un correo.", "Packages and ships proteins, like a post office.", "Aparato de Golgi.", "Golgi apparatus.", true],
+        ["o2-2", "¿Qué es el citoesqueleto y qué hace?", "What is the cytoskeleton and what does it do?", "Una red de fibras de proteína que da forma y soporte a la célula y ayuda a mover cosas dentro de ella.", "A network of protein fibers that gives the cell shape and support and helps move things inside it.", true],
+        ["o2-3", "¿De qué está hecha la pared celular de plantas, hongos y bacterias?", "What are the cell walls of plants, fungi and bacteria made of?", "Plantas: celulosa. Hongos: quitina. Bacterias: peptidoglicano.", "Plants: cellulose. Fungi: chitin. Bacteria: peptidoglycan.", true],
         ["or-10", "Capa rígida fuera de la membrana que da soporte en plantas, hongos y bacterias.", "Rigid layer outside the membrane that gives support in plants, fungi and bacteria.", "Pared celular.", "Cell wall.", false],
+        ["o2-4", "Ordena el camino de una proteína: Golgi, ribosoma, vesícula, retículo rugoso.", "Order a protein's path: Golgi, ribosome, vesicle, rough ER.", "Ribosoma → retículo rugoso → Golgi → vesícula.", "Ribosome → rough ER → Golgi → vesicle.", true],
+        ["o2-5", "¿Qué organelo fabrica lípidos y ayuda a eliminar sustancias tóxicas?", "Which organelle makes lipids and helps remove toxic substances?", "El retículo endoplasmático liso.", "The smooth endoplasmic reticulum.", false],
+        ["o2-6", "¿Las células animales tienen pared celular?", "Do animal cells have a cell wall?", "No; solo tienen membrana celular.", "No; they only have a cell membrane.", false],
       ],
     },
     {
@@ -976,7 +1595,7 @@ const CONTENT = {
       ],
     },
     {
-      id: "virus", mod: "cell", svg: "virus",
+      id: "virus", mod: "cell", figs: [["virus", "Un virus es material genético dentro de una cápside", "A virus is genetic material inside a capsid"], ["lytic-lysogenic", "El lítico revienta la célula; el lisogénico se esconde en su ADN", "Lytic bursts the cell; lysogenic hides in its DNA"]],
       es: "Los virus", en: "Viruses",
       map: {
         easy: ["Un virus es una cápside con ADN o ARN.", "A virus is a capsid with DNA or RNA."],
@@ -1040,15 +1659,70 @@ const CONTENT = {
       ],
     },
     {
+      id: "comparacion", mod: "cell", svg: null,
+      es: "Virus, bacterias, protistas y hongos: comparación", en: "Viruses, bacteria, protists and fungi compared",
+      table: {
+        head: ["", "Virus", "Bacterias · Bacteria", "Protistas · Protists", "Hongos · Fungi"],
+        rows: [
+          ["¿Célula? · Cellular?", "NO, acelular", "sí", "sí", "sí"],
+          ["Tipo · Type", "ni procariota ni eucariota", "procariota", "eucariota", "eucariota"],
+          ["Nº de células", "—", "unicelulares", "casi todos unicelulares", "uni- o multicelulares"],
+          ["Estructura · Structure", "cápside + ADN o ARN (a veces envoltura)", "pared de peptidoglicano, membrana, ribosomas, ADN circular, flagelo", "núcleo y organelos; cilios, flagelo o seudópodos; algunos con cloroplastos", "pared de quitina, hifas, micelio, esporas"],
+          ["Reproducción", "solo dentro de una célula (lítico o lisogénico)", "fisión binaria (asexual)", "fisión binaria; algunos sexual (conjugación)", "esporas, gemación, fragmentación; también sexual"],
+          ["Alimentación · Nutrition", "no se alimenta: usa la célula huésped", "autótrofas o heterótrofas", "algas: fotosíntesis · protozoos: comen", "heterótrofos por absorción"],
+          ["Ejemplo", "gripe, VIH", "E. coli, estreptococo", "ameba, paramecio, euglena", "levadura, champiñón, Penicillium"],
+        ],
+      },
+      map: {
+        easy: ["El virus es el único que no es una célula.", "The virus is the only one that is not a cell."],
+        hard: ["Comparar los cuatro en 5 puntos: célula o no, tipo, estructura, reproducción y alimentación.", "Comparing all four on 5 points: cellular or not, type, structure, reproduction and nutrition."],
+        exam: ["Diferencias y semejanzas: es justo lo que pide el temario de la convocatoria.", "Differences and similarities: exactly what the make-up syllabus asks for."],
+      },
+      sum: [
+        ["Diferencia clave: el virus NO es una célula; bacterias, protistas y hongos sí.", "Key difference: a virus is NOT a cell; bacteria, protists and fungi are."],
+        ["Procariota: solo las bacterias. Eucariotas: protistas y hongos. El virus no es ninguna de las dos.", "Prokaryotic: only bacteria. Eukaryotic: protists and fungi. A virus is neither."],
+        ["Semejanza 1: los cuatro tienen material genético (ADN o ARN) y se multiplican.", "Similarity 1: all four have genetic material (DNA or RNA) and multiply."],
+        ["Semejanza 2: bacterias, protistas y hongos tienen membrana, citoplasma y ribosomas; bacterias, hongos y muchas algas tienen pared celular.", "Similarity 2: bacteria, protists and fungi have a membrane, cytoplasm and ribosomes; bacteria, fungi and many algae have a cell wall."],
+        ["Semejanza 3: casi todos son microscópicos; algunos causan enfermedades y otros son útiles (descomponedores, medicinas, alimentos).", "Similarity 3: most are microscopic; some cause disease and others are helpful (decomposers, medicines, food)."],
+      ],
+      beats: [
+        ["Compara a los cuatro con cinco preguntas: ¿es célula?, ¿de qué tipo?, ¿cómo es?, ¿cómo se reproduce? y ¿cómo come?", "Compare the four with five questions: is it a cell? which type? what is it like? how does it reproduce? how does it eat?"],
+        ["El virus es el raro: no es célula, solo cápside y ADN o ARN, se copia dentro de otra célula y no come.", "The virus is the odd one: not a cell, just a capsid and DNA or RNA; it copies itself inside another cell and doesn't eat."],
+        ["La bacteria es una célula sin núcleo: se parte en dos y puede hacer su comida o tomarla.", "The bacterium is a cell without a nucleus: it splits in two and can make or take its food."],
+        ["Protistas y hongos sí tienen núcleo. Los protistas comen o hacen fotosíntesis; los hongos absorben.", "Protists and fungi do have a nucleus. Protists eat or photosynthesize; fungi absorb."],
+        ["En qué se parecen: todos tienen material genético, se multiplican y pueden ser útiles o dañinos.", "How they're alike: all have genetic material, multiply, and can be helpful or harmful."],
+      ],
+      life: ["En una cocina viven los cuatro: el virus del resfriado de tu hermano, las bacterias del yogur, la levadura del pan (un hongo) y, en el agua vieja de un florero, algas y protozoos.", "All four live in a kitchen: your brother's cold virus, yogurt bacteria, bread yeast (a fungus) and, in old flower-vase water, algae and protozoa."],
+      items: [
+        ["cp-1", "¿Cuál de los cuatro no es una célula y por qué?", "Which of the four is not a cell, and why?", "El virus: no tiene citoplasma, ribosomas ni membrana; solo cápside y material genético.", "The virus: it has no cytoplasm, ribosomes or membrane; only a capsid and genetic material.", true],
+        ["cp-2", "Clasifica virus, bacteria, protista y hongo como procariota, eucariota o ninguno.", "Classify virus, bacterium, protist and fungus as prokaryotic, eukaryotic or neither.", "Bacteria: procariota. Protista y hongo: eucariotas. Virus: ninguno (acelular).", "Bacterium: prokaryotic. Protist and fungus: eukaryotic. Virus: neither (non-cellular).", true],
+        ["cp-3", "Compara cómo se reproducen los cuatro.", "Compare how the four reproduce.", "Virus: dentro de una célula huésped. Bacterias: fisión binaria. Protistas: fisión binaria y a veces conjugación. Hongos: esporas, gemación, fragmentación y también sexual.", "Virus: inside a host cell. Bacteria: binary fission. Protists: binary fission and sometimes conjugation. Fungi: spores, budding, fragmentation and also sexual.", true],
+        ["cp-4", "Compara cómo se alimentan los cuatro.", "Compare how the four feed.", "Virus: no se alimenta. Bacterias: autótrofas o heterótrofas. Protistas: fotosíntesis (algas) o comen (protozoos). Hongos: absorción.", "Virus: doesn't feed. Bacteria: autotrophs or heterotrophs. Protists: photosynthesis (algae) or eating (protozoa). Fungi: absorption.", true],
+        ["cp-5", "Nombra 2 semejanzas entre virus, bacterias, protistas y hongos.", "Name 2 similarities among viruses, bacteria, protists and fungi.", "Todos tienen material genético y se multiplican; casi todos son microscópicos y pueden ser útiles o causar enfermedades.", "All have genetic material and multiply; most are microscopic and can be helpful or cause disease.", true],
+        ["cp-6", "Compara la estructura principal de los cuatro.", "Compare the main structure of the four.", "Virus: cápside + ADN o ARN. Bacteria: pared, membrana, ADN circular, flagelo. Protista: núcleo y organelos, cilios o flagelos. Hongo: pared de quitina, hifas y micelio.", "Virus: capsid + DNA or RNA. Bacterium: wall, membrane, circular DNA, flagellum. Protist: nucleus and organelles, cilia or flagella. Fungus: chitin wall, hyphae and mycelium.", true],
+        ["cp-7", "¿Qué tienen en común bacterias, protistas y hongos que el virus no tiene?", "What do bacteria, protists and fungi share that viruses lack?", "Son células: tienen membrana, citoplasma y ribosomas.", "They are cells: they have a membrane, cytoplasm and ribosomes.", false],
+      ],
+    },
+    {
       id: "reproduccion", mod: "cell", svg: null,
-      es: "Reproducción sexual y asexual", en: "Sexual and asexual reproduction",
+      es: "Reproducción asexual", en: "Asexual reproduction",
+      table: {
+        head: ["Tipo · Type", "Cómo es · How it works", "Ejemplos"],
+        rows: [
+          ["Fisión binaria · Binary fission", "1 célula → 2 iguales", "bacterias, ameba"],
+          ["Gemación · Budding", "un brote crece y se separa", "levadura, hidra"],
+          ["Fragmentación · Fragmentation", "el cuerpo se rompe y cada pedazo crece", "estrella de mar, planaria"],
+          ["Esporas · Spores", "células que se dispersan y crecen", "hongos, helechos"],
+          ["Vegetativa · Vegetative propagation", "una parte de la planta (tallo, raíz u hoja) forma otra planta", "papa (tubérculo), fresa (estolón), cebolla (bulbo), yuca y caña (esqueje)"],
+        ],
+      },
       map: {
         easy: ["Asexual = 1 padre; sexual = 2 padres.", "Asexual = 1 parent; sexual = 2 parents."],
         hard: ["Explicar por qué cada una es mejor según el ambiente.", "Explaining why each is better depending on the environment."],
         exam: ["Gemación vs. fisión binaria vs. fragmentación.", "Budding vs. binary fission vs. fragmentation."],
       },
       sum: [
-        ["Asexual: un padre, hijos idénticos y rápida.", "Asexual: one parent, identical offspring, fast."],
+        ["Asexual: un padre, hijos idénticos y rápida. En plantas existe la reproducción vegetativa (papa, fresa, yuca).", "Asexual: one parent, identical offspring, fast. Plants also use vegetative propagation (potato, strawberry, cassava)."],
         ["Fisión binaria: 1 célula → 2 iguales (bacterias).", "Binary fission: 1 cell → 2 equal cells (bacteria)."],
         ["Gemación: un brote crece y se separa (levadura). Fragmentación: el cuerpo se rompe y cada pedazo crece (estrella de mar).", "Budding: a bud grows and detaches (yeast). Fragmentation: the body breaks and each piece grows (starfish)."],
         ["Sexual: dos padres y variación genética.", "Sexual: two parents and genetic variation."],
@@ -1069,6 +1743,42 @@ const CONTENT = {
         ["rp-4", "Nombra 1 semejanza y 1 diferencia entre la fisión binaria y la fragmentación.", "Name 1 similarity and 1 difference between binary fission and fragmentation.", "Semejanza: las dos son asexuales. Diferencia: en la fisión una célula se divide en dos iguales; en la fragmentación el cuerpo se rompe en pedazos y cada uno crece.", "Similarity: both are asexual. Difference: in fission one cell splits into two equal cells; in fragmentation the body breaks into pieces that each grow.", true],
         ["rp-5", "Una estrella de mar pierde un brazo y el brazo forma una estrella nueva. ¿Qué es?", "A starfish loses an arm and the arm grows into a new starfish. What is it?", "Fragmentación.", "Fragmentation.", false],
         ["rp-6", "Una bacteria copia su ADN circular y se divide en dos células iguales. ¿Qué es?", "A bacterium copies its circular DNA and divides into two identical cells. What is it?", "Fisión binaria.", "Binary fission.", false],
+        ["rp-7", "¿Qué es la reproducción vegetativa? Da un ejemplo.", "What is vegetative propagation? Give an example.", "Reproducción asexual de plantas a partir de un tallo, raíz u hoja: la papa (tubérculo), la fresa (estolón), la yuca (esqueje).", "Asexual reproduction of plants from a stem, root or leaf: potato (tuber), strawberry (runner), cassava (cutting).", true],
+        ["rp-8", "Siembras un pedazo de tallo de yuca y crece una planta igual. ¿Qué tipo de reproducción es?", "You plant a piece of cassava stem and an identical plant grows. What type of reproduction is it?", "Asexual, vegetativa (por esqueje).", "Asexual, vegetative (by cutting).", false],
+      ],
+    },
+    {
+      id: "sexual", mod: "cell", figs: [["sexual", "Meiosis → gametos (23) → fecundación → cigoto (46)", "Meiosis → gametes (23) → fertilization → zygote (46)"]],
+      es: "Reproducción sexual", en: "Sexual reproduction",
+      map: {
+        easy: ["Dos padres aportan una célula sexual cada uno.", "Two parents each give one sex cell."],
+        hard: ["Meiosis (hace gametos con la mitad) vs. mitosis (copias iguales).", "Meiosis (makes gametes with half) vs. mitosis (identical copies)."],
+        exam: ["Gameto, fecundación, cigoto y variación genética; la conjugación en protistas.", "Gamete, fertilization, zygote and genetic variation; conjugation in protists."],
+      },
+      sum: [
+        ["Gametos: células sexuales; en animales, espermatozoide y óvulo; en plantas, el polen y el óvulo.", "Gametes: sex cells; in animals, sperm and egg; in plants, pollen and ovule."],
+        ["Meiosis: división que fabrica gametos con la MITAD de los cromosomas (23 en humanos), todos diferentes.", "Meiosis: division that makes gametes with HALF the chromosomes (23 in humans), all different."],
+        ["Fecundación: un gameto masculino y uno femenino se unen y forman un cigoto con los cromosomas completos (46).", "Fertilization: a male and a female gamete join and form a zygote with the full set of chromosomes (46)."],
+        ["El cigoto crece por mitosis (copias iguales) y tiene una mezcla única de genes: variación genética.", "The zygote grows by mitosis (identical copies) and has a unique mix of genes: genetic variation."],
+        ["Hongos: dos hifas de distinto tipo se unen y forman esporas sexuales. Protistas: el paramecio intercambia material genético por conjugación.", "Fungi: two hyphae of different types join and form sexual spores. Protists: the paramecium exchanges genetic material by conjugation."],
+      ],
+      beats: [
+        ["En la reproducción sexual, cada padre aporta la mitad de las instrucciones.", "In sexual reproduction, each parent gives half of the instructions."],
+        ["Para eso, una división especial, la meiosis, fabrica gametos con la mitad de los cromosomas: 23 en vez de 46.", "To do that, a special division, meiosis, makes gametes with half the chromosomes: 23 instead of 46."],
+        ["En la fecundación se unen el espermatozoide y el óvulo: 23 más 23 son 46. Esa primera célula es el cigoto.", "In fertilization the sperm and the egg join: 23 plus 23 is 46. That first cell is the zygote."],
+        ["Como cada gameto es distinto, cada hijo es una mezcla única: por eso los hermanos no son iguales.", "Since each gamete is different, each child is a unique mix: that's why siblings aren't identical."],
+        ["Los hongos también lo hacen uniendo hifas de dos tipos, y el paramecio intercambia genes por conjugación.", "Fungi also do it by joining hyphae of two types, and the paramecium swaps genes by conjugation."],
+      ],
+      life: ["Tú y tus hermanos tienen los mismos papás pero no son iguales: cada uno recibió una mezcla distinta de genes en la fecundación.", "You and your siblings have the same parents but aren't identical: each of you got a different mix of genes at fertilization."],
+      items: [
+        ["sx-1", "¿Qué son los gametos? Da ejemplos.", "What are gametes? Give examples.", "Células sexuales: espermatozoide y óvulo en animales; polen y óvulo en plantas.", "Sex cells: sperm and egg in animals; pollen and ovule in plants.", true],
+        ["sx-2", "¿Qué es la fecundación y qué se forma?", "What is fertilization and what forms?", "La unión de un gameto masculino y uno femenino; se forma un cigoto.", "The joining of a male and a female gamete; a zygote forms.", true],
+        ["sx-3", "¿Qué es la meiosis?", "What is meiosis?", "La división celular que forma gametos con la mitad de los cromosomas, todos genéticamente diferentes.", "The cell division that makes gametes with half the chromosomes, all genetically different.", true],
+        ["sx-4", "¿Cuál es la diferencia entre mitosis y meiosis?", "What is the difference between mitosis and meiosis?", "Mitosis: 2 células iguales con todos los cromosomas (para crecer y reparar). Meiosis: gametos con la mitad de los cromosomas y diferentes.", "Mitosis: 2 identical cells with all the chromosomes (for growth and repair). Meiosis: gametes with half the chromosomes, all different.", true],
+        ["sx-5", "Un humano tiene 46 cromosomas. ¿Cuántos tiene un gameto y cuántos el cigoto?", "A human has 46 chromosomes. How many does a gamete have, and the zygote?", "Gameto: 23. Cigoto: 46 (23 + 23).", "Gamete: 23. Zygote: 46 (23 + 23).", true],
+        ["sx-6", "¿Cómo se reproducen sexualmente los hongos?", "How do fungi reproduce sexually?", "Dos hifas de distinto tipo se unen y forman esporas sexuales con variación genética.", "Two hyphae of different mating types join and form sexual spores with genetic variation.", true],
+        ["sx-7", "¿Qué es la conjugación en el paramecio?", "What is conjugation in paramecium?", "Dos paramecios se unen e intercambian material genético; es un proceso sexual que crea variación.", "Two paramecia join and exchange genetic material; it is a sexual process that creates variation.", true],
+        ["sx-8", "¿Por qué los hijos de los mismos padres no son idénticos?", "Why aren't children of the same parents identical?", "Porque la meiosis hace gametos distintos y cada fecundación une una combinación única de genes.", "Because meiosis makes different gametes and each fertilization joins a unique combination of genes.", false],
       ],
     },
     {
@@ -1124,6 +1834,8 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
   const EXAM = new Date(2026, 11, 4, 7, 0, 0).getTime();
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const bl = (p, tag = "span") => `<${tag} class="es">${esc(p[0])}</${tag}><${tag} class="en">${esc(p[1])}</${tag}>`;
+  const tableHtml = (tb) => `<div class="tbl"><table><thead><tr>${tb.head.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${tb.rows.map((r) => `<tr>${r.map((c, i) => (i ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`)).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const BANK = MCQ.concat(CONTENT.mcq || []);
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const pad = (n) => String(n).padStart(2, "0");
@@ -1433,7 +2145,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     $("#crumb").innerHTML = `<b>${esc(MOD[t.mod].es)}</b> · Bloque ${idx}/${total} · <span class="mono">${topicPct(t.id)}%</span>`;
     const c = counts(ITEMS.filter((i) => i.topic === t.id));
     const feyn = S.feyn[t.id];
-    const svg = t.svg ? document.getElementById("svg-" + t.svg) : null;
+    const figs = (t.figs || (t.svg ? [[t.svg, "", ""]] : [])).filter((f) => document.getElementById("svg-" + f[0]));
     v.innerHTML = `
       <div><div class="kicker">${esc(MOD[t.mod].es)} · ${esc(MOD[t.mod].objectives)}</div>
       <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
@@ -1442,9 +2154,10 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         <section class="step"><div class="step-n">1</div><div class="step-body"><h2 class="h">Guía · el mapa</h2>
           <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div></div></section>
         <section class="step"><div class="step-n">2</div><div class="step-body"><h2 class="h">Resumen que sí se entiende</h2>
-          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div></section>
+          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul>
+          ${t.table ? `<div class="kicker">Tabla para repasar</div>${tableHtml(t.table)}` : ""}</div></section>
         <section class="step"><div class="step-n">3</div><div class="step-body"><h2 class="h">Explicador de 2 minutos</h2>
-          ${svg ? `<figure class="plate" id="plate"></figure>` : ""}
+          ${figs.map((f, i) => `<figure class="fig-wrap"><div class="plate" data-fig="${i}"></div>${f[1] ? `<figcaption>${bl([f[1], f[2]])}</figcaption>` : ""}</figure>`).join("")}
           <ol class="beats" id="beats">${t.beats.map((p, i) => `<li data-b="${i}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>
           <div class="row-wrap">
             <button type="button" class="btn dark" id="play" hidden>▶ Escuchar · 2 min</button>
@@ -1460,7 +2173,11 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
           <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
           <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
       </div>`;
-    if (svg) { const fig = $("#plate", v); fig.append(svg.content.cloneNode(true)); $("svg", fig).setAttribute("aria-label", `${t.es}: diagrama`); }
+    figs.forEach((f, i) => {
+      const box = $(`[data-fig="${i}"]`, v);
+      box.append(document.getElementById("svg-" + f[0]).content.cloneNode(true));
+      $("svg", box).setAttribute("aria-label", f[1] || `${t.es}: diagrama`);
+    });
     S.seen[t.id] = true; persistLocal();
     $("#practice", v).addEventListener("click", () => startSession("topic", buildQueue("topic", 30, t.id), 0));
     $("#explain", v).addEventListener("click", () => { ctxTopic = t.id; renderCtx(); const a = $("#ask"); a.focus(); a.placeholder = `Explica «${t.es}» con tus palabras…`; });
@@ -1668,7 +2385,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
         <button type="button" class="btn primary block" id="go">Empezar simulacro</button></section>
         ${S.sims.length ? `<section class="card quiet"><div class="kicker">Tus simulacros</div>${S.sims.slice(-5).reverse().map((x) => `<div class="stat-row"><span>${esc(x.date)}</span><span class="delta">${x.score}/${x.total} · ${Math.round((100 * x.score) / x.total)} %</span></div>`).join("")}</section>` : ""}`;
       $("#go", v).addEventListener("click", () => {
-        const pick = (m) => MCQ.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
+        const pick = (m) => BANK.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
         SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, end: Date.now() + 20 * 60e3 };
         clearInterval(simTick); simTick = setInterval(() => { if (!SIM || SIM.phase !== "run") return clearInterval(simTick); const left = SIM.end - Date.now(); $("#timer").textContent = fmtMs(Math.max(0, left)); if (left <= 0) finishSim(); }, 1000);
         render();
@@ -1676,7 +2393,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
       return;
     }
     if (SIM.phase === "done") return renderSimDone(v);
-    const q = MCQ[SIM.qs[SIM.i]];
+    const q = BANK[SIM.qs[SIM.i]];
     $("#timer").textContent = fmtMs(Math.max(0, SIM.end - Date.now()));
     $("#ptop").style.width = `${Math.round((100 * SIM.i) / SIM.qs.length)}%`;
     $("#crumb").innerHTML = `<b>Simulacro</b> · <span class="mono">${SIM.i + 1}/${SIM.qs.length}</span> · ${q.mod === "geo" ? "Geología" : "La Célula"}`;
@@ -1693,7 +2410,7 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     if (!SIM || SIM.phase !== "run") return;
     clearInterval(simTick);
     while (SIM.picks.length < SIM.qs.length) SIM.picks.push(-1);
-    SIM.score = SIM.qs.filter((qi, k) => MCQ[qi].ans === SIM.picks[k]).length;
+    SIM.score = SIM.qs.filter((qi, k) => BANK[qi].ans === SIM.picks[k]).length;
     SIM.phase = "done";
     S.sims.push({ date: dayKey(), score: SIM.score, total: SIM.qs.length });
     if (S.sims.length > 20) S.sims.shift();
@@ -1704,12 +2421,12 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     $("#ptop").style.width = "100%";
     const n = SIM.qs.length, pct = Math.round((100 * SIM.score) / n);
     const need = Math.max(0, Math.ceil(0.7 * n) - SIM.score);
-    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => MCQ[qi].mod === m); return `${ks.filter(([qi, k]) => MCQ[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
-    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => MCQ[qi].ans !== SIM.picks[k]);
+    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => BANK[qi].mod === m); return `${ks.filter(([qi, k]) => BANK[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
+    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => BANK[qi].ans !== SIM.picks[k]);
     v.innerHTML = `<div><div class="kicker">Nota cruda</div><h1 class="title"><span class="mono">${SIM.score}/${n}</span> · ${pct} %</h1>
       <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70 %.` : "Llegas al 70 %: vas aprobando."}</p></div>
       <section class="card"><div class="stat-row"><b>Geología</b><span class="delta">${by("geo")}</span></div><div class="stat-row"><b>La Célula</b><span class="delta">${by("cell")}</span></div></section>
-      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = MCQ[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
+      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = BANK[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
       <div class="row-wrap"><button type="button" class="btn primary" id="again">Otro simulacro</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
     $("#again", v).addEventListener("click", () => { SIM = { phase: "intro" }; render(); });
   }
@@ -1730,7 +2447,8 @@ const MCQ = [{"mod": "geo", "q": "During an earthquake, a station on the \u003cb
     return [`${MOD[t.mod].es} · ${t.es} (${t.en})`,
       `Lo fácil: ${t.map.easy[0]}`, `Lo difícil: ${t.map.hard[0]}`, `Siempre sale en el examen: ${t.map.exam[0]}`,
       "Resumen:", ...t.sum.map((p) => `- ${p[0]} / ${p[1]}`),
-      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`)].join("\n");
+      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`),
+      ...(t.table ? ["Tabla:", t.table.head.join(" | "), ...t.table.rows.map((r) => "- " + r.join(" | "))] : [])].join("\n");
   }
   function rules(t) {
     return `Eres el tutor de "Entender", una app de estudio. Hablas con un estudiante de 7.º grado de Costa Rica que estudia Ciencias para un examen EN INGLÉS el 4 de diciembre de 2026. Su idioma fuerte es el español.

@@ -143,7 +143,7 @@ body[data-lang="en"] .en { color: inherit; font-size: 1em; }
 .step-n { width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font: 600 .85rem var(--font-mono); }
 .step-body { display: grid; gap: .7rem; min-width: 0; padding-bottom: .4rem; }
 .map3 { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
-.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; }
+.map3 > div { border: 1px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: var(--surface); display: grid; gap: .25rem; align-content: start; }
 .map3 > div.exam { border-color: var(--accent); background: var(--accent-soft); }
 .map3 .kicker { color: var(--ink); display: block; }
 body.focus .menu-btn { display: none; }
@@ -151,6 +151,14 @@ body.focus .menu-btn { display: none; }
 .sum { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
 .sum li { padding-left: .9rem; border-left: 2px solid var(--line); }
 .plate { margin: 0; overflow-x: auto; background: var(--plate); border: 1px solid var(--line); border-radius: 14px; padding: .7rem; }
+.fig-wrap { margin: 0; display: grid; gap: .35rem; min-width: 0; }
+.fig-wrap figcaption { font-size: .84rem; color: var(--muted); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.tbl table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: .5rem .65rem; border-bottom: 1px solid var(--line); line-height: 1.4; }
+.tbl thead th { background: var(--soft); font-size: .8rem; font-weight: 700; }
+.tbl tbody th { font-weight: 600; }
+.tbl tbody tr:last-child > * { border-bottom: 0; }
 .plate svg { display: block; width: 100%; min-width: 560px; height: auto; }
 .beats { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; counter-reset: b; }
 .beats li { counter-increment: b; display: grid; grid-template-columns: 1.6rem 1fr; gap: .5rem; padding: .5rem .6rem; border-radius: 10px; transition: background .2s; }
@@ -275,6 +283,8 @@ body.focus .menu-btn { display: none; }
   const EXAM = new Date(2026, 11, 4, 7, 0, 0).getTime();
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const bl = (p, tag = "span") => `<${tag} class="es">${esc(p[0])}</${tag}><${tag} class="en">${esc(p[1])}</${tag}>`;
+  const tableHtml = (tb) => `<div class="tbl"><table><thead><tr>${tb.head.map((h) => `<th scope="col">${esc(h)}</th>`).join("")}</tr></thead><tbody>${tb.rows.map((r) => `<tr>${r.map((c, i) => (i ? `<td>${esc(c)}</td>` : `<th scope="row">${esc(c)}</th>`)).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const BANK = MCQ.concat(CONTENT.mcq || []);
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const pad = (n) => String(n).padStart(2, "0");
@@ -584,7 +594,7 @@ body.focus .menu-btn { display: none; }
     $("#crumb").innerHTML = `<b>${esc(MOD[t.mod].es)}</b> · Bloque ${idx}/${total} · <span class="mono">${topicPct(t.id)}%</span>`;
     const c = counts(ITEMS.filter((i) => i.topic === t.id));
     const feyn = S.feyn[t.id];
-    const svg = t.svg ? document.getElementById("svg-" + t.svg) : null;
+    const figs = (t.figs || (t.svg ? [[t.svg, "", ""]] : [])).filter((f) => document.getElementById("svg-" + f[0]));
     v.innerHTML = `
       <div><div class="kicker">${esc(MOD[t.mod].es)} · ${esc(MOD[t.mod].objectives)}</div>
       <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
@@ -593,9 +603,10 @@ body.focus .menu-btn { display: none; }
         <section class="step"><div class="step-n">1</div><div class="step-body"><h2 class="h">Guía · el mapa</h2>
           <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div></div></section>
         <section class="step"><div class="step-n">2</div><div class="step-body"><h2 class="h">Resumen que sí se entiende</h2>
-          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul></div></section>
+          <ul class="sum">${t.sum.map((p) => `<li>${bl(p)}</li>`).join("")}</ul>
+          ${t.table ? `<div class="kicker">Tabla para repasar</div>${tableHtml(t.table)}` : ""}</div></section>
         <section class="step"><div class="step-n">3</div><div class="step-body"><h2 class="h">Explicador de 2 minutos</h2>
-          ${svg ? `<figure class="plate" id="plate"></figure>` : ""}
+          ${figs.map((f, i) => `<figure class="fig-wrap"><div class="plate" data-fig="${i}"></div>${f[1] ? `<figcaption>${bl([f[1], f[2]])}</figcaption>` : ""}</figure>`).join("")}
           <ol class="beats" id="beats">${t.beats.map((p, i) => `<li data-b="${i}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>
           <div class="row-wrap">
             <button type="button" class="btn dark" id="play" hidden>▶ Escuchar · 2 min</button>
@@ -611,7 +622,11 @@ body.focus .menu-btn { display: none; }
           <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
           <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
       </div>`;
-    if (svg) { const fig = $("#plate", v); fig.append(svg.content.cloneNode(true)); $("svg", fig).setAttribute("aria-label", `${t.es}: diagrama`); }
+    figs.forEach((f, i) => {
+      const box = $(`[data-fig="${i}"]`, v);
+      box.append(document.getElementById("svg-" + f[0]).content.cloneNode(true));
+      $("svg", box).setAttribute("aria-label", f[1] || `${t.es}: diagrama`);
+    });
     S.seen[t.id] = true; persistLocal();
     $("#practice", v).addEventListener("click", () => startSession("topic", buildQueue("topic", 30, t.id), 0));
     $("#explain", v).addEventListener("click", () => { ctxTopic = t.id; renderCtx(); const a = $("#ask"); a.focus(); a.placeholder = `Explica «${t.es}» con tus palabras…`; });
@@ -819,7 +834,7 @@ body.focus .menu-btn { display: none; }
         <button type="button" class="btn primary block" id="go">Empezar simulacro</button></section>
         ${S.sims.length ? `<section class="card quiet"><div class="kicker">Tus simulacros</div>${S.sims.slice(-5).reverse().map((x) => `<div class="stat-row"><span>${esc(x.date)}</span><span class="delta">${x.score}/${x.total} · ${Math.round((100 * x.score) / x.total)} %</span></div>`).join("")}</section>` : ""}`;
       $("#go", v).addEventListener("click", () => {
-        const pick = (m) => MCQ.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
+        const pick = (m) => BANK.map((q, i) => ({ q, i })).filter((x) => x.q.mod === m).sort(() => Math.random() - 0.5).slice(0, 10).map((x) => x.i);
         SIM = { phase: "run", qs: [...pick("geo"), ...pick("cell")].sort(() => Math.random() - 0.5), i: 0, picks: [], sel: null, end: Date.now() + 20 * 60e3 };
         clearInterval(simTick); simTick = setInterval(() => { if (!SIM || SIM.phase !== "run") return clearInterval(simTick); const left = SIM.end - Date.now(); $("#timer").textContent = fmtMs(Math.max(0, left)); if (left <= 0) finishSim(); }, 1000);
         render();
@@ -827,7 +842,7 @@ body.focus .menu-btn { display: none; }
       return;
     }
     if (SIM.phase === "done") return renderSimDone(v);
-    const q = MCQ[SIM.qs[SIM.i]];
+    const q = BANK[SIM.qs[SIM.i]];
     $("#timer").textContent = fmtMs(Math.max(0, SIM.end - Date.now()));
     $("#ptop").style.width = `${Math.round((100 * SIM.i) / SIM.qs.length)}%`;
     $("#crumb").innerHTML = `<b>Simulacro</b> · <span class="mono">${SIM.i + 1}/${SIM.qs.length}</span> · ${q.mod === "geo" ? "Geología" : "La Célula"}`;
@@ -844,7 +859,7 @@ body.focus .menu-btn { display: none; }
     if (!SIM || SIM.phase !== "run") return;
     clearInterval(simTick);
     while (SIM.picks.length < SIM.qs.length) SIM.picks.push(-1);
-    SIM.score = SIM.qs.filter((qi, k) => MCQ[qi].ans === SIM.picks[k]).length;
+    SIM.score = SIM.qs.filter((qi, k) => BANK[qi].ans === SIM.picks[k]).length;
     SIM.phase = "done";
     S.sims.push({ date: dayKey(), score: SIM.score, total: SIM.qs.length });
     if (S.sims.length > 20) S.sims.shift();
@@ -855,12 +870,12 @@ body.focus .menu-btn { display: none; }
     $("#ptop").style.width = "100%";
     const n = SIM.qs.length, pct = Math.round((100 * SIM.score) / n);
     const need = Math.max(0, Math.ceil(0.7 * n) - SIM.score);
-    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => MCQ[qi].mod === m); return `${ks.filter(([qi, k]) => MCQ[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
-    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => MCQ[qi].ans !== SIM.picks[k]);
+    const by = (m) => { const ks = SIM.qs.map((qi, k) => [qi, k]).filter(([qi]) => BANK[qi].mod === m); return `${ks.filter(([qi, k]) => BANK[qi].ans === SIM.picks[k]).length}/${ks.length}`; };
+    const wrong = SIM.qs.map((qi, k) => [qi, k]).filter(([qi, k]) => BANK[qi].ans !== SIM.picks[k]);
     v.innerHTML = `<div><div class="kicker">Nota cruda</div><h1 class="title"><span class="mono">${SIM.score}/${n}</span> · ${pct} %</h1>
       <p class="muted" style="margin-top:.4rem">${need ? `Te faltan ${need} ${need === 1 ? "pregunta" : "preguntas"} para llegar al 70 %.` : "Llegas al 70 %: vas aprobando."}</p></div>
       <section class="card"><div class="stat-row"><b>Geología</b><span class="delta">${by("geo")}</span></div><div class="stat-row"><b>La Célula</b><span class="delta">${by("cell")}</span></div></section>
-      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = MCQ[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
+      ${wrong.length ? `<div class="kicker">Revisa estas ${wrong.length}</div><div class="review-list">${wrong.map(([qi, k]) => { const q = BANK[qi]; return `<div class="card"><p>${q.q}</p><p class="small">Tu respuesta: <b>${SIM.picks[k] >= 0 ? "abcd"[SIM.picks[k]] + ". " + q.opts[SIM.picks[k]] : "sin responder"}</b></p><p class="small">Correcta: <b>${"abcd"[q.ans]}. ${q.opts[q.ans]}</b></p><p class="small"><span class="es">${q.why[0]}</span><span class="en">${q.why[1]}</span></p></div>`; }).join("")}</div>` : ""}
       <div class="row-wrap"><button type="button" class="btn primary" id="again">Otro simulacro</button><a class="btn" href="#hoy">Volver a Hoy</a></div>`;
     $("#again", v).addEventListener("click", () => { SIM = { phase: "intro" }; render(); });
   }
@@ -881,7 +896,8 @@ body.focus .menu-btn { display: none; }
     return [`${MOD[t.mod].es} · ${t.es} (${t.en})`,
       `Lo fácil: ${t.map.easy[0]}`, `Lo difícil: ${t.map.hard[0]}`, `Siempre sale en el examen: ${t.map.exam[0]}`,
       "Resumen:", ...t.sum.map((p) => `- ${p[0]} / ${p[1]}`),
-      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`)].join("\n");
+      "Preguntas y respuestas correctas:", ...t.items.map((i) => `- ${i[1]} → ${i[3]} (${i[4]})`),
+      ...(t.table ? ["Tabla:", t.table.head.join(" | "), ...t.table.rows.map((r) => "- " + r.join(" | "))] : [])].join("\n");
   }
   function rules(t) {
     return `Eres el tutor de "Entender", una app de estudio. Hablas con un estudiante de 7.º grado de Costa Rica que estudia Ciencias para un examen EN INGLÉS el 4 de diciembre de 2026. Su idioma fuerte es el español.

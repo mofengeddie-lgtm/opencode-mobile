@@ -16,8 +16,7 @@ SRC = APP.parent
 sys.path.insert(0, str(SRC))
 import build  # noqa: E402
 
-SVGS = ["earth-layers", "seismic", "plate-boundaries", "soil-horizons", "rock-cycle",
-        "cells", "virus", "lytic-lysogenic", "bacteria"]
+SVGS = sorted(p.stem for p in (SRC / "svg").glob("*.svg"))
 
 
 def md_inline(text: str) -> str:

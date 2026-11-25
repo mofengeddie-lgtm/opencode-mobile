@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" font-family="Inter, sans-serif">
+  <text x="180" y="26" text-anchor="middle" font-size="15" font-weight="800">Valle en V · <tspan fill="#1d4ed8">V-shaped valley</tspan></text>
+  <text x="540" y="26" text-anchor="middle" font-size="15" font-weight="800">Valle en U · <tspan fill="#1d4ed8">U-shaped valley</tspan></text>
+  <path d="M20 60 L110 60 L198 236 L212 236 L300 60 L340 60 L340 270 L20 270 Z" fill="#a0673a"/>
+  <path d="M20 60 L110 60 L198 236 L212 236 L300 60 L340 60" fill="none" stroke="#3f7d20" stroke-width="5"/>
+  <path d="M196 232 Q205 226 214 232 L212 236 L198 236 Z" fill="#3b82f6"/>
+  <path d="M380 60 L440 60 C462 150 472 206 540 210 C608 206 618 150 640 60 L700 60 L700 270 L380 270 Z" fill="#a0673a"/>
+  <path d="M380 60 L440 60 C462 150 472 206 540 210 C608 206 618 150 640 60 L700 60" fill="none" stroke="#3f7d20" stroke-width="5"/>
+  <path d="M447 90 C466 155 476 204 540 207 C604 204 614 155 633 90 Z" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="2"/>
+  <g stroke="#1c2130" stroke-width="1.3" fill="none"><path d="M216 228 L262 196"/><path d="M540 160 L540 130"/></g>
+  <g font-size="12.5">
+    <text x="266" y="192" font-weight="700" fill="#fff">un río corta</text>
+    <text x="266" y="208" fill="#fff">a river cuts</text>
+    <text x="540" y="122" text-anchor="middle" font-weight="700">glaciar raspa · glacier scrapes</text>
+  </g>
+  <g font-size="12.5" text-anchor="middle">
+    <text x="180" y="296" font-weight="700">angosto, laderas empinadas</text>
+    <text x="180" y="314" fill="#1d4ed8">narrow, steep sides · erosión por agua</text>
+    <text x="540" y="296" font-weight="700">ancho, fondo plano</text>
+    <text x="540" y="314" fill="#1d4ed8">wide, flat bottom · erosión por hielo</text>
+  </g>
+</svg>

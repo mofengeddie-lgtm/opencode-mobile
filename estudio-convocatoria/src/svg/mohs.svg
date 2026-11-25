@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 230" font-family="Inter, sans-serif">
+  <g fill="#1c2130" font-size="11.5">
+    <text x="159" y="34" text-anchor="middle" font-weight="700">uña · fingernail 2.5</text>
+    <text x="225" y="58" text-anchor="middle" font-weight="700">moneda · coin 3.5</text>
+    <text x="357" y="34" text-anchor="middle" font-weight="700">vidrio · glass 5.5</text>
+  </g>
+  <g stroke="#6b7280" stroke-width="1.2"><path d="M159 40 L159 82"/><path d="M225 64 L225 82"/><path d="M357 40 L357 82"/></g>
+  <g fill="#1c2130"><path d="M153 84 L165 84 L159 94 Z"/><path d="M219 84 L231 84 L225 94 Z"/><path d="M351 84 L363 84 L357 94 Z"/></g>
+  <g>
+    <rect x="27" y="112" width="64" height="16" fill="#fef3c7"/><rect x="93" y="112" width="64" height="16" fill="#fde68a"/>
+    <rect x="159" y="112" width="64" height="16" fill="#fcd34d"/><rect x="225" y="112" width="64" height="16" fill="#fbbf24"/>
+    <rect x="291" y="112" width="64" height="16" fill="#f59e0b"/><rect x="357" y="112" width="64" height="16" fill="#d97706"/>
+    <rect x="423" y="112" width="64" height="16" fill="#b45309"/><rect x="489" y="112" width="64" height="16" fill="#92400e"/>
+    <rect x="555" y="112" width="64" height="16" fill="#78350f"/><rect x="621" y="112" width="64" height="16" fill="#451a03"/>
+  </g>
+  <g font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" text-anchor="middle" fill="#1c2130">
+    <text x="60" y="106">1</text><text x="126" y="106">2</text><text x="192" y="106">3</text><text x="258" y="106">4</text><text x="324" y="106">5</text>
+    <text x="390" y="106">6</text><text x="456" y="106">7</text><text x="522" y="106">8</text><text x="588" y="106">9</text><text x="654" y="106">10</text>
+  </g>
+  <g font-size="12" text-anchor="middle">
+    <text x="60" y="148" font-weight="700">Talco</text><text x="126" y="148" font-weight="700">Yeso</text><text x="192" y="148" font-weight="700">Calcita</text>
+    <text x="258" y="148" font-weight="700">Fluorita</text><text x="324" y="148" font-weight="700">Apatito</text><text x="390" y="148" font-weight="700">Ortoclasa</text>
+    <text x="456" y="148" font-weight="700">Cuarzo</text><text x="522" y="148" font-weight="700">Topacio</text><text x="588" y="148" font-weight="700">Corindón</text>
+    <text x="654" y="148" font-weight="700">Diamante</text>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="#1d4ed8">
+    <text x="60" y="164">Talc</text><text x="126" y="164">Gypsum</text><text x="192" y="164">Calcite</text><text x="258" y="164">Fluorite</text><text x="324" y="164">Apatite</text>
+    <text x="390" y="164">Orthoclase</text><text x="456" y="164">Quartz</text><text x="522" y="164">Topaz</text><text x="588" y="164">Corundum</text><text x="654" y="164">Diamond</text>
+  </g>
+  <defs><marker id="mh-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker></defs>
+  <path d="M300 196 L60 196" stroke="#1c2130" stroke-width="2" marker-end="url(#mh-a)"/>
+  <path d="M420 196 L660 196" stroke="#1c2130" stroke-width="2" marker-end="url(#mh-a)"/>
+  <text x="360" y="200" text-anchor="middle" font-size="12" font-weight="700">dureza · hardness</text>
+  <text x="60" y="218" font-size="11.5" fill="#4b5563">más blando · softer</text>
+  <text x="660" y="218" font-size="11.5" text-anchor="end" fill="#4b5563">más duro · harder</text>
+</svg>

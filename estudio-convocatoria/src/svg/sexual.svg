@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 280" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="sx-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g stroke-width="2">
+    <rect x="10" y="30" width="130" height="76" rx="12" fill="#dbeafe" stroke="#1d4ed8"/>
+    <rect x="10" y="174" width="130" height="76" rx="12" fill="#fde9f0" stroke="#be185d"/>
+    <rect x="230" y="30" width="140" height="76" rx="12" fill="#eff6ff" stroke="#1d4ed8"/>
+    <rect x="230" y="174" width="140" height="76" rx="12" fill="#fdf2f8" stroke="#be185d"/>
+    <rect x="460" y="102" width="130" height="76" rx="12" fill="#fef3c7" stroke="#b45309"/>
+    <rect x="640" y="102" width="110" height="76" rx="12" fill="#dcfce7" stroke="#15803d"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="75" y="56" font-size="13.5" font-weight="800">Padre · <tspan fill="#1d4ed8">Father</tspan></text>
+    <text x="75" y="88" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="75" y="200" font-size="13.5" font-weight="800">Madre · <tspan fill="#1d4ed8">Mother</tspan></text>
+    <text x="75" y="232" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="300" y="54" font-size="13" font-weight="800">Espermatozoide</text>
+    <text x="300" y="70" font-size="11.5" fill="#1d4ed8">Sperm · gameto</text>
+    <text x="300" y="96" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">23</text>
+    <text x="300" y="198" font-size="13" font-weight="800">Óvulo</text>
+    <text x="300" y="214" font-size="11.5" fill="#1d4ed8">Egg · gameto</text>
+    <text x="300" y="240" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">23</text>
+    <text x="525" y="126" font-size="13.5" font-weight="800">Cigoto</text>
+    <text x="525" y="142" font-size="11.5" fill="#1d4ed8">Zygote</text>
+    <text x="525" y="168" font-size="20" font-weight="700" font-family="JetBrains Mono, monospace">46</text>
+    <text x="695" y="128" font-size="12.5" font-weight="800">Nuevo</text>
+    <text x="695" y="144" font-size="12.5" font-weight="800">organismo</text>
+    <text x="695" y="164" font-size="11" fill="#1d4ed8">único · unique</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2.2" fill="none" marker-end="url(#sx-a)">
+    <path d="M142 68 L228 68"/><path d="M142 212 L228 212"/>
+    <path d="M372 76 L458 126"/><path d="M372 204 L458 156"/>
+    <path d="M592 140 L638 140"/>
+  </g>
+  <g font-size="12" text-anchor="middle" font-weight="700">
+    <text x="185" y="58">meiosis</text><text x="185" y="202">meiosis</text>
+    <text x="185" y="88" font-weight="500" font-size="11" fill="#4b5563">mitad · half</text><text x="185" y="232" font-weight="500" font-size="11" fill="#4b5563">mitad · half</text>
+    <text x="440" y="96" fill="#b45309">fecundación</text><text x="440" y="198" fill="#b45309" font-weight="500" font-size="11">fertilization</text>
+    <text x="615" y="128" font-size="11">mitosis</text>
+  </g>
+  <text x="380" y="272" text-anchor="middle" font-size="12" fill="#4b5563">23 + 23 = 46 · cada gameto es distinto → variación genética · each gamete differs → genetic variation</text>
+</svg>

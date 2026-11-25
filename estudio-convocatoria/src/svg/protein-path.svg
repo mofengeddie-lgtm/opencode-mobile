@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 240" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pp-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <text x="390" y="24" text-anchor="middle" font-size="14" font-weight="800">El viaje de una proteína · <tspan fill="#1d4ed8">A protein's journey</tspan></text>
+  <g stroke-width="2">
+    <rect x="12" y="50" width="100" height="100" rx="14" fill="#ede9fe" stroke="#6d28d9"/>
+    <rect x="144" y="50" width="100" height="100" rx="14" fill="#f3f4f6" stroke="#374151"/>
+    <rect x="276" y="50" width="100" height="100" rx="14" fill="#fee2e2" stroke="#b91c1c"/>
+    <rect x="408" y="50" width="100" height="100" rx="14" fill="#fef3c7" stroke="#b45309"/>
+    <rect x="540" y="50" width="100" height="100" rx="14" fill="#dcfce7" stroke="#15803d"/>
+    <rect x="672" y="50" width="100" height="100" rx="14" fill="#fde9f0" stroke="#be185d"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="62" y="80" font-size="13.5" font-weight="800">Núcleo</text><text x="62" y="96" font-size="11.5" fill="#1d4ed8">Nucleus</text><text x="62" y="120" font-size="11">guarda el</text><text x="62" y="134" font-size="11">ADN</text>
+    <text x="194" y="80" font-size="13.5" font-weight="800">Ribosoma</text><text x="194" y="96" font-size="11.5" fill="#1d4ed8">Ribosome</text><text x="194" y="120" font-size="11">fabrica la</text><text x="194" y="134" font-size="11">proteína</text>
+    <text x="326" y="76" font-size="13" font-weight="800">RE rugoso</text><text x="326" y="92" font-size="11.5" fill="#1d4ed8">Rough ER</text><text x="326" y="120" font-size="11">la transporta</text><text x="326" y="134" font-size="11">(con ribosomas)</text>
+    <text x="458" y="80" font-size="13.5" font-weight="800">Golgi</text><text x="458" y="96" font-size="11.5" fill="#1d4ed8">Golgi</text><text x="458" y="120" font-size="11">la modifica</text><text x="458" y="134" font-size="11">y la empaca</text>
+    <text x="590" y="80" font-size="13.5" font-weight="800">Vesícula</text><text x="590" y="96" font-size="11.5" fill="#1d4ed8">Vesicle</text><text x="590" y="120" font-size="11">burbuja que</text><text x="590" y="134" font-size="11">la lleva</text>
+    <text x="722" y="80" font-size="13.5" font-weight="800">Membrana</text><text x="722" y="96" font-size="11.5" fill="#1d4ed8">Membrane</text><text x="722" y="120" font-size="11">la saca de</text><text x="722" y="134" font-size="11">la célula</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2" marker-end="url(#pp-a)">
+    <path d="M114 100 L142 100"/><path d="M246 100 L274 100"/><path d="M378 100 L406 100"/><path d="M510 100 L538 100"/><path d="M642 100 L670 100"/>
+  </g>
+  <g font-size="10.5" text-anchor="middle" font-weight="600" fill="#374151">
+    <text x="128" y="44">ARNm</text><text x="260" y="44">proteína</text><text x="392" y="44">viaja</text><text x="524" y="44">paquete</text><text x="656" y="44">envío</text>
+  </g>
+  <g stroke="#9ca3af" stroke-width="1"><path d="M128 48 L128 92"/><path d="M260 48 L260 92"/><path d="M392 48 L392 92"/><path d="M524 48 L524 92"/><path d="M656 48 L656 92"/></g>
+  <g font-size="12">
+    <text x="12" y="186"><tspan font-weight="800">RE liso</tspan> · <tspan fill="#1d4ed8">Smooth ER</tspan>: sin ribosomas; fabrica lípidos (grasas) y elimina tóxicos · makes lipids</text>
+    <text x="12" y="210"><tspan font-weight="800">Citoesqueleto</tspan> · <tspan fill="#1d4ed8">Cytoskeleton</tspan>: fibras de proteína que dan forma, sostienen y guían el transporte</text>
+  </g>
+</svg>

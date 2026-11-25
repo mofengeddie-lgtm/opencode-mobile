@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="cv-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
+    <marker id="cv-o" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#b45309"/></marker>
+    <marker id="cv-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/></marker>
+    <marker id="cv-g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker>
+    <marker id="cv-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <rect x="20" y="90" width="680" height="190" fill="#fbd9bd"/>
+  <rect x="20" y="280" width="680" height="44" fill="#f5b53c"/>
+  <rect x="20" y="58" width="334" height="32" fill="#8d5524"/>
+  <rect x="366" y="58" width="334" height="32" fill="#8d5524"/>
+  <path d="M354 90 L360 70 L366 90 Z" fill="#dc2626"/>
+  <g stroke-width="3" fill="none">
+    <path d="M250 44 L130 44" stroke="#1c2130" marker-end="url(#cv-k)"/>
+    <path d="M470 44 L590 44" stroke="#1c2130" marker-end="url(#cv-k)"/>
+  </g>
+  <text x="360" y="26" text-anchor="middle" font-size="13" font-weight="700">las placas se separan arrastradas · plates are dragged apart</text>
+  <g stroke-width="4" fill="none">
+    <path d="M360 262 L360 120" stroke="#dc2626" marker-end="url(#cv-r)"/>
+    <path d="M348 108 L140 108" stroke="#b45309" marker-end="url(#cv-o)"/>
+    <path d="M372 108 L580 108" stroke="#b45309" marker-end="url(#cv-o)"/>
+    <path d="M110 118 L110 246" stroke="#2563eb" marker-end="url(#cv-b)"/>
+    <path d="M610 118 L610 246" stroke="#2563eb" marker-end="url(#cv-b)"/>
+    <path d="M124 264 L340 264" stroke="#6b7280" marker-end="url(#cv-g)"/>
+    <path d="M596 264 L380 264" stroke="#6b7280" marker-end="url(#cv-g)"/>
+  </g>
+  <g font-size="12.5">
+    <text x="372" y="182" font-weight="700" fill="#b91c1c">1. sube caliente</text>
+    <text x="372" y="198" fill="#1d4ed8">hot material rises</text>
+    <text x="244" y="132" text-anchor="middle" font-weight="700" fill="#92400e">2. se mueve bajo las placas</text>
+    <text x="244" y="148" text-anchor="middle" fill="#1d4ed8">moves under the plates</text>
+    <text x="124" y="190" font-weight="700" fill="#1e40af">3. se enfría y baja</text>
+    <text x="124" y="206" fill="#1d4ed8">cools and sinks</text>
+    <text x="596" y="190" text-anchor="end" font-weight="700" fill="#1e40af">3. se enfría y baja</text>
+    <text x="596" y="206" text-anchor="end" fill="#1d4ed8">cools and sinks</text>
+    <text x="232" y="254" text-anchor="middle" fill="#374151">4. vuelve al centro · returns</text>
+    <text x="40" y="78" fill="#fff" font-weight="700">Placa · Plate</text>
+    <text x="680" y="78" fill="#fff" font-weight="700" text-anchor="end">Placa · Plate</text>
+    <text x="360" y="308" text-anchor="middle" font-weight="700">El núcleo calienta el manto desde abajo · The core heats the mantle from below</text>
+  </g>
+  <text x="560" y="150" text-anchor="middle" font-size="13" font-weight="800" fill="#7c2d12">Manto · Mantle</text>
+</svg>

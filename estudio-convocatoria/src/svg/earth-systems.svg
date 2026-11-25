@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="es-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g stroke-width="2">
+    <rect x="40" y="26" width="200" height="80" rx="14" fill="#e0f2fe" stroke="#0284c7"/>
+    <rect x="480" y="26" width="200" height="80" rx="14" fill="#dcfce7" stroke="#16a34a"/>
+    <rect x="40" y="254" width="200" height="80" rx="14" fill="#fbe7d3" stroke="#9a4d0f"/>
+    <rect x="480" y="254" width="200" height="80" rx="14" fill="#dbeafe" stroke="#1d4ed8"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="140" y="56" font-size="16" font-weight="800">Atmósfera</text><text x="140" y="74" font-size="12.5" fill="#1d4ed8">Atmosphere</text><text x="140" y="94" font-size="12" fill="#4b5563">el aire · air</text>
+    <text x="580" y="56" font-size="16" font-weight="800">Biosfera</text><text x="580" y="74" font-size="12.5" fill="#1d4ed8">Biosphere</text><text x="580" y="94" font-size="12" fill="#4b5563">seres vivos · living things</text>
+    <text x="140" y="284" font-size="16" font-weight="800">Geosfera</text><text x="140" y="302" font-size="12.5" fill="#1d4ed8">Geosphere</text><text x="140" y="322" font-size="12" fill="#4b5563">rocas, suelo, capas · solid Earth</text>
+    <text x="580" y="284" font-size="16" font-weight="800">Hidrosfera</text><text x="580" y="302" font-size="12.5" fill="#1d4ed8">Hydrosphere</text><text x="580" y="322" font-size="12" fill="#4b5563">toda el agua · all water</text>
+  </g>
+  <g stroke="#1c2130" stroke-width="2.2" fill="none" marker-end="url(#es-a)">
+    <path d="M478 66 L244 66"/>
+    <path d="M140 252 L140 110"/>
+    <path d="M478 294 L244 294"/>
+    <path d="M580 252 L580 110"/>
+  </g>
+  <g font-size="12.5">
+    <text x="361" y="56" text-anchor="middle" font-weight="600">las plantas sueltan oxígeno</text>
+    <text x="361" y="86" text-anchor="middle" fill="#1d4ed8">plants release oxygen</text>
+    <text x="152" y="176" font-weight="600">los volcanes lanzan gases</text>
+    <text x="152" y="193" fill="#1d4ed8">volcanoes release gases</text>
+    <text x="361" y="284" text-anchor="middle" font-weight="600">la lluvia y los ríos rompen rocas</text>
+    <text x="361" y="314" text-anchor="middle" fill="#1d4ed8">rain and rivers break rocks</text>
+    <text x="568" y="176" text-anchor="end" font-weight="600">el agua mantiene la vida</text>
+    <text x="568" y="193" text-anchor="end" fill="#1d4ed8">water supports life</text>
+  </g>
+  <text x="361" y="232" text-anchor="middle" font-size="12" fill="#4b5563" font-style="italic">lo que pasa en uno cambia a los otros · each one changes the others</text>
+</svg>
