@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" font-family="Inter, sans-serif">
+  <g stroke="#3f7d20" stroke-width="3" stroke-linecap="round">
+    <path d="M45 30 l-4 -16 M60 30 l3 -18 M80 30 l-2 -14 M105 30 l4 -17 M130 30 l-3 -15 M160 30 l2 -18 M190 30 l-4 -14 M215 30 l3 -16 M240 30 l-2 -15"/>
+  </g>
+  <rect x="30" y="30" width="230" height="40" fill="#3a2716"/>
+  <g fill="#7cb342"><ellipse cx="60" cy="42" rx="12" ry="5"/><ellipse cx="120" cy="55" rx="10" ry="4"/><ellipse cx="185" cy="44" rx="12" ry="5"/><ellipse cx="235" cy="58" rx="9" ry="4"/></g>
+  <g fill="#a1887f"><ellipse cx="95" cy="40" rx="9" ry="4"/><ellipse cx="215" cy="40" rx="8" ry="3"/></g>
+  <rect x="30" y="70" width="230" height="70" fill="#5b3c21"/>
+  <g stroke="#c8a27a" stroke-width="1.5" fill="none"><path d="M70 70 q5 25 -5 55 M150 70 q-6 20 4 45 M215 70 q4 18 -4 35"/></g>
+  <rect x="30" y="140" width="230" height="70" fill="#b27445"/>
+  <g fill="#8d5524"><circle cx="60" cy="160" r="3"/><circle cx="110" cy="185" r="3"/><circle cx="170" cy="165" r="3"/><circle cx="220" cy="195" r="3"/><circle cx="90" cy="200" r="2.5"/><circle cx="200" cy="150" r="2.5"/></g>
+  <rect x="30" y="210" width="230" height="70" fill="#a39b8f"/>
+  <g fill="#7b7468" stroke="#5f594f"><path d="M45 225 l25 -5 l10 20 l-20 15 l-18 -10z"/><path d="M110 240 l30 -8 l12 18 l-25 14 l-20 -8z"/><path d="M180 222 l28 2 l6 22 l-26 8 l-14 -14z"/><path d="M220 255 l25 0 l5 18 l-28 4z"/></g>
+  <rect x="30" y="280" width="230" height="70" fill="#6b6b6b"/>
+  <g stroke="#4b4b4b" stroke-width="2" fill="none"><path d="M80 280 l10 30 l-8 40 M170 280 l-6 25 l12 45"/></g>
+  <g font-size="24" font-weight="800" fill="#fff" text-anchor="middle">
+    <text x="15" y="58" fill="#3a2716">O</text><text x="15" y="113" fill="#5b3c21">A</text><text x="15" y="183" fill="#b27445">B</text><text x="15" y="253" fill="#7b7468">C</text><text x="15" y="323" fill="#4b4b4b">R</text>
+  </g>
+  <g stroke="#9aa1ae" stroke-width="1.2"><path d="M262 50 L285 50 M262 105 L285 105 M262 175 L285 175 M262 245 L285 245 M262 315 L285 315"/></g>
+  <g font-size="14.5">
+    <text x="292" y="45" font-weight="700">O · Capa orgánica · <tspan fill="#1d4ed8">Organic layer</tspan></text>
+    <text x="292" y="62" font-size="12">hojas frescas y en descomposición · fresh &amp; decomposing leaves</text>
+    <text x="292" y="100" font-weight="700">A · Suelo superficial · <tspan fill="#1d4ed8">Topsoil</tspan></text>
+    <text x="292" y="117" font-size="12">oscuro, humus + minerales, raíces · dark, humus, roots, fertile</text>
+    <text x="292" y="170" font-weight="700">B · Subsuelo · <tspan fill="#1d4ed8">Subsoil</tspan></text>
+    <text x="292" y="187" font-size="12">arcilla y minerales lavados desde arriba · clay &amp; minerals washed down</text>
+    <text x="292" y="240" font-weight="700">C · Material parental · <tspan fill="#1d4ed8">Parent material</tspan></text>
+    <text x="292" y="257" font-size="12">pedazos de roca madre meteorizada · broken, weathered bedrock</text>
+    <text x="292" y="310" font-weight="700">R · Roca madre · <tspan fill="#1d4ed8">Bedrock</tspan></text>
+    <text x="292" y="327" font-size="12">roca sólida sin meteorizar · solid, unweathered rock</text>
+  </g>
+</svg>

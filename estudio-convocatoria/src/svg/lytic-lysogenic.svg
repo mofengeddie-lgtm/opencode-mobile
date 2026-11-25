@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="la" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4b5563"/></marker>
+  </defs>
+  <text x="10" y="24" font-weight="800" font-size="16" fill="#b91c1c">Ciclo lítico · <tspan fill="#1d4ed8">Lytic cycle</tspan> <tspan font-size="12.5" fill="#4b5563" font-weight="600">— rápido, destruye la célula · fast, destroys the cell</tspan></text>
+  <g fill="#fef2f2" stroke="#dc2626" stroke-width="2">
+    <rect x="10" y="38" width="140" height="84" rx="10"/><rect x="170" y="38" width="140" height="84" rx="10"/><rect x="330" y="38" width="140" height="84" rx="10"/><rect x="490" y="38" width="140" height="84" rx="10"/><rect x="650" y="38" width="140" height="84" rx="10"/>
+  </g>
+  <text x="10" y="182" font-weight="800" font-size="16" fill="#6d28d9">Ciclo lisogénico · <tspan fill="#1d4ed8">Lysogenic cycle</tspan> <tspan font-size="12.5" fill="#4b5563" font-weight="600">— se esconde, no mata aún · hides, doesn't kill yet</tspan></text>
+  <g fill="#f5f3ff" stroke="#7c3aed" stroke-width="2">
+    <rect x="10" y="196" width="140" height="84" rx="10"/><rect x="170" y="196" width="140" height="84" rx="10"/><rect x="330" y="196" width="140" height="84" rx="10"/><rect x="490" y="196" width="140" height="84" rx="10"/><rect x="650" y="196" width="140" height="84" rx="10" fill="#fff7ed" stroke="#ea580c"/>
+  </g>
+  <g stroke="#4b5563" stroke-width="2.2" marker-end="url(#la)">
+    <path d="M151 80 L168 80"/><path d="M311 80 L328 80"/><path d="M471 80 L488 80"/><path d="M631 80 L648 80"/>
+    <path d="M151 238 L168 238"/><path d="M311 238 L328 238"/><path d="M471 238 L488 238"/><path d="M631 238 L648 238"/>
+    <path d="M700 195 L440 124" stroke="#ea580c" stroke-dasharray="6 4"/>
+  </g>
+  <g font-size="12.5" text-anchor="middle">
+    <text x="80" y="62" font-weight="700">1. Se adhiere</text><text x="80" y="96" fill="#1d4ed8">Attaches</text>
+    <text x="240" y="62" font-weight="700">2. Inyecta su ADN</text><text x="240" y="96" fill="#1d4ed8">Injects its DNA</text>
+    <text x="400" y="58" font-weight="700">3. La célula hace</text><text x="400" y="74" font-weight="700">copias del virus</text><text x="400" y="96" fill="#1d4ed8">Cell makes</text><text x="400" y="111" fill="#1d4ed8">virus copies</text>
+    <text x="560" y="62" font-weight="700">4. Se arman</text><text x="560" y="78" font-weight="700">virus nuevos</text><text x="560" y="100" fill="#1d4ed8">New viruses assembled</text>
+    <text x="720" y="58" font-weight="700">5. La célula</text><text x="720" y="74" font-weight="700">revienta (lisis)</text><text x="720" y="96" fill="#1d4ed8">Cell bursts</text><text x="720" y="111" fill="#1d4ed8">(lysis)</text>
+    <text x="80" y="220" font-weight="700">1. Se adhiere</text><text x="80" y="254" fill="#1d4ed8">Attaches</text>
+    <text x="240" y="220" font-weight="700">2. Inyecta su ADN</text><text x="240" y="254" fill="#1d4ed8">Injects its DNA</text>
+    <text x="400" y="216" font-weight="700">3. ADN viral se une</text><text x="400" y="232" font-weight="700">al ADN de la célula</text><text x="400" y="254" fill="#1d4ed8">Viral DNA joins</text><text x="400" y="269" fill="#1d4ed8">the host DNA</text>
+    <text x="560" y="216" font-weight="700">4. La célula se divide</text><text x="560" y="232" font-weight="700">y copia el ADN viral</text><text x="560" y="254" fill="#1d4ed8">Cell divides and</text><text x="560" y="269" fill="#1d4ed8">copies viral DNA</text>
+    <text x="720" y="216" font-weight="700">5. Detonante</text><text x="720" y="232" font-weight="700">(estrés) → lítico</text><text x="720" y="254" fill="#1d4ed8">Trigger (stress)</text><text x="720" y="269" fill="#1d4ed8">→ lytic cycle</text>
+  </g>
+  <text x="612" y="158" font-size="11.5" fill="#ea580c" font-weight="700">puede cambiar · can switch</text>
+</svg>

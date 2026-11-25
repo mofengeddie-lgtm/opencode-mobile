@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" font-family="Inter, sans-serif">
+  <circle cx="190" cy="190" r="176" fill="#7a4a22"/>
+  <circle cx="190" cy="190" r="166" fill="#e8843f"/>
+  <circle cx="190" cy="190" r="96" fill="#f5b53c"/>
+  <circle cx="190" cy="190" r="48" fill="#fff1a8" stroke="#e7c75a" stroke-width="2"/>
+  <g stroke="#1c2130" stroke-width="1.6" fill="none">
+    <path d="M300 55 L400 42"/>
+    <path d="M318 145 L400 132"/>
+    <path d="M262 205 L400 222"/>
+    <path d="M205 210 L400 312"/>
+  </g>
+  <g fill="#1c2130">
+    <circle cx="300" cy="55" r="3.5"/><circle cx="318" cy="145" r="3.5"/>
+    <circle cx="262" cy="205" r="3.5"/><circle cx="205" cy="210" r="3.5"/>
+  </g>
+  <g font-size="15">
+    <text x="408" y="38" font-weight="700">Corteza · <tspan fill="#1d4ed8">Crust</tspan></text>
+    <text x="408" y="57" font-size="12.5" fill="#444">sólida, delgada · 5–70 km</text>
+    <text x="408" y="73" font-size="12.5" fill="#1d4ed8">thin, solid · 5–70 km</text>
+    <text x="408" y="128" font-weight="700">Manto · <tspan fill="#1d4ed8">Mantle</tspan></text>
+    <text x="408" y="147" font-size="12.5" fill="#444">la más grande; roca que fluye lento</text>
+    <text x="408" y="163" font-size="12.5" fill="#1d4ed8">largest; slowly flowing rock · ~2,900 km</text>
+    <text x="408" y="218" font-weight="700">Núcleo externo · <tspan fill="#1d4ed8">Outer core</tspan></text>
+    <text x="408" y="237" font-size="12.5" fill="#444">LÍQUIDO (hierro y níquel) → campo magnético</text>
+    <text x="408" y="253" font-size="12.5" fill="#1d4ed8">LIQUID iron &amp; nickel → magnetic field</text>
+    <text x="408" y="308" font-weight="700">Núcleo interno · <tspan fill="#1d4ed8">Inner core</tspan></text>
+    <text x="408" y="327" font-size="12.5" fill="#444">SÓLIDO por la presión; el más caliente</text>
+    <text x="408" y="343" font-size="12.5" fill="#1d4ed8">SOLID due to pressure; hottest</text>
+  </g>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" font-family="Inter, sans-serif">
+  <defs>
+    <marker id="pb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c2130"/></marker>
+  </defs>
+  <g>
+    <rect x="5" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="125" y="30" text-anchor="middle" font-weight="800" font-size="15">Convergente</text>
+    <text x="125" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Convergent</text>
+    <rect x="25" y="150" width="100" height="30" fill="#a0673a"/>
+    <rect x="125" y="150" width="100" height="30" fill="#8d5524"/>
+    <polygon points="85,150 125,85 165,150" fill="#7a4a22"/>
+    <polygon points="112,106 125,85 138,106" fill="#fff"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M35 135 L75 135" marker-end="url(#pb)"/><path d="M215 135 L175 135" marker-end="url(#pb)"/></g>
+    <rect x="25" y="180" width="200" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="125" y="223" text-anchor="middle" font-size="12">chocan → montañas, fosas, volcanes</text>
+    <text x="125" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">collide → mountains, trenches, volcanoes</text>
+  </g>
+  <g>
+    <rect x="260" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="380" y="30" text-anchor="middle" font-weight="800" font-size="15">Divergente</text>
+    <text x="380" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Divergent</text>
+    <rect x="275" y="150" width="95" height="30" fill="#a0673a"/>
+    <rect x="390" y="150" width="95" height="30" fill="#8d5524"/>
+    <path d="M370 150 L380 132 L390 150 Z" fill="#7a4a22"/>
+    <path d="M372 202 C376 185 384 185 388 202 L388 180 C384 170 376 170 372 180 Z" fill="#dc2626"/>
+    <path d="M376 180 C378 160 382 160 384 180" fill="#f97316"/>
+    <g stroke="#1c2130" stroke-width="3" fill="none"><path d="M340 135 L295 135" marker-end="url(#pb)"/><path d="M420 135 L465 135" marker-end="url(#pb)"/></g>
+    <rect x="275" y="180" width="210" height="22" fill="#f2a46a" opacity=".6"/>
+    <text x="380" y="223" text-anchor="middle" font-size="12">se separan → dorsal oceánica, rift</text>
+    <text x="380" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">pull apart → mid-ocean ridge, rift valley</text>
+  </g>
+  <g>
+    <rect x="515" y="5" width="240" height="250" rx="12" fill="#fbf3ea" stroke="#e5cbb0"/>
+    <text x="635" y="30" text-anchor="middle" font-weight="800" font-size="15">Transformante</text>
+    <text x="635" y="47" text-anchor="middle" font-size="13" fill="#1d4ed8">Transform</text>
+    <rect x="545" y="70" width="88" height="130" fill="#a0673a"/>
+    <rect x="637" y="80" width="88" height="130" fill="#8d5524"/>
+    <path d="M635 66 L635 212" stroke="#1c2130" stroke-width="2" stroke-dasharray="6 4"/>
+    <g stroke="#fff" stroke-width="3.5" fill="none"><path d="M589 175 L589 100" marker-end="url(#pb)"/><path d="M681 105 L681 180" marker-end="url(#pb)"/></g>
+    <text x="635" y="223" text-anchor="middle" font-size="12">se deslizan → fallas, terremotos</text>
+    <text x="635" y="241" text-anchor="middle" font-size="12" fill="#1d4ed8">slide past → faults, earthquakes</text>
+  </g>
+</svg>

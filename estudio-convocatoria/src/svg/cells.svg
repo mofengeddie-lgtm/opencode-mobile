@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="Inter, sans-serif">
+  <text x="185" y="28" text-anchor="middle" font-weight="800" font-size="16">Célula vegetal · <tspan fill="#1d4ed8">Plant cell</tspan></text>
+  <text x="575" y="28" text-anchor="middle" font-weight="800" font-size="16">Célula animal · <tspan fill="#1d4ed8">Animal cell</tspan></text>
+  <rect x="40" y="45" width="290" height="230" rx="10" fill="#eef7e6" stroke="#2f7d32" stroke-width="9"/>
+  <rect x="50" y="55" width="270" height="210" rx="6" fill="none" stroke="#9ccc65" stroke-width="2.5"/>
+  <rect x="150" y="75" width="120" height="170" rx="35" fill="#cfeaf7" stroke="#5aa9d6" stroke-width="2"/>
+  <circle cx="95" cy="110" r="28" fill="#c9b8ec" stroke="#6a4fb3" stroke-width="2"/>
+  <circle cx="99" cy="106" r="9" fill="#6a4fb3"/>
+  <g fill="#43a047" stroke="#1b5e20" stroke-width="1.2">
+    <ellipse cx="90" cy="200" rx="17" ry="9"/><ellipse cx="295" cy="120" rx="15" ry="8"/><ellipse cx="205" cy="256" rx="14" ry="6"/><ellipse cx="300" cy="225" rx="13" ry="7"/>
+  </g>
+  <g fill="#ff8a50" stroke="#d84315" stroke-width="1.2"><ellipse cx="90" cy="245" rx="16" ry="9"/><ellipse cx="295" cy="175" rx="13" ry="7"/></g>
+  <ellipse cx="575" cy="160" rx="140" ry="110" fill="#fde9f0" stroke="#d8537a" stroke-width="3.5"/>
+  <circle cx="560" cy="150" r="32" fill="#c9b8ec" stroke="#6a4fb3" stroke-width="2"/>
+  <circle cx="565" cy="146" r="10" fill="#6a4fb3"/>
+  <g fill="#ff8a50" stroke="#d84315" stroke-width="1.2"><ellipse cx="480" cy="120" rx="17" ry="9" transform="rotate(-20 480 120)"/><ellipse cx="650" cy="200" rx="17" ry="9" transform="rotate(25 650 200)"/></g>
+  <g fill="#f48fb1" stroke="#ad1457" stroke-width="1.2"><circle cx="660" cy="110" r="10"/><circle cx="500" cy="210" r="9"/></g>
+  <circle cx="620" cy="240" r="12" fill="#cfeaf7" stroke="#5aa9d6" stroke-width="1.5"/>
+  <g fill="#37474f"><circle cx="530" cy="228" r="2.6"/><circle cx="540" cy="236" r="2.6"/><circle cx="522" cy="238" r="2.6"/><circle cx="610" cy="95" r="2.6"/><circle cx="620" cy="102" r="2.6"/><circle cx="460" cy="170" r="2.6"/><circle cx="470" cy="180" r="2.6"/></g>
+  <g font-size="12" font-weight="800" text-anchor="middle">
+    <g fill="#fff" stroke="#1c2130" stroke-width="1.5">
+      <circle cx="40" cy="160" r="10"/><circle cx="125" cy="55" r="10"/><circle cx="95" cy="145" r="10"/><circle cx="210" cy="160" r="10"/><circle cx="117" cy="200" r="10"/><circle cx="118" cy="245" r="10"/><circle cx="125" cy="170" r="10"/>
+      <circle cx="575" cy="50" r="10"/><circle cx="560" cy="190" r="10"/><circle cx="480" cy="145" r="10"/><circle cx="690" cy="160" r="10"/><circle cx="660" cy="135" r="10"/><circle cx="620" cy="217" r="10"/><circle cx="531" cy="210" r="11"/>
+    </g>
+    <text x="40" y="164">1</text><text x="125" y="59">2</text><text x="95" y="149">3</text><text x="210" y="164">4</text><text x="117" y="204">5</text><text x="118" y="249">6</text><text x="125" y="174">7</text>
+    <text x="575" y="54">2</text><text x="560" y="194">3</text><text x="480" y="149">6</text><text x="690" y="164">7</text><text x="660" y="139">8</text><text x="620" y="221">9</text><text x="531" y="214">10</text>
+  </g>
+  <g font-size="12.5">
+    <text x="45" y="305" font-weight="800" fill="#2f7d32">1 Pared celular · Cell wall ★</text>
+    <text x="45" y="323">2 Membrana celular · Cell membrane</text>
+    <text x="45" y="341">3 Núcleo · Nucleus</text>
+    <text x="45" y="359" font-weight="800" fill="#2f7d32">4 Vacuola central grande · Large central vacuole ★</text>
+    <text x="45" y="377" font-weight="800" fill="#2f7d32">5 Cloroplasto · Chloroplast ★</text>
+    <text x="45" y="395">6 Mitocondria · Mitochondria</text>
+    <text x="45" y="413">7 Citoplasma · Cytoplasm</text>
+    <text x="45" y="433" font-size="11" fill="#2f7d32">★ solo en plantas · plants only</text>
+    <text x="440" y="305">2 Membrana celular · Cell membrane</text>
+    <text x="440" y="323">3 Núcleo · Nucleus</text>
+    <text x="440" y="341">6 Mitocondria · Mitochondria</text>
+    <text x="440" y="359">7 Citoplasma · Cytoplasm</text>
+    <text x="440" y="377" font-weight="800" fill="#ad1457">8 Lisosoma · Lysosome</text>
+    <text x="440" y="395">9 Vacuola pequeña · Small vacuole</text>
+    <text x="440" y="413">10 Ribosomas · Ribosomes (en todas · in all cells)</text>
+    <text x="440" y="433" font-size="11" fill="#ad1457">Sin pared, sin cloroplastos · No wall, no chloroplasts</text>
+  </g>
+</svg>
