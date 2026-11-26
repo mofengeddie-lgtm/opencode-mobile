@@ -1715,6 +1715,9 @@ ${temario(t)}`;
   /* La conversación vive en la portada (#tutor), como en una app de chat; durante una sesión sale debajo de la tarjeta.
      CHATS[clave] = [{ role, content, show, tag, photo, error, failed }]. El texto de Claude siempre va como texto (textContent). */
   let streaming = null; // { key, el, inline }
+  // Modelo del tutor elegido por el estudiante: Claude Fable 5.2. Si no está disponible, Claude responde con otro modelo y se avisa.
+  const TUTOR_MODEL = "claude-fable-5-2", TUTOR_NAME = "Claude Fable 5.2";
+  const MODEL_COPY = { fable: ["ok", "✦ Fable 5.2", "Respondió Claude Fable 5.2"], otro: ["", "Modelo de respaldo", "Fable 5.2 no estaba disponible en ese momento; respondió otro modelo de Claude"] };
   const chatKey = () => (ctxTopic && TOPIC[ctxTopic] ? ctxTopic : "_");
   const TAG_COPY = { ENTENDIDO: ["ok", "✓ Lo entendiste"], CASI: ["", "◐ Casi"], TODAVIA_NO: ["", "Todavía no, y está bien"] };
   const STOP_ICON = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>`;
@@ -1722,6 +1725,7 @@ ${temario(t)}`;
   function msgMeta(m) {
     const meta = Object.assign(document.createElement("div"), { className: "meta" });
     if (m.tag) meta.append(Object.assign(document.createElement("span"), { className: `chip ${TAG_COPY[m.tag][0]}`, textContent: TAG_COPY[m.tag][1] }));
+    if (m.model && MODEL_COPY[m.model]) meta.append(Object.assign(document.createElement("span"), { className: `chip model ${MODEL_COPY[m.model][0]}`, textContent: MODEL_COPY[m.model][1], title: MODEL_COPY[m.model][2] }));
     if (TTS && !m.error) {
       const b = Object.assign(document.createElement("button"), { type: "button", className: "link-btn", textContent: "🔊 Escuchar" });
       b.addEventListener("click", () => say([{ text: m.content.slice(0, 1900), language: "es" }]));
@@ -1741,7 +1745,7 @@ ${temario(t)}`;
     const body = Object.assign(document.createElement("div"), { className: "tu-body" + (m.error ? " muted" : "") });
     body.textContent = m.content;
     d.append(av, body);
-    if (!m.pending && (m.tag || (TTS && !m.error))) body.append(msgMeta(m));
+    if (!m.pending && (m.tag || m.model || (TTS && !m.error))) body.append(msgMeta(m));
     return d;
   }
   function renderTutor(v) {
@@ -1757,6 +1761,7 @@ ${temario(t)}`;
         <h1 class="hello" id="chat-h">${t ? "¿Qué parte te ayudo a entender?" : "¿En qué te ayudo?"}</h1>
         <p class="hero-sub">${t ? `Pregúntame sobre <b>${esc(t.es)}</b> o explícamelo con tus palabras: te digo qué entendiste y qué falta.` : "Pregunta sin pena, explícame un tema con tus palabras o sube una foto de tus apuntes."}</p>
         <div class="hero-actions">${ideas.map(([l], i) => `<button type="button" class="pill" data-idea="${i}">${esc(l)}</button>`).join("")}</div>
+        <p class="kicker">Tu tutor: ${TUTOR_NAME}</p>
         ${SAMPLE ? "" : `<p class="small muted">El tutor funciona cuando abres la app dentro de Claude.</p>`}</section>`}
       <div class="thread" id="thread" aria-live="polite"></div>
       ${chat.length && !busy ? `<div class="chat-foot">${SAMPLE ? `<button type="button" class="pill" id="again">Explícamelo de otra forma</button>` : ""}${t ? `<a class="pill" href="#t-${t.id}">← Volver a ${esc(t.es)}</a>` : ""}<button type="button" class="pill" id="new-chat">Nueva conversación</button></div>` : ""}
@@ -1819,11 +1824,11 @@ ${temario(t)}`;
       while (hist.length && hist[0].role !== "user") hist.shift();
       const turns = hist.map((m) => ({ role: m.role, content: m.content }));
       turns[0] = { role: "user", content: `${rules(t)}\n\nMENSAJE DEL ESTUDIANTE:\n${turns[0].content}` };
-      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { body.classList.remove("glimmer"); body.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); if (el.isConnected) el.scrollIntoView({ block: "end" }); } };
+      const opts = { cache: false, model: TUTOR_MODEL, signal: ctl.signal, onText: ({ text: x }) => { body.classList.remove("glimmer"); body.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); if (el.isConnected) el.scrollIntoView({ block: "end" }); } };
       if (img) opts.images = [img];
       const res = await SAMPLE(turns, opts);
       const m = res.text.match(TAG);
-      final = { role: "assistant", content: res.text.replace(TAG, ""), tag: m && t ? m[1] : null };
+      final = { role: "assistant", content: res.text.replace(TAG, ""), tag: m && t ? m[1] : null, model: res.modelApplied === TUTOR_MODEL ? "fable" : "otro" };
       if (final.tag) { S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[final.tag]; save(); }
       if (S.voice) say([{ text: final.content.slice(0, 1900), language: "es" }]);
     } catch (e) {
@@ -2161,7 +2166,7 @@ MATERIAL:
 ${text ? text.slice(0, 30000) : "(está en la foto adjunta)"}`;
     upCtl = new AbortController();
     try {
-      const opts = { signal: upCtl.signal, cache: false };
+      const opts = { signal: upCtl.signal, cache: false, model: TUTOR_MODEL };
       if (upPhoto) opts.images = [upPhoto];
       const raw = await SAMPLE.json(prompt, opts);
       if (raw && raw.error) throw { code: "not_study" };
