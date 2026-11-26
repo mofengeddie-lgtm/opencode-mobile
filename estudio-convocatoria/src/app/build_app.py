@@ -16,6 +16,9 @@ SRC = APP.parent
 sys.path.insert(0, str(SRC))
 import build  # noqa: E402
 
+sys.path.insert(0, str(SRC / "web"))
+import build_web  # noqa: E402
+
 SVGS = sorted(p.stem for p in (SRC / "svg").glob("*.svg"))
 
 
@@ -56,6 +59,18 @@ def parse_mcq() -> list[dict]:
     return bank
 
 
+def past_exam() -> list[dict]:
+    """Preguntas del examen pasado (05-resumen.md), con tu respuesta, la correcta y la explicación bilingüe."""
+    out = []
+    for k, part in enumerate(build_web.parse_exam()):
+        for it in part["items"]:
+            out.append({
+                "id": f"{part['exam']}-{k}-{it['n']}", "exam": part["exam"], "part": part["es"], "partEn": part["en"],
+                "sub": it["sub"] or "", "n": it["n"], "q": it["q"], "tags": it["tags"], "status": it["status"], "body": it["body"],
+            })
+    return out
+
+
 def svg_templates() -> str:
     out = []
     for name in SVGS:
@@ -71,9 +86,11 @@ def main() -> None:
     page = page.replace("{{TEMPLATES}}", svg_templates())
     page = page.replace("{{CONTENT}}", (APP / "content.js").read_text(encoding="utf-8"))
     page = page.replace("{{MCQ}}", "const MCQ = " + json.dumps(mcq, ensure_ascii=False).replace("<", "\\u003c") + ";")
+    past = past_exam()
+    page = page.replace("{{PAST}}", "const PAST = " + json.dumps(past, ensure_ascii=False).replace("<", "\\u003c") + ";")
     out = SRC.parent / "app-entender.html"
     out.write_text(page, encoding="utf-8")
-    print(f"[app] {out} · {len(mcq)} preguntas de simulacro · {len(page) // 1024} KB")
+    print(f"[app] {out} · {len(mcq)} preguntas de simulacro · {len(past)} del examen pasado · {len(page) // 1024} KB")
 
 
 if __name__ == "__main__":

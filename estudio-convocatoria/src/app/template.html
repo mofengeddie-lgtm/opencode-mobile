@@ -411,6 +411,70 @@ select.field, input.field { min-height: 44px; width: auto; }
 .thread.inline { border-top: 1px dashed var(--line); padding-top: 1.1rem; }
 .chat-foot { display: flex; flex-wrap: wrap; gap: .5rem; padding-left: 42px; }
 
+/* ================= Lección guiada: Claude (conversa) + Codex (plan y cambios) + Gemini (imagen y chequeos) ================= */
+.pill.gem { border: 1.5px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--g1), var(--g2), var(--g3)) border-box; }
+.pill.gem.primary { background: linear-gradient(var(--accent), var(--accent)) padding-box, linear-gradient(90deg, var(--g1), var(--g2), var(--g3)) border-box; color: var(--accent-ink); }
+.guide { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+.guide > * { min-width: 0; }
+.guide-main { display: grid; gap: 1rem; }
+@media (min-width: 1100px) {
+  .guide { grid-template-columns: minmax(0, 1fr) 290px; align-items: start; gap: 1.6rem; }
+  .plan-card { position: sticky; top: 76px; order: 2; }
+}
+.plan-card { border: 1px solid var(--line); background: var(--surface); border-radius: 18px; font-family: var(--font-mono); font-size: .84rem; }
+.plan-card > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: .6rem; align-items: center; padding: .75rem .95rem; }
+.plan-card > summary::-webkit-details-marker { display: none; }
+.plan-card[open] > summary { border-bottom: 1px solid var(--line); }
+.plan-card .plan-body { padding: .6rem .95rem .9rem; display: grid; gap: .6rem; }
+.plan-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.plan-steps li { display: grid; grid-template-columns: 1.3rem 1fr; gap: .4rem; color: var(--muted); line-height: 1.4; }
+.plan-steps li.done { color: var(--ink); }
+.plan-steps li.done .ps-ico { color: var(--good); }
+.plan-steps li.now { color: var(--ink); font-weight: 600; }
+.plan-steps li.now .ps-ico { background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.g-step { font: 600 .72rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .35rem; }
+.thread .msg.tu .tu-body > p + p, .thread .msg.tu .tu-body > * + * { margin-top: .6rem; }
+.guide .tu-body { white-space: normal; }
+.g-opts { display: grid; gap: .45rem; margin-top: .4rem; }
+.g-opts button { text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 16px; padding: .65rem .85rem; display: grid; grid-template-columns: 1.5rem 1fr; gap: .35rem; min-height: 48px; font-size: .97rem; }
+.g-opts button:not([disabled]):hover { border-color: transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(90deg, var(--g1), var(--g2), var(--g3)) border-box; }
+.g-opts button > span:first-child { font: 600 .85rem var(--font-mono); color: var(--muted); padding-top: .1rem; }
+.g-opts button.ok { border-color: var(--good); background: var(--good-soft); }
+.g-opts button.bad { border-color: var(--accent); background: var(--accent-soft); }
+.g-opts button[disabled] { cursor: default; }
+.g-actions { display: flex; flex-wrap: wrap; gap: .5rem; padding-left: 42px; scroll-margin-bottom: calc(var(--composer-h) + 18px); }
+.past .btn[aria-pressed="true"] { border-color: var(--good); color: var(--good); background: var(--good-soft); }
+.g-actions:empty { display: none; }
+.g-beats { list-style: none; margin: .3rem 0 0; padding: 0; display: grid; gap: .35rem; counter-reset: gb; }
+.g-beats li { counter-increment: gb; display: grid; grid-template-columns: 1.5rem 1fr; gap: .4rem; padding: .45rem .55rem; border-radius: 12px; }
+.g-beats li::before { content: counter(gb); font: 600 .8rem var(--font-mono); color: var(--muted); padding-top: .15rem; }
+.g-beats li.now { background: var(--accent-soft); }
+.diff { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-family: var(--font-mono); font-size: .84rem; background: var(--surface); }
+.diff > div { padding: .4rem .8rem; display: grid; grid-template-columns: 1.1rem 1fr; gap: .3rem; line-height: 1.45; }
+.diff .diff-h { display: flex; justify-content: space-between; background: var(--soft); font-weight: 600; border-bottom: 1px solid var(--line); }
+.diff .d-add { background: var(--good-soft); }
+.diff .d-add > span:first-child { color: var(--good); font-weight: 700; }
+.diff .d-fix { background: var(--accent-soft); }
+.diff .d-fix > span:first-child { color: var(--accent); font-weight: 700; }
+.diff .d-meta { color: var(--muted); grid-template-columns: 1fr; border-top: 1px solid var(--line); }
+
+/* Examen pasado: tus fallos */
+.past { gap: .55rem; }
+.past .q { font-family: var(--font-title); font-size: 1.1rem; line-height: 1.35; }
+.past details > summary { cursor: pointer; font-weight: 600; color: var(--accent); width: max-content; list-style: none; }
+.past details > summary::-webkit-details-marker { display: none; }
+.past details[open] > summary { margin-bottom: .5rem; }
+.past .bi .en, .past .bi > .en { margin-top: .4rem; }
+.past .box { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 12px 12px 0; padding: .55rem .8rem; margin: .5rem 0; }
+.past .box-title { font-weight: 700; }
+.past .table-scroll { overflow-x: auto; }
+.past table { border-collapse: collapse; font-size: .88rem; }
+.past th, .past td { border-bottom: 1px solid var(--line); padding: .35rem .55rem; text-align: left; vertical-align: top; }
+.past .clue { color: var(--muted); font-size: .9rem; }
+.past p { margin: 0; }
+.past p + p { margin-top: .45rem; }
+.past.done { opacity: .72; }
+
 /* Letra fácil de leer (dislexia) */
 body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; --font-title: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; letter-spacing: .012em; word-spacing: .06em; line-height: 1.7; }
 
@@ -464,6 +528,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
 <script>
 {{CONTENT}}
 {{MCQ}}
+{{PAST}}
 </script>
 <script>
 (() => {
@@ -518,7 +583,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
   /* ================= Estado y guardado ================= */
   const KEY = "entender7:v1";
   const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0,
-    custom: [], cal: {}, calTime: "16:00", calm: false, voice: false, focus: "plan", imgMiss: {} });
+    custom: [], cal: {}, calTime: "16:00", calm: false, voice: false, focus: "plan", imgMiss: {}, pastOk: {} });
   const loadLocal = () => { try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch { /* sin almacenamiento */ } return blank(); };
   let S = loadLocal();
   syncCustom();
@@ -710,7 +775,8 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
   function route() {
     const h = location.hash.slice(1);
     if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
-    if (["hoy", "sesion", "simulacro", "panico", "subir", "tutor"].includes(h)) return { name: h };
+    if (h.startsWith("guia-") && TOPIC[h.slice(5)]) return { name: "guia", id: h.slice(5) };
+    if (["hoy", "sesion", "simulacro", "panico", "subir", "tutor", "pasado"].includes(h)) return { name: h };
     return { name: "hoy" };
   }
   let ctxTopic = null, ctxManual = false;
@@ -721,16 +787,18 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     if (r.name === "sesion" && !SES) { location.hash = "hoy"; return; }
     document.body.classList.toggle("focus", r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
     // El tema del tutor: el del tema abierto o la sesión; en la conversación se mantiene; en otras pantallas vuelve a «todo» salvo que lo hayas elegido.
-    if (r.name === "topic") { ctxTopic = r.id; ctxManual = false; }
+    if (r.name === "topic" || r.name === "guia") { ctxTopic = r.id; ctxManual = false; }
     else if (r.name === "sesion" && SES) ctxTopic = ITEM[SES.current()]?.topic || ctxTopic;
     else if (r.name !== "tutor" && !ctxManual) ctxTopic = null;
     renderSide(r); renderCtx(); updateRing();
     const v = $("#view");
-    v.classList.toggle("wide", r.name === "topic");
+    v.classList.toggle("wide", r.name === "topic" || r.name === "guia");
     document.body.classList.toggle("calm", !!S.calm && r.name === "sesion");
     if (r.name === "topic") renderTopic(v, TOPIC[r.id]);
     else if (r.name === "subir") renderUpload(v);
     else if (r.name === "tutor") renderTutor(v);
+    else if (r.name === "guia") renderGuide(v, TOPIC[r.id]);
+    else if (r.name === "pasado") renderPast(v);
     else if (r.name === "sesion") renderSession(v);
     else if (r.name === "simulacro") renderSim(v);
     else if (r.name === "panico") renderPanic(v);
@@ -742,11 +810,11 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
 
   /* ================= Barra lateral ================= */
   function renderSide(r) {
-    const cur = r.name === "topic" ? `t-${r.id}` : r.name;
+    const cur = r.name === "topic" || r.name === "guia" ? `t-${r.id}` : r.name;
     const curAttr = (k) => (cur === k ? 'aria-current="page"' : "");
     const topicLi = (t) => { const p = topicPct(t.id); return `<li><a class="topic-link" href="#t-${t.id}" ${curAttr("t-" + t.id)}><span class="ring" style="--p:${p}"></span><span>${esc(t.es)}</span><span class="pct">${p}%</span></a></li>`; };
     // Materia que muestra la lista (como «Nube / Conectar computadora»): la del tema abierto, la elegida o la del plan de hoy.
-    if (r.name === "topic" && TOPIC[r.id].mod !== "mine") sideMod = TOPIC[r.id].mod;
+    if ((r.name === "topic" || r.name === "guia") && TOPIC[r.id].mod !== "mine") sideMod = TOPIC[r.id].mod;
     const m = MOD[sideMod] || MOD.geo;
     const days = daysToExam();
     const mine = TOPICS.filter((t) => t.mod === "mine");
@@ -765,6 +833,8 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
           <a class="side-link" href="#hoy" ${curAttr("hoy")}>Hoy<span class="kicker">${days > 0 ? days + " días" : "examen"}</span></a>
           <a class="side-link" href="#simulacro" ${curAttr("simulacro")}>Simulacro real</a>
           <a class="side-link" href="#panico" ${curAttr("panico")}>Modo Pánico</a>
+          <a class="side-link" href="#guia-${nextGuideTopic()}" ${r.name === "guia" ? 'aria-current="page"' : ""}>✨ Aprender guiado</a>
+          <a class="side-link" href="#pasado" ${curAttr("pasado")}>Examen pasado<span class="kicker">${pastLeft() || "✓"}</span></a>
           <a class="side-link" href="#tutor" ${curAttr("tutor")}>Tutor<span class="kicker">${Object.values(CHATS).reduce((n, c) => n + c.filter((m) => m.role === "user").length, 0) || ""}</span></a>
           <a class="side-link" href="#subir" ${curAttr("subir")}>Subir y Entender</a></div>`)}
         ${sec("temas", `${esc(m.es)} · <span class="mono" style="font-weight:500">${modPct(m.id)}%</span>`, `<ul class="topic-list">${TOPICS.filter((t) => t.mod === m.id).map(topicLi).join("")}</ul>`)}
@@ -862,10 +932,11 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
         <p class="hero-sub">${after ? "¿Repasamos para no olvidar?" : "¿Qué estudiamos hoy?"}</p>
         <p class="kicker">${after ? "Después del examen" : days === 0 ? "Hoy es el examen" : `${days} ${days === 1 ? "día" : "días"} para el examen · 4 de diciembre`} · ${esc(fmtDate())}</p>
         <div class="hero-actions">
-          <button type="button" class="pill primary" id="hero-start">▶ ${S.focus === "plan" ? (due + quota ? `Empezar · ${due + quota} preguntas` : "Practicar libre") : S.focus === "hard" ? "Empezar · lo difícil" : "Empezar · mis fallos"}</button>
+          <a class="pill gem primary" href="#guia-${nextGuideTopic()}">✨ Aprender: ${esc(TOPIC[nextGuideTopic()].es)}</a>
+          <button type="button" class="pill" id="hero-start">▶ ${S.focus === "plan" ? (due + quota ? `Repasar · ${due + quota} preguntas` : "Practicar libre") : S.focus === "hard" ? "Repasar · lo difícil" : "Repasar · mis fallos"}</button>
+          <a class="pill" href="#pasado">Examen pasado${pastLeft() ? ` · ${pastLeft()}` : ""}</a>
           <a class="pill" href="#panico">Modo Pánico</a>
           <a class="pill" href="#simulacro">Simulacro</a>
-          <a class="pill" href="#subir">＋ Subir apuntes</a>
         </div>
       </section>
       <div class="sec-title">Tu plan de hoy</div>
@@ -931,6 +1002,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       <div class="tg-head"><div><div class="kicker">${esc(MOD[t.mod].es)} · Bloque ${idx}/${total} · ${esc(MOD[t.mod].objectives)}</div>
       <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
       <div class="states" style="margin-top:.6rem"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso ${c.due}</span></div></div>
+      <div class="row-wrap"><a class="pill gem primary" href="#guia-${t.id}">✨ Aprender guiado · 7 pasos</a><span class="small muted">Imagen, explicación, preguntas y tu propia explicación, en orden.</span></div>
       ${howHtml(t)}</div>
       <aside class="imgpanel" id="imgpanel" aria-label="Imagen tocable"></aside>
       <div class="steps">
@@ -1580,6 +1652,8 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     if (IMG && SAMPLE) items.push({ icon: "📷", label: "Foto para el tutor", run: () => $("#photo").click() });
     if (DICT) items.push({ icon: "🎙", label: "Dictar con mi voz", run: () => $("#mic-btn").click() });
     items.push({ icon: "📄", label: "Subir y Entender (apuntes → tema)", run: () => { location.hash = "subir"; } });
+    items.push({ icon: "✨", label: `Lección guiada: ${(t || TOPIC[nextGuideTopic()]).es}`, run: () => { location.hash = "guia-" + (t ? t.id : nextGuideTopic()); } });
+    items.push({ icon: "📋", label: "Examen pasado: tus fallos", run: () => { location.hash = "pasado"; } });
     if (t) items.push({ icon: "🗣", label: `Explicar «${t.es}» con mis palabras`, run: () => { const a = $("#ask"); a.placeholder = `Explica «${t.es}» con tus palabras…`; a.dataset.custom = "1"; a.focus(); } });
     items.push({ icon: "🔥", label: "Modo Pánico", run: () => { location.hash = "panico"; } });
     items.push({ icon: "📝", label: "Simulacro real", run: () => { location.hash = "simulacro"; } });
@@ -1711,6 +1785,8 @@ ${temario(t)}`;
   async function sendTutor(text) {
     if (streaming) return;
     const inline = route().name === "sesion";
+    const guide = route().name === "guia" && G ? G : null;
+    const feyStep = !!(guide && !guide.done && G_STEPS[guide.step][0] === "tu");
     const t = ctxTopic ? TOPIC[ctxTopic] : null;
     const key = chatKey();
     const chat = (CHATS[key] ||= []);
@@ -1723,7 +1799,8 @@ ${temario(t)}`;
     const body = $(".tu-body", el);
     // Mostrar el mensaje directamente en la página: en la sesión, debajo de la tarjeta; si no, en la portada del tutor.
     const show = () => {
-      if (inline) {
+      if (guide) { guide.msgs.push({ who: "chat", key, i: chat.indexOf(user) }); renderGuideThread(true); }
+      else if (inline) {
         let box = $("#ses-tutor");
         if (!box) { box = Object.assign(document.createElement("div"), { className: "thread inline", id: "ses-tutor" }); box.setAttribute("aria-live", "polite"); $("#view").append(box); }
         box.append(msgEl(user), el); el.scrollIntoView({ block: "end" });
@@ -1732,7 +1809,7 @@ ${temario(t)}`;
     };
     if (!SAMPLE) { user.failed = true; chat.push(pend); show(); return; }
     body.classList.add("glimmer");
-    streaming = { key, el, inline };
+    streaming = { key, el, inline: inline || !!guide, guide: !!guide };
     show();
     ctl = new AbortController();
     setStreaming(true);
@@ -1760,7 +1837,10 @@ ${temario(t)}`;
       streaming = null; ctl = null;
       setStreaming(false);
       if (el.isConnected) el.replaceWith(msgEl(final));
-      if (!inline && route().name === "tutor") render();
+      if (guide) {
+        if (feyStep && !final.error) guide.feyn = final.tag || "dicho";
+        if (G === guide && route().name === "guia") renderGuideThread(true);
+      } else if (!inline && route().name === "tutor") render();
     }
   }
   $("#composer").addEventListener("submit", (e) => {
@@ -1791,6 +1871,218 @@ ${temario(t)}`;
     if (!a.dataset.custom) a.placeholder = innerWidth < 600 ? "Escribe al tutor…" : "Escribe al tutor o toca el micrófono para hablar";
   }
   window.addEventListener("resize", measure);
+
+  /* ================= Lección guiada: Claude + Codex + Gemini =================
+     Claude: el tutor conversa tranquilo, con analogías, y revisa tu explicación (Feynman).
+     Codex: plan de la lección con casillas y, al final, un «resumen de cambios» de lo que aprendiste.
+     Gemini: imagen tocable y preguntas rápidas en medio de la explicación (aprendizaje guiado). */
+  const G_STEPS = [["mapa", "Mapa del tema"], ["imagen", "Imagen tocable"], ["pasos", "Explicación paso a paso"], ["check", "Pregunta de comprensión"], ["ejemplo", "Ejemplo de tu vida"], ["tu", "Explícalo tú"], ["quiz", "Mini-quiz"]];
+  let G = null;
+  function nextGuideTopic() {
+    const today = todayTopics().filter((id) => TOPIC[id]);
+    return today.find((id) => topicPct(id) < 60) || today[0] || TOPICS.filter((t) => t.mod !== "mine").slice().sort((a, b) => topicPct(a.id) - topicPct(b.id))[0].id;
+  }
+  function mcOpts(id) {
+    const it = ITEM[id];
+    const same = shuffle(ITEMS.filter((x) => x.topic === it.topic && x.id !== id && x.a[0] !== it.a[0]));
+    const more = shuffle(ITEMS.filter((x) => x.mod === it.mod && x.topic !== it.topic));
+    const distract = same.slice(0, 2);
+    while (distract.length < 2 && more.length) distract.push(more.shift());
+    return shuffle([it, ...distract]).map((x) => x.id);
+  }
+  const checkMsg = (id, quiz) => ({ who: "tu", kind: "check", id, quiz, opts: mcOpts(id), pick: null });
+  function startGuide(t) {
+    const order = t.items.map((i) => ITEM[i[0]]).filter(Boolean).sort((a, b) => (b.hot - a.hot) || (mastery(a.id) - mastery(b.id)));
+    G = { tid: t.id, step: 0, beat: 0, img: null, msgs: [], right: [], wrong: [], feyn: null, before: topicPct(t.id), after: 0,
+      checkId: order[0] ? order[0].id : null, quiz: order.slice(1, 4).map((i) => i.id), qi: 0, shownAt: Date.now(), done: false };
+    pushStep();
+  }
+  function pushStep() {
+    const k = G_STEPS[G.step][0];
+    G.shownAt = Date.now();
+    if (k === "check") { if (!G.checkId) { G.step++; return pushStep(); } G.msgs.push(checkMsg(G.checkId, false)); }
+    else if (k === "quiz") { if (!G.quiz.length) return finishGuide(); G.qi = 0; G.msgs.push(checkMsg(G.quiz[0], true)); }
+    else G.msgs.push({ who: "tu", kind: k });
+  }
+  function gNext() {
+    if (!G || G.done) return;
+    const k = G_STEPS[G.step][0];
+    if (k === "quiz" && G.qi < G.quiz.length - 1) { G.qi++; G.shownAt = Date.now(); G.msgs.push(checkMsg(G.quiz[G.qi], true)); }
+    else if (G.step < G_STEPS.length - 1) { G.step++; pushStep(); }
+    else finishGuide();
+    renderGuideThread(true);
+  }
+  function finishGuide() {
+    G.done = true; G.after = topicPct(G.tid);
+    G.msgs.push({ who: "tu", kind: "diff" });
+    save();
+  }
+  function gPick(msg, optId) {
+    if (msg.pick !== null) return;
+    msg.pick = optId || "";
+    const ok = optId === msg.id;
+    rate(msg.id, ok ? 3 : 1, Date.now() - G.shownAt, 0);
+    (ok ? G.right : G.wrong).push(msg.id);
+    // Lo que fallas vuelve al final del mini-quiz (olvido deseable), una sola vez.
+    if (!ok && !msg.quiz && !G.quiz.includes(msg.id)) G.quiz.push(msg.id);
+    G.msgs.push({ who: "me", text: optId ? ITEM[optId].a[lang === "en" ? 1 : 0] : "No me la sé" });
+    G.msgs.push({ who: "tu", kind: "fb", id: msg.id, ok });
+    renderGuideThread(true);
+  }
+  function renderGuide(v, t) {
+    if (!G || G.tid !== t.id) startGuide(t);
+    document.body.style.overflow = "";
+    v.innerHTML = `<div class="guide"><details class="plan-card" id="gplan" ${isWide() ? "open" : ""}></details><div class="guide-main"><div class="thread" id="gthread" aria-live="polite"></div><div class="g-actions" id="gact"></div></div></div>`;
+    renderGuideThread(false);
+  }
+  function guideMsg(m, t, active) {
+    if (m.who === "me") return msgEl({ role: "user", show: m.text });
+    const d = document.createElement("div"); d.className = "msg tu";
+    const av = document.createElement("div"); av.className = "tu-av"; av.innerHTML = MASCOT;
+    const body = document.createElement("div"); body.className = "tu-body";
+    const stepName = (k) => { const i = G_STEPS.findIndex((s) => s[0] === k); return i >= 0 ? `Paso ${i + 1} · ${G_STEPS[i][1]}` : ""; };
+    const L = lang === "en" ? 1 : 0;
+    if (m.kind === "mapa") {
+      body.innerHTML = `<span class="g-step">${stepName("mapa")}</span><p>Hoy vamos a entender <b>${esc(t.es)}</b>. Primero, el mapa: qué es fácil, qué es difícil y qué siempre sale en el examen.</p>
+        <div class="map3"><div><span class="kicker">Lo fácil</span>${bl(t.map.easy)}</div><div><span class="kicker">Lo difícil</span>${bl(t.map.hard)}</div><div class="exam"><span class="kicker">Siempre sale en el examen</span>${bl(t.map.exam)}</div></div>`;
+    } else if (m.kind === "imagen") {
+      const types = imgTypes(t);
+      if (!G.img || !types.includes(G.img)) G.img = bestType(t);
+      body.innerHTML = `<span class="g-step">${stepName("imagen")} · ${IMG_TYPES[G.img]}</span><p>Mira la imagen y toca sus partes. Si no la entiendes, pídeme otra.</p><div class="imgbody" id="g-img"></div><div class="callout" id="callout" hidden aria-live="polite"></div>`;
+      const drawers = { diagrama: drawDiagram, linea: drawTimeline, compara: drawCompare, proceso: drawProcess, mapa: drawMindMap, ejemplo: drawExample };
+      requestAnimationFrame(() => { const box = $("#g-img"); if (box && !box.childElementCount) drawers[G.img](box, t); });
+    } else if (m.kind === "pasos") {
+      const upto = active ? G.beat : t.beats.length - 1;
+      body.innerHTML = `<span class="g-step">${stepName("pasos")}</span><p>Te lo explico en ${t.beats.length} pasos cortos.</p>
+        <ol class="g-beats">${t.beats.slice(0, upto + 1).map((p, i) => `<li class="${active && i === upto ? "now" : ""}"><div>${bl(p, "div")}</div></li>`).join("")}</ol>`;
+    } else if (m.kind === "check") {
+      const it = ITEM[m.id];
+      body.innerHTML = `<span class="g-step">${m.quiz ? `Mini-quiz · ${G.quiz.indexOf(m.id) + 1} de ${G.quiz.length}` : stepName("check")}</span><p>${m.quiz ? "Rápido:" : "¿Lo entendiste? Elige la respuesta:"}</p><p class="q" style="font-family:var(--font-title);font-size:1.12rem;font-weight:600">${bl(it.q)}</p>
+        <div class="g-opts" role="group" aria-label="Opciones">${m.opts.map((o, k) => `<button type="button" data-o="${o}" ${m.pick !== null ? "disabled" : ""} class="${m.pick !== null && o === m.id ? "ok" : m.pick !== null && o === m.pick ? "bad" : ""}"><span>${k + 1}.</span><span>${bl(ITEM[o].a)}</span></button>`).join("")}</div>`;
+      if (m.pick === null) $$("[data-o]", body).forEach((b) => b.addEventListener("click", () => gPick(m, b.dataset.o)));
+    } else if (m.kind === "fb") {
+      const it = ITEM[m.id];
+      body.innerHTML = m.ok
+        ? `<p><b>¡Eso es! ✓</b> Lo entendiste.</p><p>${bl(it.a)}</p>`
+        : `<p><b>Casi.</b> No pasa nada: así es como se aprende. La respuesta es:</p><p>${bl(it.a)}</p><p class="small muted">Te la vuelvo a preguntar más adelante para que se quede.</p>`;
+    } else if (m.kind === "ejemplo") {
+      body.innerHTML = `<span class="g-step">${stepName("ejemplo")}</span><div class="example"><div class="ex-emoji" aria-hidden="true">${EMOJI[t.mod] || "💡"}</div>${bl(t.life, "p")}</div>`;
+    } else if (m.kind === "tu") {
+      body.innerHTML = `<span class="g-step">${stepName("tu")}</span><p>Ahora tú: explícame <b>${esc(t.es)}</b> con tus palabras, como si se lo enseñaras a alguien de 10 años.</p>
+        <p class="small muted">${SAMPLE ? "Escríbelo o díctalo en la barra de abajo. Te digo qué entendiste y qué te falta, sin juzgarte." : "Dilo en voz alta o escríbelo en un papel, sin mirar. Si te trabas, vuelve a la imagen."}</p>`;
+    } else if (m.kind === "diff") {
+      const done = [...new Set([...G.right, ...G.wrong])];
+      const lines = done.map((id) => {
+        const it = ITEM[id], fixed = G.wrong.includes(id), now = G.right.includes(id);
+        return `<div class="${fixed && !now ? "d-fix" : "d-add"}"><span>${fixed && !now ? "~" : "+"}</span><span>${fixed ? (now ? "Corregido y ahora sí: " : "Corregido: ") : ""}${esc(it.q[L])} → ${esc(it.a[L])}</span></div>`;
+      }).join("");
+      const fe = G.feyn ? `<div class="d-add"><span>+</span><span>Lo explicaste con tus palabras${{ ENTENDIDO: " · ✓ entendido", CASI: " · ◐ casi", TODAVIA_NO: " · todavía no, y está bien" }[G.feyn] || ""}</span></div>` : "";
+      body.innerHTML = `<p><b>¡Lección terminada!</b> Este es tu resumen de cambios:</p>
+        <div class="diff" role="group" aria-label="Resumen de cambios"><div class="diff-h"><span>~ ${esc(t.es)}</span><span>${G.right.length}/${G.right.length + G.wrong.length} ✓</span></div>${lines}${fe}<div class="d-meta">@@ dominio ${G.before}% → ${G.after}% @@</div></div>
+        <p class="small muted">Ya quedó en tu memoria: la app te lo vuelve a preguntar justo antes de que se te olvide.</p>`;
+    }
+    d.append(av, body);
+    return d;
+  }
+  function renderGuideThread(scroll) {
+    const t = TOPIC[G.tid];
+    const th = $("#gthread"); if (!th) return;
+    const lastIdx = G.msgs.reduce((acc, m, i) => (m.who === "tu" ? i : acc), -1);
+    th.replaceChildren();
+    G.msgs.forEach((m, i) => {
+      if (m.who === "chat") {
+        const chat = CHATS[m.key] || [];
+        if (chat[m.i]) th.append(msgEl(chat[m.i]));
+        if (chat[m.i + 1]) th.append(msgEl(chat[m.i + 1]));
+        else if (streaming && streaming.guide && streaming.key === m.key) th.append(streaming.el);
+        return;
+      }
+      th.append(guideMsg(m, t, i === lastIdx));
+    });
+    // Plan de la lección (Codex)
+    const doneN = G.done ? G_STEPS.length : G.step;
+    const plan = $("#gplan");
+    plan.innerHTML = `<summary><span>Plan de la lección</span><span>${doneN}/${G_STEPS.length}</span></summary>
+      <div class="plan-body"><div style="font-family:var(--font-body);font-weight:600">${esc(t.es)}</div>
+      <ol class="plan-steps">${G_STEPS.map((s, i) => { const st = G.done || i < G.step ? "done" : i === G.step ? "now" : ""; return `<li class="${st}"><span class="ps-ico" aria-hidden="true">${st === "done" ? "✓" : st === "now" ? "●" : "○"}</span><span>${s[1]}${s[0] === "quiz" && st === "now" ? ` · ${G.qi + 1}/${G.quiz.length}` : ""}</span></li>`; }).join("")}</ol>
+      <div class="bar" style="margin:0"><span style="width:${Math.round((100 * doneN) / G_STEPS.length)}%"></span></div>
+      <div style="display:flex;justify-content:space-between;gap:.5rem;font-family:var(--font-body)"><span class="muted">Dominio <b class="mono">${G.done ? G.after : topicPct(G.tid)}%</b></span><button type="button" class="link-btn" id="g-restart">Empezar de nuevo</button></div></div>`;
+    $("#g-restart").addEventListener("click", () => { G = null; render(); window.scrollTo(0, 0); });
+    $("#crumb").innerHTML = `✨ Aprender guiado · <b>${esc(t.es)}</b> · <span class="mono">${Math.min(doneN + 1, G_STEPS.length)}/${G_STEPS.length}</span>`;
+    renderGuideActions(t, G.msgs[lastIdx]);
+    if (scroll) requestAnimationFrame(() => { const a = $("#gact"); (a && a.childElementCount ? a : th.lastElementChild)?.scrollIntoView({ block: "end", behavior: "smooth" }); });
+  }
+  function renderGuideActions(t, last) {
+    const box = $("#gact"); if (!box) return;
+    const btn = (label, cls, fn) => { const b = Object.assign(document.createElement(fn ? "button" : "a"), { className: `pill ${cls || ""}`, textContent: label }); if (fn) { b.type = "button"; b.addEventListener("click", fn); } return b; };
+    const link = (label, href, cls) => Object.assign(document.createElement("a"), { className: `pill ${cls || ""}`, textContent: label, href });
+    const ask = (label, prompt) => btn(label, "gem", () => sendTutor(prompt));
+    box.replaceChildren();
+    if (!last || streaming) return;
+    const k = last.kind;
+    if (k === "mapa") box.append(btn("Entendido, sigamos →", "primary", gNext));
+    else if (k === "imagen") {
+      box.append(btn("Ya la entendí →", "primary", gNext));
+      box.append(btn("🔄 Hazme otra imagen", "", () => { const types = imgTypes(t); const miss = (S.imgMiss[t.id] ||= {}); miss[G.img] = (miss[G.img] || 0) + 1; save(); G.img = types[(types.indexOf(G.img) + 1) % types.length]; renderGuideThread(false); }));
+      if (SAMPLE) box.append(ask("No entendí la imagen", `No entendí la imagen de «${t.es}». Descríbemela con palabras sencillas, parte por parte.`));
+    } else if (k === "pasos") {
+      if (G.beat < t.beats.length - 1) box.append(btn(`Siguiente paso (${G.beat + 2}/${t.beats.length}) →`, "primary", () => { G.beat++; renderGuideThread(true); }));
+      else box.append(btn("Listo, pregúntame →", "primary", gNext));
+      if (TTS) box.append(btn("▶ Escúchalo", "", () => say(langLines(t.beats[G.beat]))));
+      if (SAMPLE) box.append(ask("No entiendo este paso", `No entiendo este paso de «${t.es}»: «${t.beats[G.beat][0]}». Explícamelo con otra analogía.`));
+    } else if (k === "check" && last.pick === null) box.append(btn("No me la sé", "", () => gPick(last, null)));
+    else if (k === "fb") {
+      box.append(btn("Sigamos →", "primary", gNext));
+      if (SAMPLE) { const it = ITEM[last.id]; box.append(ask("¿Por qué?", `¿Por qué la respuesta a «${it.q[0]}» es «${it.a[0]}»? Explícamelo fácil.`)); }
+    } else if (k === "ejemplo") {
+      box.append(btn("Sigamos →", "primary", gNext));
+      if (SAMPLE) box.append(ask("Otro ejemplo", `Dame otro ejemplo de la vida diaria para «${t.es}», distinto a este: «${t.life[0]}».`));
+    } else if (k === "tu") {
+      if (G.feyn) box.append(btn("Sigamos al mini-quiz →", "primary", gNext));
+      else if (SAMPLE) {
+        box.append(btn("✍ Escribir mi explicación", "primary", () => { const a = $("#ask"); a.placeholder = `Explica «${t.es}» con tus palabras…`; a.dataset.custom = "1"; a.focus(); }));
+        if (DICT) box.append(btn("🎙 Dictarla", "", () => $("#mic-btn").click()));
+        box.append(btn("Saltar →", "", gNext));
+      } else {
+        box.append(btn("Ya lo expliqué en voz alta ✓", "primary", () => { G.feyn = "dicho"; gNext(); }));
+        box.append(btn("Saltar →", "", gNext));
+      }
+    } else if (k === "diff") {
+      box.append(btn("Practicar este tema", "primary", () => startSession("topic", buildQueue("topic", 30, t.id), 0)));
+      const next = todayTopics().find((id) => TOPIC[id] && id !== t.id && topicPct(id) < 60);
+      if (next) box.append(link(`Siguiente: ${TOPIC[next].es} →`, `#guia-${next}`, "gem"));
+      box.append(link("Volver a Hoy", "#hoy"));
+    }
+  }
+
+  /* ================= Examen pasado: tus fallos ================= */
+  let pastExam = "all", pastAll = false;
+  const pastLeft = () => PAST.filter((x) => x.status !== "good" && !S.pastOk[x.id]).length;
+  function renderPast(v) {
+    $("#crumb").innerHTML = `<b>Examen pasado</b> · tus fallos`;
+    const pool = PAST.filter((x) => (pastExam === "all" || x.exam === pastExam));
+    const fails = pool.filter((x) => x.status !== "good");
+    const shown = pastAll ? pool : fails;
+    const okN = fails.filter((x) => S.pastOk[x.id]).length;
+    const parts = [...new Set(shown.map((x) => x.part))];
+    const seg = (name, cur, opts) => `<div class="seg" role="group" aria-label="${name}">${opts.map(([k, l]) => `<button type="button" data-${name}="${k}" aria-pressed="${cur === k}">${l}</button>`).join("")}</div>`;
+    v.innerHTML = `<div><div class="kicker">Examen pasado · lo que te vuelve a salir</div><h1 class="title">Tus fallos del examen pasado</h1>
+      <p class="muted" style="margin-top:.4rem">La convocatoria evalúa lo mismo. Lee la pregunta, intenta responderla en tu cabeza y después abre la explicación.</p></div>
+      <div class="row-wrap">${seg("pexam", pastExam, [["all", "Todo"], ["geo", "Geología"], ["cell", "La Célula"]])}${seg("pall", pastAll ? "1" : "0", [["0", "Solo fallos"], ["1", "Todas"]])}</div>
+      <section class="card"><div class="stat-row"><b>Fallos que ya entiendes</b><span class="delta">${okN}/${fails.length}</span><div class="bar" style="grid-column:1/-1;margin:0"><span style="width:${fails.length ? Math.round((100 * okN) / fails.length) : 0}%"></span></div></div></section>
+      ${parts.map((pt) => `<div class="sec-title">${esc(pt)}</div>${shown.filter((x) => x.part === pt).map((x) => {
+        const mine = x.tags.filter((g) => g.t.startsWith("Tú")), rest = x.tags.filter((g) => !g.t.startsWith("Tú"));
+        const ok = !!S.pastOk[x.id];
+        return `<article class="card past ${ok ? "done" : ""}">${x.sub ? `<div class="kicker">${esc(x.sub)}</div>` : ""}
+          <p class="q"><b class="mono">${esc(x.n)}.</b> ${x.q}</p>
+          <div class="row-wrap">${mine.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>
+          <details><summary>Ver respuesta y explicación</summary><div class="row-wrap" style="margin-bottom:.4rem">${rest.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>${x.body}</details>
+          ${x.status !== "good" ? `<div><button type="button" class="btn" data-pok="${esc(x.id)}" aria-pressed="${ok}">${ok ? "✓ Ya lo entiendo" : "Ya lo entiendo"}</button></div>` : ""}</article>`;
+      }).join("")}`).join("")}`;
+    $$("[data-pexam]", v).forEach((b) => b.addEventListener("click", () => { pastExam = b.dataset.pexam; render(); }));
+    $$("[data-pall]", v).forEach((b) => b.addEventListener("click", () => { pastAll = b.dataset.pall === "1"; render(); }));
+    $$("[data-pok]", v).forEach((b) => b.addEventListener("click", () => { const id = b.dataset.pok; if (S.pastOk[id]) delete S.pastOk[id]; else S.pastOk[id] = Date.now(); save(); const y = window.scrollY; render(); window.scrollTo(0, y); }));
+  }
 
   /* ================= Identidad sobre notas ================= */
   function identityLine() {
