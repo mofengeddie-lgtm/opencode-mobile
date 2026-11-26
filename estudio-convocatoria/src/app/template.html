@@ -394,8 +394,22 @@ select.field, input.field { min-height: 44px; width: auto; }
 .pop button:hover, .pop button:focus-visible { background: var(--soft); }
 .pop button[aria-checked="true"] { font-weight: 700; }
 .pop .pop-h { font: 600 .72rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding: .45rem .8rem .2rem; }
-.tutor { bottom: var(--composer-h); max-width: 860px; }
-.tutor-box { border-radius: 22px; margin-bottom: .4rem; box-shadow: 0 -10px 40px rgb(0 0 0 / .18); }
+.send.stop { background: var(--ink); color: var(--bg); }
+
+/* Conversación directo en la página (sin cuadro flotante) */
+.chat { display: grid; gap: 1.1rem; }
+.chat-empty { min-height: calc(100vh - 64px - 1.4rem); }
+.thread { display: grid; gap: 1.25rem; align-content: start; }
+.thread:empty { display: none; }
+.thread .msg { max-width: 100%; font-size: 1.04rem; line-height: 1.62; white-space: normal; scroll-margin-bottom: calc(var(--composer-h) + 18px); }
+.thread .msg.me { justify-self: end; max-width: min(82%, 560px); background: var(--surface); border: 1px solid var(--line); border-radius: 22px 22px 6px 22px; padding: .65rem 1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.thread .msg.tu { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .75rem; align-items: start; }
+.tu-av { width: 28px; height: 28px; margin-top: .2rem; }
+.tu-av svg { width: 100%; height: 100%; display: block; shape-rendering: crispEdges; }
+.tu-body { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.tu-body .meta { white-space: normal; margin-top: .5rem; }
+.thread.inline { border-top: 1px dashed var(--line); padding-top: 1.1rem; }
+.chat-foot { display: flex; flex-wrap: wrap; gap: .5rem; padding-left: 42px; }
 
 /* Letra fácil de leer (dislexia) */
 body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; --font-title: "Atkinson Hyperlegible", Verdana, system-ui, sans-serif; letter-spacing: .012em; word-spacing: .06em; line-height: 1.7; }
@@ -418,19 +432,6 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       <div class="progress-top"><span id="ptop" style="width:0"></span></div>
     </header>
     <main class="view" id="view" tabindex="-1"></main>
-    <section class="tutor" id="tutor" hidden aria-live="polite">
-      <div class="tutor-box">
-        <div class="tutor-head">
-          <div><div class="kicker">Tutor · comprensión real</div><div class="small muted" id="tutor-topic"></div></div>
-          <button type="button" class="icon-btn" id="tutor-close" aria-label="Cerrar tutor">×</button>
-        </div>
-        <div class="msgs" id="msgs"></div>
-        <div class="tutor-foot">
-          <button type="button" class="btn" id="tutor-again">Explícamelo de otra forma</button>
-          <button type="button" class="btn" id="tutor-stop" hidden>Detener</button>
-        </div>
-      </div>
-    </section>
     <form class="composer" id="composer" autocomplete="off">
       <div class="composer-inner">
         <div class="chip-row" id="chip-row">
@@ -709,23 +710,27 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
   function route() {
     const h = location.hash.slice(1);
     if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
-    if (["hoy", "sesion", "simulacro", "panico", "subir"].includes(h)) return { name: h };
+    if (["hoy", "sesion", "simulacro", "panico", "subir", "tutor"].includes(h)) return { name: h };
     return { name: "hoy" };
   }
-  let ctxTopic = null;
+  let ctxTopic = null, ctxManual = false;
   function render() {
     const r = route();
     if (r.name !== "sesion" && SES && SES.phase !== "done") endSession(false);
     if (r.name !== "simulacro" && SIM) { clearInterval(simTick); SIM = null; }
     if (r.name === "sesion" && !SES) { location.hash = "hoy"; return; }
     document.body.classList.toggle("focus", r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
-    ctxTopic = r.name === "topic" ? r.id : r.name === "sesion" && SES ? ITEM[SES.current()]?.topic || ctxTopic : null;
+    // El tema del tutor: el del tema abierto o la sesión; en la conversación se mantiene; en otras pantallas vuelve a «todo» salvo que lo hayas elegido.
+    if (r.name === "topic") { ctxTopic = r.id; ctxManual = false; }
+    else if (r.name === "sesion" && SES) ctxTopic = ITEM[SES.current()]?.topic || ctxTopic;
+    else if (r.name !== "tutor" && !ctxManual) ctxTopic = null;
     renderSide(r); renderCtx(); updateRing();
     const v = $("#view");
     v.classList.toggle("wide", r.name === "topic");
     document.body.classList.toggle("calm", !!S.calm && r.name === "sesion");
     if (r.name === "topic") renderTopic(v, TOPIC[r.id]);
     else if (r.name === "subir") renderUpload(v);
+    else if (r.name === "tutor") renderTutor(v);
     else if (r.name === "sesion") renderSession(v);
     else if (r.name === "simulacro") renderSim(v);
     else if (r.name === "panico") renderPanic(v);
@@ -760,6 +765,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
           <a class="side-link" href="#hoy" ${curAttr("hoy")}>Hoy<span class="kicker">${days > 0 ? days + " días" : "examen"}</span></a>
           <a class="side-link" href="#simulacro" ${curAttr("simulacro")}>Simulacro real</a>
           <a class="side-link" href="#panico" ${curAttr("panico")}>Modo Pánico</a>
+          <a class="side-link" href="#tutor" ${curAttr("tutor")}>Tutor<span class="kicker">${Object.values(CHATS).reduce((n, c) => n + c.filter((m) => m.role === "user").length, 0) || ""}</span></a>
           <a class="side-link" href="#subir" ${curAttr("subir")}>Subir y Entender</a></div>`)}
         ${sec("temas", `${esc(m.es)} · <span class="mono" style="font-weight:500">${modPct(m.id)}%</span>`, `<ul class="topic-list">${TOPICS.filter((t) => t.mod === m.id).map(topicLi).join("")}</ul>`)}
         ${mine.length ? sec("mine", "Mis temas", `<ul class="topic-list">${mine.map(topicLi).join("")}</ul>`) : ""}
@@ -945,7 +951,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
         <section class="step"><div class="step-n">4</div><div class="step-body"><h2 class="h">Ejemplo de tu vida</h2>
           <div class="card life">${bl(t.life, "p")}</div></div></section>
         <section class="step"><div class="step-n">5</div><div class="step-body"><h2 class="h">¿De verdad entendiste?</h2>
-          <p>Explícamelo con tus palabras en el cuadro de abajo, como si se lo enseñaras a alguien de 10 años. El tutor te dice qué entendiste y qué falta, sin juzgarte.</p>
+          <p>Explícamelo con tus palabras en la barra de abajo, como si se lo enseñaras a alguien de 10 años. Te contesto en la conversación: qué entendiste y qué falta, sin juzgarte.</p>
           ${feyn ? `<span class="chip ${feyn === "entendido" ? "ok" : ""}">${{ entendido: "✓ Lo explicaste con tus palabras", casi: "◐ Casi: te falta un detalle", todavia: "Todavía no: vuelve a intentarlo" }[feyn]}</span>` : ""}
           <div class="row-wrap"><button type="button" class="btn primary" id="practice">Practicar este tema · ${t.items.length} preguntas</button>
           <button type="button" class="btn" id="explain">Explicar con mis palabras</button></div></div></section>
@@ -1550,7 +1556,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     const im = $('#sugg [data-sugg="imagen"]'); if (im) im.hidden = route().name !== "topic";
     syncSend();
   }
-  const syncSend = () => $("#send-btn").classList.toggle("idle", !$("#ask").value.trim() && !photo);
+  const syncSend = () => $("#send-btn").classList.toggle("idle", !ctl && !$("#ask").value.trim() && !photo);
   // Menú flotante (para ＋ y para elegir el tema del tutor).
   function openPop(anchor, items) {
     const pop = $("#pop");
@@ -1583,9 +1589,9 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     const r = route();
     const here = r.name === "topic" ? r.id : r.name === "sesion" && SES ? ITEM[SES.current()]?.topic : null;
     const ids = [...new Set([here, ...todayTopics()].filter(Boolean))];
-    const items = [{ icon: "☁️", label: "Todo el temario", checked: !ctxTopic, run: () => { ctxTopic = null; renderCtx(); } }];
+    const items = [{ icon: "☁️", label: "Todo el temario", checked: !ctxTopic, run: () => { ctxTopic = null; ctxManual = true; renderCtx(); if (route().name === "tutor") render(); } }];
     if (ids.length) items.push({ h: here ? "Este tema y los de hoy" : "Temas de hoy" });
-    ids.forEach((id) => items.push({ icon: EMOJI[TOPIC[id].mod] || "📒", label: TOPIC[id].es, checked: ctxTopic === id, run: () => { ctxTopic = id; renderCtx(); } }));
+    ids.forEach((id) => items.push({ icon: EMOJI[TOPIC[id].mod] || "📒", label: TOPIC[id].es, checked: ctxTopic === id, run: () => { ctxTopic = id; ctxManual = true; renderCtx(); if (route().name === "tutor") render(); } }));
     openPop(e.currentTarget, items);
   });
   $("#mode-chip").addEventListener("click", () => {
@@ -1632,75 +1638,142 @@ ${temario(t)}`;
   }
   const TAG = /\s*\[(ENTENDIDO|CASI|TODAVIA_NO)\]\s*$/;
   const ERR_COPY = { not_granted: "El tutor necesita tu permiso para usar Claude. Puedes darlo desde el menú Permisos de esta página.", sampling_disabled: "El tutor no está disponible en esta cuenta.", rate_limited: "Muchas preguntas seguidas. Espera un momento y vuelve a intentar.", session_expired: "Tu sesión expiró. Vuelve a iniciar sesión en Claude.", refused: "No puedo responder eso. Prueba preguntarlo de otra forma.", image_rejected: "No pude leer esa foto. Prueba con otra más clara.", prompt_too_large: "El mensaje es muy largo. Escríbelo más corto." };
-  function addMsg(who, text) {
-    const d = document.createElement("div"); d.className = `msg ${who}`; d.textContent = text;
-    $("#msgs").append(d); d.scrollIntoView({ block: "end" }); return d;
+  /* La conversación vive en la portada (#tutor), como en una app de chat; durante una sesión sale debajo de la tarjeta.
+     CHATS[clave] = [{ role, content, show, tag, photo, error, failed }]. El texto de Claude siempre va como texto (textContent). */
+  let streaming = null; // { key, el, inline }
+  const chatKey = () => (ctxTopic && TOPIC[ctxTopic] ? ctxTopic : "_");
+  const TAG_COPY = { ENTENDIDO: ["ok", "✓ Lo entendiste"], CASI: ["", "◐ Casi"], TODAVIA_NO: ["", "Todavía no, y está bien"] };
+  const STOP_ICON = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor"/></svg>`;
+  const SEND_ICON = $("#send-btn").innerHTML;
+  function msgMeta(m) {
+    const meta = Object.assign(document.createElement("div"), { className: "meta" });
+    if (m.tag) meta.append(Object.assign(document.createElement("span"), { className: `chip ${TAG_COPY[m.tag][0]}`, textContent: TAG_COPY[m.tag][1] }));
+    if (TTS && !m.error) {
+      const b = Object.assign(document.createElement("button"), { type: "button", className: "link-btn", textContent: "🔊 Escuchar" });
+      b.addEventListener("click", () => say([{ text: m.content.slice(0, 1900), language: "es" }]));
+      meta.append(b);
+    }
+    return meta;
+  }
+  function msgEl(m) {
+    const d = document.createElement("div");
+    d.className = `msg ${m.role === "user" ? "me" : "tu"}`;
+    if (m.role === "user") {
+      if (m.photo) d.append(Object.assign(document.createElement("span"), { className: "attach", textContent: "📷 foto" }), " ");
+      d.append(document.createTextNode(m.show || m.content));
+      return d;
+    }
+    const av = document.createElement("div"); av.className = "tu-av"; av.innerHTML = MASCOT; // ícono propio, sin datos externos
+    const body = Object.assign(document.createElement("div"), { className: "tu-body" + (m.error ? " muted" : "") });
+    body.textContent = m.content;
+    d.append(av, body);
+    if (!m.pending && (m.tag || (TTS && !m.error))) body.append(msgMeta(m));
+    return d;
+  }
+  function renderTutor(v) {
+    const t = ctxTopic ? TOPIC[ctxTopic] : null;
+    const key = chatKey(), chat = CHATS[key] || [];
+    $("#crumb").innerHTML = `Tutor · <b>${t ? esc(t.es) : "todo el temario"}</b>`;
+    const ideas = t
+      ? [["Explícamelo fácil", `Explícame «${t.es}» muy fácil, como a alguien de 10 años.`], ["Hazme un quiz", `Hazme un quiz de 3 preguntas cortas sobre «${t.es}». Hazlas de una en una y espera mi respuesta.`], ["Dame un ejemplo", `Dame un ejemplo de la vida diaria para «${t.es}».`], ["¿Qué sale en el examen?", `¿Qué es lo que más sale en el examen sobre «${t.es}»?`]]
+      : [...todayTopics().slice(0, 2).map((id) => [`Explícame ${TOPIC[id].es}`, `Explícame «${TOPIC[id].es}» muy fácil.`]), ["Hazme un quiz de hoy", "Hazme un quiz de 3 preguntas cortas sobre los temas de hoy. Hazlas de una en una y espera mi respuesta."], ["¿Qué estudio primero?", "Tengo poco tiempo. ¿Qué es lo más importante que debo estudiar primero para el examen?"]];
+    const busy = streaming && streaming.key === key && !streaming.inline;
+    v.innerHTML = `<div class="chat" id="chat">
+      ${chat.length || busy ? "" : `<section class="hero chat-empty" aria-labelledby="chat-h"><div class="mascot">${MASCOT}</div>
+        <h1 class="hello" id="chat-h">${t ? "¿Qué parte te ayudo a entender?" : "¿En qué te ayudo?"}</h1>
+        <p class="hero-sub">${t ? `Pregúntame sobre <b>${esc(t.es)}</b> o explícamelo con tus palabras: te digo qué entendiste y qué falta.` : "Pregunta sin pena, explícame un tema con tus palabras o sube una foto de tus apuntes."}</p>
+        <div class="hero-actions">${ideas.map(([l], i) => `<button type="button" class="pill" data-idea="${i}">${esc(l)}</button>`).join("")}</div>
+        ${SAMPLE ? "" : `<p class="small muted">El tutor funciona cuando abres la app dentro de Claude.</p>`}</section>`}
+      <div class="thread" id="thread" aria-live="polite"></div>
+      ${chat.length && !busy ? `<div class="chat-foot">${SAMPLE ? `<button type="button" class="pill" id="again">Explícamelo de otra forma</button>` : ""}${t ? `<a class="pill" href="#t-${t.id}">← Volver a ${esc(t.es)}</a>` : ""}<button type="button" class="pill" id="new-chat">Nueva conversación</button></div>` : ""}
+    </div>`;
+    const th = $("#thread", v);
+    chat.forEach((m) => th.append(msgEl(m)));
+    if (busy) th.append(streaming.el);
+    $$("[data-idea]", v).forEach((b) => b.addEventListener("click", () => sendTutor(ideas[Number(b.dataset.idea)][1])));
+    const ag = $("#again", v);
+    if (ag) ag.addEventListener("click", () => {
+      tries[key] = (tries[key] || 0) + 1;
+      if (tries[key] > 5) { chat.push({ role: "assistant", content: "Ya van 5 explicaciones distintas. Practica el tema un rato y vuelve: a veces se entiende mejor después de intentarlo.", error: true }); render(); return; }
+      sendTutor(`Explícamelo de otra forma, con una analogía distinta (intento ${tries[key]} de 5).`);
+    });
+    const nc = $("#new-chat", v);
+    if (nc) nc.addEventListener("click", () => { CHATS[key] = []; tries[key] = 0; render(); window.scrollTo(0, 0); });
+    if (th.lastElementChild) requestAnimationFrame(() => th.lastElementChild && th.lastElementChild.scrollIntoView({ block: "end" }));
+  }
+  function setStreaming(on) {
+    const b = $("#send-btn");
+    b.innerHTML = on ? STOP_ICON : SEND_ICON;
+    b.setAttribute("aria-label", on ? "Detener respuesta" : "Enviar");
+    b.classList.toggle("stop", on);
+    syncSend();
   }
   async function sendTutor(text) {
-    $("#tutor").hidden = false; measure();
+    if (streaming) return;
+    const inline = route().name === "sesion";
     const t = ctxTopic ? TOPIC[ctxTopic] : null;
-    const key = t ? t.id : "_";
+    const key = chatKey();
     const chat = (CHATS[key] ||= []);
-    $("#tutor-topic").textContent = t ? t.es : "Todo el temario";
-    if (!SAMPLE) { addMsg("tu", "El tutor no está disponible en esta vista. Abre la app dentro de Claude para usarlo; todo lo demás funciona igual."); return; }
-    const img = photo; photo = null; renderCtx();
-    addMsg("me", text || "📷 Te envío una foto.");
-    chat.push({ role: "user", content: (text || "Te envío una foto de mis apuntes o de una pregunta. Ayúdame con ella.") + (img ? "\n(Adjunto una foto.)" : "") });
-    const out = addMsg("tu", "Pensando…");
-    out.classList.add("glimmer");
+    const img = SAMPLE ? photo : null;
+    if (SAMPLE) { photo = null; renderCtx(); measure(); }
+    const user = { role: "user", content: (text || "Te envío una foto de mis apuntes o de una pregunta. Ayúdame con ella.") + (img ? "\n(Adjunto una foto.)" : ""), show: text || "Te envío una foto.", photo: !!img };
+    chat.push(user);
+    const pend = { role: "assistant", content: SAMPLE ? "Pensando…" : "El tutor no está disponible en esta vista. Abre la app dentro de Claude para usarlo; todo lo demás funciona igual.", pending: !!SAMPLE, error: !SAMPLE };
+    const el = msgEl(pend);
+    const body = $(".tu-body", el);
+    // Mostrar el mensaje directamente en la página: en la sesión, debajo de la tarjeta; si no, en la portada del tutor.
+    const show = () => {
+      if (inline) {
+        let box = $("#ses-tutor");
+        if (!box) { box = Object.assign(document.createElement("div"), { className: "thread inline", id: "ses-tutor" }); box.setAttribute("aria-live", "polite"); $("#view").append(box); }
+        box.append(msgEl(user), el); el.scrollIntoView({ block: "end" });
+      } else if (route().name === "tutor") render();
+      else location.hash = "tutor";
+    };
+    if (!SAMPLE) { user.failed = true; chat.push(pend); show(); return; }
+    body.classList.add("glimmer");
+    streaming = { key, el, inline };
+    show();
     ctl = new AbortController();
-    $("#tutor-stop").hidden = false; $("#send-btn").disabled = true;
+    setStreaming(true);
+    let final = null;
     try {
-      const turns = [{ role: "user", content: rules(t) }, ...chat.slice(-8)];
-      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { out.classList.remove("glimmer"); out.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); } };
+      const hist = chat.filter((m) => !m.error && !m.failed).slice(-9);
+      while (hist.length && hist[0].role !== "user") hist.shift();
+      const turns = hist.map((m) => ({ role: m.role, content: m.content }));
+      turns[0] = { role: "user", content: `${rules(t)}\n\nMENSAJE DEL ESTUDIANTE:\n${turns[0].content}` };
+      const opts = { cache: false, signal: ctl.signal, onText: ({ text: x }) => { body.classList.remove("glimmer"); body.textContent = x.replace(/\s*\[[A-Z_]*\]?\s*$/, ""); if (el.isConnected) el.scrollIntoView({ block: "end" }); } };
       if (img) opts.images = [img];
       const res = await SAMPLE(turns, opts);
       const m = res.text.match(TAG);
-      const clean = res.text.replace(TAG, "");
-      out.classList.remove("glimmer");
-      out.textContent = clean;
-      if (S.voice) say([{ text: clean.slice(0, 1900), language: "es" }]);
-      chat.push({ role: "assistant", content: clean });
-      if (m && t) {
-        S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[m[1]]; save();
-        out.insertAdjacentHTML("beforeend", `<div class="meta"><span class="chip ${m[1] === "ENTENDIDO" ? "ok" : ""}">${{ ENTENDIDO: "✓ Lo entendiste", CASI: "◐ Casi", TODAVIA_NO: "Todavía no, y está bien" }[m[1]]}</span></div>`);
-        if (route().name === "topic") renderSide(route());
-      }
-      if (TTS) {
-        const b = document.createElement("button"); b.type = "button"; b.className = "link-btn"; b.textContent = "🔊 Escuchar";
-        b.addEventListener("click", () => { TTS.speak(clean, { language: "es" }).catch(() => {}); });
-        const meta = $(".meta", out) || out.appendChild(Object.assign(document.createElement("div"), { className: "meta" }));
-        meta.append(b);
-      }
+      final = { role: "assistant", content: res.text.replace(TAG, ""), tag: m && t ? m[1] : null };
+      if (final.tag) { S.feyn[t.id] = { ENTENDIDO: "entendido", CASI: "casi", TODAVIA_NO: "todavia" }[final.tag]; save(); }
+      if (S.voice) say([{ text: final.content.slice(0, 1900), language: "es" }]);
     } catch (e) {
-      chat.pop();
-      out.classList.remove("glimmer");
-      if (e && e.code === "cancelled") out.textContent = e.text || "Detenido.";
-      else out.textContent = (e && e.text ? e.text + "\n\n" : "") + (ERR_COPY[e && e.code] || "Se cortó la conexión. Vuelve a enviar tu mensaje.");
-      if (e && (e.code === "not_granted" || e.code === "sampling_disabled")) SAMPLE = null;
-      if (e && e.code === "images_unavailable") IMG = null;
+      user.failed = true;
+      const code = e && e.code;
+      final = { role: "assistant", error: true, content: code === "cancelled" ? (e.text ? e.text + "\n\n(Detenido.)" : "Detenido.") : (e && e.text ? e.text + "\n\n" : "") + (ERR_COPY[code] || "Se cortó la conexión. Vuelve a enviar tu mensaje.") };
+      if (code === "not_granted" || code === "sampling_disabled") SAMPLE = null;
+      if (code === "images_unavailable") IMG = null;
     } finally {
-      $("#tutor-stop").hidden = true; $("#send-btn").disabled = false; ctl = null;
+      chat.push(final);
+      streaming = null; ctl = null;
+      setStreaming(false);
+      if (el.isConnected) el.replaceWith(msgEl(final));
+      if (!inline && route().name === "tutor") render();
     }
   }
   $("#composer").addEventListener("submit", (e) => {
     e.preventDefault();
+    if (ctl) { ctl.abort(); return; } // el botón de enviar es «detener» mientras el tutor responde
     const a = $("#ask"); const text = a.value.trim();
     if (!text && !photo) return;
     a.value = ""; delete a.dataset.custom; grow();
     sendTutor(text);
   });
-  $("#ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("#composer").requestSubmit(); } });
+  $("#ask").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (!ctl) $("#composer").requestSubmit(); } });
   const grow = () => { const a = $("#ask"); a.style.height = "auto"; a.style.height = Math.min(140, a.scrollHeight) + "px"; syncSend(); measure(); };
   $("#ask").addEventListener("input", grow);
-  $("#tutor-close").addEventListener("click", () => { $("#tutor").hidden = true; if (ctl) ctl.abort(); });
-  $("#tutor-stop").addEventListener("click", () => { if (ctl) ctl.abort(); });
-  $("#tutor-again").addEventListener("click", () => {
-    const key = ctxTopic || "_";
-    tries[key] = (tries[key] || 0) + 1;
-    if (tries[key] > 5) { addMsg("tu", "Ya van 5 explicaciones distintas. Practica el tema un rato y vuelve: a veces se entiende mejor después de intentarlo."); return; }
-    sendTutor(`Explícamelo de otra forma, con una analogía distinta (intento ${tries[key]} de 5).`);
-  });
   $("#photo").addEventListener("change", (e) => {
     const f = e.target.files && e.target.files[0];
     if (f && IMG && f.size <= IMG.maxInputBytes) { photo = f; renderCtx(); measure(); $("#ask").focus(); }
