@@ -61,13 +61,18 @@ def parse_mcq() -> list[dict]:
 
 def past_exam() -> list[dict]:
     """Preguntas del examen pasado (05-resumen.md), con tu respuesta, la correcta y la explicación bilingüe."""
-    out = []
+    out, seen = [], set()
     for k, part in enumerate(build_web.parse_exam()):
         for it in part["items"]:
+            pid = f"{part['exam']}-{k}-{it['n']}"
+            if pid in seen:  # dos tablas en la misma parte (pareos): la segunda lleva la letra de su sección
+                pid = f"{part['exam']}-{k}-{(it['sub'] or 'x')[:1]}{it['n']}"
+            seen.add(pid)
             out.append({
-                "id": f"{part['exam']}-{k}-{it['n']}", "exam": part["exam"], "part": part["es"], "partEn": part["en"],
+                "id": pid, "exam": part["exam"], "part": part["es"], "partEn": part["en"],
                 "sub": it["sub"] or "", "n": it["n"], "q": it["q"], "tags": it["tags"], "status": it["status"], "body": it["body"],
             })
+    assert len({x["id"] for x in out}) == len(out), "ids repetidos en el examen pasado"
     return out
 
 

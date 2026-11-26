@@ -460,6 +460,15 @@ select.field, input.field { min-height: 44px; width: auto; }
 .diff .d-fix > span:first-child { color: var(--accent); font-weight: 700; }
 .diff .d-meta { color: var(--muted); grid-template-columns: 1fr; border-top: 1px solid var(--line); }
 
+/* Día del examen: respiración guiada */
+.breath { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .85rem; align-items: center; border: 1px solid var(--line); border-radius: 16px; padding: .75rem .9rem; background: var(--bg); }
+.breath-ball { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--g1), var(--g2) 60%, var(--g3)); transform: scale(.6); transition: transform 4s ease-in-out; }
+.breath[data-phase="in"] .breath-ball, .breath[data-phase="hold"] .breath-ball { transform: scale(1); }
+.breath[data-phase="out"] .breath-ball { transform: scale(.6); transition-duration: 6s; }
+@media (max-width: 520px) { .breath { grid-template-columns: auto minmax(0, 1fr); } .breath .btn { grid-column: 1 / -1; } }
+.review-list details.past { border: 1px solid var(--line); border-radius: 14px; padding: .6rem .8rem; background: var(--surface); }
+.review-list details.past summary { color: var(--ink); width: auto; }
+
 /* Examen pasado: tus fallos */
 .past { gap: .55rem; }
 .past .q { font-family: var(--font-title); font-size: 1.1rem; line-height: 1.35; }
@@ -586,7 +595,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
   /* ================= Estado y guardado ================= */
   const KEY = "entender7:v1";
   const blank = () => ({ v: 1, cards: {}, feyn: {}, seen: {}, checkin: null, mode: "ratitos", hist: {}, days: {}, sims: [], life: false, log: [], lastVisit: 0, updatedAt: 0,
-    custom: [], cal: {}, calTime: "16:00", calm: false, voice: false, focus: "plan", imgMiss: {}, pastOk: {}, tutorMode: "fable" });
+    custom: [], cal: {}, calTime: "16:00", calm: false, voice: false, focus: "plan", imgMiss: {}, pastOk: {}, tutorMode: "fable", eve: {} });
   const loadLocal = () => { try { const raw = localStorage.getItem(KEY); if (raw) return Object.assign(blank(), JSON.parse(raw)); } catch { /* sin almacenamiento */ } return blank(); };
   let S = loadLocal();
   syncCustom();
@@ -779,7 +788,8 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     const h = location.hash.slice(1);
     if (h.startsWith("t-") && TOPIC[h.slice(2)]) return { name: "topic", id: h.slice(2) };
     if (h.startsWith("guia-") && TOPIC[h.slice(5)]) return { name: "guia", id: h.slice(5) };
-    if (["hoy", "sesion", "simulacro", "panico", "subir", "tutor", "pasado"].includes(h)) return { name: h };
+    if (h.startsWith("pasado-") && TOPIC[h.slice(7)]) return { name: "pasado", tid: h.slice(7) };
+    if (["hoy", "sesion", "simulacro", "panico", "subir", "tutor", "pasado", "examen"].includes(h)) return { name: h };
     return { name: "hoy" };
   }
   let ctxTopic = null, ctxManual = false;
@@ -801,13 +811,14 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
     else if (r.name === "subir") renderUpload(v);
     else if (r.name === "tutor") renderTutor(v);
     else if (r.name === "guia") renderGuide(v, TOPIC[r.id]);
-    else if (r.name === "pasado") renderPast(v);
+    else if (r.name === "pasado") { pastTopicF = r.tid || null; renderPast(v); }
+    else if (r.name === "examen") renderExamDay(v);
     else if (r.name === "sesion") renderSession(v);
     else if (r.name === "simulacro") renderSim(v);
     else if (r.name === "panico") renderPanic(v);
     else renderHoy(v);
     $("#timer").hidden = !(r.name === "sesion" || (r.name === "simulacro" && SIM && SIM.phase === "run"));
-    if (r.name !== "sesion" && r.name !== "simulacro") $("#ptop").style.width = "0";
+    if (r.name !== "sesion" && r.name !== "simulacro" && !(r.name === "pasado" && PQ)) $("#ptop").style.width = "0";
   }
   window.addEventListener("hashchange", () => { closeSide(); stopSpeech(); document.body.style.overflow = ""; render(); window.scrollTo(0, 0); });
 
@@ -837,6 +848,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
           <a class="side-link" href="#simulacro" ${curAttr("simulacro")}>Simulacro real</a>
           <a class="side-link" href="#panico" ${curAttr("panico")}>Modo Pánico</a>
           <a class="side-link" href="#guia-${nextGuideTopic()}" ${r.name === "guia" ? 'aria-current="page"' : ""}>✨ Aprender guiado</a>
+          <a class="side-link" href="#examen" ${curAttr("examen")}>🎯 Noche antes y examen</a>
           <a class="side-link" href="#pasado" ${curAttr("pasado")}>Examen pasado<span class="kicker">${pastLeft() || "✓"}</span></a>
           <a class="side-link" href="#tutor" ${curAttr("tutor")}>Tutor<span class="kicker">${Object.values(CHATS).reduce((n, c) => n + c.filter((m) => m.role === "user").length, 0) || ""}</span></a>
           <a class="side-link" href="#subir" ${curAttr("subir")}>Subir y Entender</a></div>`)}
@@ -935,7 +947,8 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
         <p class="hero-sub">${after ? "¿Repasamos para no olvidar?" : "¿Qué estudiamos hoy?"}</p>
         <p class="kicker">${after ? "Después del examen" : days === 0 ? "Hoy es el examen" : `${days} ${days === 1 ? "día" : "días"} para el examen · 4 de diciembre`} · ${esc(fmtDate())}</p>
         <div class="hero-actions">
-          <a class="pill gem primary" href="#guia-${nextGuideTopic()}">✨ Aprender: ${esc(TOPIC[nextGuideTopic()].es)}</a>
+          ${dayKey() >= "2026-12-02" && dayKey() <= DDAY ? `<a class="pill primary" href="#examen">🎯 ${dayKey() === DDAY ? "Hoy es el examen" : dayKey() === EVE ? "Plan de la noche antes" : "Prepara la noche antes"}</a>` : ""}
+          <a class="pill gem ${dayKey() >= "2026-12-02" && dayKey() <= DDAY ? "" : "primary"}" href="#guia-${nextGuideTopic()}">✨ Aprender: ${esc(TOPIC[nextGuideTopic()].es)}</a>
           <button type="button" class="pill" id="hero-start">▶ ${S.focus === "plan" ? (due + quota ? `Repasar · ${due + quota} preguntas` : "Practicar libre") : S.focus === "hard" ? "Repasar · lo difícil" : "Repasar · mis fallos"}</button>
           <a class="pill" href="#pasado">Examen pasado${pastLeft() ? ` · ${pastLeft()}` : ""}</a>
           <a class="pill" href="#panico">Modo Pánico</a>
@@ -970,6 +983,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       <div class="grid2">
         <a class="card" href="#panico" style="text-decoration:none"><div class="kicker" style="color:var(--accent)">Modo Pánico</div><b>Solo lo que más sale en el examen</b><span class="small muted">30 minutos con las preguntas más probables.</span></a>
         <a class="card" href="#simulacro" style="text-decoration:none"><div class="kicker">Simulacro real</div><b>20 preguntas · 20 minutos · nota cruda</b><span class="small muted">${lastSim ? `Último: hoy sacarías <b class="mono">${Math.round((100 * lastSim.score) / lastSim.total)}</b> (${lastSim.score}/${lastSim.total})` : "Como el examen, con preguntas tramposas."}</span></a>
+        <a class="card" href="#examen" style="text-decoration:none"><div class="kicker">🎯 3 y 4 de diciembre</div><b>Noche antes y día del examen</b><span class="small muted">Checklist de la última noche, repaso de 10 minutos, respiración y consejos para el examen.</span></a>
         <a class="card" href="#subir" style="text-decoration:none"><div class="kicker">Subir y Entender</div><b>Tus apuntes → un tema nuevo</b><span class="small muted">Pega texto, una transcripción de YouTube o una foto, y lo convierto en los 5 pasos con preguntas.</span></a>
       </div>
       ${MCP ? calCardHtml() : ""}
@@ -1005,7 +1019,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       <div class="tg-head"><div><div class="kicker">${esc(MOD[t.mod].es)} · Bloque ${idx}/${total} · ${esc(MOD[t.mod].objectives)}</div>
       <h1 class="title">${esc(t.es)}</h1><p class="title-en en">${esc(t.en)}</p>
       <div class="states" style="margin-top:.6rem"><span><i class="st-new"></i>Nuevo ${c.new}</span><span><i class="st-learning"></i>En curso ${c.learning}</span><span><i class="st-mastered"></i>Dominado ${c.mastered}</span><span><i class="st-due"></i>Repaso ${c.due}</span></div></div>
-      <div class="row-wrap"><a class="pill gem primary" href="#guia-${t.id}">✨ Aprender guiado · 7 pasos</a><span class="small muted">Imagen, explicación, preguntas y tu propia explicación, en orden.</span></div>
+      <div class="row-wrap"><a class="pill gem primary" href="#guia-${t.id}">✨ Aprender guiado · 7 pasos</a>${TTS ? `<button type="button" class="pill" id="lesson-audio">🎧 Escuchar la lección</button>` : ""}${pastForTopic(t.id).length ? `<a class="pill" href="#pasado-${t.id}">📋 ${pastForTopic(t.id).length} ${pastForTopic(t.id).length === 1 ? "fallo" : "fallos"} del examen pasado</a>` : ""}</div>
       ${howHtml(t)}</div>
       <aside class="imgpanel" id="imgpanel" aria-label="Imagen tocable"></aside>
       <div class="steps">
@@ -1033,6 +1047,7 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       </div></div>
       ${t.mod === "mine" ? `<div class="row-wrap"><button type="button" class="link-btn" id="del-topic">Borrar este tema</button></div>` : ""}`;
     renderPanel(t);
+    const la = $("#lesson-audio", v); if (la) la.addEventListener("click", () => playLessonAudio(t));
     $("#how-go", v).addEventListener("click", () => {
       const act = METHODS[methodOf(t)].act;
       if (act.startsWith("img:")) { renderPanel(t, act.slice(4)); $("#imgpanel").scrollIntoView({ behavior: "smooth", block: "start" }); }
@@ -1526,6 +1541,10 @@ body.readable { --font-body: "Atkinson Hyperlegible", Verdana, system-ui, sans-s
       if ($("#ready")) { if (e.key === "Enter" || e.key === " ") click("#ready"); return; }
       if (SES.phase === "q") { if (e.key === "1" || e.key === "ArrowLeft") click("#no"); else if (e.key === "2" || e.key === "ArrowRight") click("#yes"); else if (e.key === "h" || e.key === "H") click("#hint"); }
       else if (SES.phase === "a" && (e.key === "Enter" || e.key === " ")) click("#next");
+    } else if (r === "pasado" && PQ) {
+      if (!PQ.reveal && (e.key === "Enter" || e.key === " ")) click("#pq-show");
+      else if (PQ.reveal && e.key === "1") click("#pq-no");
+      else if (PQ.reveal && e.key === "2") click("#pq-yes");
     } else if (r === "simulacro" && SIM && SIM.phase === "run") {
       if (/^[1-4]$/.test(e.key)) click(`.opts [data-k="${Number(e.key) - 1}"]`);
       else if (e.key === "Enter") click("#next");
@@ -2120,8 +2139,10 @@ ${temario(t, q)}`;
       <div class="plan-body"><div style="font-family:var(--font-body);font-weight:600">${esc(t.es)}</div>
       <ol class="plan-steps">${G_STEPS.map((s, i) => { const st = G.done || i < G.step ? "done" : i === G.step ? "now" : ""; return `<li class="${st}"><span class="ps-ico" aria-hidden="true">${st === "done" ? "✓" : st === "now" ? "●" : "○"}</span><span>${s[1]}${s[0] === "quiz" && st === "now" ? ` · ${G.qi + 1}/${G.quiz.length}` : ""}</span></li>`; }).join("")}</ol>
       <div class="bar" style="margin:0"><span style="width:${Math.round((100 * doneN) / G_STEPS.length)}%"></span></div>
-      <div style="display:flex;justify-content:space-between;gap:.5rem;font-family:var(--font-body)"><span class="muted">Dominio <b class="mono">${G.done ? G.after : topicPct(G.tid)}%</b></span><button type="button" class="link-btn" id="g-restart">Empezar de nuevo</button></div></div>`;
+      <div style="display:flex;justify-content:space-between;gap:.5rem;font-family:var(--font-body)"><span class="muted">Dominio <b class="mono">${G.done ? G.after : topicPct(G.tid)}%</b></span><button type="button" class="link-btn" id="g-restart">Empezar de nuevo</button></div>
+      ${TTS ? `<button type="button" class="btn" id="g-audio" style="font-family:var(--font-body)">🎧 Escuchar toda la lección</button>` : ""}</div>`;
     $("#g-restart").addEventListener("click", () => { G = null; render(); window.scrollTo(0, 0); });
+    const ga = $("#g-audio"); if (ga) ga.addEventListener("click", () => playLessonAudio(t));
     $("#crumb").innerHTML = `✨ Aprender guiado · <b>${esc(t.es)}</b> · <span class="mono">${Math.min(doneN + 1, G_STEPS.length)}/${G_STEPS.length}</span>`;
     renderGuideActions(t, G.msgs[lastIdx]);
     if (scroll) requestAnimationFrame(() => { const a = $("#gact"); (a && a.childElementCount ? a : th.lastElementChild)?.scrollIntoView({ block: "end", behavior: "smooth" }); });
@@ -2163,6 +2184,8 @@ ${temario(t, q)}`;
       }
     } else if (k === "diff") {
       box.append(btn("Practicar este tema", "primary", () => startSession("topic", buildQueue("topic", 30, t.id), 0)));
+      const pf = pastForTopic(t.id).filter((x) => !S.pastOk[x.id]).length;
+      if (pf) box.append(link(`📋 ${pf} ${pf === 1 ? "fallo" : "fallos"} del examen pasado de este tema`, `#pasado-${t.id}`));
       const next = todayTopics().find((id) => TOPIC[id] && id !== t.id && topicPct(id) < 60);
       if (next) box.append(link(`Siguiente: ${TOPIC[next].es} →`, `#guia-${next}`, "gem"));
       box.append(link("Volver a Hoy", "#hoy"));
@@ -2170,32 +2193,169 @@ ${temario(t, q)}`;
   }
 
   /* ================= Examen pasado: tus fallos ================= */
-  let pastExam = "all", pastAll = false;
+  let pastExam = "all", pastAll = false, pastTopicF = null, PQ = null;
   const pastLeft = () => PAST.filter((x) => x.status !== "good" && !S.pastOk[x.id]).length;
+  // Cada pregunta del examen pasado, unida a su tema (por palabras clave; PAST_FIX corrige a mano las dudosas).
+  const PAST_FIX = { "geo-1-1": "capas", "geo-1-2": "capas", "geo-1-3": "capas", "geo-1-4": "capas", "geo-0-6": "relieves-ext", "geo-0-7": "relieves-ext" };
+  const stripTags = (h) => String(h).replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/g, " ");
+  let PAST_MAP = null;
+  function pastTopicOf(x) {
+    if (!PAST_MAP) {
+      PAST_MAP = {};
+      PAST.forEach((p) => {
+        if (PAST_FIX[p.id]) { PAST_MAP[p.id] = PAST_FIX[p.id]; return; }
+        const kws = keywords(`${p.sub} ${stripTags(p.q)} ${p.tags.map((g) => g.t).join(" ")} ${stripTags(p.body)}`, 30);
+        const best = TOPICS.filter((t) => t.mod === p.exam).map((t) => [t, topicScore(t, kws)]).sort((a, b) => b[1] - a[1])[0];
+        PAST_MAP[p.id] = best && best[1] > 0 ? best[0].id : null;
+      });
+    }
+    return PAST_MAP[x.id] ? TOPIC[PAST_MAP[x.id]] : null;
+  }
+  const pastForTopic = (tid) => PAST.filter((x) => x.status !== "good" && pastTopicOf(x) && pastTopicOf(x).id === tid);
+  function pastCard(x, opts = {}) {
+    const mine = x.tags.filter((g) => g.t.startsWith("Tú")), rest = x.tags.filter((g) => !g.t.startsWith("Tú"));
+    const ok = !!S.pastOk[x.id], t = pastTopicOf(x);
+    return `<article class="card past ${ok && !opts.quiz ? "done" : ""}">${x.sub ? `<div class="kicker">${esc(x.sub)}</div>` : ""}
+      <p class="q"><b class="mono">${esc(x.n)}.</b> ${x.q}</p>
+      <div class="row-wrap">${mine.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>
+      ${opts.quiz && !opts.reveal ? "" : `<details ${opts.quiz ? "open" : ""}><summary>Ver respuesta y explicación</summary><div class="row-wrap" style="margin-bottom:.4rem">${rest.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>${x.body}</details>`}
+      ${opts.quiz ? "" : `<div class="row-wrap">${x.status !== "good" ? `<button type="button" class="btn" data-pok="${esc(x.id)}" aria-pressed="${ok}">${ok ? "✓ Ya lo entiendo" : "Ya lo entiendo"}</button>` : ""}${t ? `<a class="pill gem" href="#guia-${t.id}">✨ Aprender: ${esc(t.es)}</a>` : ""}</div>`}</article>`;
+  }
   function renderPast(v) {
-    $("#crumb").innerHTML = `<b>Examen pasado</b> · tus fallos`;
-    const pool = PAST.filter((x) => (pastExam === "all" || x.exam === pastExam));
+    if (PQ) return renderPastQuiz(v);
+    const tf = pastTopicF && TOPIC[pastTopicF] ? TOPIC[pastTopicF] : null;
+    $("#crumb").innerHTML = `<b>Examen pasado</b> · ${tf ? esc(tf.es) : "tus fallos"}`;
+    const pool = PAST.filter((x) => (tf ? pastTopicOf(x) === tf : pastExam === "all" || x.exam === pastExam));
     const fails = pool.filter((x) => x.status !== "good");
     const shown = pastAll ? pool : fails;
     const okN = fails.filter((x) => S.pastOk[x.id]).length;
+    const left = fails.filter((x) => !S.pastOk[x.id]);
     const parts = [...new Set(shown.map((x) => x.part))];
     const seg = (name, cur, opts) => `<div class="seg" role="group" aria-label="${name}">${opts.map(([k, l]) => `<button type="button" data-${name}="${k}" aria-pressed="${cur === k}">${l}</button>`).join("")}</div>`;
-    v.innerHTML = `<div><div class="kicker">Examen pasado · lo que te vuelve a salir</div><h1 class="title">Tus fallos del examen pasado</h1>
+    v.innerHTML = `<div><div class="kicker">Examen pasado · lo que te vuelve a salir</div><h1 class="title">${tf ? `Examen pasado: ${esc(tf.es)}` : "Tus fallos del examen pasado"}</h1>
       <p class="muted" style="margin-top:.4rem">La convocatoria evalúa lo mismo. Lee la pregunta, intenta responderla en tu cabeza y después abre la explicación.</p></div>
-      <div class="row-wrap">${seg("pexam", pastExam, [["all", "Todo"], ["geo", "Geología"], ["cell", "La Célula"]])}${seg("pall", pastAll ? "1" : "0", [["0", "Solo fallos"], ["1", "Todas"]])}</div>
-      <section class="card"><div class="stat-row"><b>Fallos que ya entiendes</b><span class="delta">${okN}/${fails.length}</span><div class="bar" style="grid-column:1/-1;margin:0"><span style="width:${fails.length ? Math.round((100 * okN) / fails.length) : 0}%"></span></div></div></section>
-      ${parts.map((pt) => `<div class="sec-title">${esc(pt)}</div>${shown.filter((x) => x.part === pt).map((x) => {
-        const mine = x.tags.filter((g) => g.t.startsWith("Tú")), rest = x.tags.filter((g) => !g.t.startsWith("Tú"));
-        const ok = !!S.pastOk[x.id];
-        return `<article class="card past ${ok ? "done" : ""}">${x.sub ? `<div class="kicker">${esc(x.sub)}</div>` : ""}
-          <p class="q"><b class="mono">${esc(x.n)}.</b> ${x.q}</p>
-          <div class="row-wrap">${mine.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>
-          <details><summary>Ver respuesta y explicación</summary><div class="row-wrap" style="margin-bottom:.4rem">${rest.map((g) => `<span class="chip ${g.k === "good" ? "ok" : "hot"}">${esc(g.t)}</span>`).join("")}</div>${x.body}</details>
-          ${x.status !== "good" ? `<div><button type="button" class="btn" data-pok="${esc(x.id)}" aria-pressed="${ok}">${ok ? "✓ Ya lo entiendo" : "Ya lo entiendo"}</button></div>` : ""}</article>`;
-      }).join("")}`).join("")}`;
+      <div class="row-wrap">${tf ? `<button type="button" class="pill" id="past-all">← Todos los temas</button><a class="pill gem" href="#guia-${tf.id}">✨ Aprender: ${esc(tf.es)}</a>` : `${seg("pexam", pastExam, [["all", "Todo"], ["geo", "Geología"], ["cell", "La Célula"]])}`}${seg("pall", pastAll ? "1" : "0", [["0", "Solo fallos"], ["1", "Todas"]])}</div>
+      <section class="card"><div class="stat-row"><b>Fallos que ya entiendes</b><span class="delta">${okN}/${fails.length}</span><div class="bar" style="grid-column:1/-1;margin:0"><span style="width:${fails.length ? Math.round((100 * okN) / fails.length) : 0}%"></span></div></div>
+        ${left.length ? `<button type="button" class="btn primary block" id="pq-start">▶ Practicar ${left.length} ${left.length === 1 ? "fallo" : "fallos"} en tarjetas</button>` : `<p class="small">✅ Ya entiendes todos ${tf ? "los de este tema" : "tus fallos"}. Puedes repasarlos igual con «Todas».</p>`}</section>
+      ${parts.map((pt) => `<div class="sec-title">${esc(pt)}</div>${shown.filter((x) => x.part === pt).map((x) => pastCard(x)).join("")}`).join("")}`;
     $$("[data-pexam]", v).forEach((b) => b.addEventListener("click", () => { pastExam = b.dataset.pexam; render(); }));
     $$("[data-pall]", v).forEach((b) => b.addEventListener("click", () => { pastAll = b.dataset.pall === "1"; render(); }));
+    const pa = $("#past-all", v); if (pa) pa.addEventListener("click", () => { location.hash = "pasado"; });
     $$("[data-pok]", v).forEach((b) => b.addEventListener("click", () => { const id = b.dataset.pok; if (S.pastOk[id]) delete S.pastOk[id]; else S.pastOk[id] = Date.now(); save(); const y = window.scrollY; render(); window.scrollTo(0, y); }));
+    const qs = $("#pq-start", v); if (qs) qs.addEventListener("click", () => { PQ = { ids: shuffle(left.map((x) => x.id)), i: 0, reveal: false, again: {}, ok: 0 }; render(); window.scrollTo(0, 0); });
+  }
+  // Práctica en tarjetas: pregunta → piensas → ves la respuesta → «Sí la sabía» o «Todavía no» (vuelve al final una vez).
+  function renderPastQuiz(v) {
+    const id = PQ.ids[PQ.i];
+    if (!id) {
+      $("#crumb").innerHTML = `<b>Examen pasado</b> · tarjetas`;
+      v.innerHTML = `<div><div class="kicker">Práctica terminada</div><h1 class="title">¡Listo!</h1><p class="muted" style="margin-top:.4rem">Marcaste <b class="mono">${PQ.ok}</b> como entendidas. Te quedan <b class="mono">${pastLeft()}</b> fallos por entender.</p></div>
+        <div class="row-wrap"><button type="button" class="pill primary" id="pq-back">Volver al examen pasado</button><a class="pill" href="#hoy">Volver a Hoy</a></div>`;
+      $("#pq-back", v).addEventListener("click", () => { PQ = null; render(); });
+      return;
+    }
+    const x = PAST.find((p) => p.id === id), t = pastTopicOf(x);
+    $("#crumb").innerHTML = `<b>Examen pasado</b> · tarjeta <span class="mono">${PQ.i + 1}/${PQ.ids.length}</span>`;
+    $("#ptop").style.width = `${Math.round((100 * PQ.i) / PQ.ids.length)}%`;
+    v.innerHTML = `<div class="kicker">${esc(x.part)}${t ? ` · ${esc(t.es)}` : ""}</div>
+      ${pastCard(x, { quiz: true, reveal: PQ.reveal })}
+      <div class="actions">${PQ.reveal
+        ? `<div class="two"><button type="button" class="btn" id="pq-no">Todavía no</button><button type="button" class="btn dark" id="pq-yes">Sí, ya lo entiendo</button></div>`
+        : `<button type="button" class="btn primary block" id="pq-show">Ver la respuesta</button>`}
+        <div class="row-wrap" style="justify-content:space-between">${t ? `<a class="link-btn" href="#guia-${t.id}">Aprender este tema primero</a>` : "<span></span>"}<button type="button" class="link-btn" id="pq-quit">Terminar</button></div>
+        <p class="kbd-hint">${PQ.reveal ? "<kbd>1</kbd> todavía no · <kbd>2</kbd> sí" : "<kbd>Enter</kbd> ver la respuesta"}</p></div>`;
+    const nx = () => { PQ.i++; PQ.reveal = false; render(); window.scrollTo(0, 0); };
+    const sh = $("#pq-show", v); if (sh) sh.addEventListener("click", () => { PQ.reveal = true; render(); });
+    const yes = $("#pq-yes", v); if (yes) yes.addEventListener("click", () => { S.pastOk[id] = Date.now(); PQ.ok++; save(); nx(); });
+    const no = $("#pq-no", v); if (no) no.addEventListener("click", () => { if (!PQ.again[id]) { PQ.again[id] = 1; PQ.ids.push(id); } nx(); });
+    $("#pq-quit", v).addEventListener("click", () => { PQ = null; render(); });
+  }
+
+  /* ================= Noche antes y día del examen (3 y 4 de diciembre) ================= */
+  const EVE = "2026-12-03", DDAY = "2026-12-04";
+  const EVE_STEPS = [
+    ["panico", "🔥", "Modo Pánico: lo que más sale (30 min)", "panico"],
+    ["pasado", "📋", "Tus fallos del examen pasado en tarjetas", "pasado"],
+    ["sim", "📝", "Un simulacro final de 20 minutos", "simulacro"],
+    ["bulto", "🎒", "Alista el bulto: lápices, borrador, tajador, regla y tu carné del colegio", ""],
+    ["dormir", "😴", "Después de las 9 p. m., nada nuevo. Duerme 8–9 horas: así se guarda lo que estudiaste", ""],
+  ];
+  const TIPS = [
+    "Lee la pregunta completa y TODAS las opciones antes de elegir.",
+    "Tacha las opciones que sabes que no son: queda más fácil elegir.",
+    "Si una no te sale, sáltala y vuelve al final. No te quedes pegado.",
+    "En los pareos, empieza por los que estás seguro: los que quedan se reducen.",
+    "En respuesta corta, usa las palabras clave en inglés (crust, mantle, nucleus…).",
+    "En pensamiento crítico: di QUÉ pasa y POR QUÉ, con un ejemplo.",
+    "Al final, revisa que no dejaste nada en blanco.",
+  ];
+  let breathTimer = 0;
+  function renderExamDay(v) {
+    const k = dayKey(), isEve = k === EVE, isDay = k === DDAY, after = Date.now() > EXAM + 4 * 3600e3;
+    $("#crumb").innerHTML = `<b>Noche antes y día del examen</b>`;
+    const eve = (S.eve ||= {});
+    const doneN = EVE_STEPS.filter((s) => eve[s[0]]).length;
+    // 5 de Geología y 5 de La Célula: las fijas en examen que menos dominas, un tema distinto cada vez que se pueda.
+    const pick5 = (mod) => { const pool = ITEMS.filter((i) => i.hot && i.mod === mod).sort((a, b) => mastery(a.id) - mastery(b.id)); const out = [], used = new Set(); pool.forEach((i) => { if (out.length < 5 && !used.has(i.topic)) { out.push(i); used.add(i.topic); } }); pool.forEach((i) => { if (out.length < 5 && !out.includes(i)) out.push(i); }); return out; };
+    const g5 = pick5("geo"), c5 = pick5("cell");
+    const top = g5.flatMap((x, k) => [x, c5[k]]).filter(Boolean);
+    v.innerHTML = `<div><div class="kicker">${isDay ? "Hoy es el examen" : isEve ? "Mañana es el examen" : `Para el ${fmtDay(EVE)} y el ${fmtDay(DDAY)}`}</div>
+      <h1 class="title">${isDay ? (after ? "¡Lo lograste!" : "Hoy es el día. Tú puedes.") : "Noche antes y día del examen"}</h1>
+      <p class="muted" style="margin-top:.4rem">${isDay ? (after ? "Ya pasó el examen. Pase lo que pase, estudiaste de verdad y eso queda." : "Nada nuevo hoy: un repaso corto, respirar y aplicar los consejos.") : "Un plan corto y tranquilo para llegar descansado. Sin estudiar cosas nuevas la última noche."}</p></div>
+      <section class="card ${isEve ? "accent" : ""}" aria-labelledby="eve-h"><div class="row-wrap" style="justify-content:space-between"><h2 class="h" id="eve-h">🌙 La noche antes · ${fmtDay(EVE)}</h2><span class="mono">${doneN}/${EVE_STEPS.length}</span></div>
+        <div class="toggles">${EVE_STEPS.map(([id, ic, label, go]) => `<div class="toggle"><div><b>${ic} ${esc(label)}</b></div><div class="row-wrap">${go ? `<a class="btn" href="#${go}">Ir</a>` : ""}<button type="button" class="btn" data-eve="${id}" aria-pressed="${!!eve[id]}">${eve[id] ? "✓ Hecho" : "Hecho"}</button></div></div>`).join("")}</div></section>
+      <section class="card ${isDay && !after ? "accent" : ""}" aria-labelledby="dday-h"><h2 class="h" id="dday-h">☀️ El día del examen · ${fmtDay(DDAY)}</h2>
+        <button type="button" class="btn primary block" id="ten">⏱ Repaso de 10 minutos (10 preguntas que más salen)</button>
+        <div class="breath" id="breath"><div class="breath-ball" aria-hidden="true"></div><div><b>Respira antes de empezar</b><p class="small muted" id="breath-txt">3 respiraciones: inhala 4 segundos, sostén 4, suelta 6. Calma los nervios.</p></div><button type="button" class="btn" id="breath-go">Empezar</button></div>
+        <div><div class="kicker" style="margin-bottom:.4rem">Consejos para el examen</div><ol class="small" style="margin:0;padding-left:1.2rem;display:grid;gap:.3rem">${TIPS.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></div></section>
+      <section class="card quiet" aria-labelledby="top-h"><h2 class="h" id="top-h">Las 10 que más salen y menos dominas</h2>
+        <div class="review-list">${top.map((i) => `<details class="past"><summary>${esc(i.q[lang === "en" ? 1 : 0])}</summary><p>${bl(i.a)}</p></details>`).join("")}</div></section>`;
+    $$("[data-eve]", v).forEach((b) => b.addEventListener("click", () => { const id = b.dataset.eve; if (eve[id]) delete eve[id]; else eve[id] = Date.now(); save(); const y = window.scrollY; render(); window.scrollTo(0, y); }));
+    $("#ten", v).addEventListener("click", () => startSession("panic", buildQueue("panic", 30).slice(0, 10), 10));
+    $("#breath-go", v).addEventListener("click", () => breathe());
+  }
+  function breathe() {
+    clearInterval(breathTimer);
+    const box = $("#breath"); if (!box) return;
+    const txt = $("#breath-txt"), btn = $("#breath-go");
+    const seq = [["Inhala…", 4, "in"], ["Sostén…", 4, "hold"], ["Suelta despacio…", 6, "out"]];
+    let round = 0, step = 0, left = seq[0][1];
+    btn.disabled = true; box.dataset.phase = seq[0][2]; txt.textContent = `${seq[0][0]} ${left}`;
+    breathTimer = setInterval(() => {
+      if (!document.body.contains(box)) return clearInterval(breathTimer);
+      left--;
+      if (left <= 0) {
+        step++;
+        if (step === seq.length) { step = 0; round++; }
+        if (round === 3) { clearInterval(breathTimer); box.dataset.phase = ""; txt.textContent = "Listo. Ahora lee con calma la primera pregunta."; btn.disabled = false; btn.textContent = "Otra vez"; return; }
+        left = seq[step][1]; box.dataset.phase = seq[step][2];
+      }
+      txt.textContent = `${seq[step][0]} ${left} · respiración ${round + 1} de 3`;
+    }, 1000);
+  }
+
+  /* ================= Lección en solo audio (para el bus) ================= */
+  let LESSON_AUDIO = [];
+  function playLessonAudio(t) {
+    if (!TTS) return;
+    const order = t.items.map((i) => ITEM[i[0]]).filter(Boolean).sort((a, b) => b.hot - a.hot).slice(0, 3);
+    const parts = [
+      [`Lección: ${t.es}.`, `Lesson: ${t.en}.`],
+      [`Lo fácil: ${t.map.easy[0]}`, `The easy part: ${t.map.easy[1]}`],
+      [`Lo difícil: ${t.map.hard[0]}`, `The hard part: ${t.map.hard[1]}`],
+      [`Siempre sale en el examen: ${t.map.exam[0]}`, `Always on the test: ${t.map.exam[1]}`],
+      ...t.beats,
+      [`Ejemplo de tu vida: ${t.life[0]}`, `Everyday example: ${t.life[1]}`],
+      ...order.map((i) => [`Pregunta: ${i.q[0]} ... Respuesta: ${i.a[0]}`, `Question: ${i.q[1]} ... Answer: ${i.a[1]}`]),
+      ["Fin de la lección. Ahora explícala tú en voz alta.", "End of the lesson. Now explain it out loud."],
+    ];
+    LESSON_AUDIO = parts.flatMap((p, i) => langLines(p, `g${i}`));
+    const o = document.createElement("div"); o.className = "audio-only";
+    o.innerHTML = `<div style="display:grid;gap:1.4rem;justify-items:center"><div class="kicker">🎧 Solo audio · ${esc(t.es)}</div><p class="now-line">Preparando…</p><button type="button" class="btn dark">■ Parar</button></div>`;
+    $("button", o).addEventListener("click", stopSpeech);
+    document.body.append(o);
+    speaking = true;
+    TTS.speak(LESSON_AUDIO).catch(() => {}).finally(() => { speaking = false; const x = $(".audio-only"); if (x) x.remove(); });
   }
 
   /* ================= Identidad sobre notas ================= */
@@ -2397,7 +2557,10 @@ ${text ? text.slice(0, 30000) : "(está en la foto adjunta)"}`;
     });
     claude.use("tts").then((t) => {
       TTS = t; if (!t) return;
-      t.onLine(({ id }) => { if (id && id[0] === "b") markBeat($("#view"), Number(id.slice(1))); });
+      t.onLine(({ id, line }) => {
+        if (id && id[0] === "b") markBeat($("#view"), Number(id.slice(1)));
+        if (id && id[0] === "g") { const l = (typeof line === "number" && LESSON_AUDIO[line]) || LESSON_AUDIO.find((x) => x.id === id); const o = $(".audio-only .now-line"); if (o && l) o.textContent = l.text; }
+      });
       t.onState(({ state }) => { if (state === "idle") speaking = false; });
       if (route().name === "topic" || route().name === "hoy") render();
     });
